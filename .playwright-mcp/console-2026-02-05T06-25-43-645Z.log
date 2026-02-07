@@ -1,0 +1,146 @@
+[     207ms] [ERROR] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="v2/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+          <RedirectBoundary>
+            <RedirectErrorBoundary router={{...}}>
+              <InnerLayoutRouter url="/v2" tree={[...]} params={{}} cacheNode={{rsc:<Fragment>, ...}} segmentPath={[...]} ...>
+                <SegmentViewNode type="page" pagePath="v2/page.tsx">
+                  <SegmentTrieNode>
+                  <LandingV2>
+                    <div className="bg-gradien...">
+                      <div>
+                      <Navigation>
+                      ...
+                        <div className="relative o..." aria-hidden="true">
+                          <motion.svg width={600} height={600} viewBox="0 0 600 600" className="geometry-r..." ...>
+                            <svg width={600} height={600} viewBox="0 0 600 600" className="geometry-r..." ...>
+                              <circle>
+                              <circle>
+                              <circle>
+                              <circle>
+                              <circle>
+                              <circle
+                                cx={185.9999999999999}
++                               cy={102.54620793714804}
+-                               cy="102.54620793714801"
+                                r={114}
+                                className="geometry-line"
+                              >
+                              ...
+                              ...
+                          <motion.svg width={600} height={600} viewBox="0 0 600 600" className="geometry-r..." ...>
+                            <svg width={600} height={600} viewBox="0 0 600 600" className="geometry-r..." ...>
+                              <line>
+                              <line>
+                              <line>
+                              <line
+                                x1={528}
+                                y1={300}
+                                x2={185.9999999999999}
++                               y2={102.54620793714804}
+-                               y2="102.54620793714801"
+                                className="geometry-line-teal"
+                              >
+                              <line>
+                              <line>
+                              <line>
+                              <line>
+                              <line
+                                x1={414}
+                                y1={497.453792062852}
+                                x2={185.9999999999999}
++                               y2={102.54620793714804}
+-                               y2="102.54620793714801"
+                                className="geometry-line-teal"
+                              >
+                              <line>
+                              <line>
+                              <line>
+                              <line
+                                x1={186.00000000000006}
+                                y1={497.453792062852}
+                                x2={185.9999999999999}
++                               y2={102.54620793714804}
+-                               y2="102.54620793714801"
+                                className="geometry-line-teal"
+                              >
+                              <line>
+                              <line>
+                              <line
+                                x1={72}
+                                y1={300}
+                                x2={185.9999999999999}
++                               y2={102.54620793714804}
+-                               y2="102.54620793714801"
+                                className="geometry-line-teal"
+                              >
+                              <line>
+                              <line>
+                              <line
+                                x1={185.9999999999999}
++                               y1={102.54620793714804}
+-                               y1="102.54620793714801"
+                                x2={414}
+                                y2={102.54620793714801}
+                                className="geometry-line-teal"
+                              >
+                              <line
+                                x1={185.9999999999999}
++                               y1={102.54620793714804}
+-                               y1="102.54620793714801"
+                                x2={300}
+                                y2={300}
+                                className="geometry-line-teal"
+                              >
+                              ...
+                              ...
+                          <motion.svg width={600} height={600} viewBox="0 0 600 600" className="absolute i..." ...>
+                            <svg width={600} height={600} viewBox="0 0 600 600" className="absolute i..." ...>
+                              <circle>
+                              <circle>
+                              <circle>
+                              <circle>
+                              <circle>
+                              <circle
+                                cx={185.9999999999999}
++                               cy={102.54620793714804}
+-                               cy="102.54620793714801"
+                                r={3}
+                                fill="#f9d97a"
+                                opacity={0.6}
+                                className="geometry-pulse"
+                                style={{animationDelay:"1.2s"}}
+                              >
+                              ...
+                      <SacredValues>
+                      <SacredLoop>
+                      <SacredTestimonial>
+                        <section id="section-te..." className="py-32 rela...">
+                          <div className="absolute t...">
+                            <SacredGeometryAccent size={200}>
+                              <svg width={200} height={200} viewBox="0 0 200 200" className="" aria-hidden="true">
+                                <circle>
+                                <path
++                                 d="M 180 100 L 140 169.28203230275508 L 60.000000000000014 169.2820323027551 L 20 10..."
+-                                 d="M 180 100 L 140 169.28203230275508 L 60.000000000000014 169.2820323027551 L 20 10..."
+                                  className="geometry-line-teal"
+                                >
+                                ...
+                          ...
+                      ...
+                ...
+              ...
+ @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
