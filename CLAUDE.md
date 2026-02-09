@@ -154,14 +154,14 @@ npx shadcn@latest add [component]
 #### Authentication System
 - **Email magic link auth** via Supabase Auth (no SMS provider needed for MVP)
 - Auth flow: `/auth` page → email input → magic link sent → callback verifies → redirect to dashboard
-- Middleware-based route protection for `/dashboard/*`
+- Proxy-based route protection for `/dashboard/*` (Next.js 16+ convention)
 - Auto-redirect: unauthenticated users → `/auth`, authenticated users on `/auth` → `/dashboard`
 - Sign out functionality in dashboard sidebar
 
 #### Supabase SSR Clients
 - `src/lib/supabase/server.ts` - Server Component client with cookie handling
 - `src/lib/supabase/client.ts` - Browser client for Client Components
-- `src/lib/supabase/middleware.ts` - Session refresh helper
+- `src/lib/supabase/proxy.ts` - Session refresh helper
 
 #### Database
 - `users` table with RLS policies (users can only view/edit their own profile)

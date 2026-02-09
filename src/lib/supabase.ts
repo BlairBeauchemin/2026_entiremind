@@ -62,12 +62,39 @@ export type Database = {
           updated_at?: string;
         };
       };
+      intentions: {
+        Row: {
+          id: string;
+          user_id: string;
+          text: string;
+          status: "active" | "completed" | "archived";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          text: string;
+          status?: "active" | "completed" | "archived";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          text?: string;
+          status?: "active" | "completed" | "archived";
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
   };
 };
 
 export type DbUser = Database["public"]["Tables"]["users"]["Row"];
 export type Lead = Database["public"]["Tables"]["leads"]["Row"];
+export type Intention = Database["public"]["Tables"]["intentions"]["Row"];
 
 // Lazy-initialized browser client
 let browserClient: SupabaseClient | null = null;

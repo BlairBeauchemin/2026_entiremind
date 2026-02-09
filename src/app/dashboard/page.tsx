@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { CurrentIntention } from "@/components/dashboard/current-intention";
 import { MessageFeed } from "@/components/dashboard/message-feed";
-import { mockIntention, mockMessages } from "@/lib/mock-data";
+import { mockMessages } from "@/lib/mock-data";
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -18,13 +18,35 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
 
   let profile = null;
+  let currentIntention = null;
+
   if (authUser) {
-    const { data } = await supabase
+    const { data: userData } = await supabase
       .from("users")
       .select("*")
       .eq("id", authUser.id)
       .single();
-    profile = data;
+    profile = userData;
+
+    // Fetch the user's active intention
+    const { data: intentionData } = await supabase
+      .from("intentions")
+      .select("*")
+      .eq("user_id", authUser.id)
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (intentionData) {
+      currentIntention = {
+        id: intentionData.id,
+        userId: intentionData.user_id,
+        text: intentionData.text,
+        status: intentionData.status as "active" | "completed",
+        createdAt: intentionData.created_at,
+      };
+    }
   }
 
   const firstName = profile?.name?.split(" ")[0] || "there";
@@ -36,8 +58,8 @@ export default async function DashboardPage() {
         {getGreeting()}, {firstName}
       </h1>
 
-      {/* Current intention card - using mock data for now */}
-      <CurrentIntention intention={mockIntention} />
+      {/* Current intention card */}
+      {currentIntention && <CurrentIntention intention={currentIntention} />}
 
       {/* Message feed - using mock data for now */}
       <MessageFeed messages={mockMessages} />
