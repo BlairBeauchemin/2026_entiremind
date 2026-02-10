@@ -54,27 +54,26 @@ export function EditIntentionDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[85vh]">
         <DialogHeader>
           <DialogTitle>Edit Your Intention</DialogTitle>
           <DialogDescription>
-            Update what you want to manifest. Your intention guides your
-            reflection prompts.
+            Update what you want to manifest.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4">
+        <div className="py-2">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-full min-h-[120px] p-3 rounded-lg border border-gray-200 bg-white/80 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-em-purple-300 focus:border-transparent resize-none"
+            className="w-full min-h-[80px] p-3 rounded-lg border border-gray-200 bg-white/80 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-em-purple-300 focus:border-transparent resize-none"
             placeholder="What do you want to manifest?"
             disabled={isPending}
           />
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </div>
 
-        <div className="flex flex-row justify-end gap-3 pt-4">
+        <div className="flex flex-row justify-end gap-3">
           <Button
             type="button"
             variant="ghost"
@@ -87,7 +86,7 @@ export function EditIntentionDialog({
             type="button"
             onClick={handleSave}
             disabled={isPending || !text.trim()}
-            className="bg-em-teal hover:bg-em-teal/90"
+            className="bg-em-purple-300 hover:bg-em-purple-300/80 text-navy"
           >
             {isPending ? "Saving..." : "Save"}
           </Button>
