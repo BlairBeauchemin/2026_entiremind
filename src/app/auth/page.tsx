@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { EmailAuthForm } from "@/components/auth/email-auth-form";
 import { EmailSentConfirmation } from "@/components/auth/email-sent-confirmation";
+import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 
 type AuthStep = "email" | "sent";
 
@@ -64,7 +65,23 @@ export default function AuthPage() {
 
               {/* Form */}
               {step === "email" ? (
-                <EmailAuthForm onEmailSent={handleEmailSent} />
+                <div className="space-y-6">
+                  <GoogleAuthButton />
+
+                  {/* Divider */}
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-teal-900/10" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-white/40 px-3 text-teal-900/40">
+                        or
+                      </span>
+                    </div>
+                  </div>
+
+                  <EmailAuthForm onEmailSent={handleEmailSent} />
+                </div>
               ) : (
                 <EmailSentConfirmation email={email} onBack={handleBack} />
               )}
