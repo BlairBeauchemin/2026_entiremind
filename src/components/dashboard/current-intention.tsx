@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Pencil } from "lucide-react";
 import type { Intention } from "@/lib/types";
+import { EditIntentionDialog } from "./edit-intention-dialog";
 
 function relativeTime(iso: string): string {
   const now = new Date();
@@ -20,7 +22,10 @@ interface CurrentIntentionProps {
 }
 
 export function CurrentIntention({ intention }: CurrentIntentionProps) {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
   return (
+    <>
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -45,11 +50,21 @@ export function CurrentIntention({ intention }: CurrentIntentionProps) {
         <span className="text-[12px] text-teal-900/40 font-sans">
           {relativeTime(intention.createdAt)}
         </span>
-        <button className="flex items-center gap-1.5 text-[12px] text-teal-900/50 hover:text-teal-900 transition-colors">
+        <button
+          onClick={() => setIsEditOpen(true)}
+          className="flex items-center gap-1.5 text-[12px] text-teal-900/50 hover:text-teal-900 transition-colors"
+        >
           <Pencil className="w-3.5 h-3.5" />
           Edit
         </button>
       </div>
     </motion.div>
+
+    <EditIntentionDialog
+      intention={intention}
+      open={isEditOpen}
+      onOpenChange={setIsEditOpen}
+    />
+    </>
   );
 }
