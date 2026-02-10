@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { sendWelcomeSms } from "@/lib/telnyx";
 
 type ActionResult = { success: true } | { error: string };
 
@@ -81,6 +82,31 @@ export async function createInitialIntention(text: string): Promise<ActionResult
 
   if (userError) {
     return { error: userError.message };
+  }
+
+  // Get user data for welcome SMS
+  const { data: userData } = await supabase
+    .from("users")
+    .select("name, phone")
+    .eq("id", user.id)
+    .single();
+
+  // Send welcome SMS if user has a phone number
+  if (userData?.phone) {
+    try {
+      const smsResult = await sendWelcomeSms(
+        user.id,
+        userData.name || "",
+        userData.phone
+      );
+      if (!smsResult.success) {
+        console.error("Failed to send welcome SMS:", smsResult.error);
+        // Don't fail the onboarding if SMS fails - just log it
+      }
+    } catch (error) {
+      console.error("Error sending welcome SMS:", error);
+      // Don't fail the onboarding if SMS fails
+    }
   }
 
   revalidatePath("/dashboard");

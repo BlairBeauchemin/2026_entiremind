@@ -88,6 +88,41 @@ export type Database = {
           updated_at?: string;
         };
       };
+      messages: {
+        Row: {
+          id: string;
+          user_id: string;
+          direction: "inbound" | "outbound";
+          from_number: string;
+          to_number: string;
+          text: string;
+          telnyx_message_id: string | null;
+          status: "pending" | "sent" | "delivered" | "failed" | "received";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          direction: "inbound" | "outbound";
+          from_number: string;
+          to_number: string;
+          text: string;
+          telnyx_message_id?: string | null;
+          status?: "pending" | "sent" | "delivered" | "failed" | "received";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          direction?: "inbound" | "outbound";
+          from_number?: string;
+          to_number?: string;
+          text?: string;
+          telnyx_message_id?: string | null;
+          status?: "pending" | "sent" | "delivered" | "failed" | "received";
+          created_at?: string;
+        };
+      };
     };
   };
 };
@@ -95,6 +130,7 @@ export type Database = {
 export type DbUser = Database["public"]["Tables"]["users"]["Row"];
 export type Lead = Database["public"]["Tables"]["leads"]["Row"];
 export type Intention = Database["public"]["Tables"]["intentions"]["Row"];
+export type DbMessage = Database["public"]["Tables"]["messages"]["Row"];
 
 // Lazy-initialized browser client
 let browserClient: SupabaseClient | null = null;

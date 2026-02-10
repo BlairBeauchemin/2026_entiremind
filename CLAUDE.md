@@ -23,7 +23,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 ## Architecture
 
 ### Primary Components
-- **SMS Engine**: Twilio integration for two-way messaging, scheduled + event-based
+- **SMS Engine**: Telnyx integration for two-way messaging, scheduled + event-based
 - **Web Dashboard**: Minimal profile, subscription status, pause/resume controls (not primary engagement surface)
 - **Signal Storage**: Behavioral signals persisted per user, queryable by founder
 - **Founder Review**: Inspect raw replies, tag patterns, guide system evolution
@@ -31,7 +31,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 ### Tech Stack
 - **Frontend**: Next.js 15 with App Router, TypeScript, Tailwind CSS v4
 - **Backend**: Supabase (Postgres, Auth, Edge Functions)
-- **Messaging**: Twilio (SMS) with webhooks to Edge Functions
+- **Messaging**: Telnyx (SMS) with webhooks to API routes
 - **AI**: OpenAI API (prompt drafting, tone variation, summarization — not autonomous)
 - **Components**: shadcn/ui with Radix UI primitives, Lucide icons
 - **Animations**: Framer Motion
@@ -121,10 +121,10 @@ npx shadcn@latest add [component]
 
 ## MVP Priorities
 
-1. Landing page with email/phone capture
-2. SMS engine (Twilio integration, two-way messaging)
-3. Signal storage and founder review interface
-4. User dashboard (profile, subscription, pause/resume)
+1. Landing page with email/phone capture ✅
+2. SMS engine (Telnyx integration, two-way messaging) ✅
+3. Signal storage and founder review interface ✅
+4. User dashboard (profile, subscription, pause/resume) ✅
 5. Stripe subscription integration
 
 ## Success Metrics
@@ -179,10 +179,28 @@ npx shadcn@latest add [component]
 - Supabase project configured: `cprzebhlwfibajrrtuqp.supabase.co`
 - `.env.local` contains Supabase credentials
 
+#### SMS Engine (Telnyx)
+- **Telnyx SDK** installed and configured (`telnyx` npm package)
+- **Send SMS**: `src/lib/telnyx.ts` - wrapper functions for sending SMS
+- **Send endpoint**: `src/app/api/sms/send/route.ts` - authenticated SMS sending
+- **Webhook endpoint**: `src/app/api/sms/webhook/route.ts` - receives inbound SMS from Telnyx
+- **Welcome SMS**: Automatically sent after user completes onboarding
+- **Database**: `messages` table stores all inbound/outbound SMS with status tracking
+- Required env vars: `TELNYX_API_KEY`, `TELNYX_PHONE_NUMBER`, `TELNYX_MESSAGING_PROFILE_ID`
+
+#### Founder Review Interface
+- **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer
+- **Message table**: `src/components/dashboard/founder-message-table.tsx` - displays all user messages
+- Access restricted to emails in `ADMIN_EMAIL` environment variable
+- Shows: direction (in/out), user name, phone, message text, status, timestamp
+
+#### Database Tables Implemented
+- `users` - user profiles with phone, email, timezone, onboarding status
+- `intentions` - user intention statements (active/completed/archived)
+- `messages` - outbound + inbound SMS with Telnyx message IDs and delivery status
+
 ### Not Yet Implemented
-- SMS messaging engine (Twilio or alternative)
 - Stripe subscription integration
-- Onboarding flow after signup
-- Founder review interface
-- Intentions/reflections tables and UI
-- Real message data (currently using mock data on dashboard)
+- Scheduled/recurring SMS prompts
+- Behavioral signals table and tracking
+- Message analytics and patterns
