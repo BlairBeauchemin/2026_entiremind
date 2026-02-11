@@ -28,6 +28,18 @@ export function Footer() {
             >
               Membership
             </a>
+            <a
+              href="/privacy"
+              className="hover:text-teal-900 transition-colors"
+            >
+              Privacy
+            </a>
+            <a
+              href="/terms"
+              className="hover:text-teal-900 transition-colors"
+            >
+              Terms
+            </a>
           </div>
 
           <p className="text-xs text-teal-900/40 font-sans">

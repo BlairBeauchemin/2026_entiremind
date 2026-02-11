@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 
 export function LeadCaptureForm({
@@ -9,6 +10,7 @@ export function LeadCaptureForm({
   variant?: "hero" | "pricing";
 }) {
   const [phone, setPhone] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -93,9 +95,30 @@ export function LeadCaptureForm({
             className="input-autofill-fix w-full pl-6 pr-4 py-3.5 bg-white/60 border border-teal-900/10 rounded-full focus:outline-none focus:ring-1 focus:ring-navy/30 focus:border-navy/30 text-teal-900 placeholder-teal-900/50 transition-all font-sans font-light"
           />
         </div>
+        <label className="flex items-start gap-3 cursor-pointer text-left">
+          <input
+            type="checkbox"
+            checked={smsConsent}
+            onChange={(e) => setSmsConsent(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-teal-900/20 text-navy focus:ring-navy/30"
+            required
+          />
+          <span className="text-xs text-teal-900/70 leading-relaxed">
+            I agree to receive up to 14 SMS messages per week from Entiremind.
+            Message and data rates may apply. Reply STOP to cancel. View our{" "}
+            <Link href="/privacy" className="underline hover:text-teal-900">
+              Privacy Policy
+            </Link>{" "}
+            and{" "}
+            <Link href="/terms" className="underline hover:text-teal-900">
+              Terms of Service
+            </Link>
+            .
+          </span>
+        </label>
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !smsConsent}
           className="w-full bg-navy text-cream py-4 rounded-full font-medium hover:bg-navy/90 hover:shadow-lg hover:shadow-navy/10 transition-all duration-300 font-sans disabled:opacity-50"
         >
           {isSubmitting ? "Joining..." : "Reserve My Spot"}
@@ -125,20 +148,38 @@ export function LeadCaptureForm({
         </div>
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !smsConsent}
           className="bg-navy text-cream px-8 py-3.5 rounded-full font-medium hover:bg-navy/90 hover:shadow-lg hover:shadow-navy/10 transition-all duration-300 whitespace-nowrap font-sans disabled:opacity-50"
         >
           {isSubmitting ? "Joining..." : "Begin the Loop"}
         </button>
       </div>
+      <label className="flex items-start gap-3 cursor-pointer text-left pl-1">
+        <input
+          type="checkbox"
+          checked={smsConsent}
+          onChange={(e) => setSmsConsent(e.target.checked)}
+          className="mt-0.5 w-4 h-4 rounded border-teal-900/20 text-navy focus:ring-navy/30"
+          required
+        />
+        <span className="text-xs text-teal-900/70 leading-relaxed">
+          I agree to receive up to 14 SMS messages per week. Message and data
+          rates may apply. Reply STOP to cancel. View our{" "}
+          <Link href="/privacy" className="underline hover:text-teal-900">
+            Privacy Policy
+          </Link>{" "}
+          and{" "}
+          <Link href="/terms" className="underline hover:text-teal-900">
+            Terms
+          </Link>
+          .
+        </span>
+      </label>
       {error && (
         <p className="text-sm text-red-500 text-center lg:text-left pl-6">
           {error}
         </p>
       )}
-      <p className="text-xs text-teal-900/60 text-center lg:text-left pl-6 font-sans">
-        Your number is kept private. No spam, ever.
-      </p>
     </form>
   );
 }
