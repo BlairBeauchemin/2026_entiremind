@@ -1,12 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { FounderMessageTable } from "@/components/dashboard/founder-message-table";
-
-// Admin emails that can access the founder review interface
-const ADMIN_EMAILS = [
-  process.env.ADMIN_EMAIL,
-  // Add more admin emails as needed
-].filter(Boolean);
+import { logAdminViewedMessages } from "@/lib/audit";
 
 export default async function FounderPage() {
   const supabase = await createClient();
@@ -19,13 +14,21 @@ export default async function FounderPage() {
     redirect("/auth");
   }
 
-  // Check if the current user is an admin
-  const isAdmin = ADMIN_EMAILS.includes(authUser.email || "");
+  // Fetch user profile with role from database
+  const { data: userProfile } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", authUser.id)
+    .single();
+
+  // Check if the current user has admin/founder role
+  const isAdmin = ["admin", "founder"].includes(userProfile?.role ?? "");
   if (!isAdmin) {
     redirect("/dashboard");
   }
 
   // Fetch all messages with user info
+  // With the new RLS policy, admins can now see all messages
   const { data: messages, error } = await supabase
     .from("messages")
     .select(
@@ -44,6 +47,9 @@ export default async function FounderPage() {
   if (error) {
     console.error("Error fetching messages:", error);
   }
+
+  // Log audit entry for admin viewing messages
+  await logAdminViewedMessages(authUser.id, messages?.length ?? 0);
 
   // Transform messages for display
   const formattedMessages =

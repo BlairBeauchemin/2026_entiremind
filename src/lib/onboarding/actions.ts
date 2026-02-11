@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { sendWelcomeSms } from "@/lib/telnyx";
+import { sendWelcomeSms } from "@/lib/sms";
 
 type ActionResult = { success: true } | { error: string };
 

@@ -1,41 +1,36 @@
+import { createServiceRoleClient } from "../supabase";
+import type { SmsProvider, SmsProviderAdapter, SendSmsResult } from "./types";
+import { telnyxAdapter } from "./providers/telnyx";
+import { twilioAdapter } from "./providers/twilio";
+
+// Re-export types
+export type { SmsProvider, SendSmsResult, InboundSmsData, SmsProviderAdapter } from "./types";
+
 /**
- * @deprecated This file is preserved for reference only.
- * Use `@/lib/sms` instead for SMS functionality.
- *
- * The SMS abstraction layer supports multiple providers (Telnyx, Twilio)
- * and uses the SMS_PROVIDER environment variable for provider selection.
- *
- * Import examples:
- *   import { sendSms, sendWelcomeSms } from "@/lib/sms";
- *   import { storeInboundSms, getSmsProvider } from "@/lib/sms";
+ * Get the current SMS provider from environment
  */
-
-import Telnyx from "telnyx";
-import { createServiceRoleClient } from "./supabase";
-
-// Initialize Telnyx client
-function getTelnyxClient() {
-  const apiKey = process.env.TELNYX_API_KEY;
-  if (!apiKey) {
-    throw new Error("TELNYX_API_KEY environment variable is not set");
+export function getSmsProvider(): SmsProvider {
+  const provider = process.env.SMS_PROVIDER;
+  if (provider === "telnyx") {
+    return "telnyx";
   }
-  return new Telnyx({ apiKey });
+  // Default to twilio
+  return "twilio";
 }
 
-// Get the configured Telnyx phone number
-function getTelnyxPhoneNumber(): string {
-  const phoneNumber = process.env.TELNYX_PHONE_NUMBER;
-  if (!phoneNumber) {
-    throw new Error("TELNYX_PHONE_NUMBER environment variable is not set");
+/**
+ * Get the adapter for the current SMS provider
+ */
+function getProviderAdapter(): SmsProviderAdapter {
+  const provider = getSmsProvider();
+  switch (provider) {
+    case "telnyx":
+      return telnyxAdapter;
+    case "twilio":
+      return twilioAdapter;
+    default:
+      return twilioAdapter;
   }
-  return phoneNumber;
-}
-
-export interface SendSmsResult {
-  success: boolean;
-  messageId?: string;
-  telnyxMessageId?: string;
-  error?: string;
 }
 
 /**
@@ -47,19 +42,30 @@ export async function sendSms(
   text: string
 ): Promise<SendSmsResult> {
   const supabase = createServiceRoleClient();
-  const fromNumber = getTelnyxPhoneNumber();
+  const adapter = getProviderAdapter();
+  const fromNumber = adapter.getPhoneNumber();
 
   try {
-    const telnyx = getTelnyxClient();
+    // Send via the configured provider
+    const result = await adapter.sendSms(toPhoneNumber, text);
 
-    // Send via Telnyx
-    const response = await telnyx.messages.send({
-      from: fromNumber,
-      to: toPhoneNumber,
-      text: text,
-    });
+    if (!result.success) {
+      // Store failed message attempt in database
+      await supabase.from("messages").insert({
+        user_id: userId,
+        direction: "outbound",
+        from_number: fromNumber,
+        to_number: toPhoneNumber,
+        text: text,
+        provider: adapter.provider,
+        status: "failed",
+      });
 
-    const telnyxMessageId = response.data?.id;
+      return {
+        success: false,
+        error: result.error,
+      };
+    }
 
     // Store outbound message in database
     const { data: message, error: dbError } = await supabase
@@ -70,7 +76,8 @@ export async function sendSms(
         from_number: fromNumber,
         to_number: toPhoneNumber,
         text: text,
-        telnyx_message_id: telnyxMessageId,
+        external_message_id: result.externalMessageId,
+        provider: adapter.provider,
         status: "sent",
       })
       .select()
@@ -81,7 +88,7 @@ export async function sendSms(
       // Message was sent but not stored - log but don't fail
       return {
         success: true,
-        telnyxMessageId: telnyxMessageId,
+        externalMessageId: result.externalMessageId,
         error: "Message sent but failed to store in database",
       };
     }
@@ -89,7 +96,7 @@ export async function sendSms(
     return {
       success: true,
       messageId: message.id,
-      telnyxMessageId: telnyxMessageId,
+      externalMessageId: result.externalMessageId,
     };
   } catch (error) {
     console.error("Failed to send SMS:", error);
@@ -101,6 +108,7 @@ export async function sendSms(
       from_number: fromNumber,
       to_number: toPhoneNumber,
       text: text,
+      provider: adapter.provider,
       status: "failed",
     });
 
@@ -118,7 +126,8 @@ export async function storeInboundSms(
   fromPhoneNumber: string,
   toPhoneNumber: string,
   text: string,
-  telnyxMessageId: string
+  externalMessageId: string,
+  provider: SmsProvider
 ): Promise<{ success: boolean; messageId?: string; error?: string }> {
   const supabase = createServiceRoleClient();
 
@@ -146,7 +155,8 @@ export async function storeInboundSms(
       from_number: fromPhoneNumber,
       to_number: toPhoneNumber,
       text: text,
-      telnyx_message_id: telnyxMessageId,
+      external_message_id: externalMessageId,
+      provider: provider,
       status: "received",
     })
     .select()
@@ -176,53 +186,4 @@ export async function sendWelcomeSms(
 ): Promise<SendSmsResult> {
   const welcomeMessage = `Welcome to Entiremind, ${userName || "friend"}! Your intention has been set. Reply anytime to reflect.`;
   return sendSms(userId, phoneNumber, welcomeMessage);
-}
-
-// Types for webhook payloads
-export interface TelnyxWebhookPayload {
-  data: {
-    event_type: string;
-    id: string;
-    occurred_at: string;
-    payload: {
-      id: string;
-      direction: "inbound" | "outbound";
-      from: {
-        phone_number: string;
-        carrier?: string;
-        line_type?: string;
-      };
-      to: Array<{
-        phone_number: string;
-        status?: string;
-      }>;
-      text: string;
-      received_at?: string;
-      sent_at?: string;
-      type?: string;
-    };
-    record_type: string;
-  };
-  meta?: {
-    attempt: number;
-    delivered_to: string;
-  };
-}
-
-/**
- * Validate and parse a Telnyx webhook payload
- */
-export function parseWebhookPayload(body: unknown): TelnyxWebhookPayload | null {
-  try {
-    const payload = body as TelnyxWebhookPayload;
-
-    // Basic validation
-    if (!payload?.data?.event_type || !payload?.data?.payload) {
-      return null;
-    }
-
-    return payload;
-  } catch {
-    return null;
-  }
 }

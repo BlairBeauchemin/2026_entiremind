@@ -35,6 +35,7 @@ export type Database = {
           name: string | null;
           timezone: string;
           status: "active" | "paused" | "cancelled";
+          role: "user" | "admin" | "founder";
           onboarding_completed: boolean;
           created_at: string;
           updated_at: string;
@@ -46,6 +47,7 @@ export type Database = {
           name?: string | null;
           timezone?: string;
           status?: "active" | "paused" | "cancelled";
+          role?: "user" | "admin" | "founder";
           onboarding_completed?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -57,6 +59,7 @@ export type Database = {
           name?: string | null;
           timezone?: string;
           status?: "active" | "paused" | "cancelled";
+          role?: "user" | "admin" | "founder";
           onboarding_completed?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -96,7 +99,8 @@ export type Database = {
           from_number: string;
           to_number: string;
           text: string;
-          telnyx_message_id: string | null;
+          external_message_id: string | null;
+          provider: "telnyx" | "twilio";
           status: "pending" | "sent" | "delivered" | "failed" | "received";
           created_at: string;
         };
@@ -107,7 +111,8 @@ export type Database = {
           from_number: string;
           to_number: string;
           text: string;
-          telnyx_message_id?: string | null;
+          external_message_id?: string | null;
+          provider?: "telnyx" | "twilio";
           status?: "pending" | "sent" | "delivered" | "failed" | "received";
           created_at?: string;
         };
@@ -118,8 +123,41 @@ export type Database = {
           from_number?: string;
           to_number?: string;
           text?: string;
-          telnyx_message_id?: string | null;
+          external_message_id?: string | null;
+          provider?: "telnyx" | "twilio";
           status?: "pending" | "sent" | "delivered" | "failed" | "received";
+          created_at?: string;
+        };
+      };
+      audit_logs: {
+        Row: {
+          id: string;
+          user_id: string;
+          action: string;
+          resource_type: string;
+          resource_id: string | null;
+          metadata: Record<string, unknown>;
+          ip_address: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          action: string;
+          resource_type: string;
+          resource_id?: string | null;
+          metadata?: Record<string, unknown>;
+          ip_address?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          action?: string;
+          resource_type?: string;
+          resource_id?: string | null;
+          metadata?: Record<string, unknown>;
+          ip_address?: string | null;
           created_at?: string;
         };
       };
@@ -131,6 +169,7 @@ export type DbUser = Database["public"]["Tables"]["users"]["Row"];
 export type Lead = Database["public"]["Tables"]["leads"]["Row"];
 export type Intention = Database["public"]["Tables"]["intentions"]["Row"];
 export type DbMessage = Database["public"]["Tables"]["messages"]["Row"];
+export type AuditLog = Database["public"]["Tables"]["audit_logs"]["Row"];
 
 // Lazy-initialized browser client
 let browserClient: SupabaseClient | null = null;

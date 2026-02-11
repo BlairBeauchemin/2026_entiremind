@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { sendSms } from "@/lib/telnyx";
+import { sendSms } from "@/lib/sms";
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         messageId: result.messageId,
-        telnyxMessageId: result.telnyxMessageId,
+        externalMessageId: result.externalMessageId,
       },
       { status: 201 }
     );

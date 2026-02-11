@@ -23,7 +23,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 ## Architecture
 
 ### Primary Components
-- **SMS Engine**: Telnyx integration for two-way messaging, scheduled + event-based
+- **SMS Engine**: Provider-agnostic SMS abstraction (supports Twilio and Telnyx) for two-way messaging
 - **Web Dashboard**: Minimal profile, subscription status, pause/resume controls (not primary engagement surface)
 - **Signal Storage**: Behavioral signals persisted per user, queryable by founder
 - **Founder Review**: Inspect raw replies, tag patterns, guide system evolution
@@ -31,7 +31,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 ### Tech Stack
 - **Frontend**: Next.js 15 with App Router, TypeScript, Tailwind CSS v4
 - **Backend**: Supabase (Postgres, Auth, Edge Functions)
-- **Messaging**: Telnyx (SMS) with webhooks to API routes
+- **Messaging**: SMS abstraction layer (`@/lib/sms`) supporting Twilio (default) and Telnyx
 - **AI**: OpenAI API (prompt drafting, tone variation, summarization — not autonomous)
 - **Components**: shadcn/ui with Radix UI primitives, Lucide icons
 - **Animations**: Framer Motion
@@ -153,10 +153,14 @@ npx shadcn@latest add [component]
 
 #### Authentication System
 - **Email magic link auth** via Supabase Auth (no SMS provider needed for MVP)
+- **Google OAuth** via Supabase Auth (requires Google Cloud Console credentials configured in Supabase dashboard)
 - Auth flow: `/auth` page → email input → magic link sent → callback verifies → redirect to dashboard
 - Proxy-based route protection for `/dashboard/*` (Next.js 16+ convention)
 - Auto-redirect: unauthenticated users → `/auth`, authenticated users on `/auth` → `/dashboard`
 - Sign out functionality in dashboard sidebar
+
+#### Database Constraints
+- `users.phone` has unique constraint - each phone number can only be used by one account (required for SMS routing)
 
 #### Supabase SSR Clients
 - `src/lib/supabase/server.ts` - Server Component client with cookie handling
@@ -179,14 +183,39 @@ npx shadcn@latest add [component]
 - Supabase project configured: `cprzebhlwfibajrrtuqp.supabase.co`
 - `.env.local` contains Supabase credentials
 
-#### SMS Engine (Telnyx)
-- **Telnyx SDK** installed and configured (`telnyx` npm package)
-- **Send SMS**: `src/lib/telnyx.ts` - wrapper functions for sending SMS
+#### SMS Engine (Multi-Provider)
+- **Provider abstraction**: `src/lib/sms/` - supports Twilio (default) and Telnyx
+- **Provider selection**: Controlled by `SMS_PROVIDER` env var (`twilio` or `telnyx`)
+- **Send SMS**: `src/lib/sms/index.ts` - provider-agnostic wrapper functions
 - **Send endpoint**: `src/app/api/sms/send/route.ts` - authenticated SMS sending
-- **Webhook endpoint**: `src/app/api/sms/webhook/route.ts` - receives inbound SMS from Telnyx
+- **Webhook endpoints**:
+  - Twilio: `src/app/api/sms/webhook/twilio/route.ts`
+  - Telnyx: `src/app/api/sms/webhook/telnyx/route.ts`
 - **Welcome SMS**: Automatically sent after user completes onboarding
-- **Database**: `messages` table stores all inbound/outbound SMS with status tracking
-- Required env vars: `TELNYX_API_KEY`, `TELNYX_PHONE_NUMBER`, `TELNYX_MESSAGING_PROFILE_ID`
+- **Database**: `messages` table stores all SMS with `provider` and `external_message_id` columns
+- **Legacy code**: `src/lib/telnyx.ts` preserved but deprecated
+
+**Current Status (Feb 2026):**
+- Twilio integration code complete and configured in `.env.local`
+- Database migration `007_sms_provider_abstraction.sql` has been run
+- **Pending**: Twilio account approval/A2P 10DLC registration before live testing
+- To switch back to Telnyx: set `SMS_PROVIDER=telnyx` in `.env.local`
+
+**Required env vars (Twilio - default):**
+```
+SMS_PROVIDER=twilio
+TWILIO_ACCOUNT_SID=your_account_sid
+TWILIO_AUTH_TOKEN=your_auth_token
+TWILIO_PHONE_NUMBER=+1234567890
+```
+
+**Required env vars (Telnyx - alternative):**
+```
+SMS_PROVIDER=telnyx
+TELNYX_API_KEY=your_api_key
+TELNYX_PHONE_NUMBER=+1234567890
+TELNYX_MESSAGING_PROFILE_ID=your_profile_id
+```
 
 #### Founder Review Interface
 - **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer
@@ -197,7 +226,7 @@ npx shadcn@latest add [component]
 #### Database Tables Implemented
 - `users` - user profiles with phone, email, timezone, onboarding status
 - `intentions` - user intention statements (active/completed/archived)
-- `messages` - outbound + inbound SMS with Telnyx message IDs and delivery status
+- `messages` - outbound + inbound SMS with `external_message_id`, `provider` column, and delivery status
 
 ### Not Yet Implemented
 - Stripe subscription integration
