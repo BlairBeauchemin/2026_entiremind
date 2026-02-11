@@ -1,8 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 
 export function Navigation() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <nav className="fixed w-full z-50 top-0 transition-all duration-300">
       <div className="glass-panel border-b border-white/40">
@@ -36,11 +40,11 @@ export function Navigation() {
             </a>
           </div>
 
-          {/* CTA */}
-          <div className="flex items-center gap-6">
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center gap-6">
             <Link
               href="/auth"
-              className="hidden md:block text-teal-900 font-sans text-sm hover:text-teal-800 transition-colors"
+              className="text-teal-900 font-sans text-sm hover:text-teal-800 transition-colors"
             >
               Login
             </Link>
@@ -51,8 +55,63 @@ export function Navigation() {
               Get Early Access
             </a>
           </div>
+
+          {/* Mobile buttons */}
+          <div className="flex md:hidden items-center gap-4">
+            <a
+              href="#section-hero"
+              className="bg-navy text-cream px-5 py-2 rounded-full text-sm font-medium hover:bg-navy/90 transition-all duration-300"
+            >
+              Get Early Access
+            </a>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-navy p-1"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden glass-panel border-b border-white/40">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+            <a
+              href="#section-philosophy"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-teal-900 hover:text-teal-800 font-sans text-sm tracking-wide transition-colors py-2"
+            >
+              Philosophy
+            </a>
+            <a
+              href="#section-how-it-works"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-teal-900 hover:text-teal-800 font-sans text-sm tracking-wide transition-colors py-2"
+            >
+              The Loop
+            </a>
+            <a
+              href="#section-pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-teal-900 hover:text-teal-800 font-sans text-sm tracking-wide transition-colors py-2"
+            >
+              Membership
+            </a>
+            <div className="border-t border-white/40 pt-4 mt-2">
+              <Link
+                href="/auth"
+                onClick={() => setMobileMenuOpen(false)}
+                className="inline-block bg-navy text-cream px-6 py-2.5 rounded-full text-sm font-medium hover:bg-navy/90 transition-all duration-300"
+              >
+                Login
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
