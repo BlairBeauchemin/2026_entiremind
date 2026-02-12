@@ -6,6 +6,14 @@ import { sendWelcomeSms } from "@/lib/sms";
 
 type ActionResult = { success: true } | { error: string };
 
+/**
+ * Revalidate all paths that display intention data
+ */
+function revalidateIntentionPaths() {
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/intentions");
+}
+
 export async function updateOnboardingName(name: string): Promise<ActionResult> {
   const supabase = await createClient();
 
@@ -109,7 +117,7 @@ export async function createInitialIntention(text: string): Promise<ActionResult
     }
   }
 
-  revalidatePath("/dashboard");
+  revalidateIntentionPaths();
   return { success: true };
 }
 
@@ -127,16 +135,31 @@ export async function updateIntention(
     return { error: "Not authenticated" };
   }
 
-  const { error } = await supabase
+  // 1. Mark the old intention as completed (preserves history)
+  const { error: archiveError } = await supabase
     .from("intentions")
-    .update({ text, updated_at: new Date().toISOString() })
+    .update({
+      status: "completed",
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", id)
     .eq("user_id", user.id);
 
-  if (error) {
-    return { error: error.message };
+  if (archiveError) {
+    return { error: archiveError.message };
   }
 
-  revalidatePath("/dashboard");
+  // 2. Create new active intention with the new text
+  const { error: createError } = await supabase.from("intentions").insert({
+    user_id: user.id,
+    text,
+    status: "active",
+  });
+
+  if (createError) {
+    return { error: createError.message };
+  }
+
+  revalidateIntentionPaths();
   return { success: true };
 }

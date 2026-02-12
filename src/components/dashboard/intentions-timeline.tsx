@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen } from "lucide-react";
+import { MessageCircle, Bot, User } from "lucide-react";
+import Link from "next/link";
 import type { Intention, Message } from "@/lib/types";
 
 function formatDate(iso: string): string {
@@ -33,8 +34,8 @@ export function IntentionsTimeline({
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
-  // Get user reflections (inbound messages) for an intention's date range
-  function getReflectionsForIntention(
+  // Get all messages (prompts + responses) for an intention's date range
+  function getMessagesForIntention(
     intention: Intention,
     index: number
   ): Message[] {
@@ -44,7 +45,6 @@ export function IntentionsTimeline({
 
     return messages
       .filter((msg) => {
-        if (msg.direction !== "inbound") return false;
         const msgDate = new Date(msg.createdAt);
         return msgDate >= startDate && msgDate < endDate;
       })
@@ -57,7 +57,7 @@ export function IntentionsTimeline({
   return (
     <div className="space-y-6">
       {sortedIntentions.map((intention, index) => {
-        const reflections = getReflectionsForIntention(intention, index);
+        const intentionMessages = getMessagesForIntention(intention, index);
         const isActive = intention.status === "active";
 
         return (
@@ -81,6 +81,14 @@ export function IntentionsTimeline({
                 <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50">
                   {isActive ? "Active Intention" : "Past Intention"}
                 </span>
+                {isActive && (
+                  <Link
+                    href="/dashboard"
+                    className="text-xs text-teal-900/50 hover:text-teal-900/70 underline-offset-2 hover:underline ml-2"
+                  >
+                    Edit
+                  </Link>
+                )}
               </div>
               <span className="text-[11px] text-teal-900/40">
                 {formatDate(intention.createdAt)}
@@ -92,35 +100,59 @@ export function IntentionsTimeline({
               &ldquo;{intention.text}&rdquo;
             </p>
 
-            {/* Reflections section */}
-            {reflections.length > 0 && (
+            {/* Conversation section */}
+            {intentionMessages.length > 0 && (
               <>
                 <div className="h-px bg-teal-900/10 my-6" />
 
                 <div className="flex items-center gap-2 mb-4">
-                  <BookOpen
+                  <MessageCircle
                     className="w-3.5 h-3.5 text-teal-900/40"
                     strokeWidth={1.5}
                   />
                   <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50">
-                    Your Reflections
+                    Conversation
                   </span>
                 </div>
 
                 <div className="space-y-3">
-                  {reflections.map((reflection) => (
-                    <div
-                      key={reflection.id}
-                      className="pl-4 border-l-2 border-em-purple-300/50"
-                    >
-                      <p className="text-sm text-teal-900/70 leading-relaxed">
-                        {reflection.body}
-                      </p>
-                      <span className="text-[10px] text-teal-900/40 mt-1 block">
-                        {formatShortDate(reflection.createdAt)}
-                      </span>
-                    </div>
-                  ))}
+                  {intentionMessages.map((message) => {
+                    const isOutbound = message.direction === "outbound";
+                    return (
+                      <div
+                        key={message.id}
+                        className={`flex gap-3 ${isOutbound ? "opacity-70" : ""}`}
+                      >
+                        <div
+                          className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
+                            isOutbound
+                              ? "bg-teal-900/10"
+                              : "bg-em-purple-300/30"
+                          }`}
+                        >
+                          {isOutbound ? (
+                            <Bot className="w-3 h-3 text-teal-900/50" strokeWidth={1.5} />
+                          ) : (
+                            <User className="w-3 h-3 text-em-purple-500" strokeWidth={1.5} />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className={`text-sm leading-relaxed ${
+                              isOutbound
+                                ? "text-teal-900/50 italic"
+                                : "text-teal-900/70"
+                            }`}
+                          >
+                            {message.body}
+                          </p>
+                          <span className="text-[10px] text-teal-900/40 mt-1 block">
+                            {formatShortDate(message.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </>
             )}
