@@ -79,7 +79,7 @@ export function IntentionsTimeline({
                   }`}
                 />
                 <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50">
-                  {isActive ? "Active Intention" : "Past Intention"}
+                  {isActive ? "Current Intention" : "Past Intention"}
                 </span>
                 {isActive && (
                   <Link
