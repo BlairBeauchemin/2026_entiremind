@@ -29,8 +29,9 @@ The competitive advantage is **learning velocity**, not features. The system ope
 - **Founder Review**: Inspect raw replies, tag patterns, guide system evolution
 
 ### Tech Stack
-- **Frontend**: Next.js 15 with App Router, TypeScript, Tailwind CSS v4
+- **Frontend**: Next.js 16 with App Router, TypeScript, Tailwind CSS v4
 - **Backend**: Supabase (Postgres, Auth, Edge Functions)
+- **Hosting**: Vercel (auto-deploys from `main` branch)
 - **Messaging**: SMS abstraction layer (`@/lib/sms`) supporting Twilio (default) and Telnyx
 - **AI**: OpenAI API (prompt drafting, tone variation, summarization — not autonomous)
 - **Components**: shadcn/ui with Radix UI primitives, Lucide icons
@@ -122,10 +123,11 @@ npx shadcn@latest add [component]
 ## MVP Priorities
 
 1. Landing page with email/phone capture ✅
-2. SMS engine (Telnyx integration, two-way messaging) ✅
+2. SMS engine (Twilio/Telnyx integration, two-way messaging) ✅
 3. Signal storage and founder review interface ✅
 4. User dashboard (profile, subscription, pause/resume) ✅
-5. Stripe subscription integration
+5. Production deployment (Vercel + entiremind.com) ✅
+6. Stripe subscription integration
 
 ## Success Metrics
 
@@ -183,6 +185,17 @@ npx shadcn@latest add [component]
 - Supabase project configured: `cprzebhlwfibajrrtuqp.supabase.co`
 - `.env.local` contains Supabase credentials
 
+#### Production Deployment
+- **Domain**: https://entiremind.com (www.entiremind.com redirects)
+- **Hosting**: Vercel (`blairs-projects-7e709a29/2026-entiremind`)
+- **Vercel Dashboard**: https://vercel.com/blairs-projects-7e709a29/2026-entiremind
+- **Deploy**: Push to `main` branch or run `vercel --prod`
+
+**Configured Services:**
+- Twilio webhook: `https://entiremind.com/api/sms/webhook/twilio`
+- Supabase Auth redirect URLs: `https://entiremind.com/**`, `https://www.entiremind.com/**`
+- Supabase Site URL: `https://entiremind.com`
+
 #### SMS Engine (Multi-Provider)
 - **Provider abstraction**: `src/lib/sms/` - supports Twilio (default) and Telnyx
 - **Provider selection**: Controlled by `SMS_PROVIDER` env var (`twilio` or `telnyx`)
@@ -233,3 +246,45 @@ TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 - Scheduled/recurring SMS prompts
 - Behavioral signals table and tracking
 - Message analytics and patterns
+
+---
+
+## Deployment
+
+### Vercel Configuration
+
+**Project**: `blairs-projects-7e709a29/2026-entiremind`
+
+**Required Environment Variables (set in Vercel Dashboard):**
+```
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+
+# SMS (Twilio)
+SMS_PROVIDER=twilio
+TWILIO_ACCOUNT_SID
+TWILIO_AUTH_TOKEN
+TWILIO_PHONE_NUMBER
+
+# Admin
+ADMIN_EMAIL
+```
+
+**Deploy Commands:**
+```bash
+vercel --prod          # Deploy to production
+vercel                 # Deploy preview
+vercel logs            # View deployment logs
+```
+
+### External Service Configuration
+
+**Twilio Console** (Phone Numbers → Messaging):
+- Webhook URL: `https://entiremind.com/api/sms/webhook/twilio`
+- Method: POST
+
+**Supabase Dashboard** (Authentication → URL Configuration):
+- Site URL: `https://entiremind.com`
+- Redirect URLs: `https://entiremind.com/**`, `https://www.entiremind.com/**`
