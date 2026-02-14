@@ -127,7 +127,7 @@ npx shadcn@latest add [component]
 3. Signal storage and founder review interface ✅
 4. User dashboard (profile, subscription, pause/resume) ✅
 5. Production deployment (Vercel + entiremind.com) ✅
-6. Stripe subscription integration
+6. Stripe subscription integration ✅
 
 ## Success Metrics
 
@@ -240,9 +240,31 @@ TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 - `users` - user profiles with phone, email, timezone, onboarding status
 - `intentions` - user intention statements (active/completed/archived)
 - `messages` - outbound + inbound SMS with `external_message_id`, `provider` column, and delivery status
+- `subscriptions` - Stripe subscription state per user (plan, status, period end, Stripe IDs)
+
+#### Stripe Subscriptions
+- **Stripe client**: `src/lib/stripe.ts` - Stripe SDK singleton with API version 2026-01-28.clover
+- **Checkout route**: `src/app/api/checkout/route.ts` - Creates Stripe Checkout session for upgrades
+- **Webhook handler**: `src/app/api/webhooks/stripe/route.ts` - Handles checkout.session.completed, customer.subscription.updated/deleted, invoice.payment_failed
+- **Billing portal**: `src/app/api/billing-portal/route.ts` - Creates Customer Portal session for subscription management
+- **Settings UI**: `src/components/dashboard/settings-subscription.tsx` - Upgrade buttons, manage subscription button, status display
+- **Sidebar**: Shows actual plan badge from subscription context
+- **Flow**: User clicks Upgrade → redirected to Stripe Checkout → webhook updates DB → user redirected back
+
+**Webhook URL (configure in Stripe Dashboard):**
+- Production: `https://entiremind.com/api/webhooks/stripe`
+- Events to enable: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
+
+**Required env vars (Stripe):**
+```
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_xxx
+STRIPE_SECRET_KEY=sk_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+STRIPE_MONTHLY_PRICE_ID=price_xxx
+STRIPE_YEARLY_PRICE_ID=price_xxx
+```
 
 ### Not Yet Implemented
-- Stripe subscription integration
 - Scheduled/recurring SMS prompts
 - Behavioral signals table and tracking
 - Message analytics and patterns
@@ -267,6 +289,13 @@ SMS_PROVIDER=twilio
 TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
 TWILIO_PHONE_NUMBER
+
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+STRIPE_MONTHLY_PRICE_ID
+STRIPE_YEARLY_PRICE_ID
 
 # Admin
 ADMIN_EMAIL

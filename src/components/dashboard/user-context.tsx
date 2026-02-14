@@ -1,23 +1,28 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { DbUser } from "@/lib/supabase";
+import type { DbUser, DbSubscription } from "@/lib/supabase";
 
 interface UserContextValue {
   user: DbUser | null;
+  subscription: DbSubscription | null;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
 
 export function UserProvider({
   user,
+  subscription,
   children,
 }: {
   user: DbUser | null;
+  subscription: DbSubscription | null;
   children: React.ReactNode;
 }) {
   return (
-    <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, subscription }}>
+      {children}
+    </UserContext.Provider>
   );
 }
 

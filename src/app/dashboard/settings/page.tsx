@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SettingsProfileForm } from "@/components/dashboard/settings-profile-form";
 import { SettingsMessagingForm } from "@/components/dashboard/settings-messaging-form";
 import { SettingsSubscription } from "@/components/dashboard/settings-subscription";
-import { mockSubscription } from "@/lib/mock-data";
+import type { Subscription } from "@/lib/types";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -12,14 +12,46 @@ export default async function SettingsPage() {
   } = await supabase.auth.getUser();
 
   let profile = null;
+  let subscription: Subscription | null = null;
+
   if (authUser) {
-    const { data } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", authUser.id)
-      .single();
-    profile = data;
+    // Fetch profile and subscription in parallel
+    const [profileResult, subscriptionResult] = await Promise.all([
+      supabase.from("users").select("*").eq("id", authUser.id).single(),
+      supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", authUser.id)
+        .single(),
+    ]);
+
+    profile = profileResult.data;
+
+    if (subscriptionResult.data) {
+      subscription = {
+        id: subscriptionResult.data.id,
+        userId: subscriptionResult.data.user_id,
+        stripeCustomerId: subscriptionResult.data.stripe_customer_id,
+        stripeSubscriptionId: subscriptionResult.data.stripe_subscription_id,
+        plan: subscriptionResult.data.plan,
+        status: subscriptionResult.data.status,
+        currentPeriodEnd: subscriptionResult.data.current_period_end,
+        cancelAtPeriodEnd: subscriptionResult.data.cancel_at_period_end,
+      };
+    }
   }
+
+  // Fallback subscription if not found (shouldn't happen with trigger)
+  const defaultSubscription: Subscription = {
+    id: "",
+    userId: authUser?.id || "",
+    stripeCustomerId: null,
+    stripeSubscriptionId: null,
+    plan: "free",
+    status: "active",
+    currentPeriodEnd: null,
+    cancelAtPeriodEnd: false,
+  };
 
   return (
     <div className="space-y-10">
@@ -30,7 +62,7 @@ export default async function SettingsPage() {
       <div className="space-y-6">
         <SettingsProfileForm user={profile} />
         <SettingsMessagingForm status={profile?.status || "active"} />
-        <SettingsSubscription subscription={mockSubscription} />
+        <SettingsSubscription subscription={subscription || defaultSubscription} />
       </div>
     </div>
   );

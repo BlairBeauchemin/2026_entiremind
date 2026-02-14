@@ -18,6 +18,18 @@ const navItems = [
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
+function getPlanLabel(plan: string | undefined): string {
+  switch (plan) {
+    case "monthly":
+      return "Monthly Plan";
+    case "yearly":
+      return "Yearly Plan";
+    case "free":
+    default:
+      return "Free Plan";
+  }
+}
+
 interface DashboardSidebarProps {
   open: boolean;
   onClose: () => void;
@@ -25,7 +37,7 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
   const pathname = usePathname();
-  const { user } = useUserContext();
+  const { user, subscription } = useUserContext();
 
   const displayName = user?.name || user?.email || "User";
   const initials = user?.name
@@ -105,7 +117,9 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
                 {displayName}
               </p>
               <p className="text-[11px] text-teal-900/50">
-                {user?.status === "paused" ? "Paused" : "Free Plan"}
+                {user?.status === "paused"
+                  ? "Paused"
+                  : getPlanLabel(subscription?.plan)}
               </p>
             </div>
             <form action={signOut}>

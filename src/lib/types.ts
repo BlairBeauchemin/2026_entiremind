@@ -22,10 +22,12 @@ export interface Intention {
 export interface Subscription {
   id: string;
   userId: string;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
   plan: "free" | "monthly" | "yearly";
-  status: "active" | "paused" | "cancelled";
+  status: "active" | "paused" | "cancelled" | "past_due" | "trialing";
   currentPeriodEnd: string | null;
-  pausedAt: string | null;
+  cancelAtPeriodEnd: boolean;
 }
 
 export interface Message {

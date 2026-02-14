@@ -45,10 +45,12 @@ export const mockIntentionHistory: Intention[] = [
 export const mockSubscription: Subscription = {
   id: "sub_001",
   userId: "usr_001",
+  stripeCustomerId: null,
+  stripeSubscriptionId: null,
   plan: "free",
   status: "active",
   currentPeriodEnd: null,
-  pausedAt: null,
+  cancelAtPeriodEnd: false,
 };
 
 const today = new Date();
