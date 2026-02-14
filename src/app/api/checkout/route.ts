@@ -29,6 +29,14 @@ export async function POST(request: NextRequest) {
 
     const priceId = PRICE_IDS[plan];
 
+    if (!priceId) {
+      console.error("Price ID not configured for plan:", plan, "PRICE_IDS:", PRICE_IDS);
+      return NextResponse.json(
+        { error: "Price ID not configured. Check STRIPE_MONTHLY_PRICE_ID and STRIPE_YEARLY_PRICE_ID env vars." },
+        { status: 500 }
+      );
+    }
+
     // Use service role client to access subscriptions table
     const serviceClient = createServiceRoleClient();
 

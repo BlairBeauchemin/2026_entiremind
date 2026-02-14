@@ -1,0 +1,1862 @@
+[  146816ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  146993ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147046ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147098ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147155ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147207ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147259ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147309ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147360ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147403ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147454ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147505ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147554ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147604ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147654ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147708ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147758ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147809ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147860ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147910ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  147963ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148022ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148076ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148127ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148179ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148228ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148279ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148328ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148378ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148429ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148479ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148530ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148580ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148633ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148687ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148740ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148789ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148841ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148892ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148942ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  148994ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149043ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149095ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149146ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149196ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149245ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149296ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149346ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149399ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149452ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149505ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149558ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149608ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149659ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149709ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149759ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149809ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149861ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149911ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  149963ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150017ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150070ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150121ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150171ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150222ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150276ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150327ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150378ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150434ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150488ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150539ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150590ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150641ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150692ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150743ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150794ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150844ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150895ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150946ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  150996ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151046ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151096ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151145ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151216ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151268ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151320ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151373ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151430ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151482ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151536ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151587ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151637ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151679ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151730ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151781ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151836ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151889ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151941ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  151995ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152045ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152095ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152147ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152197ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152250ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152302ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152354ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152405ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152461ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152514ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152565ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152617ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152669ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152722ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152774ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152827ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152879ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152929ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  152979ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153029ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153079ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153130ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153185ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153243ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153296ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153347ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153400ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153443ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153494ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153544ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153595ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153644ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153694ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  153743ms] [ERROR] ./src/components/dashboard/current-intention.tsx:60:1
+Parsing ecmascript source code failed
+  58 |     </motion.div>
+  59 |   );
+> 60 | }
+     | ^
+  61 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/components/dashboard/current-intention.tsx
+    ./src/app/dashboard/page.tsx @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
