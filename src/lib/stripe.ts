@@ -23,10 +23,14 @@ export const stripe = new Proxy({} as Stripe, {
   },
 });
 
-// Price IDs for subscription plans
-export const PRICE_IDS = {
-  monthly: process.env.STRIPE_MONTHLY_PRICE_ID || "",
-  yearly: process.env.STRIPE_YEARLY_PRICE_ID || "",
-} as const;
+// Plan types for subscription
+export type PlanType = "monthly" | "yearly";
 
-export type PlanType = keyof typeof PRICE_IDS;
+// Get price ID at runtime (not module load time) to ensure env vars are available
+export function getPriceId(plan: PlanType): string {
+  const priceIds: Record<PlanType, string | undefined> = {
+    monthly: process.env.STRIPE_MONTHLY_PRICE_ID,
+    yearly: process.env.STRIPE_YEARLY_PRICE_ID,
+  };
+  return priceIds[plan] || "";
+}

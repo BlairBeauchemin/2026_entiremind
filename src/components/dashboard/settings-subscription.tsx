@@ -89,8 +89,9 @@ export function SettingsSubscription({
       if (data.url) {
         window.location.href = data.url;
       } else {
-        console.error("Failed to create checkout session:", data.error);
-        alert("Failed to start checkout. Please try again.");
+        const errorMsg = data.error || "Unknown error";
+        console.error("Checkout failed:", errorMsg);
+        alert(`Checkout failed: ${errorMsg}`);
       }
     } catch (error) {
       console.error("Error creating checkout session:", error);

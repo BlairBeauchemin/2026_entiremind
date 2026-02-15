@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase";
-import { stripe, PRICE_IDS, type PlanType } from "@/lib/stripe";
+import { stripe, getPriceId, type PlanType } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,17 +20,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { plan } = body as { plan: PlanType };
 
-    if (!plan || !PRICE_IDS[plan]) {
+    if (!plan || (plan !== "monthly" && plan !== "yearly")) {
       return NextResponse.json(
         { error: "Invalid plan. Must be 'monthly' or 'yearly'" },
         { status: 400 }
       );
     }
 
-    const priceId = PRICE_IDS[plan];
+    const priceId = getPriceId(plan);
 
     if (!priceId) {
-      console.error("Price ID not configured for plan:", plan, "PRICE_IDS:", PRICE_IDS);
+      console.error("Price ID not configured for plan:", plan);
       return NextResponse.json(
         { error: "Price ID not configured. Check STRIPE_MONTHLY_PRICE_ID and STRIPE_YEARLY_PRICE_ID env vars." },
         { status: 500 }
