@@ -186,8 +186,9 @@ npx shadcn@latest add [component]
 - `.env.local` contains Supabase credentials
 
 #### Production Deployment
-- **Domain**: https://entiremind.com (www.entiremind.com redirects)
+- **Domain**: https://www.entiremind.com (canonical; entiremind.com redirects to www)
 - **Hosting**: Vercel (`blairs-projects-7e709a29/2026-entiremind`)
+- **Note**: External webhooks (Stripe, etc.) must use `www.entiremind.com` to avoid 307 redirects
 - **Vercel Dashboard**: https://vercel.com/blairs-projects-7e709a29/2026-entiremind
 - **Deploy**: Push to `main` branch or run `vercel --prod`
 
@@ -252,7 +253,7 @@ TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 - **Flow**: User clicks Upgrade → redirected to Stripe Checkout → webhook updates DB → user redirected back
 
 **Webhook URL (configure in Stripe Dashboard):**
-- Production: `https://entiremind.com/api/webhooks/stripe`
+- Production: `https://www.entiremind.com/api/webhooks/stripe` (must use `www` - non-www redirects cause 307 errors)
 - Events to enable: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
 
 **Required env vars (Stripe):**
