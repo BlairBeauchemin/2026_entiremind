@@ -78,37 +78,37 @@ export default function TermsPage() {
                 SMS Messaging Terms
               </h2>
               <p className="leading-relaxed mb-4">
-                By providing your mobile phone number and opting into our
-                service, you consent to receive SMS messages from Entiremind.
-                Please read these terms carefully:
+                By providing your mobile phone number and opting into
+                Entiremind, you expressly consent to receive recurring automated
+                marketing and personalized manifestation SMS messages from
+                Entiremind at the phone number provided.
+              </p>
+              <p className="leading-relaxed mb-4">
+                Consent to receive SMS messages is not a condition of any
+                purchase.
               </p>
               <ul className="list-disc pl-6 space-y-3">
                 <li>
-                  <strong>Consent:</strong> You expressly consent to receive
-                  recurring automated SMS messages at the phone number you
-                  provide.
-                </li>
-                <li>
                   <strong>Message Frequency:</strong> You may receive up to 14
-                  messages per week. Frequency varies based on your engagement
-                  and preferences.
+                  messages per week. Message frequency varies based on your
+                  engagement and preferences.
                 </li>
                 <li>
-                  <strong>Opt-Out:</strong> You can cancel SMS messages at any
+                  <strong>Opt-Out:</strong> You may cancel SMS messages at any
                   time by texting <strong>STOP</strong> to our number. After
-                  opting out, you will receive a confirmation message.
+                  sending STOP, you will receive a confirmation message and will
+                  no longer receive SMS messages from us.
                 </li>
                 <li>
-                  <strong>Help:</strong> Text <strong>HELP</strong> for customer
-                  support information.
+                  <strong>Help:</strong> Text <strong>HELP</strong> for
+                  assistance or contact us at support@entiremind.com.
                 </li>
                 <li>
-                  <strong>Message and data rates may apply.</strong> Check with
-                  your mobile carrier for details about your messaging plan.
+                  Message and data rates may apply. Check with your mobile
+                  carrier for details about your messaging plan.
                 </li>
                 <li>
-                  <strong>Carrier Liability:</strong> Carriers are not liable
-                  for delayed or undelivered messages.
+                  Carriers are not liable for delayed or undelivered messages.
                 </li>
               </ul>
             </section>
@@ -135,6 +135,18 @@ export default function TermsPage() {
                 You may cancel your subscription at any time through your
                 account dashboard or by contacting us. Cancellation will take
                 effect at the end of your current billing period.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+                Refund Policy
+              </h2>
+              <p className="leading-relaxed">
+                All subscription fees are non-refundable except where required
+                by applicable law. You may cancel your subscription at any time,
+                and cancellation will take effect at the end of your current
+                billing period.
               </p>
             </section>
 
@@ -232,6 +244,19 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+                Electronic Communications
+              </h2>
+              <p className="leading-relaxed">
+                By using our service, you consent to receive electronic
+                communications from us, including account notices, billing
+                updates, service announcements, and policy changes. You agree
+                that electronic communications satisfy any legal requirement
+                that such communications be in writing.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
                 Termination
               </h2>
               <p className="leading-relaxed">
@@ -256,26 +281,70 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+                Arbitration and Class Action Waiver
+              </h2>
+              <p className="leading-relaxed mb-4">
+                Any dispute arising from or relating to these Terms or your use
+                of the service shall be resolved through binding arbitration in
+                the State of California, rather than in court, except that
+                you may assert claims in small claims court if eligible.
+              </p>
+              <p className="leading-relaxed">
+                You agree that any arbitration will be conducted on an
+                individual basis and not as a class, consolidated, or
+                representative action. You waive any right to participate in a
+                class action lawsuit or class-wide arbitration.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
                 Governing Law
               </h2>
               <p className="leading-relaxed">
-                These Terms of Service shall be governed by and construed in
-                accordance with the laws of the United States, without regard to
+                These Terms shall be governed by and construed in accordance
+                with the laws of the State of California, without regard to
                 conflict of law principles.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-2xl text-navy font-medium mb-4">
-                Contact Us
+                Data Rights
               </h2>
+              <p className="leading-relaxed mb-4">
+                You may request access to, correction of, or deletion of your
+                personal information by contacting us at support@entiremind.com.
+              </p>
+              <p className="leading-relaxed mb-4">
+                We process and store data in the United States. We may use
+                third-party service providers, including but not limited to
+                Twilio (messaging), Stripe (payments), Supabase (data storage),
+                and OpenAI-compatible APIs (AI processing), to operate our
+                service.
+              </p>
               <p className="leading-relaxed">
+                We do not sell your personal information.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+                Contact Information
+              </h2>
+              <p className="leading-relaxed mb-4">
                 If you have any questions about these Terms of Service, please
-                contact us at:
+                contact us:
               </p>
-              <p className="leading-relaxed mt-4">
-                <strong>Email:</strong> privacy@entiremind.com
-              </p>
+              <div className="leading-relaxed">
+                <p className="font-medium">Entiremind</p>
+                <p>819 Pacific Avenue</p>
+                <p>Alameda, California 94501</p>
+                <p>United States</p>
+                <p className="mt-4">
+                  <strong>Email:</strong> support@entiremind.com
+                </p>
+              </div>
             </section>
           </div>
         </div>
