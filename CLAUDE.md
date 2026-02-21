@@ -40,9 +40,9 @@ The competitive advantage is **learning velocity**, not features. The system ope
 
 ### Database Tables
 - `users` - user profiles with phone, email, timezone
+- `leads` - waitlist signups with name, email, phone
+- `intentions` - user intention statements
 - `messages` - outbound + inbound SMS
-- `reflections` - user intention statements
-- `behavioral_signals` - per-user signal data
 - `subscriptions` - payment state per user
 
 ## Development Commands
@@ -102,8 +102,8 @@ npx shadcn@latest add [component]
 ### Flow A: Pretotype Signup
 1. User lands on landing page
 2. Sees manifestation-first positioning
-3. Submits email + phone
-4. Stored as lead
+3. Submits name, email, and phone via waitlist modal
+4. Stored as lead in `leads` table
 5. Optional waitlist confirmation SMS
 
 ### Flow B: Onboarding & Intention
@@ -231,6 +231,13 @@ TELNYX_PHONE_NUMBER=+1234567890
 TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 ```
 
+#### Waitlist & Lead Capture
+- **Waitlist modal**: `src/components/waitlist-modal.tsx` - reusable modal for lead capture
+- **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads
+- **Form fields**: name, email, phone (all required)
+- **Storage**: `leads` table with source tracking (`landing_page`)
+- **Integration points**: Hero section, pricing section, navigation "Join Waitlist" button
+
 #### Founder Review Interface
 - **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer
 - **Message table**: `src/components/dashboard/founder-message-table.tsx` - displays all user messages
@@ -239,6 +246,7 @@ TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 
 #### Database Tables Implemented
 - `users` - user profiles with phone, email, timezone, onboarding status
+- `leads` - waitlist signups with name, email, phone, source, created_at
 - `intentions` - user intention statements (active/completed/archived)
 - `messages` - outbound + inbound SMS with `external_message_id`, `provider` column, and delivery status
 - `subscriptions` - Stripe subscription state per user (plan, status, period end, Stripe IDs)
