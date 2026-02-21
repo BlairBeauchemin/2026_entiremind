@@ -7,6 +7,7 @@ export type Database = {
       leads: {
         Row: {
           id: string;
+          name: string | null;
           email: string;
           phone: string | null;
           source: string | null;
@@ -14,6 +15,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
+          name?: string | null;
           email: string | null;
           phone?: string | null;
           source?: string | null;
@@ -21,6 +23,7 @@ export type Database = {
         };
         Update: {
           id?: string;
+          name?: string | null;
           email?: string | null;
           phone?: string | null;
           source?: string | null;
