@@ -274,7 +274,7 @@ export default function TermsPage() {
                 contact us at:
               </p>
               <p className="leading-relaxed mt-4">
-                <strong>Email:</strong> support@entiremind.com
+                <strong>Email:</strong> privacy@entiremind.com
               </p>
             </section>
           </div>
