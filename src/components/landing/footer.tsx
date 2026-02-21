@@ -40,6 +40,12 @@ export function Footer() {
             >
               Terms
             </a>
+            <a
+              href="/sms-policy"
+              className="hover:text-teal-900 transition-colors"
+            >
+              SMS Policy
+            </a>
           </div>
 
           <p className="text-xs text-teal-900/40 font-sans">
