@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { formatPhoneInput, cleanPhoneNumber, isValidUSPhone } from "@/lib/utils/phone";
 
 interface WaitlistModalProps {
   isOpen: boolean;
@@ -64,9 +65,8 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     e.preventDefault();
     setError(null);
 
-    const phoneDigits = phone.replace(/\D/g, "");
-    if (phoneDigits.length < 10) {
-      setError("Please enter a valid phone number");
+    if (!isValidUSPhone(phone)) {
+      setError("Please enter a valid 10-digit phone number");
       return;
     }
 
@@ -81,7 +81,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
       const response = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone }),
+        body: JSON.stringify({ name, email, phone: cleanPhoneNumber(phone) }),
       });
 
       if (!response.ok) {
@@ -243,7 +243,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                         <input
                           type="tel"
                           value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
+                          onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
                           placeholder="(555) 000-0000"
                           className="input-autofill-fix w-full px-4 py-3 bg-cream/50 border border-teal-900/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 text-teal-900 placeholder-teal-900/40 transition-all font-sans"
                           required

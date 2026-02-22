@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Menu } from "lucide-react";
 import { mockUser } from "@/lib/mock-data";
 
@@ -23,9 +24,9 @@ export function MobileHeader({ onOpenSidebar }: MobileHeaderProps) {
           <Menu className="w-5 h-5" strokeWidth={1.5} />
         </button>
 
-        <span className="font-serif text-xl font-medium tracking-[2px] text-navy">
+        <Link href="/" className="font-serif text-xl font-medium tracking-[2px] text-navy">
           Entiremind
-        </span>
+        </Link>
 
         <div className="w-8 h-8 rounded-full bg-navy/10 flex items-center justify-center text-[10px] font-medium text-navy">
           {initials}

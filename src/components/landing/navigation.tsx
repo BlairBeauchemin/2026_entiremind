@@ -15,11 +15,11 @@ export function Navigation() {
         <div className="glass-panel border-b border-white/40">
           <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
             {/* Logo */}
-            <a href="#" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-3 group">
               <span className="font-serif text-3xl font-medium tracking-[2px] text-navy">
                 Entiremind
               </span>
-            </a>
+            </Link>
 
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-10">
