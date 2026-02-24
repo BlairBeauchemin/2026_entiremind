@@ -25,7 +25,7 @@ export default function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="text-teal-900/60 mb-12">
-            Last updated: February 10, 2026
+            Last updated: February 24, 2026
           </p>
 
           <div className="prose prose-teal max-w-none space-y-8 text-teal-900/80">
@@ -110,8 +110,8 @@ export default function PrivacyPage() {
                   </strong>
                 </li>
                 <li>
-                  <strong>Message Frequency:</strong> You may receive up to 14
-                  messages per week as part of our reflection loop service. The
+                  <strong>Message Frequency:</strong> You may receive up to 2
+                  messages per day as part of our reflection loop service. The
                   actual frequency depends on your engagement and preferences.
                 </li>
                 <li>
@@ -236,9 +236,15 @@ export default function PrivacyPage() {
                 If you have any questions about this Privacy Policy or our data
                 practices, please contact us at:
               </p>
-              <p className="leading-relaxed mt-4">
-                <strong>Email:</strong> privacy@entiremind.com
-              </p>
+              <div className="leading-relaxed mt-4">
+                <p>
+                  <strong>Email:</strong> privacy@entiremind.com
+                </p>
+                <p className="mt-2 font-medium">Entiremind</p>
+                <p>819 Pacific Avenue</p>
+                <p>Alameda, California 94501</p>
+                <p>United States</p>
+              </div>
             </section>
           </div>
         </div>

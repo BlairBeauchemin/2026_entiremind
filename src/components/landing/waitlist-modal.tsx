@@ -7,6 +7,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { formatPhoneInput, cleanPhoneNumber, isValidUSPhone } from "@/lib/utils/phone";
 
+const SMS_CONSENT_LANGUAGE =
+  "I agree to receive recurring automated personalized manifestation and reflection SMS messages (up to 2 per day) from Entiremind. Message and data rates may apply. Reply STOP to cancel. Consent is not a condition of purchase.";
+
 interface WaitlistModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,6 +21,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [termsConsent, setTermsConsent] = useState(false);
   const [smsConsent, setSmsConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,6 +74,11 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
       return;
     }
 
+    if (!termsConsent) {
+      setError("Please agree to the Terms of Service and Privacy Policy");
+      return;
+    }
+
     if (!smsConsent) {
       setError("Please agree to receive SMS messages");
       return;
@@ -81,7 +90,13 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
       const response = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone: cleanPhoneNumber(phone) }),
+        body: JSON.stringify({
+          name,
+          email,
+          phone: cleanPhoneNumber(phone),
+          smsConsent,
+          smsConsentLanguage: SMS_CONSENT_LANGUAGE,
+        }),
       });
 
       if (!response.ok) {
@@ -101,6 +116,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     setName("");
     setEmail("");
     setPhone("");
+    setTermsConsent(false);
     setSmsConsent(false);
     setError(null);
     onClose();
@@ -253,15 +269,21 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       <label className="flex items-start gap-3 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={smsConsent}
-                          onChange={(e) => setSmsConsent(e.target.checked)}
+                          checked={termsConsent}
+                          onChange={(e) => setTermsConsent(e.target.checked)}
                           className="mt-1 w-4 h-4 rounded border-teal-900/20 text-navy focus:ring-navy/30"
                           required
                         />
                         <span className="text-xs text-teal-900/70 leading-relaxed">
-                          I agree to receive up to 14 SMS messages per week from
-                          Entiremind. Message and data rates may apply. Reply
-                          STOP to cancel. View our{" "}
+                          I agree to the{" "}
+                          <Link
+                            href="/terms"
+                            className="underline hover:text-teal-900"
+                            target="_blank"
+                          >
+                            Terms of Service
+                          </Link>{" "}
+                          and{" "}
                           <Link
                             href="/privacy"
                             className="underline hover:text-teal-900"
@@ -269,15 +291,24 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                           >
                             Privacy Policy
                           </Link>
-                          ,{" "}
-                          <Link
-                            href="/terms"
-                            className="underline hover:text-teal-900"
-                            target="_blank"
-                          >
-                            Terms
-                          </Link>
-                          , and{" "}
+                          .
+                        </span>
+                      </label>
+
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={smsConsent}
+                          onChange={(e) => setSmsConsent(e.target.checked)}
+                          className="mt-1 w-4 h-4 rounded border-teal-900/20 text-navy focus:ring-navy/30"
+                          required
+                        />
+                        <span className="text-xs text-teal-900/70 leading-relaxed">
+                          I agree to receive recurring automated personalized
+                          manifestation and reflection SMS messages (up to 2 per
+                          day) from Entiremind. Msg &amp; data rates may apply.
+                          Reply STOP to cancel. Consent is not a condition of
+                          purchase. View our{" "}
                           <Link
                             href="/sms-policy"
                             className="underline hover:text-teal-900"

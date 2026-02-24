@@ -89,8 +89,8 @@ export default function TermsPage() {
               </p>
               <ul className="list-disc pl-6 space-y-3">
                 <li>
-                  <strong>Message Frequency:</strong> You may receive up to 14
-                  messages per week. Message frequency varies based on your
+                  <strong>Message Frequency:</strong> You may receive up to 2
+                  messages per day. Message frequency varies based on your
                   engagement and preferences.
                 </li>
                 <li>

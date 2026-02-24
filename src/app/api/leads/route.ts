@@ -4,7 +4,7 @@ import { createServiceRoleClient } from "@/lib/supabase";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone } = body;
+    const { name, email, phone, smsConsent, smsConsentLanguage } = body;
 
     // Validate all required fields
     const hasName = name && typeof name === "string" && name.trim();
@@ -28,6 +28,13 @@ export async function POST(request: NextRequest) {
     if (!hasPhone) {
       return NextResponse.json(
         { error: "Phone number is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!smsConsent) {
+      return NextResponse.json(
+        { error: "SMS consent is required" },
         { status: 400 }
       );
     }
@@ -61,12 +68,22 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServiceRoleClient();
 
+    // Capture consent IP from request headers
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const consentIp = forwardedFor
+      ? forwardedFor.split(",")[0].trim()
+      : request.headers.get("x-real-ip") ?? "unknown";
+
     // Insert lead into database
     const { error } = await supabase.from("leads").insert({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       phone: phone.trim(),
       source: "landing_page",
+      sms_consent: smsConsent === true,
+      sms_consent_timestamp: new Date().toISOString(),
+      sms_consent_ip: consentIp,
+      sms_consent_language: smsConsentLanguage ?? null,
     });
 
     if (error) {
