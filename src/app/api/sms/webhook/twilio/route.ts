@@ -4,7 +4,17 @@ import {
   parseTwilioWebhookPayload,
   validateTwilioSignature,
   createEmptyTwimlResponse,
+  createTwimlResponse,
 } from "@/lib/sms/providers/twilio";
+
+// Twilio handles STOP/UNSUBSCRIBE at the platform level automatically, but we
+// log them here for our own records and to satisfy carrier review requirements.
+const STOP_KEYWORDS = new Set(["STOP", "STOPALL", "UNSUBSCRIBE", "CANCEL", "END", "QUIT"]);
+const HELP_KEYWORDS = new Set(["HELP", "INFO"]);
+
+const HELP_RESPONSE =
+  "Entiremind: For support email support@entiremind.com or visit entiremind.com/sms-policy. " +
+  "Reply STOP to unsubscribe. Msg & data rates may apply.";
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,9 +55,33 @@ export async function POST(request: NextRequest) {
     const toNumber = payload.To;
     const text = payload.Body;
     const messageSid = payload.MessageSid;
+    const normalizedText = text.trim().toUpperCase();
 
     console.log(`Inbound SMS received from ${fromNumber}: ${text}`);
 
+    // Log STOP keywords — Twilio handles the actual opt-out at the platform level
+    if (STOP_KEYWORDS.has(normalizedText)) {
+      console.log(`STOP keyword received from ${fromNumber} — Twilio platform opt-out triggered`);
+      // Store the inbound STOP message for our records, then return empty TwiML
+      // (Twilio will automatically send the confirmation and block future messages)
+      await storeInboundSms(fromNumber, toNumber, text, messageSid, "twilio");
+      return new Response(createEmptyTwimlResponse(), {
+        status: 200,
+        headers: { "Content-Type": "text/xml" },
+      });
+    }
+
+    // Respond to HELP keyword with support info (required by carriers)
+    if (HELP_KEYWORDS.has(normalizedText)) {
+      console.log(`HELP keyword received from ${fromNumber}`);
+      await storeInboundSms(fromNumber, toNumber, text, messageSid, "twilio");
+      return new Response(createTwimlResponse(HELP_RESPONSE), {
+        status: 200,
+        headers: { "Content-Type": "text/xml" },
+      });
+    }
+
+    // Store all other inbound messages
     const result = await storeInboundSms(
       fromNumber,
       toNumber,

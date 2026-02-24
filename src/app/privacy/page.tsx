@@ -105,8 +105,11 @@ export default function PrivacyPage() {
               <ul className="list-disc pl-6 space-y-3">
                 <li>
                   <strong>
-                    We do not share, sell, or rent your mobile phone number to
-                    third parties for marketing or promotional purposes.
+                    No mobile information will be shared with third
+                    parties/affiliates for marketing/promotional purposes. All
+                    categories of personal data exclude text messaging originator
+                    opt-in data and consent; this information will not be shared
+                    with any third parties.
                   </strong>
                 </li>
                 <li>

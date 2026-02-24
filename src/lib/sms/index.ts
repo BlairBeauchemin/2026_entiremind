@@ -184,6 +184,10 @@ export async function sendWelcomeSms(
   userName: string,
   phoneNumber: string
 ): Promise<SendSmsResult> {
-  const welcomeMessage = `Welcome to Entiremind, ${userName || "friend"}! Your intention has been set. Reply anytime to reflect.`;
+  const name = userName || "friend";
+  const welcomeMessage =
+    `Welcome to Entiremind, ${name}! You're enrolled in daily reflection prompts. ` +
+    `Up to 2 msgs/day. Msg & data rates may apply. ` +
+    `Reply HELP for help or STOP to cancel.`;
   return sendSms(userId, phoneNumber, welcomeMessage);
 }

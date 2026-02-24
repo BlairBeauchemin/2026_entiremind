@@ -131,3 +131,13 @@ export function createEmptyTwimlResponse(): string {
   const response = new MessagingResponse();
   return response.toString();
 }
+
+/**
+ * Create a TwiML response with a text message body
+ */
+export function createTwimlResponse(messageBody: string): string {
+  const MessagingResponse = twilio.twiml.MessagingResponse;
+  const response = new MessagingResponse();
+  response.message(messageBody);
+  return response.toString();
+}
