@@ -8,9 +8,13 @@ import {
   BatteryFull,
 } from "lucide-react";
 
-export function PhoneMockup() {
+interface PhoneMockupProps {
+  rotated?: boolean;
+}
+
+export function PhoneMockup({ rotated = true }: PhoneMockupProps) {
   return (
-    <div className="relative w-[340px] h-[680px] bg-white rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(32,65,71,0.15)] border-[8px] border-white overflow-hidden z-10 transform rotate-[-2deg] hover:rotate-0 transition-transform duration-1000 ease-out">
+    <div className={`relative w-[340px] h-[680px] bg-white rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(32,65,71,0.15)] border-[8px] border-white overflow-hidden z-10 transition-transform duration-1000 ease-out ${rotated ? "transform rotate-[-2deg] hover:rotate-0" : ""}`}>
       {/* Status Bar */}
       <div className="absolute top-0 w-full h-10 bg-white z-20 flex justify-between px-8 items-center text-[10px] font-medium text-gray-300">
         <span>9:41</span>

@@ -1,4 +1,7 @@
-import { Check, Star } from "lucide-react";
+"use client";
+
+import { Check } from "lucide-react";
+import { PhoneMockup } from "./phone-mockup";
 
 export function Testimonials() {
   return (
@@ -6,30 +9,14 @@ export function Testimonials() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <div className="relative order-2 lg:order-1">
-            <div className="absolute inset-0 bg-gradient-to-tr from-em-purple-300 to-em-yellow-400 rounded-[2rem] rotate-3 opacity-20 blur-2xl" />
-            <img
-              src="https://nivbeqiuhotuxbmcvuxt.supabase.co/storage/v1/object/public/project-images/10ae444c-eb2d-49cc-b7cb-99d5ff759dd0/3371a2a2-9129-48ec-91b3-9b707cf37942.webp"
-              alt="Mindful Design"
-              className="relative rounded-[2rem] shadow-2xl w-full object-cover h-[600px] grayscale hover:grayscale-0 transition-all duration-1000"
-            />
-
-            {/* Floating Quote */}
-            <div className="absolute -bottom-10 -right-10 bg-white/90 backdrop-blur-xl p-8 rounded-2xl shadow-xl max-w-xs border border-white hidden md:block">
-              <div className="flex text-em-yellow-400 mb-4 text-[10px] gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3 h-3 fill-current" />
-                ))}
-              </div>
-              <p className="text-teal-900 font-serif italic text-xl leading-relaxed">
-                &ldquo;It feels like having a wise friend in my pocket who
-                actually listens.&rdquo;
-              </p>
+            <div className="relative flex justify-center items-center h-[600px]">
+              <PhoneMockup rotated={false} />
             </div>
           </div>
 
           <div className="space-y-12 order-1 lg:order-2">
             <h2 className="font-serif text-5xl md:text-6xl text-navy font-medium leading-tight">
-              Why early adopters love Entiremind
+              What You&apos;ll Experience
             </h2>
 
             <div className="space-y-10">

@@ -12,11 +12,11 @@ export function Pricing() {
       <section id="section-pricing" className="py-32">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="font-serif text-5xl md:text-7xl text-navy mb-8 font-medium">
-            Join the Pretotype
+            Be the First to Know
           </h2>
           <p className="text-xl text-teal-900/70 mb-16 max-w-2xl mx-auto font-sans font-light leading-relaxed">
-            We are currently in Phase 1. Access is limited to ensure high-quality
-            interactions. Sign up now to reserve your spot in the queue.
+            We&apos;re building Entiremind and want to hear from you. Sign up to
+            get notified when we launch and help shape what we create.
           </p>
 
           <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] shadow-2xl shadow-em-purple-300/20 border border-white p-10 md:p-16 relative overflow-hidden">
@@ -25,24 +25,17 @@ export function Pricing() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="text-left space-y-6">
                 <div className="inline-block px-4 py-1 rounded-full bg-teal-900/5 text-teal-900 text-xs font-medium tracking-widest uppercase">
-                  Early Access
+                  Launching Soon
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-serif text-navy font-medium">
-                    $0
-                  </span>
-                  <span className="text-teal-900/60 font-sans">/ month</span>
-                </div>
-                <p className="text-teal-900/80 font-sans font-light">
-                  Free during the pretotype phase. We only ask for your honest
-                  feedback.
+                <p className="text-teal-900/80 font-sans font-light text-lg">
+                  Sign up to get notified when Entiremind launches.
                 </p>
 
                 <ul className="space-y-3 pt-4">
                   {[
-                    "Daily intention prompts",
-                    "Personalized reflections",
-                    "Direct founder access",
+                    "Early access when we launch",
+                    "Help shape the product",
+                    "Direct founder updates",
                   ].map((feature) => (
                     <li
                       key={feature}
@@ -59,8 +52,8 @@ export function Pricing() {
               <div className="relative">
                 <div className="bg-white/40 p-6 md:p-8 rounded-3xl border border-white/60 backdrop-blur-md text-center">
                   <p className="text-teal-900/70 font-sans font-light mb-6">
-                    Reserve your spot today and be among the first to experience
-                    the loop.
+                    Join the waitlist and we&apos;ll let you know when Entiremind
+                    is ready.
                   </p>
                   <button
                     onClick={() => setIsModalOpen(true)}

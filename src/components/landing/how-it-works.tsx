@@ -42,7 +42,7 @@ export function HowItWorks() {
               The Feedback Loop
             </h2>
             <p className="text-teal-100/80 text-xl font-light font-sans">
-              A continuous cycle of action, signal, and adjustment designed to
+              A continuous cycle of action, signal, and adjustment—designed to
               compound your growth.
             </p>
           </div>
@@ -50,7 +50,7 @@ export function HowItWorks() {
             href="#section-hero"
             className="text-cream border border-white/20 px-6 py-2.5 rounded-full hover:bg-white hover:text-navy font-sans text-sm transition-all duration-300"
           >
-            Start your loop
+            Get Early Access
           </a>
         </div>
 

@@ -1,10 +1,10 @@
 import { Navigation } from "@/components/landing/navigation";
 import { Hero } from "@/components/landing/hero";
-import { TrustStrip } from "@/components/landing/trust-strip";
 import { Philosophy } from "@/components/landing/philosophy";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Testimonials } from "@/components/landing/testimonials";
 import { Pricing } from "@/components/landing/pricing";
+import { BottomCTA } from "@/components/landing/bottom-cta";
 import { Footer } from "@/components/landing/footer";
 
 export default function Home() {
@@ -19,11 +19,11 @@ export default function Home() {
 
       <Navigation />
       <Hero />
-      <TrustStrip />
       <Philosophy />
       <HowItWorks />
       <Testimonials />
       <Pricing />
+      <BottomCTA />
       <Footer />
     </div>
   );

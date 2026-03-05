@@ -23,7 +23,7 @@ export function Hero() {
           <div className="relative z-10 space-y-10 text-center lg:text-left animate-fade-in-up">
             <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/50 border border-teal-900/10 text-teal-900 text-[11px] font-medium tracking-widest uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-teal-900 animate-pulse" />
-              Now accepting early signals
+              Coming Soon — Join the Waitlist
             </div>
 
             <h1 className="font-serif text-6xl lg:text-8xl leading-[0.95] text-navy font-medium">
@@ -32,9 +32,9 @@ export function Hero() {
             </h1>
 
             <p className="text-lg lg:text-xl text-teal-900 max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans">
-              A lightly magical SMS companion that aligns your intentions with
-              reality. No apps to open, no dashboards to manage—just signals to
-              send.
+              An SMS companion that aligns your intentions with reality.
+              We&apos;re building something new—sign up to be first when we
+              launch.
             </p>
 
             <div className="pt-4">
@@ -46,19 +46,6 @@ export function Hero() {
               </button>
             </div>
 
-            <div className="pt-2 flex items-center justify-center lg:justify-start gap-4 text-sm text-teal-900/70 font-sans font-light">
-              <div className="flex -space-x-3 opacity-80">
-                {[1, 2, 3].map((i) => (
-                  <img
-                    key={i}
-                    src={`https://i.pravatar.cc/150?u=${i}`}
-                    alt="User"
-                    className="w-8 h-8 rounded-full border-2 border-cream grayscale"
-                  />
-                ))}
-              </div>
-              <span>Join 2,000+ others aligning intentions.</span>
-            </div>
           </div>
 
           {/* Hero Visual / Phone Mockup */}
