@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 import { formatPhoneInput, cleanPhoneNumber, isValidUSPhone } from "@/lib/utils/phone";
 
 const SMS_CONSENT_LANGUAGE =
-  "I agree to receive recurring automated personalized manifestation and reflection SMS messages (up to 2 per day) from Entiremind. Message and data rates may apply. Reply STOP to cancel. Consent is not a condition of purchase.";
+  "I agree to receive recurring automated SMS messages from Entiremind (up to 2 msgs/day depending on engagement). Msg & data rates may apply. Reply STOP to cancel. Consent not required for purchase.";
 
 interface WaitlistModalProps {
   isOpen: boolean;
@@ -150,10 +150,10 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
               {/* Close button */}
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 text-teal-900/40 hover:text-teal-900 transition-colors"
+                className="absolute top-6 right-6 text-teal-900/30 hover:text-teal-900 transition-colors"
                 aria-label="Close modal"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
 
               {/* Progress dots */}
@@ -186,8 +186,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       Join the Waitlist
                     </h2>
                     <p className="text-sm text-teal-900/60 text-center mb-6">
-                      Be first to experience manifestation at the speed of
-                      thought.
+                      Be the first to experience Entiremind via SMS.
                     </p>
 
                     <form onSubmit={handleStep1Submit} className="space-y-4">
@@ -248,25 +247,29 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       Almost there
                     </h2>
                     <p className="text-sm text-teal-900/60 text-center mb-6">
-                      Enter your phone number to receive SMS updates.
+                      Enter your phone number to receive Entiremind SMS
+                      messages.
                     </p>
 
-                    <form onSubmit={handleStep2Submit} className="space-y-4">
-                      <div>
+                    <form onSubmit={handleStep2Submit}>
+                      <div className="mb-5">
                         <label className="block text-xs font-medium text-teal-900 mb-2 ml-1 uppercase tracking-wider">
                           Phone Number
                         </label>
                         <input
                           type="tel"
                           value={phone}
-                          onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
+                          onChange={(e) =>
+                            setPhone(formatPhoneInput(e.target.value))
+                          }
                           placeholder="(555) 000-0000"
                           className="input-autofill-fix w-full px-4 py-3 bg-cream/50 border border-teal-900/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 text-teal-900 placeholder-teal-900/40 transition-all font-sans"
                           required
                         />
                       </div>
 
-                      <label className="flex items-start gap-3 cursor-pointer">
+                      {/* Terms checkbox */}
+                      <label className="flex items-start gap-3 cursor-pointer mb-4">
                         <input
                           type="checkbox"
                           checked={termsConsent}
@@ -295,33 +298,54 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                         </span>
                       </label>
 
-                      <label className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={smsConsent}
-                          onChange={(e) => setSmsConsent(e.target.checked)}
-                          className="mt-1 w-4 h-4 rounded border-teal-900/20 text-navy focus:ring-navy/30"
-                          required
-                        />
-                        <span className="text-xs text-teal-900/70 leading-relaxed">
-                          I agree to receive recurring automated personalized
-                          manifestation and reflection SMS messages (up to 2 per
-                          day) from Entiremind. Msg &amp; data rates may apply.
-                          Reply STOP to cancel. Consent is not a condition of
-                          purchase. View our{" "}
+                      {/* SMS consent - two-part layout */}
+                      <div className="mb-1">
+                        <label className="flex items-start gap-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={smsConsent}
+                            onChange={(e) => setSmsConsent(e.target.checked)}
+                            className="mt-1 w-4 h-4 rounded border-teal-900/20 text-navy focus:ring-navy/30"
+                            required
+                          />
+                          <span className="text-xs text-teal-900/70 leading-relaxed">
+                            I agree to receive recurring automated SMS messages
+                            from Entiremind (up to 2 msgs/day depending on
+                            engagement).
+                          </span>
+                        </label>
+                        <p className="text-[10px] text-teal-900/50 leading-relaxed mt-1.5 ml-7 max-w-[280px]">
+                          Msg &amp; data rates may apply. Reply STOP to cancel.
+                          Consent not required for purchase. View{" "}
+                          <Link
+                            href="/terms"
+                            className="underline hover:text-teal-900/70"
+                            target="_blank"
+                          >
+                            Terms
+                          </Link>
+                          ,{" "}
+                          <Link
+                            href="/privacy"
+                            className="underline hover:text-teal-900/70"
+                            target="_blank"
+                          >
+                            Privacy Policy
+                          </Link>
+                          , and{" "}
                           <Link
                             href="/sms-policy"
-                            className="underline hover:text-teal-900"
+                            className="underline hover:text-teal-900/70"
                             target="_blank"
                           >
                             SMS Policy
                           </Link>
                           .
-                        </span>
-                      </label>
+                        </p>
+                      </div>
 
                       {error && (
-                        <p className="text-sm text-red-500 text-center">
+                        <p className="text-sm text-red-500 text-center mt-4">
                           {error}
                         </p>
                       )}
@@ -329,7 +353,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-navy text-cream py-3.5 rounded-xl font-medium hover:bg-navy/90 transition-all duration-300 font-sans disabled:opacity-50"
+                        className="w-full bg-navy text-cream py-3.5 rounded-xl font-medium hover:bg-navy/90 transition-all duration-300 font-sans disabled:opacity-50 mt-6"
                       >
                         {isSubmitting ? "Submitting..." : "Reserve My Spot"}
                       </button>
@@ -337,7 +361,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       <button
                         type="button"
                         onClick={() => setStep(1)}
-                        className="w-full text-sm text-teal-900/60 hover:text-teal-900 transition-colors"
+                        className="w-full text-sm text-teal-900/60 hover:text-teal-900 transition-colors mt-3"
                       >
                         Back
                       </button>
