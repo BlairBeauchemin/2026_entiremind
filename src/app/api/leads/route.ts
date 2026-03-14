@@ -32,12 +32,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!smsConsent) {
-      return NextResponse.json(
-        { error: "SMS consent is required" },
-        { status: 400 }
-      );
-    }
+    // Note: smsConsent is optional per Twilio A2P 10DLC compliance
+    // Users can submit without consenting - we store the consent status
+    // and only send SMS to users who have sms_consent = true
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
