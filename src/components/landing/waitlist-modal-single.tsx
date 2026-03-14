@@ -12,7 +12,7 @@ import {
 } from "@/lib/utils/phone";
 
 const SMS_CONSENT_LANGUAGE =
-  "I agree to receive recurring automated SMS messages from Entiremind (up to 2 msgs/day depending on engagement). Msg & data rates may apply. Reply STOP to cancel. Consent not required for purchase.";
+  "I agree to receive recurring automated SMS messages from Entiremind (up to 2 msgs/day depending on engagement). Msg & data rates may apply. Reply HELP for help or STOP to cancel. Consent not required for purchase.";
 
 interface WaitlistModalSingleProps {
   isOpen: boolean;
@@ -212,8 +212,8 @@ export function WaitlistModalSingle({
                     </span>
                   </label>
                   <p className="text-[10px] text-teal-900/50 leading-relaxed mt-1.5 ml-7 max-w-[280px]">
-                    Msg &amp; data rates may apply. Reply STOP to cancel.
-                    Consent not required for purchase.
+                    Msg &amp; data rates may apply. Reply HELP for help or STOP
+                    to cancel. Consent not required for purchase.
                   </p>
                 </div>
 
