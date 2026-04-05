@@ -44,8 +44,10 @@ export function Hero() {
               >
                 Reserve My Spot
               </button>
+              <p className="text-xs text-teal-900/50 mt-3 font-sans">
+                No commitment · No spam · No credit card required
+              </p>
             </div>
-
           </div>
 
           {/* Hero Visual / Phone Mockup */}

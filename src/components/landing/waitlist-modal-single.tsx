@@ -233,14 +233,22 @@ export function WaitlistModalSingle({
                       target="_blank"
                     >
                       Terms of Service
-                    </Link>{" "}
-                    and{" "}
+                    </Link>
+                    ,{" "}
                     <Link
                       href="/privacy"
                       className="underline hover:text-teal-900"
                       target="_blank"
                     >
                       Privacy Policy
+                    </Link>
+                    , and{" "}
+                    <Link
+                      href="/sms-policy"
+                      className="underline hover:text-teal-900"
+                      target="_blank"
+                    >
+                      SMS Policy
                     </Link>
                     .
                   </span>
@@ -258,33 +266,9 @@ export function WaitlistModalSingle({
                   {isSubmitting ? "Submitting..." : "Reserve My Spot"}
                 </button>
 
-                {/* Implied consent text near submit button */}
-                <p className="text-[10px] text-teal-900/40 text-center leading-relaxed">
-                  By submitting, you agree to our{" "}
-                  <Link
-                    href="/terms"
-                    className="underline hover:text-teal-900/60"
-                    target="_blank"
-                  >
-                    Terms
-                  </Link>
-                  ,{" "}
-                  <Link
-                    href="/privacy"
-                    className="underline hover:text-teal-900/60"
-                    target="_blank"
-                  >
-                    Privacy Policy
-                  </Link>
-                  , and{" "}
-                  <Link
-                    href="/sms-policy"
-                    className="underline hover:text-teal-900/60"
-                    target="_blank"
-                  >
-                    SMS Policy
-                  </Link>
-                  .
+                {/* Risk reversal messaging */}
+                <p className="text-[10px] text-teal-900/50 text-center leading-relaxed">
+                  No spam, ever. Unsubscribe anytime. Your info stays private.
                 </p>
               </form>
             </div>
