@@ -209,10 +209,10 @@ npx shadcn@latest add [component]
 - **Database**: `messages` table stores all SMS with `provider` and `external_message_id` columns
 - **Legacy code**: `src/lib/telnyx.ts` preserved but deprecated
 
-**Current Status (Feb 2026):**
+**Current Status (Apr 2026):**
 - Twilio integration code complete and configured in `.env.local`
 - Database migration `007_sms_provider_abstraction.sql` has been run
-- **Pending**: Twilio account approval/A2P 10DLC registration before live testing
+- **A2P 10DLC approved and working** ✅
 - To switch back to Telnyx: set `SMS_PROVIDER=telnyx` in `.env.local`
 
 **Required env vars (Twilio - default):**
@@ -250,6 +250,7 @@ TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 - `intentions` - user intention statements (active/completed/archived)
 - `messages` - outbound + inbound SMS with `external_message_id`, `provider` column, and delivery status
 - `subscriptions` - Stripe subscription state per user (plan, status, period end, Stripe IDs)
+- `scheduled_messages` - scheduled SMS messages (pending/sent/failed/cancelled)
 
 #### Stripe Subscriptions
 - **Stripe client**: `src/lib/stripe.ts` - Stripe SDK singleton with API version 2026-01-28.clover
@@ -273,8 +274,18 @@ STRIPE_MONTHLY_PRICE_ID=price_xxx
 STRIPE_YEARLY_PRICE_ID=price_xxx
 ```
 
+#### SMS Scheduling
+- **Scheduled messages table**: `scheduled_messages` - stores pending/sent/failed/cancelled scheduled messages
+- **Schedule API**: `src/app/api/schedule/route.ts` - founder-only POST/GET for scheduling messages
+- **Cron handler**: `src/app/api/cron/send-scheduled/route.ts` - hourly cron to process pending messages
+- **Vercel cron**: Configured in `vercel.json` to run hourly (free tier)
+
+**Required env vars (Cron):**
+```
+CRON_SECRET=your_cron_secret
+```
+
 ### Not Yet Implemented
-- Scheduled/recurring SMS prompts
 - Behavioral signals table and tracking
 - Message analytics and patterns
 
@@ -305,6 +316,9 @@ STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
 STRIPE_MONTHLY_PRICE_ID
 STRIPE_YEARLY_PRICE_ID
+
+# Cron
+CRON_SECRET
 
 # Admin
 ADMIN_EMAIL

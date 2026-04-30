@@ -202,6 +202,44 @@ export type Database = {
           updated_at?: string;
         };
       };
+      scheduled_messages: {
+        Row: {
+          id: string;
+          user_id: string;
+          to_phone: string;
+          text: string;
+          scheduled_for: string;
+          status: "pending" | "sent" | "failed" | "cancelled";
+          sent_message_id: string | null;
+          error_message: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          to_phone: string;
+          text: string;
+          scheduled_for: string;
+          status?: "pending" | "sent" | "failed" | "cancelled";
+          sent_message_id?: string | null;
+          error_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          to_phone?: string;
+          text?: string;
+          scheduled_for?: string;
+          status?: "pending" | "sent" | "failed" | "cancelled";
+          sent_message_id?: string | null;
+          error_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
   };
 };
@@ -212,6 +250,7 @@ export type Intention = Database["public"]["Tables"]["intentions"]["Row"];
 export type DbMessage = Database["public"]["Tables"]["messages"]["Row"];
 export type AuditLog = Database["public"]["Tables"]["audit_logs"]["Row"];
 export type DbSubscription = Database["public"]["Tables"]["subscriptions"]["Row"];
+export type ScheduledMessage = Database["public"]["Tables"]["scheduled_messages"]["Row"];
 
 // Lazy-initialized browser client
 let browserClient: SupabaseClient | null = null;
