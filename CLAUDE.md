@@ -277,8 +277,8 @@ STRIPE_YEARLY_PRICE_ID=price_xxx
 #### SMS Scheduling
 - **Scheduled messages table**: `scheduled_messages` - stores pending/sent/failed/cancelled scheduled messages
 - **Schedule API**: `src/app/api/schedule/route.ts` - founder-only POST/GET for scheduling messages
-- **Cron handler**: `src/app/api/cron/send-scheduled/route.ts` - hourly cron to process pending messages
-- **Vercel cron**: Configured in `vercel.json` to run hourly (free tier)
+- **Cron handler**: `src/app/api/cron/send-scheduled/route.ts` - daily cron to process pending messages
+- **Vercel cron**: Configured in `vercel.json` to run daily at 9 AM UTC (free tier only allows daily)
 
 **Required env vars (Cron):**
 ```
