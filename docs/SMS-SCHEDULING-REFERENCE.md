@@ -49,7 +49,7 @@ fetch('/api/schedule', {
 
 ## Manually Trigger Cron
 
-The cron runs automatically at 9 AM UTC daily. To trigger it manually:
+The cron runs automatically at 7:45 AM Pacific (14:45 UTC) daily. To trigger it manually:
 
 ```bash
 curl https://www.entiremind.com/api/cron/send-scheduled \
@@ -59,7 +59,7 @@ curl https://www.entiremind.com/api/cron/send-scheduled \
 ## How It Works
 
 1. Messages are stored in `scheduled_messages` table with status `pending`
-2. Cron runs daily at 9 AM UTC (Vercel free tier limitation)
+2. Cron runs daily at 7:45 AM Pacific / 14:45 UTC (Vercel free tier allows 1 daily cron)
 3. Cron finds all messages where `scheduled_for <= now` and `status = 'pending'`
 4. Each message is sent via Twilio and status updated to `sent` or `failed`
 
