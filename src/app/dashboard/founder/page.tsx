@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase";
 import { redirect } from "next/navigation";
 import { FounderMessageTable } from "@/components/dashboard/founder-message-table";
+import { SchedulingSection } from "@/components/dashboard/scheduling-section";
 import { logAdminViewedMessages } from "@/lib/audit";
 
 export default async function FounderPage() {
@@ -27,9 +29,11 @@ export default async function FounderPage() {
     redirect("/dashboard");
   }
 
+  // Use service role client for admin queries (bypasses RLS)
+  const serviceSupabase = createServiceRoleClient();
+
   // Fetch all messages with user info
-  // With the new RLS policy, admins can now see all messages
-  const { data: messages, error } = await supabase
+  const { data: messages, error } = await serviceSupabase
     .from("messages")
     .select(
       `
@@ -47,6 +51,26 @@ export default async function FounderPage() {
   if (error) {
     console.error("Error fetching messages:", error);
   }
+  const { data: scheduledMessages, error: scheduledError } = await serviceSupabase
+    .from("scheduled_messages")
+    .select("*")
+    .order("scheduled_for", { ascending: false })
+    .limit(50);
+
+  if (scheduledError) {
+    console.error("Error fetching scheduled messages:", scheduledError);
+  }
+
+  // Transform scheduled messages for display
+  const formattedScheduledMessages =
+    scheduledMessages?.map((msg) => ({
+      id: msg.id,
+      toPhone: msg.to_phone,
+      text: msg.text,
+      scheduledFor: msg.scheduled_for,
+      status: msg.status,
+      createdAt: msg.created_at,
+    })) || [];
 
   // Log audit entry for admin viewing messages
   await logAdminViewedMessages(authUser.id, messages?.length ?? 0);
@@ -76,7 +100,14 @@ export default async function FounderPage() {
         </p>
       </div>
 
-      <FounderMessageTable messages={formattedMessages} />
+      <SchedulingSection initialMessages={formattedScheduledMessages} />
+
+      <div>
+        <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+          User Messages
+        </h2>
+        <FounderMessageTable messages={formattedMessages} />
+      </div>
     </div>
   );
 }
