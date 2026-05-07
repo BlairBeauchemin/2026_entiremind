@@ -10,6 +10,7 @@ A lightly magical, SMS-based manifestation system that helps users align their t
 - **Backend**: Supabase (Postgres, Auth)
 - **Hosting**: Vercel (auto-deploys from `main`)
 - **Messaging**: Twilio SMS (A2P 10DLC approved)
+- **AI**: Anthropic Claude / OpenAI (multi-provider support)
 - **Payments**: Stripe subscriptions
 - **Components**: shadcn/ui, Framer Motion
 
@@ -46,6 +47,9 @@ Copy `.env.example` to `.env.local` and fill in:
 - `TWILIO_*` - Twilio credentials
 - `STRIPE_*` - Stripe credentials
 - `CRON_SECRET` - Secret for cron job authentication
+- `AI_PROVIDER` - `anthropic` (default) or `openai`
+- `ANTHROPIC_API_KEY` - Anthropic API key (if using Claude)
+- `OPENAI_API_KEY` - OpenAI API key (if using OpenAI)
 
 ## Key Features
 
@@ -53,10 +57,17 @@ Copy `.env.example` to `.env.local` and fill in:
 - **SMS engine** with provider abstraction (Twilio/Telnyx)
 - **User dashboard** with profile, settings, pause/resume controls
 - **Founder dashboard** (`/dashboard/founder`) with:
+  - Searchable user dropdown for message scheduling
+  - AI message generation (personalized using user context)
   - Message scheduling UI (schedule, send now, cancel)
   - User message viewer with status and direction
+  - Engagement signals table (reply rates, scores)
+- **Content Engine** with:
+  - AI-generated personalized messages (Claude/OpenAI)
+  - Signal tracking (replies, silence, engagement scores)
+  - Automated daily sends to all active users
 - **Stripe subscriptions** with checkout and billing portal
-- **Daily cron** for scheduled message delivery (7:45 AM Pacific)
+- **Daily crons** at 7:45 AM Pacific (scheduled messages + AI daily send)
 
 ## Documentation
 

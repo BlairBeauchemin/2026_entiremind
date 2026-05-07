@@ -242,9 +242,14 @@ TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 - **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer and scheduling UI
 - **Message table**: `src/components/dashboard/founder-message-table.tsx` - displays all user messages
 - **Scheduling UI**: Schedule, view, send immediately, and cancel SMS messages
-  - `src/components/dashboard/schedule-message-form.tsx` - form to schedule new messages
+  - `src/components/dashboard/schedule-message-form.tsx` - form to schedule new messages with:
+    - Searchable user dropdown (search by name, email, or phone)
+    - Auto-populate phone number when user selected
+    - AI message generation button (sparkle icon)
   - `src/components/dashboard/scheduled-messages-table.tsx` - table with status badges and actions
   - `src/components/dashboard/scheduling-section.tsx` - client wrapper with refresh logic
+- **Users API**: `src/app/api/users/route.ts` - GET endpoint returning all users with phone numbers (founder-only)
+- **AI Generate API**: `src/app/api/ai/generate/route.ts` - POST endpoint to generate AI message for a phone number (founder-only)
 - Access restricted to users with `admin` or `founder` role in database
 - Shows: direction (in/out), user name, phone, message text, status, timestamp
 
