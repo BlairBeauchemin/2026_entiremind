@@ -4,6 +4,8 @@
 
 export type SmsProvider = "telnyx" | "twilio";
 
+export type ContentType = "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual";
+
 export interface SendSmsResult {
   success: boolean;
   messageId?: string;

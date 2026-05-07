@@ -3,6 +3,14 @@
     {
       "path": "/api/cron/send-scheduled",
       "schedule": "45 14 * * *"
+    },
+    {
+      "path": "/api/cron/detect-silence",
+      "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/cron/daily-send",
+      "schedule": "45 14 * * *"
     }
   ]
 }

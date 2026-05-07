@@ -3,6 +3,7 @@ import { createServiceRoleClient } from "@/lib/supabase";
 import { redirect } from "next/navigation";
 import { FounderMessageTable } from "@/components/dashboard/founder-message-table";
 import { SchedulingSection } from "@/components/dashboard/scheduling-section";
+import { UserSignalsTable } from "@/components/dashboard/user-signals-table";
 import { logAdminViewedMessages } from "@/lib/audit";
 
 export default async function FounderPage() {
@@ -61,6 +62,40 @@ export default async function FounderPage() {
     console.error("Error fetching scheduled messages:", scheduledError);
   }
 
+  // Fetch user signals with user info
+  const { data: userSignals, error: signalsError } = await serviceSupabase
+    .from("user_signals")
+    .select(
+      `
+      *,
+      users:user_id (
+        name,
+        email
+      )
+    `
+    )
+    .order("engagement_score", { ascending: false })
+    .limit(50);
+
+  if (signalsError) {
+    console.error("Error fetching user signals:", signalsError);
+  }
+
+  // Transform user signals for display
+  const formattedSignals =
+    userSignals?.map((signal) => ({
+      userId: signal.user_id,
+      userName: (signal.users as { name: string | null })?.name || null,
+      userEmail: (signal.users as { email: string })?.email || "Unknown",
+      totalMessagesSent: signal.total_messages_sent,
+      totalReplies: signal.total_replies,
+      replyRate: signal.reply_rate,
+      avgReplyTimeMinutes: signal.avg_reply_time_minutes,
+      consecutiveSilences: signal.consecutive_silences,
+      engagementScore: signal.engagement_score,
+      lastReplyAt: signal.last_reply_at,
+    })) || [];
+
   // Transform scheduled messages for display
   const formattedScheduledMessages =
     scheduledMessages?.map((msg) => ({
@@ -101,6 +136,16 @@ export default async function FounderPage() {
       </div>
 
       <SchedulingSection initialMessages={formattedScheduledMessages} />
+
+      <div>
+        <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+          User Engagement Signals
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Engagement scores and behavioral signals for all users. Higher scores indicate more engaged users.
+        </p>
+        <UserSignalsTable signals={formattedSignals} />
+      </div>
 
       <div>
         <h2 className="font-serif text-2xl text-navy font-medium mb-4">

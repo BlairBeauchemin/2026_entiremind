@@ -252,9 +252,11 @@ TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 - `users` - user profiles with phone, email, timezone, onboarding status
 - `leads` - waitlist signups with name, email, phone, source, created_at
 - `intentions` - user intention statements (active/completed/archived)
-- `messages` - outbound + inbound SMS with `external_message_id`, `provider` column, and delivery status
+- `messages` - outbound + inbound SMS with `external_message_id`, `provider`, `content_type`, `ai_generated`, `reply_to_message_id` columns
 - `subscriptions` - Stripe subscription state per user (plan, status, period end, Stripe IDs)
 - `scheduled_messages` - scheduled SMS messages (pending/sent/failed/cancelled)
+- `signal_events` - individual behavioral events (reply, silence, unprompted, quick_reply, long_reply, stop_request)
+- `user_signals` - computed engagement aggregates per user (reply rate, engagement score, consecutive silences, etc.)
 
 #### Stripe Subscriptions
 - **Stripe client**: `src/lib/stripe.ts` - Stripe SDK singleton with API version 2026-01-28.clover
@@ -296,9 +298,61 @@ STRIPE_YEARLY_PRICE_ID=price_xxx
 CRON_SECRET=your_cron_secret
 ```
 
+#### Content Engine (Phase 1)
+AI-powered autonomous messaging system with behavioral signal tracking.
+
+**Signal Tracking:**
+- `src/lib/signals/` - Signal tracking library
+  - `index.ts` - Main exports: `trackReply()`, `trackSilence()`, `trackUnprompted()`, `trackStopRequest()`, `getUserSignals()`
+  - `compute.ts` - Engagement score computation and signal aggregation
+  - `types.ts` - TypeScript types for signals
+- **Signal Events**: reply, silence, unprompted, quick_reply, long_reply, stop_request
+- **User Signals**: Computed aggregates including reply_rate, engagement_score (0-100), consecutive_silences
+- **Automatic tracking**: Twilio webhook automatically tracks signals on inbound messages
+
+**AI Message Generation:**
+- `src/lib/ai/` - AI content generation library (multi-provider)
+  - `index.ts` - Main exports: `generateMessageForUser()`, `buildUserContext()`, `getAiProvider()`
+  - `prompts.ts` - System prompts and content type selection
+  - `types.ts` - TypeScript types for AI context and provider interface
+  - `providers/openai.ts` - OpenAI adapter (gpt-4o-mini default)
+  - `providers/anthropic.ts` - Anthropic/Claude adapter (claude-haiku-4-5-20251001 default)
+- **Provider selection**: Controlled by `AI_PROVIDER` env var (`anthropic` default, or `openai`)
+- **Content Types**: reflection, quote, check-in, action, gratitude, welcome, manual
+- **Personalization**: Uses user name, intention, and engagement signals
+- **Fallback**: Pre-written messages if AI call fails
+
+**Cron Jobs:**
+- **Daily Send**: `src/app/api/cron/daily-send/route.ts` - Sends AI-generated messages to all active users at 7:45 AM Pacific
+- **Silence Detection**: `src/app/api/cron/detect-silence/route.ts` - Detects unreplied messages and tracks silence signals at 5:00 AM Pacific
+
+**Founder Dashboard:**
+- `src/components/dashboard/user-signals-table.tsx` - Engagement signals table with scores and metrics
+- Founder page now shows user engagement signals alongside messages
+
+**Required env vars (AI - choose one provider):**
+```
+# Provider selection (default: anthropic)
+AI_PROVIDER=anthropic
+
+# Anthropic (Claude) - default
+ANTHROPIC_API_KEY=sk-ant-...
+ANTHROPIC_MODEL=claude-haiku-4-5-20251001  # optional, defaults to claude-haiku-4-5-20251001
+
+# OR OpenAI
+AI_PROVIDER=openai
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini  # optional, defaults to gpt-4o-mini
+```
+
+**Database Migration:**
+- `supabase/migrations/012_content_engine.sql` - Creates signal_events, user_signals tables, adds tracking columns to messages
+
 ### Not Yet Implemented
-- Behavioral signals table and tracking
-- Message analytics and patterns
+- Content library (curated quotes) - Phase 2
+- Advanced AI personalization based on engagement history - Phase 3
+- Timezone-aware sending - Phase 4
+- Full analytics dashboard - Phase 5
 
 ---
 
@@ -330,6 +384,11 @@ STRIPE_YEARLY_PRICE_ID
 
 # Cron
 CRON_SECRET
+
+# AI (choose one provider)
+AI_PROVIDER=anthropic  # or 'openai'
+ANTHROPIC_API_KEY      # if using anthropic (default)
+OPENAI_API_KEY         # if using openai
 
 # Admin
 ADMIN_EMAIL

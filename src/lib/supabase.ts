@@ -105,6 +105,9 @@ export type Database = {
           external_message_id: string | null;
           provider: "telnyx" | "twilio";
           status: "pending" | "sent" | "delivered" | "failed" | "received";
+          content_type: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          ai_generated: boolean;
+          reply_to_message_id: string | null;
           created_at: string;
         };
         Insert: {
@@ -117,6 +120,9 @@ export type Database = {
           external_message_id?: string | null;
           provider?: "telnyx" | "twilio";
           status?: "pending" | "sent" | "delivered" | "failed" | "received";
+          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          ai_generated?: boolean;
+          reply_to_message_id?: string | null;
           created_at?: string;
         };
         Update: {
@@ -129,7 +135,83 @@ export type Database = {
           external_message_id?: string | null;
           provider?: "telnyx" | "twilio";
           status?: "pending" | "sent" | "delivered" | "failed" | "received";
+          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          ai_generated?: boolean;
+          reply_to_message_id?: string | null;
           created_at?: string;
+        };
+      };
+      signal_events: {
+        Row: {
+          id: string;
+          user_id: string;
+          event_type: "reply" | "silence" | "unprompted" | "quick_reply" | "long_reply" | "stop_request";
+          message_id: string | null;
+          outbound_message_id: string | null;
+          metadata: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          event_type: "reply" | "silence" | "unprompted" | "quick_reply" | "long_reply" | "stop_request";
+          message_id?: string | null;
+          outbound_message_id?: string | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          event_type?: "reply" | "silence" | "unprompted" | "quick_reply" | "long_reply" | "stop_request";
+          message_id?: string | null;
+          outbound_message_id?: string | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+      };
+      user_signals: {
+        Row: {
+          id: string;
+          user_id: string;
+          total_messages_sent: number;
+          total_replies: number;
+          reply_rate: number | null;
+          avg_reply_time_minutes: number | null;
+          avg_reply_length: number | null;
+          last_reply_at: string | null;
+          last_message_sent_at: string | null;
+          consecutive_silences: number;
+          engagement_score: number;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          total_messages_sent?: number;
+          total_replies?: number;
+          reply_rate?: number | null;
+          avg_reply_time_minutes?: number | null;
+          avg_reply_length?: number | null;
+          last_reply_at?: string | null;
+          last_message_sent_at?: string | null;
+          consecutive_silences?: number;
+          engagement_score?: number;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          total_messages_sent?: number;
+          total_replies?: number;
+          reply_rate?: number | null;
+          avg_reply_time_minutes?: number | null;
+          avg_reply_length?: number | null;
+          last_reply_at?: string | null;
+          last_message_sent_at?: string | null;
+          consecutive_silences?: number;
+          engagement_score?: number;
+          updated_at?: string;
         };
       };
       audit_logs: {
@@ -251,6 +333,8 @@ export type DbMessage = Database["public"]["Tables"]["messages"]["Row"];
 export type AuditLog = Database["public"]["Tables"]["audit_logs"]["Row"];
 export type DbSubscription = Database["public"]["Tables"]["subscriptions"]["Row"];
 export type ScheduledMessage = Database["public"]["Tables"]["scheduled_messages"]["Row"];
+export type SignalEvent = Database["public"]["Tables"]["signal_events"]["Row"];
+export type UserSignals = Database["public"]["Tables"]["user_signals"]["Row"];
 
 // Lazy-initialized browser client
 let browserClient: SupabaseClient | null = null;

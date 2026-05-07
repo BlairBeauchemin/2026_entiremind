@@ -6,6 +6,7 @@ import {
   createEmptyTwimlResponse,
   createTwimlResponse,
 } from "@/lib/sms/providers/twilio";
+import { trackReply, trackUnprompted, trackStopRequest } from "@/lib/signals";
 
 // Twilio handles STOP/UNSUBSCRIBE at the platform level automatically, but we
 // log them here for our own records and to satisfy carrier review requirements.
@@ -64,7 +65,13 @@ export async function POST(request: NextRequest) {
       console.log(`STOP keyword received from ${fromNumber} — Twilio platform opt-out triggered`);
       // Store the inbound STOP message for our records, then return empty TwiML
       // (Twilio will automatically send the confirmation and block future messages)
-      await storeInboundSms(fromNumber, toNumber, text, messageSid, "twilio");
+      const stopResult = await storeInboundSms(fromNumber, toNumber, text, messageSid, "twilio");
+
+      // Track stop request signal
+      if (stopResult.success && stopResult.userId && stopResult.messageId) {
+        await trackStopRequest(stopResult.userId, stopResult.messageId);
+      }
+
       return new Response(createEmptyTwimlResponse(), {
         status: 200,
         headers: { "Content-Type": "text/xml" },
@@ -94,6 +101,23 @@ export async function POST(request: NextRequest) {
       // Log the error but return 200 to prevent Twilio from retrying
       // The message may be from an unknown number
       console.error("Failed to store inbound message:", result.error);
+    } else if (result.userId && result.messageId) {
+      // Track signal based on whether this is a reply or unprompted
+      if (result.replyToMessageId) {
+        // This is a reply to an outbound message
+        await trackReply({
+          userId: result.userId,
+          inboundMessageId: result.messageId,
+          outboundMessageId: result.replyToMessageId,
+          replyTimeMinutes: result.replyTimeMinutes ?? null,
+          replyLength: text.length,
+        });
+        console.log(`Tracked reply signal for user ${result.userId}`);
+      } else {
+        // This is an unprompted message (no recent outbound to reply to)
+        await trackUnprompted(result.userId, result.messageId);
+        console.log(`Tracked unprompted signal for user ${result.userId}`);
+      }
     }
 
     // Return TwiML response (empty = no auto-reply)

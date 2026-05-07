@@ -1,10 +1,10 @@
 import { createServiceRoleClient } from "../supabase";
-import type { SmsProvider, SmsProviderAdapter, SendSmsResult } from "./types";
+import type { SmsProvider, SmsProviderAdapter, SendSmsResult, ContentType } from "./types";
 import { telnyxAdapter } from "./providers/telnyx";
 import { twilioAdapter } from "./providers/twilio";
 
 // Re-export types
-export type { SmsProvider, SendSmsResult, InboundSmsData, SmsProviderAdapter } from "./types";
+export type { SmsProvider, SendSmsResult, InboundSmsData, SmsProviderAdapter, ContentType } from "./types";
 
 /**
  * Get the current SMS provider from environment
@@ -34,16 +34,26 @@ function getProviderAdapter(): SmsProviderAdapter {
 }
 
 /**
+ * Options for sending SMS
+ */
+export interface SendSmsOptions {
+  contentType?: ContentType;
+  aiGenerated?: boolean;
+}
+
+/**
  * Send an SMS message to a user and store it in the database
  */
 export async function sendSms(
   userId: string,
   toPhoneNumber: string,
-  text: string
+  text: string,
+  options: SendSmsOptions = {}
 ): Promise<SendSmsResult> {
   const supabase = createServiceRoleClient();
   const adapter = getProviderAdapter();
   const fromNumber = adapter.getPhoneNumber();
+  const { contentType, aiGenerated = false } = options;
 
   try {
     // Send via the configured provider
@@ -59,6 +69,8 @@ export async function sendSms(
         text: text,
         provider: adapter.provider,
         status: "failed",
+        content_type: contentType,
+        ai_generated: aiGenerated,
       });
 
       return {
@@ -79,6 +91,8 @@ export async function sendSms(
         external_message_id: result.externalMessageId,
         provider: adapter.provider,
         status: "sent",
+        content_type: contentType,
+        ai_generated: aiGenerated,
       })
       .select()
       .single();
@@ -92,6 +106,18 @@ export async function sendSms(
         error: "Message sent but failed to store in database",
       };
     }
+
+    // Update user_signals.last_message_sent_at
+    await supabase
+      .from("user_signals")
+      .upsert(
+        {
+          user_id: userId,
+          last_message_sent_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
 
     return {
       success: true,
@@ -110,6 +136,8 @@ export async function sendSms(
       text: text,
       provider: adapter.provider,
       status: "failed",
+      content_type: contentType,
+      ai_generated: aiGenerated,
     });
 
     return {
@@ -120,7 +148,20 @@ export async function sendSms(
 }
 
 /**
+ * Result of storing an inbound SMS
+ */
+export interface StoreInboundResult {
+  success: boolean;
+  messageId?: string;
+  userId?: string;
+  replyToMessageId?: string;
+  replyTimeMinutes?: number;
+  error?: string;
+}
+
+/**
  * Store an inbound SMS message from a webhook
+ * Links replies to outbound messages and calculates reply time
  */
 export async function storeInboundSms(
   fromPhoneNumber: string,
@@ -128,7 +169,7 @@ export async function storeInboundSms(
   text: string,
   externalMessageId: string,
   provider: SmsProvider
-): Promise<{ success: boolean; messageId?: string; error?: string }> {
+): Promise<StoreInboundResult> {
   const supabase = createServiceRoleClient();
 
   // Look up user by phone number
@@ -146,6 +187,44 @@ export async function storeInboundSms(
     };
   }
 
+  // Find the most recent unreplied outbound message to link this as a reply
+  // Look for outbound messages in the last 24 hours that don't have a reply
+  const twentyFourHoursAgo = new Date();
+  twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
+  const { data: recentOutbound } = await supabase
+    .from("messages")
+    .select("id, created_at")
+    .eq("user_id", user.id)
+    .eq("direction", "outbound")
+    .gte("created_at", twentyFourHoursAgo.toISOString())
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  let replyToMessageId: string | undefined;
+  let replyTimeMinutes: number | undefined;
+
+  if (recentOutbound) {
+    // Check if this outbound already has a reply
+    const { data: existingReply } = await supabase
+      .from("messages")
+      .select("id")
+      .eq("reply_to_message_id", recentOutbound.id)
+      .limit(1)
+      .single();
+
+    if (!existingReply) {
+      // This is a reply to the outbound message
+      replyToMessageId = recentOutbound.id;
+
+      // Calculate reply time in minutes
+      const outboundTime = new Date(recentOutbound.created_at).getTime();
+      const replyTime = new Date().getTime();
+      replyTimeMinutes = Math.round((replyTime - outboundTime) / (1000 * 60));
+    }
+  }
+
   // Store inbound message
   const { data: message, error: dbError } = await supabase
     .from("messages")
@@ -158,6 +237,7 @@ export async function storeInboundSms(
       external_message_id: externalMessageId,
       provider: provider,
       status: "received",
+      reply_to_message_id: replyToMessageId,
     })
     .select()
     .single();
@@ -173,6 +253,9 @@ export async function storeInboundSms(
   return {
     success: true,
     messageId: message.id,
+    userId: user.id,
+    replyToMessageId,
+    replyTimeMinutes,
   };
 }
 
@@ -189,5 +272,5 @@ export async function sendWelcomeSms(
     `Welcome to Entiremind, ${name}! You're enrolled in daily reflection prompts. ` +
     `Up to 2 msgs/day. Msg & data rates may apply. ` +
     `Reply HELP for help or STOP to cancel.`;
-  return sendSms(userId, phoneNumber, welcomeMessage);
+  return sendSms(userId, phoneNumber, welcomeMessage, { contentType: "welcome" });
 }
