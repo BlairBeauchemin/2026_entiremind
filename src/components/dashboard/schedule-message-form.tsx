@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Check, Send } from "lucide-react";
+import { Loader2, Check, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,8 +13,46 @@ interface ScheduleMessageFormProps {
 
 export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+
+  const handleGenerateAI = async () => {
+    const phone = phoneInputRef.current?.value;
+    if (!phone) {
+      setError("Enter a phone number first to generate a personalized message");
+      return;
+    }
+
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Failed to generate message");
+        return;
+      }
+
+      // Set the generated message in the textarea
+      if (textareaRef.current) {
+        textareaRef.current.value = data.message;
+      }
+    } catch {
+      setError("Failed to generate message");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,6 +133,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
               name="toPhone"
               type="tel"
               placeholder="+1234567890"
+              ref={phoneInputRef}
               className="h-11 bg-white/60 border-white/60 rounded-xl font-mono"
             />
           </div>
@@ -140,13 +179,30 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
           >
             Message
           </Label>
-          <textarea
-            id="text"
-            name="text"
-            rows={3}
-            placeholder="Enter your message..."
-            className="w-full px-4 py-3 bg-white/60 border border-white/60 rounded-xl text-navy resize-none focus:outline-none focus:ring-2 focus:ring-em-purple-300/20"
-          />
+          <div className="flex gap-2">
+            <textarea
+              id="text"
+              name="text"
+              rows={3}
+              ref={textareaRef}
+              placeholder="Enter your message..."
+              className="flex-1 px-4 py-3 bg-white/60 border border-white/60 rounded-xl text-navy resize-none focus:outline-none focus:ring-2 focus:ring-em-purple-300/20"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleGenerateAI}
+              disabled={isGenerating}
+              className="h-auto px-3 bg-white/60 border-white/60 rounded-xl hover:bg-em-purple-100/50 self-start"
+              title="Generate AI message"
+            >
+              {isGenerating ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Sparkles className="w-4 h-4 text-em-purple-500" />
+              )}
+            </Button>
+          </div>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
