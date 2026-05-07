@@ -151,7 +151,7 @@ npx shadcn@latest add [component]
 
 ## Implementation Progress
 
-### Completed (as of Feb 2026)
+### Completed (as of May 2026)
 
 #### Authentication System
 - **Email magic link auth** via Supabase Auth (no SMS provider needed for MVP)
@@ -239,9 +239,13 @@ TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 - **Integration points**: Hero section, pricing section, navigation "Join Waitlist" button
 
 #### Founder Review Interface
-- **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer
+- **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer and scheduling UI
 - **Message table**: `src/components/dashboard/founder-message-table.tsx` - displays all user messages
-- Access restricted to emails in `ADMIN_EMAIL` environment variable
+- **Scheduling UI**: Schedule, view, send immediately, and cancel SMS messages
+  - `src/components/dashboard/schedule-message-form.tsx` - form to schedule new messages
+  - `src/components/dashboard/scheduled-messages-table.tsx` - table with status badges and actions
+  - `src/components/dashboard/scheduling-section.tsx` - client wrapper with refresh logic
+- Access restricted to users with `admin` or `founder` role in database
 - Shows: direction (in/out), user name, phone, message text, status, timestamp
 
 #### Database Tables Implemented
@@ -276,9 +280,16 @@ STRIPE_YEARLY_PRICE_ID=price_xxx
 
 #### SMS Scheduling
 - **Scheduled messages table**: `scheduled_messages` - stores pending/sent/failed/cancelled scheduled messages
-- **Schedule API**: `src/app/api/schedule/route.ts` - founder-only POST/GET for scheduling messages
+- **Schedule API**: `src/app/api/schedule/route.ts` - founder-only POST/GET/PATCH for scheduling and cancelling messages
+- **Send Now API**: `src/app/api/schedule/send/route.ts` - founder-only POST to immediately send a scheduled message
 - **Cron handler**: `src/app/api/cron/send-scheduled/route.ts` - daily cron to process pending messages
-- **Vercel cron**: Configured in `vercel.json` to run daily at 9 AM UTC (free tier only allows daily)
+- **Vercel cron**: Configured in `vercel.json` to run daily at 7:45 AM Pacific (14:45 UTC)
+
+**Scheduling Features:**
+- Schedule messages with phone number, date/time, and message text
+- View all scheduled messages with status badges (pending/sent/failed/cancelled)
+- Send immediately via "Send Now" button (bypasses cron schedule)
+- Cancel pending messages
 
 **Required env vars (Cron):**
 ```
