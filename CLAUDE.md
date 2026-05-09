@@ -290,7 +290,7 @@ STRIPE_YEARLY_PRICE_ID=price_xxx
 - **Schedule API**: `src/app/api/schedule/route.ts` - founder-only POST/GET/PATCH for scheduling and cancelling messages
 - **Send Now API**: `src/app/api/schedule/send/route.ts` - founder-only POST to immediately send a scheduled message
 - **Cron handler**: `src/app/api/cron/send-scheduled/route.ts` - daily cron to process pending messages
-- **Vercel cron**: Configured in `vercel.json` to run daily at 7:45 AM Pacific (14:45 UTC)
+- **Vercel cron**: Configured in `vercel.json` (scheduled sends at 7:40 AM Pacific, AI daily send at 7:45 AM)
 
 **Scheduling Features:**
 - Schedule messages with phone number, date/time, and message text
@@ -328,7 +328,8 @@ AI-powered autonomous messaging system with behavioral signal tracking.
 - **Fallback**: Pre-written messages if AI call fails
 
 **Cron Jobs:**
-- **Daily Send**: `src/app/api/cron/daily-send/route.ts` - Sends AI-generated messages to all active users at 7:45 AM Pacific
+- **Scheduled Send**: `src/app/api/cron/send-scheduled/route.ts` - Processes pending scheduled messages at 7:40 AM Pacific
+- **Daily Send**: `src/app/api/cron/daily-send/route.ts` - Sends AI-generated messages to all active users at 7:45 AM Pacific (runs after scheduled send to avoid duplicates)
 - **Silence Detection**: `src/app/api/cron/detect-silence/route.ts` - Detects unreplied messages and tracks silence signals at 5:00 AM Pacific
 
 **Founder Dashboard:**

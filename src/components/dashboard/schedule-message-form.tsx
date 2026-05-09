@@ -354,7 +354,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
       </form>
 
       <p className="text-xs text-teal-900/40 mt-4">
-        Note: Messages are sent during the daily cron job at 7:45 AM Pacific.
+        Note: Scheduled messages are sent at 7:40 AM Pacific, followed by AI daily send at 7:45 AM.
       </p>
     </motion.div>
   );

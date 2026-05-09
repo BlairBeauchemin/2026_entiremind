@@ -67,7 +67,7 @@ Copy `.env.example` to `.env.local` and fill in:
   - Signal tracking (replies, silence, engagement scores)
   - Automated daily sends to all active users
 - **Stripe subscriptions** with checkout and billing portal
-- **Daily crons** at 7:45 AM Pacific (scheduled messages + AI daily send)
+- **Daily crons** at 7:40-7:45 AM Pacific (scheduled messages at 7:40, AI daily send at 7:45)
 
 ## Documentation
 

@@ -4,7 +4,7 @@ import { sendSms } from "@/lib/sms";
 
 /**
  * Cron handler: Process pending scheduled messages
- * Runs hourly via Vercel Cron (configured in vercel.json)
+ * Runs daily at 7:40 AM Pacific (5 min before daily-send) via Vercel Cron
  *
  * Security: Protected by CRON_SECRET header (Vercel adds this automatically)
  */
