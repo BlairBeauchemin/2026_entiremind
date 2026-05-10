@@ -181,6 +181,15 @@ npx shadcn@latest add [component]
 - Messaging controls with pause/resume toggle (persists to database)
 - Sidebar shows real user info + sign out button
 
+**Messages UI (Card-Based Journal Layout):**
+- `src/components/dashboard/message-card.tsx` - Card component for paired prompt + reply
+- `src/components/dashboard/message-feed.tsx` - Feed that pairs outbound prompts with inbound replies
+- **Layout**: Cards with left purple border accent, prompt in bold, reply in regular text
+- **Typography**: 18px+ fonts for mobile readability, WCAG AA accessible
+- **Pairing Logic**: Each outbound prompt is matched with its following inbound reply
+- **Unprompted Messages**: Standalone inbound messages shown with "You reached out:" header
+- **Accessibility**: Semantic HTML (`<article>`, `<time>`, `<section>`), ARIA labels, focus states
+
 #### Environment
 - Supabase project configured: `cprzebhlwfibajrrtuqp.supabase.co`
 - `.env.local` contains Supabase credentials
