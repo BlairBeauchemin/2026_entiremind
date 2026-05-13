@@ -8,6 +8,14 @@ export type ContentType = "reflection" | "quote" | "check-in" | "action" | "grat
 
 export type AiProvider = "openai" | "anthropic";
 
+export interface RecentReplyContext {
+  text: string;
+  themes: string[];
+  emotionalState: string;
+  sentiment: "positive" | "neutral" | "struggling";
+  hoursAgo: number;
+}
+
 export interface UserContext {
   userId: string;
   name: string | null;
@@ -16,6 +24,7 @@ export interface UserContext {
   consecutiveSilences: number;
   lastReplyAt: string | null;
   memory: UserMemorySummary | null;
+  recentReply: RecentReplyContext | null;
 }
 
 export interface GeneratedMessage {
