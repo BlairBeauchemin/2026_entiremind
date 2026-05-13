@@ -153,6 +153,33 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
                 ))}
               </select>
             </div>
+
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label htmlFor="preferredSendHour" className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+                Preferred Send Hour
+              </Label>
+              <select
+                id="preferredSendHour"
+                name="preferredSendHour"
+                defaultValue={String(user.preferred_send_hour ?? 7)}
+                className="w-full h-11 px-4 bg-white/60 border border-white/60 rounded-xl text-navy appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-em-purple-300/20"
+              >
+                {Array.from({ length: 24 }).map((_, hour) => {
+                  const label = new Date(2000, 0, 1, hour).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    hour12: true,
+                  });
+                  return (
+                    <option key={hour} value={hour}>
+                      {label}
+                    </option>
+                  );
+                })}
+              </select>
+              <p className="text-[11px] text-teal-900/50 italic mt-1">
+                We&apos;ll send around your preferred hour soon. For now all messages go out at 7:45 AM Pacific.
+              </p>
+            </div>
           </div>
 
           {error && (

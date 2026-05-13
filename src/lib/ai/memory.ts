@@ -14,6 +14,15 @@ export interface UserMemorySummary {
 
 const MEMORY_LOOKBACK_DAYS = 7;
 const MEMORY_VERSION = 1;
+const INTENTION_SHIFT_MIN_CONFIDENCE = 0.6;
+
+interface IntentionShiftDetection {
+  detected: boolean;
+  confidence: number;
+  proposedIntention: string | null;
+  rationale: string | null;
+  supportingQuoteIndices: number[];
+}
 
 let client: Anthropic | null = null;
 
@@ -53,7 +62,42 @@ function coerceSummary(raw: unknown): UserMemorySummary | null {
   };
 }
 
+function coerceIntentionShift(raw: unknown): IntentionShiftDetection {
+  const fallback: IntentionShiftDetection = {
+    detected: false,
+    confidence: 0,
+    proposedIntention: null,
+    rationale: null,
+    supportingQuoteIndices: [],
+  };
+  if (!raw || typeof raw !== "object") return fallback;
+  const obj = raw as Record<string, unknown>;
+  const confidence = typeof obj.confidence === "number" ? obj.confidence : 0;
+  const proposed =
+    typeof obj.proposed_intention === "string" &&
+    obj.proposed_intention.trim().length > 0
+      ? obj.proposed_intention.trim()
+      : null;
+  const rationale =
+    typeof obj.rationale === "string" && obj.rationale.trim().length > 0
+      ? obj.rationale.trim()
+      : null;
+  const indices = Array.isArray(obj.supporting_quote_indices)
+    ? obj.supporting_quote_indices
+        .filter((i): i is number => typeof i === "number" && Number.isInteger(i) && i >= 0)
+        .slice(0, 10)
+    : [];
+  return {
+    detected: Boolean(obj.detected) && proposed !== null,
+    confidence: Math.max(0, Math.min(1, confidence)),
+    proposedIntention: proposed,
+    rationale,
+    supportingQuoteIndices: indices,
+  };
+}
+
 interface ReplyForCompaction {
+  id: string;
   text: string;
   created_at: string;
   insights: {
@@ -65,14 +109,21 @@ interface ReplyForCompaction {
   } | null;
 }
 
-function buildUserMessage(replies: ReplyForCompaction[]): string {
+function buildUserMessage(
+  replies: ReplyForCompaction[],
+  currentIntention: string | null
+): string {
   const lines: string[] = [];
   lines.push(
-    `Below are the last ${MEMORY_LOOKBACK_DAYS} days of replies from this user, oldest first. Each entry includes brief metadata when available.`
+    `Current intention: ${currentIntention ? `"${currentIntention}"` : "(none on file)"}`
+  );
+  lines.push("");
+  lines.push(
+    `Below are the last ${MEMORY_LOOKBACK_DAYS} days of replies from this user, oldest first. Each entry is indexed. Each entry includes brief metadata when available.`
   );
   lines.push("");
 
-  for (const r of replies) {
+  replies.forEach((r, idx) => {
     const date = new Date(r.created_at).toISOString().slice(0, 10);
     const meta: string[] = [];
     if (r.insights?.sentiment) meta.push(`sentiment=${r.insights.sentiment}`);
@@ -83,11 +134,11 @@ function buildUserMessage(replies: ReplyForCompaction[]): string {
     }
     if (r.insights?.modality) meta.push(`modality=${r.insights.modality}`);
     const metaStr = meta.length > 0 ? ` [${meta.join("; ")}]` : "";
-    lines.push(`${date}${metaStr}: ${r.text}`);
-  }
+    lines.push(`[${idx}] ${date}${metaStr}: ${r.text}`);
+  });
 
   lines.push("");
-  lines.push("Compact these into the structured JSON memory blob.");
+  lines.push("Produce the memory blob and intention shift assessment as a single JSON object.");
   return lines.join("\n");
 }
 
@@ -140,7 +191,7 @@ export async function compactUserMemory(
 
   const { data: replies, error: repliesError } = await supabase
     .from("messages")
-    .select("text, created_at, insights")
+    .select("id, text, created_at, insights")
     .eq("user_id", userId)
     .eq("direction", "inbound")
     .gte("created_at", cutoff.toISOString())
@@ -167,12 +218,24 @@ export async function compactUserMemory(
     return seed;
   }
 
+  // Fetch the user's current active intention so the model can compare against it
+  const { data: intentionRow } = await supabase
+    .from("intentions")
+    .select("text")
+    .eq("user_id", userId)
+    .eq("status", "active")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+  const currentIntention = intentionRow?.text ?? null;
+
+  const typedReplies = replies as ReplyForCompaction[];
   const anthropic = getClient();
-  const userMessage = buildUserMessage(replies as ReplyForCompaction[]);
+  const userMessage = buildUserMessage(typedReplies, currentIntention);
 
   const response = await anthropic.messages.create({
     model: process.env.ANTHROPIC_MEMORY_MODEL || "claude-sonnet-4-6",
-    max_tokens: 800,
+    max_tokens: 1000,
     system: MEMORY_SYSTEM_PROMPT,
     messages: [{ role: "user", content: userMessage }],
   });
@@ -206,7 +269,72 @@ export async function compactUserMemory(
   }
 
   await persistMemory(userId, summary);
+
+  // Intention shift detection (best-effort; failure should not block memory)
+  if (
+    parsed &&
+    typeof parsed === "object" &&
+    "intention_shift" in (parsed as Record<string, unknown>)
+  ) {
+    const shift = coerceIntentionShift((parsed as Record<string, unknown>).intention_shift);
+    if (
+      shift.detected &&
+      shift.confidence >= INTENTION_SHIFT_MIN_CONFIDENCE &&
+      shift.proposedIntention &&
+      currentIntention
+    ) {
+      await recordIntentionShift({
+        userId,
+        currentIntention,
+        proposedIntention: shift.proposedIntention,
+        confidence: shift.confidence,
+        rationale: shift.rationale,
+        supportingMessageIds: shift.supportingQuoteIndices
+          .map((i) => typedReplies[i]?.id)
+          .filter((id): id is string => !!id),
+      });
+    }
+  }
+
   return summary;
+}
+
+async function recordIntentionShift(params: {
+  userId: string;
+  currentIntention: string;
+  proposedIntention: string;
+  confidence: number;
+  rationale: string | null;
+  supportingMessageIds: string[];
+}): Promise<void> {
+  const supabase = createServiceRoleClient();
+
+  // Avoid duplicates: if there's already a pending suggestion with the same
+  // proposed text for this user, skip.
+  const { data: existing } = await supabase
+    .from("intention_shift_suggestions")
+    .select("id")
+    .eq("user_id", params.userId)
+    .eq("status", "pending")
+    .eq("proposed_intention", params.proposedIntention)
+    .limit(1)
+    .single();
+
+  if (existing) return;
+
+  const { error } = await supabase.from("intention_shift_suggestions").insert({
+    user_id: params.userId,
+    current_intention: params.currentIntention,
+    proposed_intention: params.proposedIntention,
+    confidence: params.confidence,
+    rationale: params.rationale,
+    supporting_message_ids: params.supportingMessageIds,
+    status: "pending",
+  });
+
+  if (error) {
+    console.error(`Failed to record intention shift for user ${params.userId}:`, error);
+  }
 }
 
 async function persistMemory(
