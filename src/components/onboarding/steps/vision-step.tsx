@@ -4,38 +4,25 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, ArrowLeft, Target } from "lucide-react";
-import { createInitialIntention } from "@/lib/onboarding/actions";
+import { ArrowLeft, Sun } from "lucide-react";
 
-interface IntentionStepProps {
+interface VisionStepProps {
+  value: string;
+  onChange: (value: string) => void;
   onNext: () => void;
   onBack: () => void;
 }
 
-export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
-  const [intention, setIntention] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+export function VisionStep({ value, onChange, onNext, onBack }: VisionStepProps) {
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!intention.trim()) {
-      setError("Please share what you want to manifest");
+    if (!value.trim()) {
+      setError("Take a moment to picture it");
       return;
     }
-
-    setIsLoading(true);
     setError(null);
-
-    const result = await createInitialIntention(intention.trim());
-
-    if ("error" in result) {
-      setError(result.error);
-      setIsLoading(false);
-      return;
-    }
-
     onNext();
   };
 
@@ -49,40 +36,36 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
     >
       <div className="text-center space-y-2">
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-full bg-em-purple-300/20 flex items-center justify-center">
-            <Target className="w-6 h-6 text-em-purple-400" />
+          <div className="w-12 h-12 rounded-full bg-em-yellow-400/20 flex items-center justify-center">
+            <Sun className="w-6 h-6 text-em-yellow-400" />
           </div>
         </div>
         <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
-          What do you want to manifest?
+          If this manifested, what would your life look like?
         </h1>
         <p className="text-teal-900/60 text-sm">
-          Share your intention. This is the beginning of your journey.
+          Picture the version of you that&apos;s already living it.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label
-            htmlFor="intention"
+            htmlFor="vision"
             className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
           >
-            Your Intention
+            Your Vision
           </Label>
           <textarea
-            id="intention"
-            value={intention}
-            onChange={(e) => setIntention(e.target.value)}
-            placeholder="I want to manifest..."
+            id="vision"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="In that life, I..."
             rows={4}
             className="w-full px-4 py-3 bg-white/60 border border-white/60 rounded-xl text-navy placeholder:text-teal-900/30 resize-none focus:outline-none focus:ring-2 focus:ring-em-purple-300/30"
             autoFocus
           />
         </div>
-
-        <p className="text-xs text-teal-900/40 italic">
-          &quot;What you seek is seeking you.&quot; — Rumi
-        </p>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -97,14 +80,9 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
           </Button>
           <Button
             type="submit"
-            disabled={isLoading}
             className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium"
           >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              "Continue"
-            )}
+            Continue
           </Button>
         </div>
       </form>

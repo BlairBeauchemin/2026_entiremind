@@ -4,31 +4,45 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, ArrowLeft, Target } from "lucide-react";
-import { createInitialIntention } from "@/lib/onboarding/actions";
+import { Loader2, ArrowLeft, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { completeFullOnboarding } from "@/lib/onboarding/actions";
 
-interface IntentionStepProps {
-  onNext: () => void;
+interface AlignedStateStepProps {
+  value: string;
+  onChange: (value: string) => void;
   onBack: () => void;
+  vision: string;
+  obstacles: string;
 }
 
-export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
-  const [intention, setIntention] = useState("");
+export function AlignedStateStep({
+  value,
+  onChange,
+  onBack,
+  vision,
+  obstacles,
+}: AlignedStateStepProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!intention.trim()) {
-      setError("Please share what you want to manifest");
+    if (!value.trim()) {
+      setError("Notice when you feel most like you");
       return;
     }
 
     setIsLoading(true);
     setError(null);
 
-    const result = await createInitialIntention(intention.trim());
+    const result = await completeFullOnboarding({
+      vision: vision.trim(),
+      obstacles: obstacles.trim(),
+      alignedState: value.trim(),
+    });
 
     if ("error" in result) {
       setError(result.error);
@@ -36,7 +50,7 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
       return;
     }
 
-    onNext();
+    router.push("/dashboard");
   };
 
   return (
@@ -49,40 +63,36 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
     >
       <div className="text-center space-y-2">
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-full bg-em-purple-300/20 flex items-center justify-center">
-            <Target className="w-6 h-6 text-em-purple-400" />
+          <div className="w-12 h-12 rounded-full bg-em-yellow-400/20 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-em-yellow-400" />
           </div>
         </div>
         <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
-          What do you want to manifest?
+          When do you feel most like yourself?
         </h1>
         <p className="text-teal-900/60 text-sm">
-          Share your intention. This is the beginning of your journey.
+          The moments where you&apos;re not performing. Where you&apos;re just here.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label
-            htmlFor="intention"
+            htmlFor="aligned-state"
             className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
           >
-            Your Intention
+            Most Aligned
           </Label>
           <textarea
-            id="intention"
-            value={intention}
-            onChange={(e) => setIntention(e.target.value)}
-            placeholder="I want to manifest..."
+            id="aligned-state"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="I feel most like myself when..."
             rows={4}
             className="w-full px-4 py-3 bg-white/60 border border-white/60 rounded-xl text-navy placeholder:text-teal-900/30 resize-none focus:outline-none focus:ring-2 focus:ring-em-purple-300/30"
             autoFocus
           />
         </div>
-
-        <p className="text-xs text-teal-900/40 italic">
-          &quot;What you seek is seeking you.&quot; — Rumi
-        </p>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -91,6 +101,7 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
             type="button"
             variant="outline"
             onClick={onBack}
+            disabled={isLoading}
             className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -103,7 +114,7 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              "Continue"
+              "Begin My Journey"
             )}
           </Button>
         </div>
