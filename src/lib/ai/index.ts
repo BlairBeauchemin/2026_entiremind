@@ -4,6 +4,7 @@ import type { UserContext, GeneratedMessage, ContentType, AiProvider, AiProvider
 import { SYSTEM_PROMPT, buildUserPrompt, selectContentType } from "./prompts";
 import { openaiAdapter } from "./providers/openai";
 import { anthropicAdapter } from "./providers/anthropic";
+import { loadUserMemory } from "./memory";
 
 // Re-export types
 export type { UserContext, GeneratedMessage, ContentType, AiProvider } from "./types";
@@ -62,6 +63,9 @@ export async function buildUserContext(userId: string): Promise<UserContext> {
   // Get user signals
   const signals = await getUserSignals(userId);
 
+  // Load compacted memory blob (refreshed weekly by the memory cron)
+  const memory = await loadUserMemory(userId);
+
   return {
     userId,
     name: user?.name || null,
@@ -69,6 +73,7 @@ export async function buildUserContext(userId: string): Promise<UserContext> {
     engagementScore: signals?.engagementScore ?? 50,
     consecutiveSilences: signals?.consecutiveSilences ?? 0,
     lastReplyAt: signals?.lastReplyAt ?? null,
+    memory,
   };
 }
 

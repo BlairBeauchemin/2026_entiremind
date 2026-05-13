@@ -2,6 +2,8 @@
  * AI content generation types
  */
 
+import type { UserMemorySummary } from "./memory";
+
 export type ContentType = "reflection" | "quote" | "check-in" | "action" | "gratitude";
 
 export type AiProvider = "openai" | "anthropic";
@@ -13,6 +15,7 @@ export interface UserContext {
   engagementScore: number;
   consecutiveSilences: number;
   lastReplyAt: string | null;
+  memory: UserMemorySummary | null;
 }
 
 export interface GeneratedMessage {

@@ -1,4 +1,5 @@
 import type { UserContext, ContentType } from "./types";
+import { renderMemoryForPrompt } from "./memory";
 
 /**
  * System prompt for message generation
@@ -58,6 +59,14 @@ export function buildUserPrompt(context: UserContext, contentType: ContentType):
 
   if (context.intention) {
     parts.push(`Their stated intention is: "${context.intention}"`);
+  }
+
+  // Inject the compacted memory blob (refreshed weekly)
+  if (context.memory) {
+    parts.push(renderMemoryForPrompt(context.memory));
+    parts.push(
+      "Let the memory inform tone and direction, but do not quote it back to the user. Pick at most one thread to lean on; do not list themes."
+    );
   }
 
   // Add engagement context for personalization
