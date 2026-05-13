@@ -107,17 +107,19 @@ export async function sendSms(
       };
     }
 
-    // Update user_signals.last_message_sent_at
-    await supabase
-      .from("user_signals")
-      .upsert(
-        {
-          user_id: userId,
-          last_message_sent_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id" }
-      );
+    // Update user_signals.last_message_sent_at (skip for acks — they're reactive)
+    if (contentType !== "ack") {
+      await supabase
+        .from("user_signals")
+        .upsert(
+          {
+            user_id: userId,
+            last_message_sent_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "user_id" }
+        );
+    }
 
     return {
       success: true,

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { storeInboundSms } from "@/lib/sms";
+import { NextRequest, NextResponse, after } from "next/server";
+import { sendSms, storeInboundSms } from "@/lib/sms";
 import {
   parseTwilioWebhookPayload,
   validateTwilioSignature,
@@ -7,6 +7,9 @@ import {
   createTwimlResponse,
 } from "@/lib/sms/providers/twilio";
 import { trackReply, trackUnprompted, trackStopRequest } from "@/lib/signals";
+import { enrichInboundReply } from "@/lib/ai/enrich";
+import { pickSoftAck } from "@/lib/acks";
+import { createServiceRoleClient } from "@/lib/supabase";
 
 // Twilio handles STOP/UNSUBSCRIBE at the platform level automatically, but we
 // log them here for our own records and to satisfy carrier review requirements.
@@ -16,6 +19,70 @@ const HELP_KEYWORDS = new Set(["HELP", "INFO"]);
 const HELP_RESPONSE =
   "Entiremind: For support email support@entiremind.com or visit entiremind.com/sms-policy. " +
   "Reply STOP to unsubscribe. Msg & data rates may apply.";
+
+async function processEnrichmentAndAck(params: {
+  userId: string;
+  inboundMessageId: string;
+  inboundText: string;
+  fromPhoneNumber: string;
+}) {
+  const { userId, inboundMessageId, inboundText, fromPhoneNumber } = params;
+  const supabase = createServiceRoleClient();
+
+  const enrichment = await enrichInboundReply(inboundText);
+
+  if (enrichment) {
+    const { error: insightsError } = await supabase
+      .from("messages")
+      .update({ insights: enrichment })
+      .eq("id", inboundMessageId);
+
+    if (insightsError) {
+      console.error("Failed to persist insights:", insightsError);
+    }
+
+    if (enrichment.themes.length > 0) {
+      const themeRows = enrichment.themes.map((theme) => ({
+        message_id: inboundMessageId,
+        theme,
+        category: enrichment.category,
+        user_id: userId,
+      }));
+      const { error: themesError } = await supabase
+        .from("message_themes")
+        .insert(themeRows);
+      if (themesError) {
+        console.error("Failed to persist message themes:", themesError);
+      }
+    }
+  }
+
+  const useMirror = Boolean(
+    enrichment && enrichment.substantive && enrichment.acknowledgement
+  );
+  const ackText = useMirror
+    ? (enrichment!.acknowledgement as string)
+    : await pickSoftAck(userId);
+
+  const ackResult = await sendSms(userId, fromPhoneNumber, ackText, {
+    contentType: "ack",
+    aiGenerated: useMirror,
+  });
+
+  if (!ackResult.success) {
+    console.error("Failed to send ack:", ackResult.error);
+    return;
+  }
+
+  const { error: ackFlagError } = await supabase
+    .from("messages")
+    .update({ ack_sent: true })
+    .eq("id", inboundMessageId);
+
+  if (ackFlagError) {
+    console.error("Failed to mark ack_sent on inbound:", ackFlagError);
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -118,6 +185,23 @@ export async function POST(request: NextRequest) {
         await trackUnprompted(result.userId, result.messageId);
         console.log(`Tracked unprompted signal for user ${result.userId}`);
       }
+
+      // Enrich + ack after the response returns to Twilio.
+      // Background execution keeps webhook latency low and decouples Twilio
+      // retries from Anthropic / outbound send latency.
+      const { userId, messageId } = result;
+      after(async () => {
+        try {
+          await processEnrichmentAndAck({
+            userId,
+            inboundMessageId: messageId,
+            inboundText: text,
+            fromPhoneNumber: fromNumber,
+          });
+        } catch (err) {
+          console.error("Enrichment/ack background job failed:", err);
+        }
+      });
     }
 
     // Return TwiML response (empty = no auto-reply)
