@@ -58,12 +58,13 @@ export async function recomputeUserSignals(userId: string): Promise<void> {
     return;
   }
 
-  // Get message counts
+  // Count only real prompts (exclude acks, welcome messages, etc.)
   const { count: totalSent } = await supabase
     .from("messages")
     .select("*", { count: "exact", head: true })
     .eq("user_id", userId)
-    .eq("direction", "outbound");
+    .eq("direction", "outbound")
+    .in("content_type", ["reflection", "quote", "check-in", "action", "gratitude", "manual"]);
 
   const replyEvents = events?.filter((e) => e.event_type === "reply") || [];
 

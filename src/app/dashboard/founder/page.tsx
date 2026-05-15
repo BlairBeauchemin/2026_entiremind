@@ -13,6 +13,7 @@ import {
   type FounderUserInsight,
 } from "@/components/dashboard/founder-user-insights";
 import { logAdminViewedMessages } from "@/lib/audit";
+import { FounderRefreshButton } from "@/components/dashboard/founder-refresh-button";
 
 const INSIGHT_LOOKBACK_DAYS = 30;
 const SENTIMENT_LOOKBACK_DAYS = 14;
@@ -178,13 +179,16 @@ export default async function FounderPage() {
 
   return (
     <div className="space-y-10">
-      <div>
-        <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
-          Founder Review
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          View all user messages to understand patterns and improve the experience.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
+            Founder Review
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            View all user messages to understand patterns and improve the experience.
+          </p>
+        </div>
+        <FounderRefreshButton />
       </div>
 
       <div>
