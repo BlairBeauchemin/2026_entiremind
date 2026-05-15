@@ -363,11 +363,107 @@ OPENAI_MODEL=gpt-4o-mini  # optional, defaults to gpt-4o-mini
 **Database Migration:**
 - `supabase/migrations/012_content_engine.sql` - Creates signal_events, user_signals tables, adds tracking columns to messages
 
+#### Content Engine v2 (Trusted Guide)
+Evolves the content engine from a daily message generator into a system that listens, remembers, and adapts.
+- **PRD**: `docs/prds/2026-05-12-content-engine-v2.md`
+- **Implementation plan**: `docs/plans/2026-05-12-content-engine-v2.md`
+- **Database migration**: `supabase/migrations/013_content_engine_v2.sql`
+
+**Reply enrichment + acknowledgement (every inbound gets feedback):**
+- `src/lib/ai/enrich.ts` - Haiku-powered enrichment with 3s timeout, returns sentiment, emotional_state, themes, category, modality, mentions, open_thread, substantive flag, and (when substantive) an AI mirror line
+- `src/lib/ai/prompts/enrich.ts` - System prompt for the enrichment + mirror call
+- `src/lib/acks/` - Soft-ack library reader, picks from `soft_acks` table, excludes the user's last 5 ack texts to avoid repetition
+- Twilio webhook uses `next/server` `after()` to enrich + ack in the background — Twilio gets its TwiML response immediately
+- Substantive replies (≥30 chars or strong emotional/thematic signal) get an AI-generated mirror; short replies get a soft ack from the curated library
+- STOP/HELP keywords bypass acks entirely
+
+**User memory + weekly compaction:**
+- `src/lib/ai/memory.ts` - `compactUserMemory()`, `loadUserMemory()`, `renderMemoryForPrompt()`, `buildSeedMemoryFromOnboarding()`
+- `src/lib/ai/prompts/memory.ts` - Sonnet system prompt for compaction + intention shift detection
+- `src/app/api/cron/weekly-memory/route.ts` - Monday morning cron (12:00 UTC ≈ 4-5 AM Pacific)
+- Compacts last 7 days of replies + insights into structured JSONB memory blob: `themes`, `vision`, `obstacles`, `recent_emotional_state`, `open_threads`, `last_breakthrough`, `tone_notes`
+- New users seed memory from onboarding answers; existing users have memory refreshed weekly
+- Memory injected into every daily prompt with "do not quote back" guidance
+- Previous memory versions archived to `user_memory_history`
+- Same Sonnet call also detects intention shifts (see below)
+
+**Smarter content selection (`src/lib/ai/prompts.ts`):**
+- `selectContentType()` is now async and rules-based:
+  - No same content type two days in a row (configurable via `no_repeat_days`)
+  - Gentle types only (check-in, gratitude) when user is silent (≥3 silences) or last sentiment was struggling
+  - `quote` capped at 1 per 7 days per user
+  - 60% probability: weight by per-type reply rate (types with ≥5 sends in last 30 days qualify)
+  - Otherwise: uniform pick from eligible set
+- `quote` is now selectable (was hardcoded out of rotation in v1)
+- All thresholds live in `content_selection_config` table — founder can tune from Supabase dashboard without deploy
+
+**Next-day reply reference:**
+- `buildUserContext()` loads the most recent substantive reply within 48 hours
+- When present, the daily prompt builder injects the reply's text, themes, emotional state, and sentiment with guidance: "subtly reference if it fits naturally, do not force a callback"
+- Substantive flag set by the enrichment call — short replies are not surfaced
+
+**Extended web onboarding (`src/app/onboarding/page.tsx`):**
+- 7 steps total: welcome → name → phone → intention → vision → obstacles → aligned-state
+- New steps in `src/components/onboarding/steps/`: `vision-step.tsx`, `obstacles-step.tsx`, `aligned-state-step.tsx`
+- `createInitialIntention` server action now only saves the intention (no longer completes onboarding)
+- `completeFullOnboarding` action (called from the final step) writes `onboarding_responses`, seeds `user_memory` from the four answers, marks `onboarding_completed`, and fires welcome SMS
+- Vision, obstacles, aligned-state accumulate in client state and persist together at the end
+
+**Intention shift detection:**
+- Same weekly Sonnet pass that compacts memory also assesses whether the user's stated intention has drifted
+- Confidence threshold of 0.6 to surface a suggestion (false positives are costly; missed shifts surface again next week)
+- Suggestions written to `intention_shift_suggestions` table with status='pending'
+- Founder reviews via `IntentionShiftReview` component on `/dashboard/founder`
+- Approve: archives current active intention, creates new one with proposed text
+- Dismiss: marks suggestion dismissed, no change to active intention
+- API: `POST /api/founder/intention-shifts` with `{ id, action: 'approve' | 'dismiss' }`
+
+**Founder review surfaces (`/dashboard/founder`):**
+- `IntentionShiftReview` - pending intention shifts queue at top
+- `FounderUserInsights` - per-user expandable cards showing memory blob, recent theme cloud (last 30 days), sentiment trend bar (last 14 days), and reply-rate-by-content-type table
+
+**Timezone + preferred send hour (Phase 1 of Phase 2 UI; cron honoring deferred):**
+- `users.preferred_send_hour` (0–23, default 7) added to settings UI
+- Daily-send still goes out at 7:45 AM Pacific globally — preference is stored but not yet honored
+- UI copy: "We'll send around your preferred hour soon. For now all messages go out at 7:45 AM Pacific."
+- Will activate when Vercel Pro upgrade enables hourly crons
+
+**Daily-send bug fix:**
+- The "already sent today" check now excludes `content_type = 'ack'` so a user who replied to a prompt still receives the next day's morning message
+
+**Cron Jobs (updated):**
+- **Scheduled Send**: `40 14 * * *` (7:40 AM Pacific) - processes pending scheduled messages
+- **Daily Send**: `45 14 * * *` (7:45 AM Pacific) - AI-generated daily prompts
+- **Silence Detection**: `0 12 * * *` (4-5 AM Pacific) - flags unreplied messages
+- **Weekly Memory**: `0 12 * * 1` (Monday 4-5 AM Pacific) - compacts user replies + detects intention shifts
+
+**Database Tables Added (migration 013):**
+- `message_themes` - one row per (message_id, theme) pair with required category
+- `user_memory` - current memory blob per user (JSONB), version, token_count
+- `user_memory_history` - archived previous memory versions
+- `onboarding_responses` - intention, vision, obstacles, aligned_state per user
+- `intention_shift_suggestions` - founder-reviewed intention updates
+- `content_selection_config` - singleton table for runtime-tunable selection rules
+- `soft_acks` - rotating library of acknowledgement phrases (15 seeded)
+- `messages.insights` JSONB column added (enrichment payload)
+- `messages.ack_sent` BOOLEAN column added
+- `messages.content_type` CHECK extended to include `'ack'`
+- `users.preferred_send_hour` INTEGER added
+
+**Cost notes:**
+- Enrichment + ack: Haiku, ~$0.0002 per inbound
+- Daily prompt: Haiku, ~$0.0002 per send
+- Weekly memory: Sonnet, ~$0.005 per active user per week
+- Soft acks: $0 (database lookup, no LLM call)
+- Prompt caching deliberately not enabled (system prompt is well under Haiku's 2048-token cache minimum at current scale)
+
 ### Not Yet Implemented
-- Content library (curated quotes) - Phase 2
-- Advanced AI personalization based on engagement history - Phase 3
-- Timezone-aware sending - Phase 4
-- Full analytics dashboard - Phase 5
+- Hourly send cadence honoring `preferred_send_hour` (waiting on Vercel Pro)
+- True timezone-aware delivery (Phase 2)
+- Embedding-based reply retrieval for richer prompts (Phase 3)
+- Bandit-style content selection replacing rules (Phase 3)
+- User-facing insights surface ("here's what we've noticed") (Phase 3)
+- Fully autonomous intention updates without founder approval (Phase 4)
 
 ---
 

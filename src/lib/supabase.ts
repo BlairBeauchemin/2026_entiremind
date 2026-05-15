@@ -37,6 +37,7 @@ export type Database = {
           phone: string | null;
           name: string | null;
           timezone: string;
+          preferred_send_hour: number;
           status: "active" | "paused" | "cancelled";
           role: "user" | "admin" | "founder";
           onboarding_completed: boolean;
@@ -49,6 +50,7 @@ export type Database = {
           phone?: string | null;
           name?: string | null;
           timezone?: string;
+          preferred_send_hour?: number;
           status?: "active" | "paused" | "cancelled";
           role?: "user" | "admin" | "founder";
           onboarding_completed?: boolean;
@@ -61,6 +63,7 @@ export type Database = {
           phone?: string | null;
           name?: string | null;
           timezone?: string;
+          preferred_send_hour?: number;
           status?: "active" | "paused" | "cancelled";
           role?: "user" | "admin" | "founder";
           onboarding_completed?: boolean;

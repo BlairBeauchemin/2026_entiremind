@@ -82,7 +82,9 @@ export async function GET(request: Request) {
     if (!user.phone) continue;
 
     try {
-      // Check if we already sent a message to this user today
+      // Check if we already sent a daily prompt to this user today.
+      // Exclude 'ack' messages — those are reactive responses to user replies
+      // and shouldn't block the morning prompt.
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
 
@@ -91,6 +93,7 @@ export async function GET(request: Request) {
         .select("id")
         .eq("user_id", user.id)
         .eq("direction", "outbound")
+        .or("content_type.neq.ack,content_type.is.null")
         .gte("created_at", todayStart.toISOString())
         .limit(1);
 

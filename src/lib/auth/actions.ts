@@ -24,12 +24,19 @@ export async function updateProfile(formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const timezone = formData.get("timezone") as string;
+  const preferredSendHourRaw = formData.get("preferredSendHour");
 
-  const updates: Record<string, string | null> = {};
+  const updates: Record<string, string | number | null> = {};
 
   if (name !== undefined) updates.name = name || null;
   if (email !== undefined) updates.email = email || null;
   if (timezone !== undefined) updates.timezone = timezone;
+  if (preferredSendHourRaw !== null && preferredSendHourRaw !== undefined) {
+    const parsed = parseInt(String(preferredSendHourRaw), 10);
+    if (Number.isInteger(parsed) && parsed >= 0 && parsed <= 23) {
+      updates.preferred_send_hour = parsed;
+    }
+  }
 
   const { error } = await supabase
     .from("users")

@@ -1,9 +1,12 @@
 import { createServiceRoleClient } from "../supabase";
 import { getUserSignals } from "../signals";
-import type { UserContext, GeneratedMessage, ContentType, AiProvider, AiProviderAdapter } from "./types";
+import type { UserContext, GeneratedMessage, ContentType, AiProvider, AiProviderAdapter, RecentReplyContext } from "./types";
 import { SYSTEM_PROMPT, buildUserPrompt, selectContentType } from "./prompts";
 import { openaiAdapter } from "./providers/openai";
 import { anthropicAdapter } from "./providers/anthropic";
+import { loadUserMemory } from "./memory";
+
+const RECENT_REPLY_LOOKBACK_HOURS = 48;
 
 // Re-export types
 export type { UserContext, GeneratedMessage, ContentType, AiProvider } from "./types";
@@ -62,6 +65,12 @@ export async function buildUserContext(userId: string): Promise<UserContext> {
   // Get user signals
   const signals = await getUserSignals(userId);
 
+  // Load compacted memory blob (refreshed weekly by the memory cron)
+  const memory = await loadUserMemory(userId);
+
+  // Load most recent substantive reply within the lookback window
+  const recentReply = await loadRecentSubstantiveReply(userId);
+
   return {
     userId,
     name: user?.name || null,
@@ -69,6 +78,53 @@ export async function buildUserContext(userId: string): Promise<UserContext> {
     engagementScore: signals?.engagementScore ?? 50,
     consecutiveSilences: signals?.consecutiveSilences ?? 0,
     lastReplyAt: signals?.lastReplyAt ?? null,
+    memory,
+    recentReply,
+  };
+}
+
+interface ReplyRow {
+  text: string;
+  created_at: string;
+  insights: {
+    sentiment?: "positive" | "neutral" | "struggling";
+    emotional_state?: string;
+    themes?: string[];
+    substantive?: boolean;
+  } | null;
+}
+
+async function loadRecentSubstantiveReply(
+  userId: string
+): Promise<RecentReplyContext | null> {
+  const supabase = createServiceRoleClient();
+
+  const cutoff = new Date();
+  cutoff.setHours(cutoff.getHours() - RECENT_REPLY_LOOKBACK_HOURS);
+
+  const { data: reply } = await supabase
+    .from("messages")
+    .select("text, created_at, insights")
+    .eq("user_id", userId)
+    .eq("direction", "inbound")
+    .gte("created_at", cutoff.toISOString())
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (!reply) return null;
+  const row = reply as ReplyRow;
+  if (!row.insights?.substantive) return null;
+
+  const ageMs = Date.now() - new Date(row.created_at).getTime();
+  const hoursAgo = Math.round(ageMs / (1000 * 60 * 60));
+
+  return {
+    text: row.text,
+    themes: row.insights.themes ?? [],
+    emotionalState: row.insights.emotional_state ?? "unspecified",
+    sentiment: row.insights.sentiment ?? "neutral",
+    hoursAgo,
   };
 }
 
@@ -82,8 +138,8 @@ export async function generateMessageForUser(
   const adapter = getProviderAdapter();
   const context = await buildUserContext(userId);
 
-  // Select content type (use preferred if provided, otherwise AI selects)
-  const contentType = preferredContentType || selectContentType(context);
+  // Select content type (use preferred if provided, otherwise rules-based selection)
+  const contentType = preferredContentType || (await selectContentType(context));
 
   // Build the prompt
   const userPrompt = buildUserPrompt(context, contentType);
