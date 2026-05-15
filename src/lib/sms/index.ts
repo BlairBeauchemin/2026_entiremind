@@ -199,6 +199,7 @@ export async function storeInboundSms(
     .select("id, created_at")
     .eq("user_id", user.id)
     .eq("direction", "outbound")
+    .in("content_type", ["reflection", "quote", "check-in", "action", "gratitude", "manual"])
     .gte("created_at", twentyFourHoursAgo.toISOString())
     .order("created_at", { ascending: false })
     .limit(1)
