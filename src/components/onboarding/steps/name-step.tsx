@@ -11,9 +11,11 @@ import { updateOnboardingName } from "@/lib/onboarding/actions";
 interface NameStepProps {
   onNext: () => void;
   onBack: () => void;
+  /** Lift the saved name into flow state so the reveal can address the user. */
+  onNameChange?: (name: string) => void;
 }
 
-export function NameStep({ onNext, onBack }: NameStepProps) {
+export function NameStep({ onNext, onBack, onNameChange }: NameStepProps) {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +23,8 @@ export function NameStep({ onNext, onBack }: NameStepProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim()) {
+    const trimmed = name.trim();
+    if (!trimmed) {
       setError("Please enter your name");
       return;
     }
@@ -29,7 +32,7 @@ export function NameStep({ onNext, onBack }: NameStepProps) {
     setIsLoading(true);
     setError(null);
 
-    const result = await updateOnboardingName(name.trim());
+    const result = await updateOnboardingName(trimmed);
 
     if ("error" in result) {
       setError(result.error);
@@ -37,6 +40,7 @@ export function NameStep({ onNext, onBack }: NameStepProps) {
       return;
     }
 
+    onNameChange?.(trimmed);
     onNext();
   };
 
@@ -82,6 +86,7 @@ export function NameStep({ onNext, onBack }: NameStepProps) {
           <Button
             type="button"
             variant="outline"
+            aria-label="Go back"
             onClick={onBack}
             className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
           >

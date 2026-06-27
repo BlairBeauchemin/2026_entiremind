@@ -5,6 +5,9 @@ import { createServiceRoleClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { sendWelcomeSms } from "@/lib/sms";
 import { buildSeedMemoryFromOnboarding } from "@/lib/ai/memory";
+import { scoreProfile } from "@/lib/persona/score";
+import { QUIZ_VERSION } from "@/lib/persona/questions";
+import type { PersonaProfile, QuizAnswers } from "@/lib/persona/types";
 
 type ActionResult = { success: true } | { error: string };
 
@@ -16,7 +19,9 @@ function revalidateIntentionPaths() {
   revalidatePath("/dashboard/intentions");
 }
 
-export async function updateOnboardingName(name: string): Promise<ActionResult> {
+export async function updateOnboardingName(
+  name: string,
+): Promise<ActionResult> {
   const supabase = await createClient();
 
   const {
@@ -39,7 +44,9 @@ export async function updateOnboardingName(name: string): Promise<ActionResult> 
   return { success: true };
 }
 
-export async function updateOnboardingPhone(phone: string): Promise<ActionResult> {
+export async function updateOnboardingPhone(
+  phone: string,
+): Promise<ActionResult> {
   const supabase = await createClient();
 
   const {
@@ -67,7 +74,9 @@ export async function updateOnboardingPhone(phone: string): Promise<ActionResult
  * Does NOT complete onboarding — that happens at the final step
  * (completeFullOnboarding) once vision/obstacles/aligned-state are collected.
  */
-export async function createInitialIntention(text: string): Promise<ActionResult> {
+export async function createInitialIntention(
+  text: string,
+): Promise<ActionResult> {
   const supabase = await createClient();
 
   const {
@@ -106,19 +115,42 @@ export async function createInitialIntention(text: string): Promise<ActionResult
   return { success: true };
 }
 
-interface CompletionAnswers {
+interface CompletionPayload {
+  /** Raw quiz answers — re-scored server-side (never trust a client profile). */
+  answers: QuizAnswers;
   vision: string;
-  obstacles: string;
-  alignedState: string;
+  /** Screen 14 is skippable. */
+  alignedState: string | null;
+}
+
+/** Map a derived profile to the user_profiles row shape. */
+function profileRow(userId: string, profile: PersonaProfile) {
+  return {
+    user_id: userId,
+    archetype: profile.archetype,
+    motivation_orientation: profile.motivation_orientation,
+    change_style: profile.change_style,
+    primary_distortion: profile.primary_distortion,
+    secondary_distortion: profile.secondary_distortion,
+    distortion_scores: profile.distortion_scores,
+    core_values: profile.core_values,
+    tone_preference: profile.tone_preference,
+    intention_category: profile.intention_category,
+    quiz_version: QUIZ_VERSION,
+    updated_at: new Date().toISOString(),
+  };
 }
 
 /**
- * Finalize onboarding: persist the four reflection answers, seed user_memory,
- * mark the user onboarded, and fire the welcome SMS. Called from the final step
- * of the web onboarding flow.
+ * Finalize onboarding (Archetype Discovery flow):
+ *  - re-derive the persona profile server-side from the raw answers
+ *  - persist raw answers + reflections to onboarding_responses
+ *  - upsert the derived user_profiles row (retried once; tolerated on failure)
+ *  - seed user_memory, mark the user onboarded, fire the welcome SMS
+ * Called from the reveal step.
  */
 export async function completeFullOnboarding(
-  answers: CompletionAnswers
+  payload: CompletionPayload,
 ): Promise<ActionResult> {
   const supabase = await createClient();
 
@@ -130,12 +162,14 @@ export async function completeFullOnboarding(
     return { error: "Not authenticated" };
   }
 
-  const vision = answers.vision.trim();
-  const obstacles = answers.obstacles.trim();
-  const alignedState = answers.alignedState.trim();
-  if (!vision || !obstacles || !alignedState) {
+  const vision = payload.vision.trim();
+  const alignedState = payload.alignedState?.trim() || null;
+  if (!vision) {
     return { error: "Please answer all questions" };
   }
+
+  // Server is authoritative for scoring — same pure function the client used.
+  const profile = scoreProfile(payload.answers);
 
   const { data: intentionRow } = await supabase
     .from("intentions")
@@ -158,15 +192,35 @@ export async function completeFullOnboarding(
         user_id: user.id,
         intention: intentionText,
         vision,
-        obstacles,
+        obstacles: null,
         aligned_state: alignedState,
+        responses: payload.answers,
+        quiz_version: QUIZ_VERSION,
         updated_at: new Date().toISOString(),
       },
-      { onConflict: "user_id" }
+      { onConflict: "user_id" },
     );
 
   if (responsesError) {
     return { error: responsesError.message };
+  }
+
+  // Persist the derived profile. Onboarding still completes if this fails
+  // (daily send tolerates a missing profile); retry once, then log.
+  const row = profileRow(user.id, profile);
+  let profileError = (
+    await supabase.from("user_profiles").upsert(row, { onConflict: "user_id" })
+  ).error;
+  if (profileError) {
+    console.error("Profile upsert failed, retrying:", profileError.message);
+    profileError = (
+      await supabase
+        .from("user_profiles")
+        .upsert(row, { onConflict: "user_id" })
+    ).error;
+    if (profileError) {
+      console.error("Profile upsert failed after retry:", profileError.message);
+    }
   }
 
   // Seed memory from onboarding so the first daily prompt has context to work with.
@@ -175,7 +229,7 @@ export async function completeFullOnboarding(
   const seed = buildSeedMemoryFromOnboarding({
     intention: intentionText,
     vision,
-    obstacles,
+    obstacles: null,
     aligned_state: alignedState,
   });
   const tokenCount = Math.ceil(JSON.stringify(seed).length / 4);
@@ -187,7 +241,7 @@ export async function completeFullOnboarding(
       token_count: tokenCount,
       updated_at: new Date().toISOString(),
     },
-    { onConflict: "user_id" }
+    { onConflict: "user_id" },
   );
 
   const { error: completeError } = await supabase
@@ -210,7 +264,7 @@ export async function completeFullOnboarding(
       const smsResult = await sendWelcomeSms(
         user.id,
         userData.name || "",
-        userData.phone
+        userData.phone,
       );
       if (!smsResult.success) {
         console.error("Failed to send welcome SMS:", smsResult.error);
@@ -224,9 +278,30 @@ export async function completeFullOnboarding(
   return { success: true };
 }
 
+/**
+ * Best-effort drop-off tracking: record that the user entered a given step.
+ * Fire-and-forget — analytics, never blocks the flow.
+ */
+export async function recordOnboardingStep(step: string): Promise<void> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("onboarding_step_events").insert({
+      user_id: user.id,
+      step,
+      quiz_version: QUIZ_VERSION,
+    });
+  } catch (error) {
+    console.error("Failed to record onboarding step:", error);
+  }
+}
+
 export async function updateIntention(
   id: string,
-  text: string
+  text: string,
 ): Promise<ActionResult> {
   const supabase = await createClient();
 

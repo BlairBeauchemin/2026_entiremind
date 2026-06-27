@@ -90,6 +90,7 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
           <Button
             type="button"
             variant="outline"
+            aria-label="Go back"
             onClick={onBack}
             className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
           >
