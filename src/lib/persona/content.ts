@@ -54,19 +54,22 @@ const DISTORTION_CONTENT: Record<
 > = {
   worthiness: {
     name: "The Imposter Whisper",
-    oneLiner: "It asks “who are you to want this?” — as if wanting needed credentials.",
+    oneLiner:
+      "It asks “who are you to want this?” — as if wanting needed credentials.",
     howWeRespond:
       "When we hear the Imposter Whisper in your messages, we'll remind you that wanting is allowed — no permission slip required.",
   },
   all_or_nothing: {
     name: "The All-or-Nothing Trap",
-    oneLiner: "It says if it's not perfect, it doesn't count. So nothing ever gets to count.",
+    oneLiner:
+      "It says if it's not perfect, it doesn't count. So nothing ever gets to count.",
     howWeRespond:
       "When we hear the All-or-Nothing Trap in your messages, we'll remind you that done is a form of perfect.",
   },
   catastrophizing: {
     name: "The Other Shoe",
-    oneLiner: "It's always waiting for things to fall apart — so you never fully arrive.",
+    oneLiner:
+      "It's always waiting for things to fall apart — so you never fully arrive.",
     howWeRespond:
       "When we hear the Other Shoe in your messages, we'll help you stay in the moment that's actually happening.",
   },
@@ -78,13 +81,15 @@ const DISTORTION_CONTENT: Record<
   },
   mind_reading: {
     name: "The Invisible Audience",
-    oneLiner: "It's sure everyone is watching and judging. Almost no one is watching.",
+    oneLiner:
+      "It's sure everyone is watching and judging. Almost no one is watching.",
     howWeRespond:
       "When we hear the Invisible Audience in your messages, we'll gently bring the focus back to what you want.",
   },
   discounting_positive: {
     name: "The Luck Story",
-    oneLiner: "Every win was a fluke; every loss was proof. Convenient math, isn't it?",
+    oneLiner:
+      "Every win was a fluke; every loss was proof. Convenient math, isn't it?",
     howWeRespond:
       "When we hear the Luck Story in your messages, we'll help you give yourself the credit it keeps writing off.",
   },
@@ -99,8 +104,10 @@ const DISTORTION_CONTENT: Record<
 const TONE_HOW_IT_WORKS: Record<TonePreference, string> = {
   gentle: "Each morning, a short text meets you with gentle encouragement.",
   direct: "Each morning, a short text meets you with straight-up honesty.",
-  socratic: "Each morning, a short text meets you with a question worth sitting with.",
-  celebratory: "Each morning, a short text meets you celebrating how far you've come.",
+  socratic:
+    "Each morning, a short text meets you with a question worth sitting with.",
+  celebratory:
+    "Each morning, a short text meets you celebrating how far you've come.",
 };
 
 function categoryPhrase(category: IntentionCategory): string {
@@ -114,7 +121,11 @@ function categoryPhrase(category: IntentionCategory): string {
     family: "your family and home",
     spiritual: "your spiritual growth",
   };
-  return phrases[category] ?? CATEGORY_OPTIONS.find((c) => c.id === category)?.label ?? "your life";
+  return (
+    phrases[category] ??
+    CATEGORY_OPTIONS.find((c) => c.id === category)?.label ??
+    "your life"
+  );
 }
 
 function valueLabel(value: ValueId): string {
@@ -123,7 +134,7 @@ function valueLabel(value: ValueId): string {
 
 function fillParagraph(
   template: string,
-  slots: { name: string; category: string; value: string }
+  slots: { name: string; category: string; value: string },
 ): string {
   return template
     .replaceAll("{name}", slots.name)
@@ -133,7 +144,7 @@ function fillParagraph(
 
 export function buildRevealContent(
   profile: PersonaProfile,
-  { name }: RevealSlots
+  { name }: RevealSlots,
 ): RevealContent {
   const safeName = name.trim() || "Friend";
   const topValue = profile.core_values[0];
@@ -141,7 +152,9 @@ export function buildRevealContent(
   const paragraph = fillParagraph(ARCHETYPE_PARAGRAPHS[profile.archetype], {
     name: safeName,
     category: categoryPhrase(profile.intention_category),
-    value: topValue ? valueLabel(topValue).toLowerCase() : "what matters most to you",
+    value: topValue
+      ? valueLabel(topValue).toLowerCase()
+      : "what matters most to you",
   });
 
   const innerCritic = profile.primary_distortion

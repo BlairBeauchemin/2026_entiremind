@@ -24,11 +24,17 @@ import type {
 
 const VALUES_KEEP = 3;
 
-function optionById(options: ScoredOption[], id: string): ScoredOption | undefined {
+function optionById(
+  options: ScoredOption[],
+  id: string,
+): ScoredOption | undefined {
   return options.find((o) => o.id === id);
 }
 
-function applyWeights(scores: DistortionScores, option: ScoredOption | undefined): void {
+function applyWeights(
+  scores: DistortionScores,
+  option: ScoredOption | undefined,
+): void {
   if (!option?.weights) return;
   for (const [distortion, weight] of Object.entries(option.weights)) {
     const key = distortion as Distortion;
@@ -50,7 +56,7 @@ function highestScoring(entries: Array<[Distortion, number]>): Distortion[] {
 
 function resolvePrimary(
   scores: DistortionScores,
-  innerVoice: Distortion | null
+  innerVoice: Distortion | null,
 ): Distortion | null {
   const entries = Object.entries(scores) as Array<[Distortion, number]>;
   if (entries.length === 0) return null;
@@ -66,12 +72,12 @@ function resolvePrimary(
 
 function resolveSecondary(
   scores: DistortionScores,
-  primary: Distortion | null
+  primary: Distortion | null,
 ): Distortion | null {
   if (!primary) return null;
-  const candidates = (Object.entries(scores) as Array<[Distortion, number]>).filter(
-    ([d, v]) => d !== primary && v >= SECONDARY_MIN_SCORE
-  );
+  const candidates = (
+    Object.entries(scores) as Array<[Distortion, number]>
+  ).filter(([d, v]) => d !== primary && v >= SECONDARY_MIN_SCORE);
   if (candidates.length === 0) return null;
 
   const tied = highestScoring(candidates);
@@ -87,11 +93,15 @@ export function scoreProfile(answers: QuizAnswers): PersonaProfile {
   }
   applyWeights(scores, optionById(INNER_VOICE_OPTIONS, answers.inner_voice));
 
-  const primary = resolvePrimary(scores, innerVoiceDistortion(answers.inner_voice));
+  const primary = resolvePrimary(
+    scores,
+    innerVoiceDistortion(answers.inner_voice),
+  );
   const secondary = resolveSecondary(scores, primary);
 
   return {
-    archetype: ARCHETYPE_MAP[answers.motivation_orientation][answers.change_style],
+    archetype:
+      ARCHETYPE_MAP[answers.motivation_orientation][answers.change_style],
     motivation_orientation: answers.motivation_orientation,
     change_style: answers.change_style,
     primary_distortion: primary,

@@ -78,13 +78,18 @@ export const STYLE_OPTIONS: StyleOption[] = [
   },
   {
     id: "doer",
-    label: "The believing. I take action constantly; trusting it will work is the work",
+    label:
+      "The believing. I take action constantly; trusting it will work is the work",
   },
 ];
 
 // Screen 9 — Past pattern (single select).
 export const PAST_PATTERN_OPTIONS: ScoredOption[] = [
-  { id: "lose_steam", label: "I start strong, then lose steam", weights: { all_or_nothing: 1 } },
+  {
+    id: "lose_steam",
+    label: "I start strong, then lose steam",
+    weights: { all_or_nothing: 1 },
+  },
   {
     id: "perfect_moment",
     label: "I wait for the perfect moment, and it never quite comes",
@@ -110,31 +115,76 @@ export const PAST_PATTERN_OPTIONS: ScoredOption[] = [
 // Screen 10 — First doubt (pick up to FIRST_DOUBT_MAX).
 export const FIRST_DOUBT_MAX = 2;
 export const FIRST_DOUBT_OPTIONS: ScoredOption[] = [
-  { id: "who_am_i", label: "Who am I to want this?", weights: { worthiness: 2 } },
-  { id: "too_late", label: "It's probably too late for me", weights: { catastrophizing: 2 } },
+  {
+    id: "who_am_i",
+    label: "Who am I to want this?",
+    weights: { worthiness: 2 },
+  },
+  {
+    id: "too_late",
+    label: "It's probably too late for me",
+    weights: { catastrophizing: 2 },
+  },
   {
     id: "not_perfect",
     label: "If I can't do it perfectly, why start?",
     weights: { all_or_nothing: 2 },
   },
-  { id: "judge_me", label: "People will judge me for trying", weights: { mind_reading: 2 } },
-  { id: "lose_it", label: "Even if I get it, I'll lose it", weights: { catastrophizing: 2 } },
-  { id: "selfish", label: "Wanting more feels selfish", weights: { personalization: 2 } },
-  { id: "no_doubt", label: "Honestly? No doubt comes up", confident: true, exclusive: true },
+  {
+    id: "judge_me",
+    label: "People will judge me for trying",
+    weights: { mind_reading: 2 },
+  },
+  {
+    id: "lose_it",
+    label: "Even if I get it, I'll lose it",
+    weights: { catastrophizing: 2 },
+  },
+  {
+    id: "selfish",
+    label: "Wanting more feels selfish",
+    weights: { personalization: 2 },
+  },
+  {
+    id: "no_doubt",
+    label: "Honestly? No doubt comes up",
+    confident: true,
+    exclusive: true,
+  },
 ];
 
 // Screen 11 — Inner voice (single select). See founder-copy note at top of file re: `no_pattern`.
 export const INNER_VOICE_OPTIONS: ScoredOption[] = [
-  { id: "always_do_this", label: "You always do this.", weights: { all_or_nothing: 2 } },
-  { id: "tried_harder", label: "You should have tried harder.", weights: { should_statements: 2 } },
-  { id: "never_work", label: "See? It was never going to work.", weights: { catastrophizing: 2 } },
-  { id: "saw_coming", label: "Everyone saw that coming.", weights: { mind_reading: 2 } },
+  {
+    id: "always_do_this",
+    label: "You always do this.",
+    weights: { all_or_nothing: 2 },
+  },
+  {
+    id: "tried_harder",
+    label: "You should have tried harder.",
+    weights: { should_statements: 2 },
+  },
+  {
+    id: "never_work",
+    label: "See? It was never going to work.",
+    weights: { catastrophizing: 2 },
+  },
+  {
+    id: "saw_coming",
+    label: "Everyone saw that coming.",
+    weights: { mind_reading: 2 },
+  },
   {
     id: "mostly_luck",
     label: "Even when it works, it's mostly luck.",
     weights: { discounting_positive: 2 },
   },
-  { id: "no_pattern", label: "Honestly, it doesn't pile on like that.", confident: true },
+  {
+    id: "no_pattern",
+    label: "Honestly, it doesn't pile on like that.",
+    confident: true,
+  },
 ];
 
 // Screen 12 — Values (pick VALUES_PICK).

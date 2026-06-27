@@ -1,5 +1,6 @@
 import type { UserContext, ContentType } from "./types";
 import { renderMemoryForPrompt } from "./memory";
+import { renderProfileForPrompt } from "../persona/prompt";
 import { createServiceRoleClient } from "../supabase";
 
 /**
@@ -47,7 +48,10 @@ export function getContentTypePrompt(contentType: ContentType): string {
 /**
  * Build the user prompt for message generation
  */
-export function buildUserPrompt(context: UserContext, contentType: ContentType): string {
+export function buildUserPrompt(
+  context: UserContext,
+  contentType: ContentType,
+): string {
   const parts: string[] = [];
 
   // Add content type instruction
@@ -62,29 +66,39 @@ export function buildUserPrompt(context: UserContext, contentType: ContentType):
     parts.push(`Their stated intention is: "${context.intention}"`);
   }
 
+  // Inject the derived persona profile block (Onboarding v2). Sits with the
+  // memory block so it shares the same per-user cached section. No profile, no
+  // block — unprofiled users get exactly the pre-v2 prompt.
+  if (context.profile) {
+    parts.push(renderProfileForPrompt(context.profile));
+  }
+
   // Inject the compacted memory blob (refreshed weekly)
   if (context.memory) {
     parts.push(renderMemoryForPrompt(context.memory));
     parts.push(
-      "Let the memory inform tone and direction, but do not quote it back to the user. Pick at most one thread to lean on; do not list themes."
+      "Let the memory inform tone and direction, but do not quote it back to the user. Pick at most one thread to lean on; do not list themes.",
     );
   }
 
   // Inject the most recent substantive reply, if any
   if (context.recentReply) {
     const r = context.recentReply;
-    const themeStr = r.themes.length > 0 ? r.themes.join(", ") : "no specific themes";
+    const themeStr =
+      r.themes.length > 0 ? r.themes.join(", ") : "no specific themes";
     parts.push(
-      `Their most recent reply (${r.hoursAgo}h ago) sat in: ${themeStr}. Emotional state: ${r.emotionalState} (${r.sentiment}). What they said: "${r.text}"`
+      `Their most recent reply (${r.hoursAgo}h ago) sat in: ${themeStr}. Emotional state: ${r.emotionalState} (${r.sentiment}). What they said: "${r.text}"`,
     );
     parts.push(
-      "You may subtly reference this if it fits naturally. Do not quote it back. Do not force a callback if today's prompt would land better fresh."
+      "You may subtly reference this if it fits naturally. Do not quote it back. Do not force a callback if today's prompt would land better fresh.",
     );
   }
 
   // Add engagement context for personalization
   if (context.consecutiveSilences >= 3) {
-    parts.push("They haven't replied in a while. Keep it light and low-pressure.");
+    parts.push(
+      "They haven't replied in a while. Keep it light and low-pressure.",
+    );
   } else if (context.engagementScore > 70) {
     parts.push("They've been engaged. You can go a bit deeper.");
   }
@@ -116,7 +130,13 @@ const DEFAULT_CONFIG: ContentSelectionConfig = {
   silence_threshold: 3,
 };
 
-const ALL_TYPES: ContentType[] = ["reflection", "check-in", "action", "gratitude", "quote"];
+const ALL_TYPES: ContentType[] = [
+  "reflection",
+  "check-in",
+  "action",
+  "gratitude",
+  "quote",
+];
 const STRUGGLING_TYPES: ContentType[] = ["check-in", "gratitude"];
 
 async function loadConfig(): Promise<ContentSelectionConfig> {
@@ -129,13 +149,18 @@ async function loadConfig(): Promise<ContentSelectionConfig> {
   if (error || !data) return DEFAULT_CONFIG;
   return {
     no_repeat_days: data.no_repeat_days ?? DEFAULT_CONFIG.no_repeat_days,
-    earned_reply_bias: Number(data.earned_reply_bias ?? DEFAULT_CONFIG.earned_reply_bias),
+    earned_reply_bias: Number(
+      data.earned_reply_bias ?? DEFAULT_CONFIG.earned_reply_bias,
+    ),
     earned_reply_min_sends:
       data.earned_reply_min_sends ?? DEFAULT_CONFIG.earned_reply_min_sends,
     earned_reply_lookback_days:
-      data.earned_reply_lookback_days ?? DEFAULT_CONFIG.earned_reply_lookback_days,
-    quote_max_per_week: data.quote_max_per_week ?? DEFAULT_CONFIG.quote_max_per_week,
-    silence_threshold: data.silence_threshold ?? DEFAULT_CONFIG.silence_threshold,
+      data.earned_reply_lookback_days ??
+      DEFAULT_CONFIG.earned_reply_lookback_days,
+    quote_max_per_week:
+      data.quote_max_per_week ?? DEFAULT_CONFIG.quote_max_per_week,
+    silence_threshold:
+      data.silence_threshold ?? DEFAULT_CONFIG.silence_threshold,
   };
 }
 
@@ -161,7 +186,7 @@ function isSelectableType(value: string): value is ContentType {
 
 async function loadRecentOutbound(
   userId: string,
-  lookbackDays: number
+  lookbackDays: number,
 ): Promise<OutboundRow[]> {
   const supabase = createServiceRoleClient();
   const cutoff = new Date();
@@ -179,12 +204,12 @@ async function loadRecentOutbound(
   return rows.flatMap((m) =>
     m.content_type && isSelectableType(m.content_type)
       ? [{ id: m.id, content_type: m.content_type, created_at: m.created_at }]
-      : []
+      : [],
   );
 }
 
 async function loadInboundsForOutbounds(
-  outboundIds: string[]
+  outboundIds: string[],
 ): Promise<Set<string>> {
   if (outboundIds.length === 0) return new Set();
   const supabase = createServiceRoleClient();
@@ -201,11 +226,18 @@ async function loadInboundsForOutbounds(
 
 function computeReplyRateByType(
   outbounds: OutboundRow[],
-  repliedIds: Set<string>
+  repliedIds: Set<string>,
 ): Map<ContentType, { sends: number; replies: number; rate: number }> {
-  const stats = new Map<ContentType, { sends: number; replies: number; rate: number }>();
+  const stats = new Map<
+    ContentType,
+    { sends: number; replies: number; rate: number }
+  >();
   for (const m of outbounds) {
-    const entry = stats.get(m.content_type) ?? { sends: 0, replies: 0, rate: 0 };
+    const entry = stats.get(m.content_type) ?? {
+      sends: 0,
+      replies: 0,
+      rate: 0,
+    };
     entry.sends += 1;
     if (repliedIds.has(m.id)) entry.replies += 1;
     stats.set(m.content_type, entry);
@@ -219,7 +251,7 @@ function computeReplyRateByType(
 
 function pickWeighted(
   candidates: ContentType[],
-  weights: Map<ContentType, number>
+  weights: Map<ContentType, number>,
 ): ContentType {
   const total = candidates.reduce((sum, t) => sum + (weights.get(t) ?? 0), 0);
   if (total <= 0) {
@@ -246,7 +278,9 @@ function pickUniform(candidates: ContentType[]): ContentType {
  *    (using only types with at least `earned_reply_min_sends` sends)
  * 5. Otherwise pick uniformly from the eligible set
  */
-export async function selectContentType(context: UserContext): Promise<ContentType> {
+export async function selectContentType(
+  context: UserContext,
+): Promise<ContentType> {
   const config = await loadConfig();
 
   const lookback = Math.max(config.earned_reply_lookback_days, 7);
@@ -259,7 +293,7 @@ export async function selectContentType(context: UserContext): Promise<ContentTy
   const recentTypes = new Set<ContentType>(
     outbounds
       .filter((o) => new Date(o.created_at) >= noRepeatCutoff)
-      .map((o) => o.content_type)
+      .map((o) => o.content_type),
   );
   let candidates = ALL_TYPES.filter((t) => !recentTypes.has(t));
 
@@ -267,7 +301,7 @@ export async function selectContentType(context: UserContext): Promise<ContentTy
   const weekCutoff = new Date();
   weekCutoff.setDate(weekCutoff.getDate() - 7);
   const recentQuotes = outbounds.filter(
-    (o) => o.content_type === "quote" && new Date(o.created_at) >= weekCutoff
+    (o) => o.content_type === "quote" && new Date(o.created_at) >= weekCutoff,
   ).length;
   if (recentQuotes >= config.quote_max_per_week) {
     candidates = candidates.filter((t) => t !== "quote");

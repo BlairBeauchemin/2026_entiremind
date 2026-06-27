@@ -6,7 +6,12 @@
  * so the derived profile maps to the database without an intermediate layer.
  */
 
-export const ARCHETYPES = ["visionary", "alchemist", "seeker", "phoenix"] as const;
+export const ARCHETYPES = [
+  "visionary",
+  "alchemist",
+  "seeker",
+  "phoenix",
+] as const;
 export type Archetype = (typeof ARCHETYPES)[number];
 
 export const MOTIVATION_ORIENTATIONS = ["toward", "away"] as const;
@@ -27,7 +32,12 @@ export const DISTORTIONS = [
 ] as const;
 export type Distortion = (typeof DISTORTIONS)[number];
 
-export const TONE_PREFERENCES = ["gentle", "direct", "socratic", "celebratory"] as const;
+export const TONE_PREFERENCES = [
+  "gentle",
+  "direct",
+  "socratic",
+  "celebratory",
+] as const;
 export type TonePreference = (typeof TONE_PREFERENCES)[number];
 
 /** Mirrors the `message_themes.category` enum (minus "other", which the free-text intention catches). */

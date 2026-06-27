@@ -18,7 +18,10 @@ function getClient(): OpenAI {
 export const openaiAdapter: AiProviderAdapter = {
   provider: "openai",
 
-  async generateMessage(systemPrompt: string, userPrompt: string): Promise<string> {
+  async generateMessage(
+    systemPrompt: string,
+    userPrompt: string,
+  ): Promise<string> {
     const openai = getClient();
 
     const response = await openai.chat.completions.create({

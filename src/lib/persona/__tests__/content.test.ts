@@ -28,7 +28,7 @@ describe("buildRevealContent — archetype section", () => {
   it("weaves the user's name and a top value into the paragraph", () => {
     const content = buildRevealContent(
       profile({ core_values: ["freedom", "growth", "peace"] }),
-      { name: "Maya" }
+      { name: "Maya" },
     );
     expect(content.archetype.paragraph).toContain("Maya");
     expect(content.archetype.paragraph.toLowerCase()).toContain("freedom");
@@ -37,9 +37,12 @@ describe("buildRevealContent — archetype section", () => {
 
 describe("buildRevealContent — inner critic section", () => {
   it("renders the friendly-named pattern with its one-liner and response", () => {
-    const content = buildRevealContent(profile({ primary_distortion: "worthiness" }), {
-      name: "Sam",
-    });
+    const content = buildRevealContent(
+      profile({ primary_distortion: "worthiness" }),
+      {
+        name: "Sam",
+      },
+    );
     expect(content.innerCritic).not.toBeNull();
     expect(content.innerCritic?.name).toBe("The Imposter Whisper");
     expect(content.innerCritic?.oneLiner.length).toBeGreaterThan(0);
@@ -49,7 +52,7 @@ describe("buildRevealContent — inner critic section", () => {
   it("omits the inner-critic section when there is no pattern", () => {
     const content = buildRevealContent(
       profile({ primary_distortion: null, distortion_scores: {} }),
-      { name: "Sam" }
+      { name: "Sam" },
     );
     expect(content.innerCritic).toBeNull();
   });
@@ -57,9 +60,12 @@ describe("buildRevealContent — inner critic section", () => {
 
 describe("buildRevealContent — how it works", () => {
   it("reflects the user's tone preference and returns three lines", () => {
-    const content = buildRevealContent(profile({ tone_preference: "celebratory" }), {
-      name: "Sam",
-    });
+    const content = buildRevealContent(
+      profile({ tone_preference: "celebratory" }),
+      {
+        name: "Sam",
+      },
+    );
     expect(content.howItWorks).toHaveLength(3);
     expect(content.howItWorks.join(" ").toLowerCase()).toContain("celebrat");
   });
@@ -67,8 +73,8 @@ describe("buildRevealContent — how it works", () => {
 
 describe("buildWelcomeArchetypeLine", () => {
   it("references the archetype by name", () => {
-    expect(buildWelcomeArchetypeLine(profile({ archetype: "alchemist" }))).toContain(
-      "Alchemist"
-    );
+    expect(
+      buildWelcomeArchetypeLine(profile({ archetype: "alchemist" })),
+    ).toContain("Alchemist");
   });
 });

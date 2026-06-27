@@ -10,10 +10,38 @@ import { trackReply, trackUnprompted, trackStopRequest } from "@/lib/signals";
 import { enrichInboundReply } from "@/lib/ai/enrich";
 import { pickSoftAck } from "@/lib/acks";
 import { createServiceRoleClient } from "@/lib/supabase";
+import type { Distortion } from "@/lib/persona/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+/**
+ * Load a user's known inner-critic patterns from their persona profile so the
+ * enrichment call can listen for them. Returns [] when the user has no profile.
+ */
+async function loadKnownPatterns(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<Distortion[]> {
+  const { data } = await supabase
+    .from("user_profiles")
+    .select("primary_distortion, secondary_distortion")
+    .eq("user_id", userId)
+    .single();
+  if (!data) return [];
+  return [data.primary_distortion, data.secondary_distortion].filter(
+    (d): d is Distortion => typeof d === "string",
+  );
+}
 
 // Twilio handles STOP/UNSUBSCRIBE at the platform level automatically, but we
 // log them here for our own records and to satisfy carrier review requirements.
-const STOP_KEYWORDS = new Set(["STOP", "STOPALL", "UNSUBSCRIBE", "CANCEL", "END", "QUIT"]);
+const STOP_KEYWORDS = new Set([
+  "STOP",
+  "STOPALL",
+  "UNSUBSCRIBE",
+  "CANCEL",
+  "END",
+  "QUIT",
+]);
 const HELP_KEYWORDS = new Set(["HELP", "INFO"]);
 
 const HELP_RESPONSE =
@@ -29,7 +57,8 @@ async function processEnrichmentAndAck(params: {
   const { userId, inboundMessageId, inboundText, fromPhoneNumber } = params;
   const supabase = createServiceRoleClient();
 
-  const enrichment = await enrichInboundReply(inboundText);
+  const knownPatterns = await loadKnownPatterns(supabase, userId);
+  const enrichment = await enrichInboundReply(inboundText, knownPatterns);
 
   if (enrichment) {
     const { error: insightsError } = await supabase
@@ -58,7 +87,7 @@ async function processEnrichmentAndAck(params: {
   }
 
   const useMirror = Boolean(
-    enrichment && enrichment.substantive && enrichment.acknowledgement
+    enrichment && enrichment.substantive && enrichment.acknowledgement,
   );
   const ackText = useMirror
     ? (enrichment!.acknowledgement as string)
@@ -100,7 +129,10 @@ export async function POST(request: NextRequest) {
       const signature = request.headers.get("X-Twilio-Signature");
       if (!signature) {
         console.error("Missing Twilio signature header");
-        return NextResponse.json({ error: "Missing signature" }, { status: 401 });
+        return NextResponse.json(
+          { error: "Missing signature" },
+          { status: 401 },
+        );
       }
 
       // Convert formData to params object for validation
@@ -114,7 +146,10 @@ export async function POST(request: NextRequest) {
 
       if (!validateTwilioSignature(signature, url, params)) {
         console.error("Invalid Twilio signature");
-        return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+        return NextResponse.json(
+          { error: "Invalid signature" },
+          { status: 401 },
+        );
       }
     }
 
@@ -129,10 +164,18 @@ export async function POST(request: NextRequest) {
 
     // Log STOP keywords — Twilio handles the actual opt-out at the platform level
     if (STOP_KEYWORDS.has(normalizedText)) {
-      console.log(`STOP keyword received from ${fromNumber} — Twilio platform opt-out triggered`);
+      console.log(
+        `STOP keyword received from ${fromNumber} — Twilio platform opt-out triggered`,
+      );
       // Store the inbound STOP message for our records, then return empty TwiML
       // (Twilio will automatically send the confirmation and block future messages)
-      const stopResult = await storeInboundSms(fromNumber, toNumber, text, messageSid, "twilio");
+      const stopResult = await storeInboundSms(
+        fromNumber,
+        toNumber,
+        text,
+        messageSid,
+        "twilio",
+      );
 
       // Track stop request signal
       if (stopResult.success && stopResult.userId && stopResult.messageId) {
@@ -161,7 +204,7 @@ export async function POST(request: NextRequest) {
       toNumber,
       text,
       messageSid,
-      "twilio"
+      "twilio",
     );
 
     if (!result.success) {
@@ -214,12 +257,15 @@ export async function POST(request: NextRequest) {
     // Return 500 to indicate failure - Twilio may retry
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 // Twilio may send GET requests for webhook validation
 export async function GET() {
-  return NextResponse.json({ status: "ok", provider: "twilio" }, { status: 200 });
+  return NextResponse.json(
+    { status: "ok", provider: "twilio" },
+    { status: 200 },
+  );
 }

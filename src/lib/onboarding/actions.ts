@@ -7,6 +7,7 @@ import { sendWelcomeSms } from "@/lib/sms";
 import { buildSeedMemoryFromOnboarding } from "@/lib/ai/memory";
 import { scoreProfile } from "@/lib/persona/score";
 import { QUIZ_VERSION } from "@/lib/persona/questions";
+import { buildWelcomeArchetypeLine } from "@/lib/persona/content";
 import type { PersonaProfile, QuizAnswers } from "@/lib/persona/types";
 
 type ActionResult = { success: true } | { error: string };
@@ -231,6 +232,7 @@ export async function completeFullOnboarding(
     vision,
     obstacles: null,
     aligned_state: alignedState,
+    profile,
   });
   const tokenCount = Math.ceil(JSON.stringify(seed).length / 4);
   await adminClient.from("user_memory").upsert(
@@ -265,6 +267,7 @@ export async function completeFullOnboarding(
         user.id,
         userData.name || "",
         userData.phone,
+        buildWelcomeArchetypeLine(profile),
       );
       if (!smsResult.success) {
         console.error("Failed to send welcome SMS:", smsResult.error);

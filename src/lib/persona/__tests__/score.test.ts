@@ -21,7 +21,9 @@ function answers(overrides: Partial<QuizAnswers> = {}): QuizAnswers {
 }
 
 describe("scoreProfile — archetype mapping", () => {
-  const cases: Array<[QuizAnswers["motivation_orientation"], QuizAnswers["change_style"], string]> = [
+  const cases: Array<
+    [QuizAnswers["motivation_orientation"], QuizAnswers["change_style"], string]
+  > = [
     ["toward", "dreamer", "visionary"],
     ["toward", "doer", "alchemist"],
     ["away", "dreamer", "seeker"],
@@ -30,7 +32,7 @@ describe("scoreProfile — archetype mapping", () => {
 
   it.each(cases)("%s + %s = %s", (orientation, style, archetype) => {
     const profile = scoreProfile(
-      answers({ motivation_orientation: orientation, change_style: style })
+      answers({ motivation_orientation: orientation, change_style: style }),
     );
     expect(profile.archetype).toBe(archetype);
     expect(profile.motivation_orientation).toBe(orientation);
@@ -45,10 +47,14 @@ describe("scoreProfile — passthrough fields", () => {
         intention_category: "creative",
         core_values: ["adventure", "service", "recognition"],
         tone_preference: "socratic",
-      })
+      }),
     );
     expect(profile.intention_category).toBe("creative");
-    expect(profile.core_values).toEqual(["adventure", "service", "recognition"]);
+    expect(profile.core_values).toEqual([
+      "adventure",
+      "service",
+      "recognition",
+    ]);
     expect(profile.tone_preference).toBe("socratic");
   });
 
@@ -56,7 +62,7 @@ describe("scoreProfile — passthrough fields", () => {
     const profile = scoreProfile(
       answers({
         core_values: ["freedom", "growth", "peace", "security"],
-      })
+      }),
     );
     expect(profile.core_values).toHaveLength(3);
     expect(profile.core_values).toEqual(["freedom", "growth", "peace"]);
@@ -66,7 +72,7 @@ describe("scoreProfile — passthrough fields", () => {
 describe("scoreProfile — primary distortion per pattern", () => {
   it("worthiness", () => {
     const profile = scoreProfile(
-      answers({ past_pattern: "talk_myself_out", first_doubt: ["who_am_i"] })
+      answers({ past_pattern: "talk_myself_out", first_doubt: ["who_am_i"] }),
     );
     expect(profile.distortion_scores).toEqual({ worthiness: 3 });
     expect(profile.primary_distortion).toBe("worthiness");
@@ -75,7 +81,7 @@ describe("scoreProfile — primary distortion per pattern", () => {
 
   it("all_or_nothing", () => {
     const profile = scoreProfile(
-      answers({ inner_voice: "always_do_this", first_doubt: ["not_perfect"] })
+      answers({ inner_voice: "always_do_this", first_doubt: ["not_perfect"] }),
     );
     expect(profile.distortion_scores).toEqual({ all_or_nothing: 4 });
     expect(profile.primary_distortion).toBe("all_or_nothing");
@@ -83,7 +89,7 @@ describe("scoreProfile — primary distortion per pattern", () => {
 
   it("catastrophizing", () => {
     const profile = scoreProfile(
-      answers({ inner_voice: "never_work", first_doubt: ["too_late"] })
+      answers({ inner_voice: "never_work", first_doubt: ["too_late"] }),
     );
     expect(profile.primary_distortion).toBe("catastrophizing");
     expect(profile.distortion_scores.catastrophizing).toBe(4);
@@ -97,7 +103,7 @@ describe("scoreProfile — primary distortion per pattern", () => {
 
   it("mind_reading", () => {
     const profile = scoreProfile(
-      answers({ inner_voice: "saw_coming", first_doubt: ["judge_me"] })
+      answers({ inner_voice: "saw_coming", first_doubt: ["judge_me"] }),
     );
     expect(profile.primary_distortion).toBe("mind_reading");
     expect(profile.distortion_scores.mind_reading).toBe(4);
@@ -131,9 +137,12 @@ describe("scoreProfile — tie-breaking", () => {
     // Fixed priority would pick worthiness; the inner-voice answer points to
     // discounting_positive, which must win.
     const profile = scoreProfile(
-      answers({ first_doubt: ["who_am_i"], inner_voice: "mostly_luck" })
+      answers({ first_doubt: ["who_am_i"], inner_voice: "mostly_luck" }),
     );
-    expect(profile.distortion_scores).toEqual({ worthiness: 2, discounting_positive: 2 });
+    expect(profile.distortion_scores).toEqual({
+      worthiness: 2,
+      discounting_positive: 2,
+    });
     expect(profile.primary_distortion).toBe("discounting_positive");
     expect(profile.secondary_distortion).toBe("worthiness");
   });
@@ -147,7 +156,7 @@ describe("scoreProfile — tie-breaking", () => {
         past_pattern: "never_tried", // worthiness +1, catastrophizing +1
         first_doubt: ["who_am_i", "too_late"], // worthiness +2, catastrophizing +2
         inner_voice: "tried_harder", // should_statements +2
-      })
+      }),
     );
     expect(profile.distortion_scores).toEqual({
       worthiness: 3,
@@ -167,9 +176,12 @@ describe("scoreProfile — secondary threshold", () => {
         past_pattern: "perfect_moment", // all_or_nothing +1, catastrophizing +1
         first_doubt: [],
         inner_voice: "always_do_this", // all_or_nothing +2
-      })
+      }),
     );
-    expect(profile.distortion_scores).toEqual({ all_or_nothing: 3, catastrophizing: 1 });
+    expect(profile.distortion_scores).toEqual({
+      all_or_nothing: 3,
+      catastrophizing: 1,
+    });
     expect(profile.primary_distortion).toBe("all_or_nothing");
     expect(profile.secondary_distortion).toBeNull();
   });
@@ -182,7 +194,7 @@ describe("scoreProfile — malformed input", () => {
         past_pattern: "not_a_real_option",
         first_doubt: ["who_am_i", "also_fake"],
         inner_voice: "bogus",
-      })
+      }),
     );
     // Only who_am_i scores.
     expect(profile.distortion_scores).toEqual({ worthiness: 2 });

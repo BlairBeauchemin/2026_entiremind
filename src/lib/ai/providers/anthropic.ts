@@ -18,7 +18,10 @@ function getClient(): Anthropic {
 export const anthropicAdapter: AiProviderAdapter = {
   provider: "anthropic",
 
-  async generateMessage(systemPrompt: string, userPrompt: string): Promise<string> {
+  async generateMessage(
+    systemPrompt: string,
+    userPrompt: string,
+  ): Promise<string> {
     const anthropic = getClient();
 
     const response = await anthropic.messages.create({

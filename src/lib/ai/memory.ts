@@ -1,6 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createServiceRoleClient } from "../supabase";
 import { MEMORY_SYSTEM_PROMPT } from "./prompts/memory";
+import { tonePromptPhrase, distortionPromptHint } from "../persona/prompt";
+import type { PersonaProfile } from "../persona/types";
 
 export interface UserMemorySummary {
   themes: string[];
@@ -44,7 +46,9 @@ function coerceSummary(raw: unknown): UserMemorySummary | null {
     ? obj.themes.filter((t): t is string => typeof t === "string").slice(0, 8)
     : [];
   const open_threads = Array.isArray(obj.open_threads)
-    ? obj.open_threads.filter((t): t is string => typeof t === "string").slice(0, 6)
+    ? obj.open_threads
+        .filter((t): t is string => typeof t === "string")
+        .slice(0, 6)
     : [];
 
   const asStringOrNull = (v: unknown): string | null =>
@@ -84,7 +88,10 @@ function coerceIntentionShift(raw: unknown): IntentionShiftDetection {
       : null;
   const indices = Array.isArray(obj.supporting_quote_indices)
     ? obj.supporting_quote_indices
-        .filter((i): i is number => typeof i === "number" && Number.isInteger(i) && i >= 0)
+        .filter(
+          (i): i is number =>
+            typeof i === "number" && Number.isInteger(i) && i >= 0,
+        )
         .slice(0, 10)
     : [];
   return {
@@ -111,15 +118,15 @@ interface ReplyForCompaction {
 
 function buildUserMessage(
   replies: ReplyForCompaction[],
-  currentIntention: string | null
+  currentIntention: string | null,
 ): string {
   const lines: string[] = [];
   lines.push(
-    `Current intention: ${currentIntention ? `"${currentIntention}"` : "(none on file)"}`
+    `Current intention: ${currentIntention ? `"${currentIntention}"` : "(none on file)"}`,
   );
   lines.push("");
   lines.push(
-    `Below are the last ${MEMORY_LOOKBACK_DAYS} days of replies from this user, oldest first. Each entry is indexed. Each entry includes brief metadata when available.`
+    `Below are the last ${MEMORY_LOOKBACK_DAYS} days of replies from this user, oldest first. Each entry is indexed. Each entry includes brief metadata when available.`,
   );
   lines.push("");
 
@@ -138,7 +145,9 @@ function buildUserMessage(
   });
 
   lines.push("");
-  lines.push("Produce the memory blob and intention shift assessment as a single JSON object.");
+  lines.push(
+    "Produce the memory blob and intention shift assessment as a single JSON object.",
+  );
   return lines.join("\n");
 }
 
@@ -150,28 +159,50 @@ function estimateTokenCount(text: string): number {
 /**
  * Seed an initial memory blob from a user's onboarding answers.
  * Used for new users before they've accumulated reply history.
+ *
+ * When a derived persona profile is supplied (Onboarding v2), tone_notes is
+ * composed from the tone preference + aligned-state, obstacles is seeded from
+ * the friendly-named inner-critic pattern, and the intention category is added
+ * as a theme. Without a profile, the prior behavior is preserved.
  */
 export function buildSeedMemoryFromOnboarding(onboarding: {
   intention?: string | null;
   vision?: string | null;
   obstacles?: string | null;
   aligned_state?: string | null;
+  profile?: PersonaProfile | null;
 }): UserMemorySummary {
+  const profile = onboarding.profile ?? null;
+
   const intentionLine = onboarding.intention
     ? `working toward: ${onboarding.intention}`
     : null;
   const themes = intentionLine ? [intentionLine] : [];
-  const tone = onboarding.aligned_state
+  if (profile) themes.push(profile.intention_category);
+
+  const alignedLine = onboarding.aligned_state
     ? `feels most themselves when: ${onboarding.aligned_state}`
     : null;
+
+  let tone_notes: string | null = alignedLine;
+  let obstacles: string | null = onboarding.obstacles ?? null;
+
+  if (profile) {
+    const preference = `prefers ${tonePromptPhrase(profile.tone_preference)}`;
+    tone_notes = alignedLine ? `${preference}; ${alignedLine}` : preference;
+    obstacles = profile.primary_distortion
+      ? `inner critic tends toward ${distortionPromptHint(profile.primary_distortion)}`
+      : null;
+  }
+
   return {
     themes,
     vision: onboarding.vision ?? null,
-    obstacles: onboarding.obstacles ?? null,
+    obstacles,
     recent_emotional_state: "no replies yet — fresh onboarding",
     open_threads: [],
     last_breakthrough: null,
-    tone_notes: tone,
+    tone_notes,
   };
 }
 
@@ -182,7 +213,7 @@ export function buildSeedMemoryFromOnboarding(onboarding: {
  * no replies and no onboarding seed.
  */
 export async function compactUserMemory(
-  userId: string
+  userId: string,
 ): Promise<UserMemorySummary | null> {
   const supabase = createServiceRoleClient();
 
@@ -276,7 +307,9 @@ export async function compactUserMemory(
     typeof parsed === "object" &&
     "intention_shift" in (parsed as Record<string, unknown>)
   ) {
-    const shift = coerceIntentionShift((parsed as Record<string, unknown>).intention_shift);
+    const shift = coerceIntentionShift(
+      (parsed as Record<string, unknown>).intention_shift,
+    );
     if (
       shift.detected &&
       shift.confidence >= INTENTION_SHIFT_MIN_CONFIDENCE &&
@@ -333,13 +366,16 @@ async function recordIntentionShift(params: {
   });
 
   if (error) {
-    console.error(`Failed to record intention shift for user ${params.userId}:`, error);
+    console.error(
+      `Failed to record intention shift for user ${params.userId}:`,
+      error,
+    );
   }
 }
 
 async function persistMemory(
   userId: string,
-  summary: UserMemorySummary
+  summary: UserMemorySummary,
 ): Promise<void> {
   const supabase = createServiceRoleClient();
   const tokenCount = estimateTokenCount(JSON.stringify(summary));
@@ -360,18 +396,16 @@ async function persistMemory(
   }
 
   // Upsert current memory
-  const { error: upsertError } = await supabase
-    .from("user_memory")
-    .upsert(
-      {
-        user_id: userId,
-        summary,
-        version: MEMORY_VERSION,
-        token_count: tokenCount,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id" }
-    );
+  const { error: upsertError } = await supabase.from("user_memory").upsert(
+    {
+      user_id: userId,
+      summary,
+      version: MEMORY_VERSION,
+      token_count: tokenCount,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" },
+  );
 
   if (upsertError) {
     console.error(`Failed to persist memory for user ${userId}:`, upsertError);
@@ -382,7 +416,7 @@ async function persistMemory(
  * Load the current memory summary for a user, or null if none exists.
  */
 export async function loadUserMemory(
-  userId: string
+  userId: string,
 ): Promise<UserMemorySummary | null> {
   const supabase = createServiceRoleClient();
   const { data, error } = await supabase
