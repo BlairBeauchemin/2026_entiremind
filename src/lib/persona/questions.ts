@@ -22,6 +22,7 @@ import type {
   Distortion,
   IntentionCategory,
   MotivationOrientation,
+  QuizAnswers,
   TonePreference,
   ValueId,
 } from "./types";
@@ -245,3 +246,66 @@ export const DISTORTION_PRIORITY: Distortion[] = [
 
 /** A distortion must reach this score to qualify as the secondary pattern. */
 export const SECONDARY_MIN_SCORE = 2;
+
+/**
+ * One question/answer pair from a user's raw quiz responses, both rendered as
+ * human-readable copy. Used by the founder raw-answers view.
+ */
+export interface DescribedAnswer {
+  question: string;
+  answer: string;
+}
+
+/** Resolve an option id to its label within a given option set, falling back to the id. */
+function labelFor(
+  options: { id: string; label: string }[],
+  id: string,
+): string {
+  return options.find((o) => o.id === id)?.label ?? id;
+}
+
+/**
+ * Resolve raw {@link QuizAnswers} option ids to human-readable label strings, in
+ * quiz screen order. Pure — the single source of truth for both UI and the
+ * founder's raw-answer view, so answers never read as opaque ids.
+ */
+export function describeAnswers(answers: QuizAnswers): DescribedAnswer[] {
+  return [
+    {
+      question: "Dream category",
+      answer: labelFor(CATEGORY_OPTIONS, answers.intention_category),
+    },
+    {
+      question: "Motivation",
+      answer: labelFor(ORIENTATION_OPTIONS, answers.motivation_orientation),
+    },
+    {
+      question: "Change style",
+      answer: labelFor(STYLE_OPTIONS, answers.change_style),
+    },
+    {
+      question: "Past pattern",
+      answer: labelFor(PAST_PATTERN_OPTIONS, answers.past_pattern),
+    },
+    {
+      question: "First doubt",
+      answer: answers.first_doubt
+        .map((id) => labelFor(FIRST_DOUBT_OPTIONS, id))
+        .join(", "),
+    },
+    {
+      question: "Inner voice",
+      answer: labelFor(INNER_VOICE_OPTIONS, answers.inner_voice),
+    },
+    {
+      question: "Core values",
+      answer: answers.core_values
+        .map((id) => labelFor(VALUE_OPTIONS, id))
+        .join(", "),
+    },
+    {
+      question: "Tone preference",
+      answer: labelFor(TONE_OPTIONS, answers.tone_preference),
+    },
+  ];
+}
