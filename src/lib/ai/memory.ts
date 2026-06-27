@@ -207,6 +207,39 @@ export function buildSeedMemoryFromOnboarding(onboarding: {
 }
 
 /**
+ * Merge a freshly derived persona profile into a user's EXISTING memory blob
+ * (Onboarding v2 backfill / retake).
+ *
+ * Unlike the seed path, this is deliberately conservative: an existing onboarded
+ * user's memory may hold months of compaction, so only the persona-derived
+ * fields are refreshed — `tone_notes` gains the tone preference (preserving any
+ * prior context, idempotent across retakes) and `obstacles` is set from the
+ * inner-critic pattern (kept as-is when the profile is confident). Themes,
+ * vision, open threads, emotional state, and breakthroughs are untouched.
+ */
+export function mergeProfileIntoMemory(
+  existing: UserMemorySummary,
+  profile: PersonaProfile,
+): UserMemorySummary {
+  const preference = `prefers ${tonePromptPhrase(profile.tone_preference)}`;
+  // Strip any prior leading "prefers ...;" clause so retakes don't stack.
+  const rest = (existing.tone_notes ?? "")
+    .replace(/^prefers[^;]*;?\s*/i, "")
+    .trim();
+  const tone_notes = rest ? `${preference}; ${rest}` : preference;
+
+  const obstacles = profile.primary_distortion
+    ? `inner critic tends toward ${distortionPromptHint(profile.primary_distortion)}`
+    : existing.obstacles;
+
+  return {
+    ...existing,
+    obstacles,
+    tone_notes,
+  };
+}
+
+/**
  * Compact a single user's last N days of replies into a structured memory blob.
  * Persists the result to user_memory and archives the previous version to
  * user_memory_history. Returns the compacted summary, or null if the user has

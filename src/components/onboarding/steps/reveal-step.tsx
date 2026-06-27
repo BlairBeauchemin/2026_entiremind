@@ -9,14 +9,26 @@ import { completeFullOnboarding } from "@/lib/onboarding/actions";
 import { buildRevealContent } from "@/lib/persona/content";
 import type { PersonaProfile, QuizAnswers } from "@/lib/persona/types";
 
+type CompletionResult = { success: true } | { error: string };
+
 interface RevealStepProps {
   profile: PersonaProfile;
   answers: QuizAnswers;
   name: string;
-  vision: string;
-  alignedState: string | null;
+  /** Collected during full onboarding; omitted by the shortened retake flow. */
+  vision?: string;
+  alignedState?: string | null;
   /** Length of the "reading your answers" transition. */
   transitionMs?: number;
+  /** CTA label. Defaults to the first-onboarding copy. */
+  submitLabel?: string;
+  /** Where to go after a successful completion. */
+  redirectTo?: string;
+  /**
+   * Custom completion handler. When provided (e.g. the retake flow), it runs
+   * instead of completeFullOnboarding — vision/alignedState are then ignored.
+   */
+  onComplete?: () => Promise<CompletionResult>;
 }
 
 /** Screen 15 — transition, persona reveal, and the completion CTA. */
@@ -24,9 +36,12 @@ export function RevealStep({
   profile,
   answers,
   name,
-  vision,
-  alignedState,
+  vision = "",
+  alignedState = null,
   transitionMs = 1800,
+  submitLabel = "Your first message is on its way",
+  redirectTo = "/dashboard",
+  onComplete,
 }: RevealStepProps) {
   const [revealed, setRevealed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -46,17 +61,15 @@ export function RevealStep({
   async function handleComplete() {
     setSubmitting(true);
     setError(null);
-    const result = await completeFullOnboarding({
-      answers,
-      vision,
-      alignedState,
-    });
+    const result = onComplete
+      ? await onComplete()
+      : await completeFullOnboarding({ answers, vision, alignedState });
     if ("error" in result) {
       setError(result.error);
       setSubmitting(false);
       return;
     }
-    router.push("/dashboard");
+    router.push(redirectTo);
   }
 
   if (!revealed) {
@@ -138,7 +151,7 @@ export function RevealStep({
         {submitting ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
-          "Your first message is on its way"
+          submitLabel
         )}
       </Button>
     </motion.div>

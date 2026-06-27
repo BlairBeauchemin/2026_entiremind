@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { CurrentIntention } from "@/components/dashboard/current-intention";
 import { MessageFeed } from "@/components/dashboard/message-feed";
 import { PersonaCard } from "@/components/dashboard/persona-card";
+import { ArchetypeBanner } from "@/components/dashboard/archetype-banner";
 import type { Message } from "@/lib/types";
 import type { PersonaProfile } from "@/lib/persona/types";
 
@@ -99,12 +100,22 @@ export default async function DashboardPage() {
 
   const firstName = profile?.name?.split(" ")[0] || "there";
 
+  // Invite onboarded users who haven't taken the archetype quiz yet (and
+  // haven't dismissed the nudge). Banner persistence survives devices.
+  const showArchetypeBanner =
+    !!profile?.onboarding_completed &&
+    !personaProfile &&
+    !profile?.archetype_banner_dismissed_at;
+
   return (
     <div className="space-y-10">
       {/* Greeting */}
       <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
         {getGreeting()}, {firstName}
       </h1>
+
+      {/* Archetype discovery nudge (Onboarding v2 backfill) */}
+      {showArchetypeBanner && <ArchetypeBanner />}
 
       {/* Current intention card */}
       {currentIntention && <CurrentIntention intention={currentIntention} />}

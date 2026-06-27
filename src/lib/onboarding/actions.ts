@@ -4,7 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { sendWelcomeSms } from "@/lib/sms";
-import { buildSeedMemoryFromOnboarding } from "@/lib/ai/memory";
+import {
+  buildSeedMemoryFromOnboarding,
+  loadUserMemory,
+  mergeProfileIntoMemory,
+} from "@/lib/ai/memory";
 import { scoreProfile } from "@/lib/persona/score";
 import { QUIZ_VERSION } from "@/lib/persona/questions";
 import { buildWelcomeArchetypeLine } from "@/lib/persona/content";
@@ -278,6 +282,121 @@ export async function completeFullOnboarding(
   }
 
   revalidateIntentionPaths();
+  return { success: true };
+}
+
+/**
+ * Existing-user backfill (Milestone 5): complete the shortened archetype quiz.
+ *
+ * Unlike completeFullOnboarding, this does NOT touch onboarding_completed, the
+ * intention, vision/aligned-state, or the welcome SMS. It re-derives the profile
+ * server-side, archives any prior profile to history, persists the new one,
+ * merges the raw answers into onboarding_responses, and refreshes ONLY the
+ * persona-derived fields of the user's (possibly months-old) memory.
+ */
+export async function completeArchetypeQuiz(payload: {
+  answers: QuizAnswers;
+}): Promise<ActionResult> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  // Server is authoritative for scoring.
+  const profile = scoreProfile(payload.answers);
+
+  // Archive the prior profile (if any) before replacing it.
+  const { data: priorProfile } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (priorProfile) {
+    await supabase
+      .from("user_profile_history")
+      .insert({ user_id: user.id, profile: priorProfile });
+  }
+
+  const row = profileRow(user.id, profile);
+  let profileError = (
+    await supabase.from("user_profiles").upsert(row, { onConflict: "user_id" })
+  ).error;
+  if (profileError) {
+    console.error(
+      "Archetype profile upsert failed, retrying:",
+      profileError.message,
+    );
+    profileError = (
+      await supabase
+        .from("user_profiles")
+        .upsert(row, { onConflict: "user_id" })
+    ).error;
+    if (profileError) {
+      return { error: profileError.message };
+    }
+  }
+
+  // Merge raw answers into the existing onboarding_responses row (update only —
+  // never overwrite intention/vision/aligned-state collected at first onboarding).
+  await supabase
+    .from("onboarding_responses")
+    .update({
+      responses: payload.answers,
+      quiz_version: QUIZ_VERSION,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("user_id", user.id);
+
+  // Refresh only the persona-derived memory fields; preserve compacted history.
+  const adminClient = createServiceRoleClient();
+  const existingMemory = await loadUserMemory(user.id);
+  const summary = existingMemory
+    ? mergeProfileIntoMemory(existingMemory, profile)
+    : buildSeedMemoryFromOnboarding({ profile });
+  const tokenCount = Math.ceil(JSON.stringify(summary).length / 4);
+  await adminClient.from("user_memory").upsert(
+    {
+      user_id: user.id,
+      summary,
+      version: 1,
+      token_count: tokenCount,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" },
+  );
+
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+/** Persist dismissal of the dashboard "discover your archetype" banner. */
+export async function dismissArchetypeBanner(): Promise<ActionResult> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const { error } = await supabase
+    .from("users")
+    .update({ archetype_banner_dismissed_at: new Date().toISOString() })
+    .eq("id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/dashboard");
   return { success: true };
 }
 

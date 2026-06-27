@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { buildSeedMemoryFromOnboarding } from "./memory";
+import {
+  buildSeedMemoryFromOnboarding,
+  mergeProfileIntoMemory,
+  type UserMemorySummary,
+} from "./memory";
 import type { PersonaProfile } from "../persona/types";
 
 const PROFILE: PersonaProfile = {
@@ -90,5 +94,70 @@ describe("buildSeedMemoryFromOnboarding", () => {
       });
       expect(seed.themes).toContain("career");
     });
+  });
+});
+
+const EXISTING_MEMORY: UserMemorySummary = {
+  themes: ["working toward: launch my studio", "creative"],
+  vision: "a calm morning",
+  obstacles: "fear of judgment",
+  recent_emotional_state: "hopeful but tired",
+  open_threads: ["mentioned a deadline next week"],
+  last_breakthrough: "shipped the landing page",
+  tone_notes: "feels most themselves when: on a long walk",
+};
+
+describe("mergeProfileIntoMemory", () => {
+  it("preserves compacted history untouched", () => {
+    const merged = mergeProfileIntoMemory(EXISTING_MEMORY, PROFILE);
+    expect(merged.themes).toEqual(EXISTING_MEMORY.themes);
+    expect(merged.vision).toBe(EXISTING_MEMORY.vision);
+    expect(merged.open_threads).toEqual(EXISTING_MEMORY.open_threads);
+    expect(merged.last_breakthrough).toBe(EXISTING_MEMORY.last_breakthrough);
+    expect(merged.recent_emotional_state).toBe(
+      EXISTING_MEMORY.recent_emotional_state,
+    );
+  });
+
+  it("refreshes obstacles from the inner-critic pattern", () => {
+    const merged = mergeProfileIntoMemory(EXISTING_MEMORY, PROFILE);
+    expect(merged.obstacles?.toLowerCase()).toContain("all-or-nothing");
+  });
+
+  it("keeps existing obstacles when the profile has no pattern", () => {
+    const merged = mergeProfileIntoMemory(EXISTING_MEMORY, {
+      ...PROFILE,
+      primary_distortion: null,
+    });
+    expect(merged.obstacles).toBe("fear of judgment");
+  });
+
+  it("adds the tone preference while preserving existing tone context", () => {
+    const merged = mergeProfileIntoMemory(EXISTING_MEMORY, PROFILE);
+    expect(merged.tone_notes?.toLowerCase()).toContain(
+      "questions that make them think",
+    );
+    expect(merged.tone_notes).toContain("on a long walk");
+  });
+
+  it("is idempotent — repeated merges do not stack 'prefers' clauses", () => {
+    const once = mergeProfileIntoMemory(EXISTING_MEMORY, PROFILE);
+    const twice = mergeProfileIntoMemory(once, {
+      ...PROFILE,
+      tone_preference: "gentle",
+    });
+    const prefersCount = (twice.tone_notes?.match(/prefers/gi) ?? []).length;
+    expect(prefersCount).toBe(1);
+    expect(twice.tone_notes).toContain("on a long walk");
+  });
+
+  it("sets tone_notes to the preference alone when there was none", () => {
+    const merged = mergeProfileIntoMemory(
+      { ...EXISTING_MEMORY, tone_notes: null },
+      PROFILE,
+    );
+    expect(merged.tone_notes?.toLowerCase()).toContain(
+      "questions that make them think",
+    );
   });
 });

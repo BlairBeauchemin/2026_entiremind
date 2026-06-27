@@ -116,6 +116,26 @@ describe("RevealStep", () => {
     await waitFor(() => expect(pushMock).toHaveBeenCalledWith("/dashboard"));
   });
 
+  it("uses a custom onComplete + submit label when provided (retake flow)", async () => {
+    const onComplete = vi.fn().mockResolvedValue({ success: true });
+    render(
+      <RevealStep
+        profile={scoreProfile(VISIONARY_ANSWERS)}
+        answers={VISIONARY_ANSWERS}
+        name="Maya"
+        transitionMs={0}
+        submitLabel="See your archetype"
+        onComplete={onComplete}
+      />,
+    );
+    fireEvent.click(
+      await screen.findByRole("button", { name: /see your archetype/i }),
+    );
+    await waitFor(() => expect(onComplete).toHaveBeenCalled());
+    expect(completeMock).not.toHaveBeenCalled();
+    await waitFor(() => expect(pushMock).toHaveBeenCalledWith("/dashboard"));
+  });
+
   it("shows an error and does not navigate when completion fails", async () => {
     completeMock.mockResolvedValue({ error: "Something went wrong" });
     renderReveal(VISIONARY_ANSWERS);
