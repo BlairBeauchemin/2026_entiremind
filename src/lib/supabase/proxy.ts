@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { resolveRouteRedirect } from "./redirect-rules";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -16,17 +17,17 @@ export async function updateSession(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
+            request.cookies.set(name, value),
           );
           supabaseResponse = NextResponse.next({
             request,
           });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options),
           );
         },
       },
-    }
+    },
   );
 
   // Refresh session if expired - required for Server Components
@@ -35,53 +36,30 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
-  const isProtectedRoute = pathname.startsWith("/dashboard");
-  const isOnboardingRoute = pathname.startsWith("/onboarding");
-  const isAuthRoute = pathname.startsWith("/auth");
+  const isAuthed = !!user;
 
-  // Unauthenticated users trying to access protected routes → redirect to /auth
-  if ((isProtectedRoute || isOnboardingRoute) && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/auth";
-    return NextResponse.redirect(url);
-  }
+  // Onboarding status is only needed for the dashboard/onboarding/auth families
+  // (and never for the callback) — avoid a DB round-trip on every other request.
+  const isRouteWithRules =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/auth");
 
-  // For authenticated users, check onboarding status
-  if (user && (isProtectedRoute || isOnboardingRoute || isAuthRoute)) {
-    // Skip callback route
-    if (pathname.includes("/callback")) {
-      return supabaseResponse;
-    }
-
-    // Fetch user profile to check onboarding status
+  let isOnboarded = false;
+  if (isAuthed && isRouteWithRules && !pathname.includes("/callback")) {
     const { data: profile } = await supabase
       .from("users")
       .select("onboarding_completed")
-      .eq("id", user.id)
+      .eq("id", user!.id)
       .single();
+    isOnboarded = profile?.onboarding_completed ?? false;
+  }
 
-    const isOnboarded = profile?.onboarding_completed ?? false;
-
-    // Authenticated user on /auth → redirect based on onboarding status
-    if (isAuthRoute) {
-      const url = request.nextUrl.clone();
-      url.pathname = isOnboarded ? "/dashboard" : "/onboarding";
-      return NextResponse.redirect(url);
-    }
-
-    // User on /dashboard but not onboarded → redirect to /onboarding
-    if (isProtectedRoute && !isOnboarded) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/onboarding";
-      return NextResponse.redirect(url);
-    }
-
-    // User on /onboarding but already onboarded → redirect to /dashboard
-    if (isOnboardingRoute && isOnboarded) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/dashboard";
-      return NextResponse.redirect(url);
-    }
+  const redirectTo = resolveRouteRedirect({ pathname, isAuthed, isOnboarded });
+  if (redirectTo && redirectTo !== pathname) {
+    const url = request.nextUrl.clone();
+    url.pathname = redirectTo;
+    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;
