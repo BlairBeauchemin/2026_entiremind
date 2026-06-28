@@ -310,7 +310,12 @@ export async function completeArchetypeQuiz(payload: {
   // Server is authoritative for scoring.
   const profile = scoreProfile(payload.answers);
 
-  // Archive the prior profile (if any) before replacing it.
+  // Service-role client for the admin-only writes below (history + memory):
+  // user_profile_history and user_memory have no authenticated RLS insert path.
+  const adminClient = createServiceRoleClient();
+
+  // Archive the prior profile (if any) before replacing it. Uses the service
+  // role because user_profile_history is admin/service-role only under RLS.
   const { data: priorProfile } = await supabase
     .from("user_profiles")
     .select("*")
@@ -318,9 +323,12 @@ export async function completeArchetypeQuiz(payload: {
     .maybeSingle();
 
   if (priorProfile) {
-    await supabase
+    const { error: archiveError } = await adminClient
       .from("user_profile_history")
       .insert({ user_id: user.id, profile: priorProfile });
+    if (archiveError) {
+      console.error("Failed to archive prior profile:", archiveError.message);
+    }
   }
 
   const row = profileRow(user.id, profile);
@@ -354,7 +362,6 @@ export async function completeArchetypeQuiz(payload: {
     .eq("user_id", user.id);
 
   // Refresh only the persona-derived memory fields; preserve compacted history.
-  const adminClient = createServiceRoleClient();
   const existingMemory = await loadUserMemory(user.id);
   const summary = existingMemory
     ? mergeProfileIntoMemory(existingMemory, profile)
