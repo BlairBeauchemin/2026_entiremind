@@ -120,7 +120,9 @@ async function loadUserProfile(userId: string): Promise<PersonaProfile | null> {
       "archetype, motivation_orientation, change_style, primary_distortion, secondary_distortion, distortion_scores, core_values, tone_preference, intention_category",
     )
     .eq("user_id", userId)
-    .single();
+    // maybeSingle: existing (pre-v2) users have no profile row — 0 rows is
+    // expected, not an error.
+    .maybeSingle();
 
   if (!data) return null;
   const row = data as ProfileRow;

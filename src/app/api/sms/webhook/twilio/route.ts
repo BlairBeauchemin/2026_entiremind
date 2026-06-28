@@ -25,7 +25,8 @@ async function loadKnownPatterns(
     .from("user_profiles")
     .select("primary_distortion, secondary_distortion")
     .eq("user_id", userId)
-    .single();
+    // maybeSingle: existing (pre-v2) users have no profile row — 0 rows is fine.
+    .maybeSingle();
   if (!data) return [];
   return [data.primary_distortion, data.secondary_distortion].filter(
     (d): d is Distortion => typeof d === "string",
