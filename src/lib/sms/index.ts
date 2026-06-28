@@ -1,10 +1,22 @@
 import { createServiceRoleClient } from "../supabase";
-import type { SmsProvider, SmsProviderAdapter, SendSmsResult, ContentType } from "./types";
+import type {
+  SmsProvider,
+  SmsProviderAdapter,
+  SendSmsResult,
+  ContentType,
+} from "./types";
 import { telnyxAdapter } from "./providers/telnyx";
 import { twilioAdapter } from "./providers/twilio";
+import { buildWelcomeMessage } from "./welcome";
 
 // Re-export types
-export type { SmsProvider, SendSmsResult, InboundSmsData, SmsProviderAdapter, ContentType } from "./types";
+export type {
+  SmsProvider,
+  SendSmsResult,
+  InboundSmsData,
+  SmsProviderAdapter,
+  ContentType,
+} from "./types";
 
 /**
  * Get the current SMS provider from environment
@@ -48,7 +60,7 @@ export async function sendSms(
   userId: string,
   toPhoneNumber: string,
   text: string,
-  options: SendSmsOptions = {}
+  options: SendSmsOptions = {},
 ): Promise<SendSmsResult> {
   const supabase = createServiceRoleClient();
   const adapter = getProviderAdapter();
@@ -109,16 +121,14 @@ export async function sendSms(
 
     // Update user_signals.last_message_sent_at (skip for acks — they're reactive)
     if (contentType !== "ack") {
-      await supabase
-        .from("user_signals")
-        .upsert(
-          {
-            user_id: userId,
-            last_message_sent_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "user_id" }
-        );
+      await supabase.from("user_signals").upsert(
+        {
+          user_id: userId,
+          last_message_sent_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" },
+      );
     }
 
     return {
@@ -144,7 +154,8 @@ export async function sendSms(
 
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown error sending SMS",
+      error:
+        error instanceof Error ? error.message : "Unknown error sending SMS",
     };
   }
 }
@@ -170,7 +181,7 @@ export async function storeInboundSms(
   toPhoneNumber: string,
   text: string,
   externalMessageId: string,
-  provider: SmsProvider
+  provider: SmsProvider,
 ): Promise<StoreInboundResult> {
   const supabase = createServiceRoleClient();
 
@@ -199,7 +210,14 @@ export async function storeInboundSms(
     .select("id, created_at")
     .eq("user_id", user.id)
     .eq("direction", "outbound")
-    .in("content_type", ["reflection", "quote", "check-in", "action", "gratitude", "manual"])
+    .in("content_type", [
+      "reflection",
+      "quote",
+      "check-in",
+      "action",
+      "gratitude",
+      "manual",
+    ])
     .gte("created_at", twentyFourHoursAgo.toISOString())
     .order("created_at", { ascending: false })
     .limit(1)
@@ -263,17 +281,17 @@ export async function storeInboundSms(
 }
 
 /**
- * Send a welcome SMS to a user after onboarding
+ * Send a welcome SMS to a user after onboarding. When an archetype line is
+ * supplied (Onboarding v2), the welcome references their persona.
  */
 export async function sendWelcomeSms(
   userId: string,
   userName: string,
-  phoneNumber: string
+  phoneNumber: string,
+  archetypeLine?: string,
 ): Promise<SendSmsResult> {
-  const name = userName || "friend";
-  const welcomeMessage =
-    `Welcome to Entiremind, ${name}! You're enrolled in daily reflection prompts. ` +
-    `Up to 2 msgs/day. Msg & data rates may apply. ` +
-    `Reply HELP for help or STOP to cancel.`;
-  return sendSms(userId, phoneNumber, welcomeMessage, { contentType: "welcome" });
+  const welcomeMessage = buildWelcomeMessage(userName, archetypeLine);
+  return sendSms(userId, phoneNumber, welcomeMessage, {
+    contentType: "welcome",
+  });
 }

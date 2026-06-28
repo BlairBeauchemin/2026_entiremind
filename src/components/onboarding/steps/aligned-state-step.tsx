@@ -1,56 +1,36 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, ArrowLeft, Sparkles } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { completeFullOnboarding } from "@/lib/onboarding/actions";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
 interface AlignedStateStepProps {
   value: string;
   onChange: (value: string) => void;
+  /** Advance to the reveal, keeping the entered text. */
+  onNext: () => void;
+  /** Advance to the reveal without an answer (skippable question). */
+  onSkip: () => void;
   onBack: () => void;
-  vision: string;
-  obstacles: string;
 }
 
+/**
+ * Screen 14 — "when do you feel most like yourself?" Skippable; it no longer
+ * completes onboarding (the reveal does). Just collects optional tone material
+ * and advances.
+ */
 export function AlignedStateStep({
   value,
   onChange,
+  onNext,
+  onSkip,
   onBack,
-  vision,
-  obstacles,
 }: AlignedStateStepProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!value.trim()) {
-      setError("Notice when you feel most like you");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    const result = await completeFullOnboarding({
-      vision: vision.trim(),
-      obstacles: obstacles.trim(),
-      alignedState: value.trim(),
-    });
-
-    if ("error" in result) {
-      setError(result.error);
-      setIsLoading(false);
-      return;
-    }
-
-    router.push("/dashboard");
+    if (!value.trim()) return;
+    onNext();
   };
 
   return (
@@ -68,10 +48,11 @@ export function AlignedStateStep({
           </div>
         </div>
         <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
-          When do you feel most like yourself?
+          Last one: when do you feel most like yourself?
         </h1>
         <p className="text-teal-900/60 text-sm">
-          The moments where you&apos;re not performing. Where you&apos;re just here.
+          The moments where you&apos;re not performing. Where you&apos;re just
+          here.
         </p>
       </div>
 
@@ -94,30 +75,32 @@ export function AlignedStateStep({
           />
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
-
         <div className="flex gap-3">
           <Button
             type="button"
             variant="outline"
+            aria-label="Go back"
             onClick={onBack}
-            disabled={isLoading}
             className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <Button
             type="submit"
-            disabled={isLoading}
-            className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium"
+            disabled={!value.trim()}
+            className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium disabled:opacity-40"
           >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              "Begin My Journey"
-            )}
+            Continue
           </Button>
         </div>
+
+        <button
+          type="button"
+          onClick={onSkip}
+          className="w-full text-center text-sm text-teal-900/40 hover:text-teal-900/60 transition-colors"
+        >
+          Skip for now
+        </button>
       </form>
     </motion.div>
   );

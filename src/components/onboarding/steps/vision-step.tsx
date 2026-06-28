@@ -13,7 +13,12 @@ interface VisionStepProps {
   onBack: () => void;
 }
 
-export function VisionStep({ value, onChange, onNext, onBack }: VisionStepProps) {
+export function VisionStep({
+  value,
+  onChange,
+  onNext,
+  onBack,
+}: VisionStepProps) {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -41,10 +46,10 @@ export function VisionStep({ value, onChange, onNext, onBack }: VisionStepProps)
           </div>
         </div>
         <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
-          If this manifested, what would your life look like?
+          If it came true — what would an ordinary Tuesday look like?
         </h1>
         <p className="text-teal-900/60 text-sm">
-          Picture the version of you that&apos;s already living it.
+          Not the highlight reel. The quiet, everyday texture of that life.
         </p>
       </div>
 
@@ -73,6 +78,7 @@ export function VisionStep({ value, onChange, onNext, onBack }: VisionStepProps)
           <Button
             type="button"
             variant="outline"
+            aria-label="Go back"
             onClick={onBack}
             className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
           >

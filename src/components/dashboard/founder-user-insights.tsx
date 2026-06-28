@@ -3,11 +3,28 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { ARCHETYPE_NAMES, DISTORTION_CONTENT } from "@/lib/persona/content";
+import type { Archetype, Distortion } from "@/lib/persona/types";
+
+export interface FounderUserProfile {
+  archetype: Archetype;
+  motivationOrientation: string;
+  changeStyle: string;
+  primaryDistortion: Distortion | null;
+  secondaryDistortion: Distortion | null;
+  distortionScores: Record<string, number>;
+  coreValues: string[];
+  tonePreference: string;
+  intentionCategory: string | null;
+  quizVersion: number;
+  rawAnswers: { question: string; answer: string }[] | null;
+}
 
 export interface FounderUserInsight {
   userId: string;
   userName: string | null;
   userEmail: string;
+  profile: FounderUserProfile | null;
   memory: {
     themes?: string[];
     vision?: string | null;
@@ -20,7 +37,10 @@ export interface FounderUserInsight {
   memoryUpdatedAt: string | null;
   recentThemes: { theme: string; category: string; count: number }[];
   sentimentTrend: { positive: number; neutral: number; struggling: number };
-  replyRateByType: Record<string, { sends: number; replies: number; rate: number }>;
+  replyRateByType: Record<
+    string,
+    { sends: number; replies: number; rate: number }
+  >;
 }
 
 interface Props {
@@ -110,6 +130,7 @@ function UserCard({
             className="overflow-hidden"
           >
             <div className="px-5 pb-5 space-y-4 text-sm">
+              <ProfilePanel profile={insight.profile} />
               <MemoryPanel memory={insight.memory} />
               <ThemeCloud themes={insight.recentThemes} />
               <ReplyRateTable rates={insight.replyRateByType} />
@@ -134,9 +155,15 @@ function SentimentBar({
   const pct = (n: number) => `${(n / total) * 100}%`;
   return (
     <div className="hidden sm:flex h-2 w-32 rounded-full overflow-hidden border border-white/80">
-      <div className="bg-emerald-400/70" style={{ width: pct(trend.positive) }} />
+      <div
+        className="bg-emerald-400/70"
+        style={{ width: pct(trend.positive) }}
+      />
       <div className="bg-teal-300/60" style={{ width: pct(trend.neutral) }} />
-      <div className="bg-rose-400/60" style={{ width: pct(trend.struggling) }} />
+      <div
+        className="bg-rose-400/60"
+        style={{ width: pct(trend.struggling) }}
+      />
     </div>
   );
 }
@@ -155,6 +182,113 @@ function MemoryRow({
         {label}
       </div>
       <div className="text-navy">{value}</div>
+    </div>
+  );
+}
+
+function distortionLabel(d: Distortion): string {
+  return DISTORTION_CONTENT[d]?.name ?? d;
+}
+
+function ProfilePanel({ profile }: { profile: FounderUserProfile | null }) {
+  if (!profile) {
+    return (
+      <div className="text-xs italic text-teal-900/50">
+        No persona profile yet (pre-Onboarding-v2 user).
+      </div>
+    );
+  }
+
+  const scoreEntries = Object.entries(profile.distortionScores)
+    .filter(([, v]) => v > 0)
+    .sort((a, b) => b[1] - a[1]);
+
+  return (
+    <div className="space-y-3 bg-teal-900/5 rounded-xl p-4">
+      <div className="flex items-center justify-between">
+        <div className="text-[10px] uppercase tracking-widest text-teal-900/50">
+          Persona profile
+        </div>
+        <div className="text-[10px] text-teal-900/40">
+          quiz v{profile.quizVersion}
+        </div>
+      </div>
+
+      <div>
+        <div className="text-[10px] uppercase tracking-widest text-teal-900/40">
+          Archetype
+        </div>
+        <div className="text-navy font-medium">
+          {ARCHETYPE_NAMES[profile.archetype]}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <MemoryRow label="Motivation" value={profile.motivationOrientation} />
+        <MemoryRow label="Change style" value={profile.changeStyle} />
+        <MemoryRow label="Tone" value={profile.tonePreference} />
+        <MemoryRow
+          label="Intention category"
+          value={profile.intentionCategory ?? "—"}
+        />
+        <MemoryRow
+          label="Primary pattern"
+          value={
+            profile.primaryDistortion
+              ? distortionLabel(profile.primaryDistortion)
+              : "None (confident)"
+          }
+        />
+        <MemoryRow
+          label="Secondary pattern"
+          value={
+            profile.secondaryDistortion
+              ? distortionLabel(profile.secondaryDistortion)
+              : "—"
+          }
+        />
+      </div>
+
+      {profile.coreValues.length > 0 && (
+        <MemoryRow label="Values" value={profile.coreValues.join(", ")} />
+      )}
+
+      {scoreEntries.length > 0 && (
+        <div>
+          <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+            Distortion scores
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {scoreEntries.map(([code, score]) => (
+              <span
+                key={code}
+                className="text-xs px-2 py-0.5 rounded-full bg-em-purple-300/15 text-navy border border-em-purple-300/30"
+              >
+                {distortionLabel(code as Distortion)}
+                <span className="text-teal-900/50 ml-1">{score}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {profile.rawAnswers && profile.rawAnswers.length > 0 && (
+        <details className="group">
+          <summary className="cursor-pointer text-[11px] uppercase tracking-widest text-teal-900/40 hover:text-teal-900/70 select-none">
+            Raw answers
+          </summary>
+          <dl className="mt-2 space-y-1.5">
+            {profile.rawAnswers.map((a) => (
+              <div key={a.question}>
+                <dt className="text-[10px] uppercase tracking-widest text-teal-900/40">
+                  {a.question}
+                </dt>
+                <dd className="text-navy">{a.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+      )}
     </div>
   );
 }
@@ -179,7 +313,10 @@ function MemoryPanel({ memory }: { memory: FounderUserInsight["memory"] }) {
         label="Recent emotional state"
         value={memory.recent_emotional_state ?? null}
       />
-      <MemoryRow label="Last breakthrough" value={memory.last_breakthrough ?? null} />
+      <MemoryRow
+        label="Last breakthrough"
+        value={memory.last_breakthrough ?? null}
+      />
       <MemoryRow label="Tone notes" value={memory.tone_notes ?? null} />
       {memory.open_threads && memory.open_threads.length > 0 && (
         <div>

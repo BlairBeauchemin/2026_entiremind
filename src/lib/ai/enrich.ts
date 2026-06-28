@@ -1,5 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { ENRICH_SYSTEM_PROMPT } from "./prompts/enrich";
+import { DISTORTIONS } from "../persona/types";
+import type { Distortion } from "../persona/types";
+import { distortionPromptHint } from "../persona/prompt";
 
 export type EnrichmentSentiment = "positive" | "neutral" | "struggling";
 export type EnrichmentCategory =
@@ -12,7 +15,11 @@ export type EnrichmentCategory =
   | "family"
   | "spiritual"
   | "other";
-export type EnrichmentModality = "reflective" | "action-oriented" | "venting" | "question";
+export type EnrichmentModality =
+  | "reflective"
+  | "action-oriented"
+  | "venting"
+  | "question";
 
 export interface ReplyEnrichment {
   sentiment: EnrichmentSentiment;
@@ -24,6 +31,8 @@ export interface ReplyEnrichment {
   open_thread: boolean;
   substantive: boolean;
   acknowledgement: string | null;
+  /** Which of the user's known inner-critic patterns this reply exhibits. */
+  distortion_flags: Distortion[];
 }
 
 const ENRICH_TIMEOUT_MS = 3000;
@@ -40,7 +49,11 @@ function getClient(): Anthropic {
   return client;
 }
 
-const VALID_SENTIMENTS: EnrichmentSentiment[] = ["positive", "neutral", "struggling"];
+const VALID_SENTIMENTS: EnrichmentSentiment[] = [
+  "positive",
+  "neutral",
+  "struggling",
+];
 const VALID_CATEGORIES: EnrichmentCategory[] = [
   "career",
   "health",
@@ -59,11 +72,13 @@ const VALID_MODALITIES: EnrichmentModality[] = [
   "question",
 ];
 
-function coerceEnrichment(raw: unknown): ReplyEnrichment | null {
+export function coerceEnrichment(raw: unknown): ReplyEnrichment | null {
   if (!raw || typeof raw !== "object") return null;
   const obj = raw as Record<string, unknown>;
 
-  const sentiment = VALID_SENTIMENTS.includes(obj.sentiment as EnrichmentSentiment)
+  const sentiment = VALID_SENTIMENTS.includes(
+    obj.sentiment as EnrichmentSentiment,
+  )
     ? (obj.sentiment as EnrichmentSentiment)
     : "neutral";
 
@@ -84,11 +99,25 @@ function coerceEnrichment(raw: unknown): ReplyEnrichment | null {
     : [];
 
   const emotional_state =
-    typeof obj.emotional_state === "string" ? obj.emotional_state.slice(0, 64) : "neutral";
+    typeof obj.emotional_state === "string"
+      ? obj.emotional_state.slice(0, 64)
+      : "neutral";
 
   const ackRaw = obj.acknowledgement;
   const acknowledgement =
-    typeof ackRaw === "string" && ackRaw.trim().length > 0 ? ackRaw.trim().slice(0, 160) : null;
+    typeof ackRaw === "string" && ackRaw.trim().length > 0
+      ? ackRaw.trim().slice(0, 160)
+      : null;
+
+  const distortion_flags = Array.isArray(obj.distortion_flags)
+    ? obj.distortion_flags
+        .filter(
+          (d): d is Distortion =>
+            typeof d === "string" &&
+            (DISTORTIONS as readonly string[]).includes(d),
+        )
+        .slice(0, DISTORTIONS.length)
+    : [];
 
   return {
     sentiment,
@@ -100,7 +129,30 @@ function coerceEnrichment(raw: unknown): ReplyEnrichment | null {
     open_thread: Boolean(obj.open_thread),
     substantive: Boolean(obj.substantive),
     acknowledgement,
+    distortion_flags,
   };
+}
+
+/**
+ * Compose the enrichment call's user message. When the user has known
+ * inner-critic patterns, they ride in as a bracketed context preamble (the
+ * system prompt stays static so it keeps caching). Codes are paired with
+ * plain-language hints so the model can both recognize and return them.
+ */
+export function buildEnrichInput(
+  replyText: string,
+  knownPatterns: Distortion[],
+): string {
+  if (knownPatterns.length === 0) return replyText;
+  const pairs = knownPatterns
+    .map((d) => `${d} = ${distortionPromptHint(d)}`)
+    .join("; ");
+  return (
+    `[This user's known inner-critic patterns: ${pairs}. ` +
+    `If this reply clearly exhibits one, include its code in distortion_flags ` +
+    `and you MAY gently reframe in the acknowledgement — never label or diagnose.]` +
+    `\n\n${replyText}`
+  );
 }
 
 /**
@@ -108,7 +160,10 @@ function coerceEnrichment(raw: unknown): ReplyEnrichment | null {
  * Returns null on timeout, malformed output, or any API failure — callers should
  * fall back to the soft-ack library in that case.
  */
-export async function enrichInboundReply(replyText: string): Promise<ReplyEnrichment | null> {
+export async function enrichInboundReply(
+  replyText: string,
+  knownPatterns: Distortion[] = [],
+): Promise<ReplyEnrichment | null> {
   try {
     const anthropic = getClient();
 
@@ -116,11 +171,13 @@ export async function enrichInboundReply(replyText: string): Promise<ReplyEnrich
       model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: 400,
       system: ENRICH_SYSTEM_PROMPT,
-      messages: [{ role: "user", content: replyText }],
+      messages: [
+        { role: "user", content: buildEnrichInput(replyText, knownPatterns) },
+      ],
     });
 
     const timeout = new Promise<null>((resolve) =>
-      setTimeout(() => resolve(null), ENRICH_TIMEOUT_MS)
+      setTimeout(() => resolve(null), ENRICH_TIMEOUT_MS),
     );
 
     const response = await Promise.race([call, timeout]);

@@ -1,15 +1,28 @@
 import { createServiceRoleClient } from "../supabase";
 import { getUserSignals } from "../signals";
-import type { UserContext, GeneratedMessage, ContentType, AiProvider, AiProviderAdapter, RecentReplyContext } from "./types";
+import type {
+  UserContext,
+  GeneratedMessage,
+  ContentType,
+  AiProvider,
+  AiProviderAdapter,
+  RecentReplyContext,
+} from "./types";
 import { SYSTEM_PROMPT, buildUserPrompt, selectContentType } from "./prompts";
 import { openaiAdapter } from "./providers/openai";
 import { anthropicAdapter } from "./providers/anthropic";
 import { loadUserMemory } from "./memory";
+import type { PersonaProfile } from "../persona/types";
 
 const RECENT_REPLY_LOOKBACK_HOURS = 48;
 
 // Re-export types
-export type { UserContext, GeneratedMessage, ContentType, AiProvider } from "./types";
+export type {
+  UserContext,
+  GeneratedMessage,
+  ContentType,
+  AiProvider,
+} from "./types";
 
 /**
  * Get the current AI provider from environment
@@ -71,6 +84,9 @@ export async function buildUserContext(userId: string): Promise<UserContext> {
   // Load most recent substantive reply within the lookback window
   const recentReply = await loadRecentSubstantiveReply(userId);
 
+  // Load the derived persona profile (Onboarding v2). Null for unprofiled users.
+  const profile = await loadUserProfile(userId);
+
   return {
     userId,
     name: user?.name || null,
@@ -80,6 +96,46 @@ export async function buildUserContext(userId: string): Promise<UserContext> {
     lastReplyAt: signals?.lastReplyAt ?? null,
     memory,
     recentReply,
+    profile,
+  };
+}
+
+interface ProfileRow {
+  archetype: PersonaProfile["archetype"];
+  motivation_orientation: PersonaProfile["motivation_orientation"];
+  change_style: PersonaProfile["change_style"];
+  primary_distortion: PersonaProfile["primary_distortion"];
+  secondary_distortion: PersonaProfile["secondary_distortion"];
+  distortion_scores: PersonaProfile["distortion_scores"] | null;
+  core_values: PersonaProfile["core_values"] | null;
+  tone_preference: PersonaProfile["tone_preference"];
+  intention_category: PersonaProfile["intention_category"];
+}
+
+async function loadUserProfile(userId: string): Promise<PersonaProfile | null> {
+  const supabase = createServiceRoleClient();
+  const { data } = await supabase
+    .from("user_profiles")
+    .select(
+      "archetype, motivation_orientation, change_style, primary_distortion, secondary_distortion, distortion_scores, core_values, tone_preference, intention_category",
+    )
+    .eq("user_id", userId)
+    // maybeSingle: existing (pre-v2) users have no profile row — 0 rows is
+    // expected, not an error.
+    .maybeSingle();
+
+  if (!data) return null;
+  const row = data as ProfileRow;
+  return {
+    archetype: row.archetype,
+    motivation_orientation: row.motivation_orientation,
+    change_style: row.change_style,
+    primary_distortion: row.primary_distortion,
+    secondary_distortion: row.secondary_distortion,
+    distortion_scores: row.distortion_scores ?? {},
+    core_values: row.core_values ?? [],
+    tone_preference: row.tone_preference,
+    intention_category: row.intention_category,
   };
 }
 
@@ -95,7 +151,7 @@ interface ReplyRow {
 }
 
 async function loadRecentSubstantiveReply(
-  userId: string
+  userId: string,
 ): Promise<RecentReplyContext | null> {
   const supabase = createServiceRoleClient();
 
@@ -133,13 +189,14 @@ async function loadRecentSubstantiveReply(
  */
 export async function generateMessageForUser(
   userId: string,
-  preferredContentType?: ContentType
+  preferredContentType?: ContentType,
 ): Promise<GeneratedMessage> {
   const adapter = getProviderAdapter();
   const context = await buildUserContext(userId);
 
   // Select content type (use preferred if provided, otherwise rules-based selection)
-  const contentType = preferredContentType || (await selectContentType(context));
+  const contentType =
+    preferredContentType || (await selectContentType(context));
 
   // Build the prompt
   const userPrompt = buildUserPrompt(context, contentType);
@@ -150,14 +207,19 @@ export async function generateMessageForUser(
     // Ensure we're under 160 characters
     const finalText = text.length > 160 ? text.substring(0, 157) + "..." : text;
 
-    console.log(`Generated message via ${adapter.provider}: "${finalText.substring(0, 50)}..."`);
+    console.log(
+      `Generated message via ${adapter.provider}: "${finalText.substring(0, 50)}..."`,
+    );
 
     return {
       text: finalText,
       contentType,
     };
   } catch (error) {
-    console.error(`Failed to generate AI message via ${adapter.provider}:`, error);
+    console.error(
+      `Failed to generate AI message via ${adapter.provider}:`,
+      error,
+    );
 
     // Fallback message
     const fallbackMessages: Record<ContentType, string> = {
@@ -189,7 +251,7 @@ export async function generateMessageForUser(
  * Returns a map of userId to generated message
  */
 export async function generateMessagesForUsers(
-  userIds: string[]
+  userIds: string[],
 ): Promise<Map<string, GeneratedMessage>> {
   const results = new Map<string, GeneratedMessage>();
 

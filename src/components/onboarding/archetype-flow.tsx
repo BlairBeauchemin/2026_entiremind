@@ -1,19 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { OnboardingProgress } from "./onboarding-progress";
-import { WelcomeStep } from "./steps/welcome-step";
-import { NameStep } from "./steps/name-step";
-import { PhoneStep } from "./steps/phone-step";
 import { CategoryStep } from "./steps/category-step";
-import { IntentionStep } from "./steps/intention-step";
-import { VisionStep } from "./steps/vision-step";
 import { TapQuestionStep } from "./steps/tap-question-step";
 import { ValuesStep } from "./steps/values-step";
-import { AlignedStateStep } from "./steps/aligned-state-step";
 import { RevealStep } from "./steps/reveal-step";
-import { recordOnboardingStep } from "@/lib/onboarding/actions";
+import { completeArchetypeQuiz } from "@/lib/onboarding/actions";
 import { scoreProfile } from "@/lib/persona/score";
 import {
   ORIENTATION_OPTIONS,
@@ -33,30 +28,20 @@ import type {
   ValueId,
 } from "@/lib/persona/types";
 
-type OnboardingStep =
-  | "welcome"
-  | "name"
-  | "phone"
-  | "category"
-  | "intention"
-  | "vision"
-  | "orientation"
-  | "style"
-  | "past_pattern"
-  | "first_doubt"
-  | "inner_voice"
-  | "values"
-  | "tone"
-  | "aligned"
-  | "reveal";
-
-const STEPS: OnboardingStep[] = [
-  "welcome",
-  "name",
-  "phone",
+/**
+ * Shortened "Archetype Discovery" flow for existing users (Milestone 5 backfill).
+ *
+ * Reuses the exact same step components and questions.ts config as the full
+ * onboarding flow — only the step list differs (screens 4 + 7–13 + reveal,
+ * skipping name/phone/intention/vision/aligned-state). The reveal calls
+ * completeArchetypeQuiz, which writes the profile WITHOUT touching onboarding
+ * completion, the intention, or the welcome SMS.
+ *
+ * Drop-off step events are intentionally NOT recorded here — the founder funnel
+ * measures new-signup completion, and retakes would pollute it.
+ */
+const STEPS = [
   "category",
-  "intention",
-  "vision",
   "orientation",
   "style",
   "past_pattern",
@@ -64,17 +49,16 @@ const STEPS: OnboardingStep[] = [
   "inner_voice",
   "values",
   "tone",
-  "aligned",
   "reveal",
-];
+] as const;
 
-export function OnboardingFlow() {
-  const [currentStep, setCurrentStep] = useState<OnboardingStep>("welcome");
+type ArchetypeStep = (typeof STEPS)[number];
 
-  // Accumulated answers (persisted together at completion).
-  const [name, setName] = useState("");
+export function ArchetypeFlow({ name }: { name: string }) {
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState<ArchetypeStep>("category");
+
   const [category, setCategory] = useState<IntentionCategory | null>(null);
-  const [vision, setVision] = useState("");
   const [orientation, setOrientation] = useState<MotivationOrientation | null>(
     null,
   );
@@ -84,14 +68,8 @@ export function OnboardingFlow() {
   const [innerVoice, setInnerVoice] = useState<string | null>(null);
   const [coreValues, setCoreValues] = useState<ValueId[]>([]);
   const [tone, setTone] = useState<TonePreference | null>(null);
-  const [alignedState, setAlignedState] = useState("");
 
   const stepIndex = STEPS.indexOf(currentStep);
-
-  // Best-effort drop-off tracking on each step entry.
-  useEffect(() => {
-    void recordOnboardingStep(currentStep);
-  }, [currentStep]);
 
   const goToNext = () => {
     const nextIndex = stepIndex + 1;
@@ -102,6 +80,9 @@ export function OnboardingFlow() {
     const prevIndex = stepIndex - 1;
     if (prevIndex >= 0) setCurrentStep(STEPS[prevIndex]);
   };
+
+  // From the first screen, "back" returns to the dashboard the user came from.
+  const backFromFirst = () => router.push("/dashboard");
 
   const answers: QuizAnswers | null =
     category && orientation && style && pastPattern && innerVoice && tone
@@ -122,39 +103,13 @@ export function OnboardingFlow() {
       <OnboardingProgress currentStep={stepIndex} totalSteps={STEPS.length} />
 
       <AnimatePresence mode="wait">
-        {currentStep === "welcome" && (
-          <WelcomeStep key="welcome" onNext={goToNext} />
-        )}
-        {currentStep === "name" && (
-          <NameStep
-            key="name"
-            onNext={goToNext}
-            onBack={goBack}
-            onNameChange={setName}
-          />
-        )}
-        {currentStep === "phone" && (
-          <PhoneStep key="phone" onNext={goToNext} onBack={goBack} />
-        )}
         {currentStep === "category" && (
           <CategoryStep
             key="category"
             selected={category}
             onSelect={setCategory}
             onNext={goToNext}
-            onBack={goBack}
-          />
-        )}
-        {currentStep === "intention" && (
-          <IntentionStep key="intention" onNext={goToNext} onBack={goBack} />
-        )}
-        {currentStep === "vision" && (
-          <VisionStep
-            key="vision"
-            value={vision}
-            onChange={setVision}
-            onNext={goToNext}
-            onBack={goBack}
+            onBack={backFromFirst}
           />
         )}
         {currentStep === "orientation" && (
@@ -240,27 +195,14 @@ export function OnboardingFlow() {
             onBack={goBack}
           />
         )}
-        {currentStep === "aligned" && (
-          <AlignedStateStep
-            key="aligned"
-            value={alignedState}
-            onChange={setAlignedState}
-            onNext={goToNext}
-            onSkip={() => {
-              setAlignedState("");
-              goToNext();
-            }}
-            onBack={goBack}
-          />
-        )}
         {currentStep === "reveal" && answers && (
           <RevealStep
             key="reveal"
             profile={scoreProfile(answers)}
             answers={answers}
             name={name}
-            vision={vision}
-            alignedState={alignedState.trim() ? alignedState.trim() : null}
+            submitLabel="Save my archetype"
+            onComplete={() => completeArchetypeQuiz({ answers })}
           />
         )}
       </AnimatePresence>

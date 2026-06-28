@@ -3,8 +3,14 @@
  */
 
 import type { UserMemorySummary } from "./memory";
+import type { PersonaProfile } from "../persona/types";
 
-export type ContentType = "reflection" | "quote" | "check-in" | "action" | "gratitude";
+export type ContentType =
+  | "reflection"
+  | "quote"
+  | "check-in"
+  | "action"
+  | "gratitude";
 
 export type AiProvider = "openai" | "anthropic";
 
@@ -25,6 +31,8 @@ export interface UserContext {
   lastReplyAt: string | null;
   memory: UserMemorySummary | null;
   recentReply: RecentReplyContext | null;
+  /** Derived persona profile (Onboarding v2). Null for unprofiled users. */
+  profile: PersonaProfile | null;
 }
 
 export interface GeneratedMessage {
