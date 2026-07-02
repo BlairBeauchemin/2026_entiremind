@@ -44,12 +44,15 @@ export async function GET(request: Request) {
 
   const supabase = createServiceRoleClient();
 
-  // Get all active users with phone numbers who have completed onboarding
+  // Get all active users with phone numbers who have completed onboarding.
+  // Test personas (is_test) belong to the founder simulator and must never
+  // receive real sends.
   const { data: activeUsers, error: usersError } = await supabase
     .from("users")
     .select("id, phone, name, status")
     .eq("status", "active")
     .eq("onboarding_completed", true)
+    .eq("is_test", false)
     .not("phone", "is", null);
 
   if (usersError) {

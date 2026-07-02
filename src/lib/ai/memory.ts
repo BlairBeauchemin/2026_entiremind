@@ -247,10 +247,11 @@ export function mergeProfileIntoMemory(
  */
 export async function compactUserMemory(
   userId: string,
+  asOf: Date = new Date(),
 ): Promise<UserMemorySummary | null> {
   const supabase = createServiceRoleClient();
 
-  const cutoff = new Date();
+  const cutoff = new Date(asOf);
   cutoff.setDate(cutoff.getDate() - MEMORY_LOOKBACK_DAYS);
 
   const { data: replies, error: repliesError } = await supabase
@@ -259,6 +260,7 @@ export async function compactUserMemory(
     .eq("user_id", userId)
     .eq("direction", "inbound")
     .gte("created_at", cutoff.toISOString())
+    .lte("created_at", asOf.toISOString())
     .order("created_at", { ascending: true });
 
   if (repliesError) {

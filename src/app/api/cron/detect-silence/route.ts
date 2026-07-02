@@ -49,10 +49,15 @@ export async function GET(request: Request) {
   // Find outbound messages in the window that don't have replies.
   // Exclude 'ack' messages — they're reactive responses to user replies, not
   // proactive prompts, so a missing reply to an ack is not a silence signal.
+  // users!inner + is_test filter: simulated outbounds (founder simulator)
+  // land inside this window with backdated timestamps — the simulator tracks
+  // its own silences, so the cron must skip test personas or it would
+  // double-track them.
   const { data: outboundMessages, error: fetchError } = await supabase
     .from("messages")
-    .select("id, user_id, created_at, text")
+    .select("id, user_id, created_at, text, users:user_id!inner(is_test)")
     .eq("direction", "outbound")
+    .eq("users.is_test", false)
     .or("content_type.neq.ack,content_type.is.null")
     .gte("created_at", windowStart.toISOString())
     .lte("created_at", windowEnd.toISOString())

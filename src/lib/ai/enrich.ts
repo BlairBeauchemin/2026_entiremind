@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { ENRICH_SYSTEM_PROMPT } from "./prompts/enrich";
 import { DISTORTIONS } from "../persona/types";
 import type { Distortion } from "../persona/types";
@@ -206,5 +207,65 @@ export async function enrichInboundReply(
   } catch (err) {
     console.error("Enrich call failed:", err);
     return null;
+  }
+}
+
+/**
+ * Load a user's known inner-critic patterns from their persona profile so the
+ * enrichment call can listen for them. Returns [] when the user has no profile.
+ */
+export async function loadKnownPatterns(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<Distortion[]> {
+  const { data } = await supabase
+    .from("user_profiles")
+    .select("primary_distortion, secondary_distortion")
+    .eq("user_id", userId)
+    // maybeSingle: existing (pre-v2) users have no profile row — 0 rows is fine.
+    .maybeSingle();
+  if (!data) return [];
+  return [data.primary_distortion, data.secondary_distortion].filter(
+    (d): d is Distortion => typeof d === "string",
+  );
+}
+
+/**
+ * Persist an enrichment payload: insights JSONB on the inbound message plus
+ * one message_themes row per theme. Shared by the Twilio webhook and the
+ * founder simulator so both paths write identical data.
+ */
+export async function persistEnrichment(
+  supabase: SupabaseClient,
+  params: {
+    userId: string;
+    inboundMessageId: string;
+    enrichment: ReplyEnrichment;
+  },
+): Promise<void> {
+  const { userId, inboundMessageId, enrichment } = params;
+
+  const { error: insightsError } = await supabase
+    .from("messages")
+    .update({ insights: enrichment })
+    .eq("id", inboundMessageId);
+
+  if (insightsError) {
+    console.error("Failed to persist insights:", insightsError);
+  }
+
+  if (enrichment.themes.length > 0) {
+    const themeRows = enrichment.themes.map((theme) => ({
+      message_id: inboundMessageId,
+      theme,
+      category: enrichment.category,
+      user_id: userId,
+    }));
+    const { error: themesError } = await supabase
+      .from("message_themes")
+      .insert(themeRows);
+    if (themesError) {
+      console.error("Failed to persist message themes:", themesError);
+    }
   }
 }

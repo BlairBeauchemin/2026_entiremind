@@ -41,6 +41,7 @@ export type Database = {
           status: "active" | "paused" | "cancelled";
           role: "user" | "admin" | "founder";
           onboarding_completed: boolean;
+          is_test: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -54,6 +55,7 @@ export type Database = {
           status?: "active" | "paused" | "cancelled";
           role?: "user" | "admin" | "founder";
           onboarding_completed?: boolean;
+          is_test?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -67,6 +69,7 @@ export type Database = {
           status?: "active" | "paused" | "cancelled";
           role?: "user" | "admin" | "founder";
           onboarding_completed?: boolean;
+          is_test?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -106,11 +109,13 @@ export type Database = {
           to_number: string;
           text: string;
           external_message_id: string | null;
-          provider: "telnyx" | "twilio";
+          provider: "telnyx" | "twilio" | "simulator";
           status: "pending" | "sent" | "delivered" | "failed" | "received";
-          content_type: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          content_type: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack" | null;
           ai_generated: boolean;
           reply_to_message_id: string | null;
+          insights: Record<string, unknown> | null;
+          ack_sent: boolean;
           created_at: string;
         };
         Insert: {
@@ -121,11 +126,13 @@ export type Database = {
           to_number: string;
           text: string;
           external_message_id?: string | null;
-          provider?: "telnyx" | "twilio";
+          provider?: "telnyx" | "twilio" | "simulator";
           status?: "pending" | "sent" | "delivered" | "failed" | "received";
-          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack" | null;
           ai_generated?: boolean;
           reply_to_message_id?: string | null;
+          insights?: Record<string, unknown> | null;
+          ack_sent?: boolean;
           created_at?: string;
         };
         Update: {
@@ -136,11 +143,13 @@ export type Database = {
           to_number?: string;
           text?: string;
           external_message_id?: string | null;
-          provider?: "telnyx" | "twilio";
+          provider?: "telnyx" | "twilio" | "simulator";
           status?: "pending" | "sent" | "delivered" | "failed" | "received";
-          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack" | null;
           ai_generated?: boolean;
           reply_to_message_id?: string | null;
+          insights?: Record<string, unknown> | null;
+          ack_sent?: boolean;
           created_at?: string;
         };
       };
@@ -325,6 +334,123 @@ export type Database = {
           updated_at?: string;
         };
       };
+      system_prompts: {
+        Row: {
+          id: string;
+          name: string;
+          body: string;
+          notes: string | null;
+          is_active: boolean;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          body: string;
+          notes?: string | null;
+          is_active?: boolean;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          body?: string;
+          notes?: string | null;
+          is_active?: boolean;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      sim_runs: {
+        Row: {
+          id: string;
+          user_id: string;
+          status: "active" | "awaiting_review" | "completed" | "archived";
+          start_date: string;
+          current_day: number;
+          total_days: number;
+          pinned_prompt_id: string | null;
+          persona_brief: string;
+          reply_style: "eager" | "realistic" | "terse" | "flaky" | "silent";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          status?: "active" | "awaiting_review" | "completed" | "archived";
+          start_date: string;
+          current_day?: number;
+          total_days?: number;
+          pinned_prompt_id?: string | null;
+          persona_brief: string;
+          reply_style?: "eager" | "realistic" | "terse" | "flaky" | "silent";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          status?: "active" | "awaiting_review" | "completed" | "archived";
+          start_date?: string;
+          current_day?: number;
+          total_days?: number;
+          pinned_prompt_id?: string | null;
+          persona_brief?: string;
+          reply_style?: "eager" | "realistic" | "terse" | "flaky" | "silent";
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      sim_days: {
+        Row: {
+          id: string;
+          run_id: string;
+          day_number: number;
+          sim_date: string;
+          outbound_message_id: string | null;
+          inbound_message_id: string | null;
+          outbound_text: string | null;
+          inbound_text: string | null;
+          persona_action: "reply" | "silence" | null;
+          status: "pending_review" | "committed";
+          debug: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          run_id: string;
+          day_number: number;
+          sim_date: string;
+          outbound_message_id?: string | null;
+          inbound_message_id?: string | null;
+          outbound_text?: string | null;
+          inbound_text?: string | null;
+          persona_action?: "reply" | "silence" | null;
+          status?: "pending_review" | "committed";
+          debug?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          run_id?: string;
+          day_number?: number;
+          sim_date?: string;
+          outbound_message_id?: string | null;
+          inbound_message_id?: string | null;
+          outbound_text?: string | null;
+          inbound_text?: string | null;
+          persona_action?: "reply" | "silence" | null;
+          status?: "pending_review" | "committed";
+          debug?: Record<string, unknown>;
+          created_at?: string;
+        };
+      };
     };
   };
 };
@@ -338,6 +464,9 @@ export type DbSubscription = Database["public"]["Tables"]["subscriptions"]["Row"
 export type ScheduledMessage = Database["public"]["Tables"]["scheduled_messages"]["Row"];
 export type SignalEvent = Database["public"]["Tables"]["signal_events"]["Row"];
 export type UserSignals = Database["public"]["Tables"]["user_signals"]["Row"];
+export type SystemPrompt = Database["public"]["Tables"]["system_prompts"]["Row"];
+export type SimRun = Database["public"]["Tables"]["sim_runs"]["Row"];
+export type SimDay = Database["public"]["Tables"]["sim_days"]["Row"];
 
 // Lazy-initialized browser client
 let browserClient: SupabaseClient | null = null;

@@ -1,4 +1,4 @@
-import type { UserContext, ContentType } from "./types";
+import type { UserContext, ContentType, SelectionDebug } from "./types";
 import { renderMemoryForPrompt } from "./memory";
 import { renderProfileForPrompt } from "../persona/prompt";
 import { createServiceRoleClient } from "../supabase";
@@ -187,9 +187,10 @@ function isSelectableType(value: string): value is ContentType {
 async function loadRecentOutbound(
   userId: string,
   lookbackDays: number,
+  asOf: Date = new Date(),
 ): Promise<OutboundRow[]> {
   const supabase = createServiceRoleClient();
-  const cutoff = new Date();
+  const cutoff = new Date(asOf);
   cutoff.setDate(cutoff.getDate() - lookbackDays);
 
   const { data } = await supabase
@@ -198,6 +199,7 @@ async function loadRecentOutbound(
     .eq("user_id", userId)
     .eq("direction", "outbound")
     .gte("created_at", cutoff.toISOString())
+    .lte("created_at", asOf.toISOString())
     .order("created_at", { ascending: false });
 
   const rows = (data as RawOutboundRow[]) ?? [];
@@ -280,15 +282,28 @@ function pickUniform(candidates: ContentType[]): ContentType {
  */
 export async function selectContentType(
   context: UserContext,
+  asOf: Date = new Date(),
 ): Promise<ContentType> {
+  const { contentType } = await selectContentTypeDetailed(context, asOf);
+  return contentType;
+}
+
+/**
+ * Same rules as selectContentType, but also returns why the choice landed
+ * where it did — surfaced in the founder simulator's debug view.
+ */
+export async function selectContentTypeDetailed(
+  context: UserContext,
+  asOf: Date = new Date(),
+): Promise<{ contentType: ContentType; debug: SelectionDebug }> {
   const config = await loadConfig();
 
   const lookback = Math.max(config.earned_reply_lookback_days, 7);
-  const outbounds = await loadRecentOutbound(context.userId, lookback);
+  const outbounds = await loadRecentOutbound(context.userId, lookback, asOf);
   const repliedIds = await loadInboundsForOutbounds(outbounds.map((o) => o.id));
 
   // Rule 1: exclude types sent in the no-repeat window
-  const noRepeatCutoff = new Date();
+  const noRepeatCutoff = new Date(asOf);
   noRepeatCutoff.setDate(noRepeatCutoff.getDate() - config.no_repeat_days);
   const recentTypes = new Set<ContentType>(
     outbounds
@@ -298,29 +313,44 @@ export async function selectContentType(
   let candidates = ALL_TYPES.filter((t) => !recentTypes.has(t));
 
   // Rule 3: enforce quote cap (count quotes in the last 7 days)
-  const weekCutoff = new Date();
+  const weekCutoff = new Date(asOf);
   weekCutoff.setDate(weekCutoff.getDate() - 7);
   const recentQuotes = outbounds.filter(
     (o) => o.content_type === "quote" && new Date(o.created_at) >= weekCutoff,
   ).length;
-  if (recentQuotes >= config.quote_max_per_week) {
+  const quoteCapped = recentQuotes >= config.quote_max_per_week;
+  if (quoteCapped) {
     candidates = candidates.filter((t) => t !== "quote");
   }
 
   // Rule 2: gentle types when silent or struggling
   const isStruggling = context.recentReply?.sentiment === "struggling";
   const isSilent = context.consecutiveSilences >= config.silence_threshold;
+  let gentleMode = false;
   if (isStruggling || isSilent) {
     const gentle = candidates.filter((t) => STRUGGLING_TYPES.includes(t));
-    if (gentle.length > 0) candidates = gentle;
+    if (gentle.length > 0) {
+      candidates = gentle;
+      gentleMode = true;
+    }
   }
 
   // Safety net: if we filtered everything out, fall back to the full set
   if (candidates.length === 0) candidates = [...ALL_TYPES];
 
+  const rates = computeReplyRateByType(outbounds, repliedIds);
+  const debug: SelectionDebug = {
+    excludedByNoRepeat: [...recentTypes],
+    quoteCapped,
+    gentleMode,
+    usedWeightedPick: false,
+    replyRates: Object.fromEntries(
+      [...rates].map(([t, s]) => [t, { sends: s.sends, rate: s.rate }]),
+    ),
+  };
+
   // Rules 4 & 5: weighted by reply rate, or uniform
   if (Math.random() < config.earned_reply_bias) {
-    const rates = computeReplyRateByType(outbounds, repliedIds);
     const qualified = candidates.filter((t) => {
       const stat = rates.get(t);
       return stat && stat.sends >= config.earned_reply_min_sends;
@@ -331,9 +361,10 @@ export async function selectContentType(
       for (const t of qualified) {
         weights.set(t, (rates.get(t)?.rate ?? 0) + 0.05);
       }
-      return pickWeighted(qualified, weights);
+      debug.usedWeightedPick = true;
+      return { contentType: pickWeighted(qualified, weights), debug };
     }
   }
 
-  return pickUniform(candidates);
+  return { contentType: pickUniform(candidates), debug };
 }

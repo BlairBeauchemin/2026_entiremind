@@ -7,31 +7,13 @@ import {
   createTwimlResponse,
 } from "@/lib/sms/providers/twilio";
 import { trackReply, trackUnprompted, trackStopRequest } from "@/lib/signals";
-import { enrichInboundReply } from "@/lib/ai/enrich";
+import {
+  enrichInboundReply,
+  loadKnownPatterns,
+  persistEnrichment,
+} from "@/lib/ai/enrich";
 import { pickSoftAck } from "@/lib/acks";
 import { createServiceRoleClient } from "@/lib/supabase";
-import type { Distortion } from "@/lib/persona/types";
-import type { SupabaseClient } from "@supabase/supabase-js";
-
-/**
- * Load a user's known inner-critic patterns from their persona profile so the
- * enrichment call can listen for them. Returns [] when the user has no profile.
- */
-async function loadKnownPatterns(
-  supabase: SupabaseClient,
-  userId: string,
-): Promise<Distortion[]> {
-  const { data } = await supabase
-    .from("user_profiles")
-    .select("primary_distortion, secondary_distortion")
-    .eq("user_id", userId)
-    // maybeSingle: existing (pre-v2) users have no profile row — 0 rows is fine.
-    .maybeSingle();
-  if (!data) return [];
-  return [data.primary_distortion, data.secondary_distortion].filter(
-    (d): d is Distortion => typeof d === "string",
-  );
-}
 
 // Twilio handles STOP/UNSUBSCRIBE at the platform level automatically, but we
 // log them here for our own records and to satisfy carrier review requirements.
@@ -62,29 +44,7 @@ async function processEnrichmentAndAck(params: {
   const enrichment = await enrichInboundReply(inboundText, knownPatterns);
 
   if (enrichment) {
-    const { error: insightsError } = await supabase
-      .from("messages")
-      .update({ insights: enrichment })
-      .eq("id", inboundMessageId);
-
-    if (insightsError) {
-      console.error("Failed to persist insights:", insightsError);
-    }
-
-    if (enrichment.themes.length > 0) {
-      const themeRows = enrichment.themes.map((theme) => ({
-        message_id: inboundMessageId,
-        theme,
-        category: enrichment.category,
-        user_id: userId,
-      }));
-      const { error: themesError } = await supabase
-        .from("message_themes")
-        .insert(themeRows);
-      if (themesError) {
-        console.error("Failed to persist message themes:", themesError);
-      }
-    }
+    await persistEnrichment(supabase, { userId, inboundMessageId, enrichment });
   }
 
   const useMirror = Boolean(

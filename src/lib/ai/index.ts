@@ -8,7 +8,12 @@ import type {
   AiProviderAdapter,
   RecentReplyContext,
 } from "./types";
-import { SYSTEM_PROMPT, buildUserPrompt, selectContentType } from "./prompts";
+import { buildUserPrompt, selectContentTypeDetailed } from "./prompts";
+import {
+  loadActiveSystemPrompt,
+  loadSystemPromptById,
+  type ResolvedSystemPrompt,
+} from "./system-prompt";
 import { openaiAdapter } from "./providers/openai";
 import { anthropicAdapter } from "./providers/anthropic";
 import { loadUserMemory } from "./memory";
@@ -55,7 +60,10 @@ function getProviderAdapter(): AiProviderAdapter {
 /**
  * Build user context for AI personalization
  */
-export async function buildUserContext(userId: string): Promise<UserContext> {
+export async function buildUserContext(
+  userId: string,
+  asOf: Date = new Date(),
+): Promise<UserContext> {
   const supabase = createServiceRoleClient();
 
   // Fetch user profile
@@ -82,7 +90,7 @@ export async function buildUserContext(userId: string): Promise<UserContext> {
   const memory = await loadUserMemory(userId);
 
   // Load most recent substantive reply within the lookback window
-  const recentReply = await loadRecentSubstantiveReply(userId);
+  const recentReply = await loadRecentSubstantiveReply(userId, asOf);
 
   // Load the derived persona profile (Onboarding v2). Null for unprofiled users.
   const profile = await loadUserProfile(userId);
@@ -152,10 +160,11 @@ interface ReplyRow {
 
 async function loadRecentSubstantiveReply(
   userId: string,
+  asOf: Date = new Date(),
 ): Promise<RecentReplyContext | null> {
   const supabase = createServiceRoleClient();
 
-  const cutoff = new Date();
+  const cutoff = new Date(asOf);
   cutoff.setHours(cutoff.getHours() - RECENT_REPLY_LOOKBACK_HOURS);
 
   const { data: reply } = await supabase
@@ -164,6 +173,7 @@ async function loadRecentSubstantiveReply(
     .eq("user_id", userId)
     .eq("direction", "inbound")
     .gte("created_at", cutoff.toISOString())
+    .lte("created_at", asOf.toISOString())
     .order("created_at", { ascending: false })
     .limit(1)
     .single();
@@ -172,7 +182,7 @@ async function loadRecentSubstantiveReply(
   const row = reply as ReplyRow;
   if (!row.insights?.substantive) return null;
 
-  const ageMs = Date.now() - new Date(row.created_at).getTime();
+  const ageMs = asOf.getTime() - new Date(row.created_at).getTime();
   const hoursAgo = Math.round(ageMs / (1000 * 60 * 60));
 
   return {
@@ -190,22 +200,41 @@ async function loadRecentSubstantiveReply(
 export async function generateMessageForUser(
   userId: string,
   preferredContentType?: ContentType,
+  opts?: {
+    /** Reference time for all lookback windows (simulator). Defaults to now. */
+    asOf?: Date;
+    /** Pin generation to a specific prompt version (simulator A/B runs). */
+    systemPromptId?: string | null;
+  },
 ): Promise<GeneratedMessage> {
   const adapter = getProviderAdapter();
-  const context = await buildUserContext(userId);
+  const asOf = opts?.asOf ?? new Date();
+  const context = await buildUserContext(userId, asOf);
 
   // Select content type (use preferred if provided, otherwise rules-based selection)
-  const contentType =
-    preferredContentType || (await selectContentType(context));
+  let contentType = preferredContentType;
+  let selection: GeneratedMessage["selection"];
+  if (!contentType) {
+    const detailed = await selectContentTypeDetailed(context, asOf);
+    contentType = detailed.contentType;
+    selection = detailed.debug;
+  }
+
+  // Resolve the system prompt: pinned version, else active version, else the
+  // built-in default constant.
+  const systemPrompt: ResolvedSystemPrompt = opts?.systemPromptId
+    ? await loadSystemPromptById(opts.systemPromptId)
+    : await loadActiveSystemPrompt();
 
   // Build the prompt
   const userPrompt = buildUserPrompt(context, contentType);
 
   try {
-    const text = await adapter.generateMessage(SYSTEM_PROMPT, userPrompt);
+    const text = await adapter.generateMessage(systemPrompt.body, userPrompt);
 
     // Ensure we're under 160 characters
-    const finalText = text.length > 160 ? text.substring(0, 157) + "..." : text;
+    const truncated = text.length > 160;
+    const finalText = truncated ? text.substring(0, 157) + "..." : text;
 
     console.log(
       `Generated message via ${adapter.provider}: "${finalText.substring(0, 50)}..."`,
@@ -214,6 +243,12 @@ export async function generateMessageForUser(
     return {
       text: finalText,
       contentType,
+      fallback: false,
+      truncated,
+      userPrompt,
+      systemPromptId: systemPrompt.id,
+      systemPromptName: systemPrompt.name,
+      selection,
     };
   } catch (error) {
     console.error(
@@ -242,6 +277,12 @@ export async function generateMessageForUser(
     return {
       text: fallbackMessages[contentType],
       contentType,
+      fallback: true,
+      truncated: false,
+      userPrompt,
+      systemPromptId: systemPrompt.id,
+      systemPromptName: systemPrompt.name,
+      selection,
     };
   }
 }

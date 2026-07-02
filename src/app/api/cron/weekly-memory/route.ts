@@ -40,11 +40,15 @@ export async function GET(request: Request) {
 
   const supabase = createServiceRoleClient();
 
+  // Exclude simulator test personas — the simulator compacts their memory
+  // itself with a simulated-week reference time; the Monday cron would
+  // double-compact with a real-now window.
   const { data: users, error: usersError } = await supabase
     .from("users")
     .select("id")
     .eq("status", "active")
-    .eq("onboarding_completed", true);
+    .eq("onboarding_completed", true)
+    .eq("is_test", false);
 
   if (usersError) {
     console.error("Failed to fetch users:", usersError);
