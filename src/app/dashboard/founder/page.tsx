@@ -52,19 +52,22 @@ export default async function FounderPage() {
   // Use service role client for admin queries (bypasses RLS)
   const serviceSupabase = createServiceRoleClient();
 
-  // Fetch all messages with user info
+  // Fetch all messages with user info. Simulator test personas are excluded —
+  // their conversations live on /dashboard/founder/simulator.
   const { data: messages, error } = await serviceSupabase
     .from("messages")
     .select(
       `
       *,
-      users:user_id (
+      users:user_id!inner (
         name,
         email,
-        phone
+        phone,
+        is_test
       )
     `,
     )
+    .eq("users.is_test", false)
     .order("created_at", { ascending: false })
     .limit(100);
 
@@ -82,18 +85,20 @@ export default async function FounderPage() {
     console.error("Error fetching scheduled messages:", scheduledError);
   }
 
-  // Fetch user signals with user info
+  // Fetch user signals with user info (test personas excluded — see simulator)
   const { data: userSignals, error: signalsError } = await serviceSupabase
     .from("user_signals")
     .select(
       `
       *,
-      users:user_id (
+      users:user_id!inner (
         name,
-        email
+        email,
+        is_test
       )
     `,
     )
+    .eq("users.is_test", false)
     .order("engagement_score", { ascending: false })
     .limit(50);
 
@@ -101,7 +106,8 @@ export default async function FounderPage() {
     console.error("Error fetching user signals:", signalsError);
   }
 
-  // Pending intention shift suggestions
+  // Pending intention shift suggestions. Sim personas can produce these via
+  // end-of-week compaction — keep them visible but labeled "(sim)".
   const { data: shiftsRaw } = await serviceSupabase
     .from("intention_shift_suggestions")
     .select(
@@ -109,7 +115,8 @@ export default async function FounderPage() {
       *,
       users:user_id (
         name,
-        email
+        email,
+        is_test
       )
     `,
     )
@@ -123,14 +130,16 @@ export default async function FounderPage() {
     confidence: number | null;
     rationale: string | null;
     created_at: string;
-    users: { name: string | null; email: string } | null;
+    users: { name: string | null; email: string; is_test: boolean } | null;
   };
 
   const intentionShifts: IntentionShiftItem[] = (
     (shiftsRaw as ShiftRow[] | null) ?? []
   ).map((row) => ({
     id: row.id,
-    userName: row.users?.name ?? null,
+    userName: row.users?.name
+      ? `${row.users.name}${row.users.is_test ? " (sim)" : ""}`
+      : null,
     userEmail: row.users?.email ?? "Unknown",
     currentIntention: row.current_intention,
     proposedIntention: row.proposed_intention,
@@ -266,6 +275,8 @@ async function buildUserInsights(
   supabase: ServiceClient,
 ): Promise<FounderUserInsight[]> {
   // Pull every user that has a memory row OR has signal activity.
+  // Simulator test personas are excluded — their memory is viewable on the
+  // simulator page.
   const { data: memoryRows } = await supabase
     .from("user_memory")
     .select(
@@ -273,9 +284,10 @@ async function buildUserInsights(
       user_id,
       summary,
       updated_at,
-      users:user_id ( name, email )
+      users:user_id!inner ( name, email, is_test )
     `,
     )
+    .eq("users.is_test", false)
     .order("updated_at", { ascending: false });
 
   type MemoryRow = {
