@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { completeFullOnboarding } from "@/lib/onboarding/actions";
 import { buildRevealContent } from "@/lib/persona/content";
+import { ShareArchetypeButton } from "@/components/share-archetype-button";
 import type { PersonaProfile, QuizAnswers } from "@/lib/persona/types";
 
 type CompletionResult = { success: true } | { error: string };
@@ -111,6 +112,12 @@ export function RevealStep({
         <p className="text-teal-900/70 text-sm leading-relaxed text-left">
           {content.archetype.paragraph}
         </p>
+        <div className="pt-1">
+          <ShareArchetypeButton
+            archetype={profile.archetype}
+            archetypeName={content.archetype.name}
+          />
+        </div>
       </section>
 
       {/* Inner critic */}

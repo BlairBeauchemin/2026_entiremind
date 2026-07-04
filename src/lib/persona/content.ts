@@ -172,6 +172,66 @@ export function buildRevealContent(
   };
 }
 
+/**
+ * Public-safe archetype content for the shareable /archetype/[slug] pages.
+ * Deliberately contains NO personalization slots — these pages are public
+ * artifacts and must never carry user data. Universal second-person copy,
+ * adapted from the reveal paragraphs.
+ */
+export interface ArchetypePublicContent {
+  name: string;
+  essence: string;
+  description: string;
+  traits: [string, string, string];
+}
+
+export const ARCHETYPE_PUBLIC: Record<Archetype, ArchetypePublicContent> = {
+  visionary: {
+    name: "The Visionary",
+    essence: "You see it before it exists.",
+    description:
+      "You can already picture the life you want — vivid, specific, real. Your gift isn't dreaming; it's that the dream arrives fully formed. Your work is building the bridge between that vision and an ordinary Tuesday, one concrete step at a time.",
+    traits: [
+      "Sees the destination in full color",
+      "Moves toward, not away",
+      "Builds bridges between vision and daily life",
+    ],
+  },
+  alchemist: {
+    name: "The Alchemist",
+    essence: "You turn intention into motion.",
+    description:
+      "You don't wait to feel ready — you act, and you act constantly. Where others need proof before they move, you create the proof by moving. Your work is trusting the process while it's still invisible. You already have the ingredient most people are missing: momentum.",
+    traits: [
+      "Acts before feeling ready",
+      "Creates proof through motion",
+      "Trusts the invisible process",
+    ],
+  },
+  seeker: {
+    name: "The Seeker",
+    essence: "You know exactly what you're done with.",
+    description:
+      "That clarity is rare — most people can't name what they're leaving. You can. Your work now is letting the next thing become as vivid as the old pain: turning what you want into something you move toward, not just away from.",
+    traits: [
+      "Names what no longer fits",
+      "Clarity born from experience",
+      "Learning to turn toward, not just away",
+    ],
+  },
+  phoenix: {
+    name: "The Phoenix",
+    essence: "You rebuild through action.",
+    description:
+      "When something ends, you don't sit in the ashes — you start moving. Endings don't diminish you; they fuel you. Your work is making sure you're building toward the life you choose, not only away from what was. The next version gets to be a choice, not just a recovery.",
+    traits: [
+      "Rises by moving",
+      "Turns endings into fuel",
+      "Chooses the next life deliberately",
+    ],
+  },
+};
+
 /** Short archetype line for the welcome SMS (e.g., "Visionary energy. We see it."). */
 export function buildWelcomeArchetypeLine(profile: PersonaProfile): string {
   const bare = ARCHETYPE_NAMES[profile.archetype].replace(/^The\s+/, "");

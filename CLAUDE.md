@@ -465,6 +465,27 @@ Evolves the content engine from a daily message generator into a system that lis
 - Soft acks: $0 (database lookup, no LLM call)
 - Prompt caching deliberately not enabled (system prompt is well under Haiku's 2048-token cache minimum at current scale)
 
+#### Monetization & Growth (July 2026)
+Plan: `docs/prds/../plans/2026-07-04-monetization-growth.md`. Migration: `019_value_ladder_dunning.sql`.
+
+**Free-trial value ladder (`src/lib/billing/`):**
+- `computeEntitlement()` (entitlement.ts) — single source of plan logic: `paid` (monthly/yearly with active/trialing/past_due), `trial` (inside 10-day window, or missing data — fails toward generosity), `expired`. Founder/admin always `paid`.
+- Trial starts at onboarding completion: `completeFullOnboarding` sets `subscriptions.trial_ends_at = now() + 10 days` (write-once). Existing users grandfathered with 14 days at migration time.
+- `daily-send` gates on entitlement first: `expired` users exit the daily loop into the upgrade path — trial-end SMS personalized from their memory theme (template-based, deliberately no LLM), one follow-up 7 days later, then quiet. Inbound enrichment + acks continue for everyone.
+- `weekly-memory` skips expired users (no Sonnet spend on gated accounts).
+- Dashboard: "Trial — N days left" / "Trial ended" chips in settings; non-dismissible `TrialEndedBanner` on `/dashboard` when expired.
+
+**Failed-payment dunning (`src/lib/billing/dunning.ts`):**
+- `invoice.payment_failed` → SMS notice (content_type `billing`), throttled to one per 5 days via `subscriptions.dunning_notified_at` (Stripe fires the event on every Smart Retry). Enable Smart Retries in the Stripe dashboard.
+- `customer.subscription.deleted` → farewell SMS with the way back; recovery to `active` clears the throttle.
+- `billing` messages never suppress the daily prompt and never count toward silence; `upgrade` messages excluded from silence detection, replies to them reply-linked (hot lead).
+
+**Shareable archetype pages (`src/app/archetype/[slug]/`):**
+- Public, statically generated pages for the four archetypes — generic copy only (`ARCHETYPE_PUBLIC` in `src/lib/persona/content.ts`), zero user data. Invalid slugs 404 (`dynamicParams = false`).
+- `opengraph-image.tsx` renders the share card per archetype via `next/og` (params is a Promise in Next 16 — must be awaited).
+- `ShareArchetypeButton` (native share sheet + clipboard fallback) on the onboarding reveal step and the dashboard persona card.
+- Attribution: CTA links `/?src=share-{slug}`; waitlist modals pass `source` through; leads API validates against `^share-(visionary|alchemist|seeker|phoenix)$` and defaults to `landing_page` otherwise. Query share-driven signups via `leads.source LIKE 'share-%'`.
+
 ### Not Yet Implemented
 - Hourly send cadence honoring `preferred_send_hour` (waiting on Vercel Pro)
 - True timezone-aware delivery (Phase 2)
