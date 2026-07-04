@@ -409,6 +409,22 @@ Evolves the content engine from a daily message generator into a system that lis
 - `IntentionShiftReview` - pending intention shifts queue at top
 - `FounderUserInsights` - per-user expandable cards showing memory blob, recent theme cloud (last 30 days), sentiment trend bar (last 14 days), and reply-rate-by-content-type table
 
+**Weekly recap SMS ("here's what we've noticed"):**
+- The Monday memory-compaction Sonnet pass also writes an optional `recap_message` — a ≤300-char SMS reflecting 1–2 concrete specifics from the user's week back to them (null when the week has nothing real to recap; never invented)
+- Staged on `user_memory.pending_recap` / `recap_generated_at` (migration 018); a compaction with no recap clears any stale one
+- Daily-send delivers a fresh (<48h) staged recap **in place of** that morning's regular prompt, `content_type = 'recap'`; `takePendingRecap()` (in `src/lib/ai/memory.ts`) claims-then-clears so a recap can never double-send
+- Cost: $0 extra — piggybacks on the existing weekly Sonnet call
+
+**Silence recovery arc (`src/lib/reconnect.ts`):**
+- Daily-send checks `user_signals.consecutive_silences` before prompting:
+  - At `reconnect_after_silences` (default 5): sends a reconnect message (`content_type = 'reconnect'`) instead of the prompt — names the quiet, offers PAUSE. Sent once per silent stretch (tracked via reconnect outbound newer than `last_reply_at`)
+  - At `pause_after_silences` (default 9), only after an unanswered reconnect: sends a farewell and sets `users.status = 'paused'` — never pauses without warning
+- Thresholds founder-tunable in `content_selection_config` (migration 018)
+- SMS keywords in the Twilio webhook: PAUSE → status paused + confirmation; RESUME/UNPAUSE → status active + confirmation + synthetic reply signal so the silence streak resets (otherwise the arc would immediately re-pause them)
+- Replies to recap/reconnect messages link as replies (reset the streak) and count in reply-rate denominators
+- Recovery messages are deliberately template-based, not AI-generated
+- Pure decision logic (`decideSilenceRecovery`) unit-tested in `src/lib/reconnect.test.ts`
+
 **Timezone + preferred send hour (Phase 1 of Phase 2 UI; cron honoring deferred):**
 - `users.preferred_send_hour` (0–23, default 7) added to settings UI
 - Daily-send still goes out at 7:45 AM Pacific globally — preference is stored but not yet honored
@@ -436,6 +452,11 @@ Evolves the content engine from a daily message generator into a system that lis
 - `messages.ack_sent` BOOLEAN column added
 - `messages.content_type` CHECK extended to include `'ack'`
 - `users.preferred_send_hour` INTEGER added
+
+**Database changes (migration 018):**
+- `user_memory.pending_recap` TEXT + `recap_generated_at` TIMESTAMPTZ (staged weekly recap)
+- `messages.content_type` CHECK extended with `'recap'` and `'reconnect'`
+- `content_selection_config.reconnect_after_silences` (default 5) + `pause_after_silences` (default 9)
 
 **Cost notes:**
 - Enrichment + ack: Haiku, ~$0.0002 per inbound

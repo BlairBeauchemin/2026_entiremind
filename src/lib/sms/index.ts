@@ -203,6 +203,10 @@ export async function storeInboundSms(
       "action",
       "gratitude",
       "manual",
+      // Recovery/recap messages are reply-linkable too: answering one must
+      // count as a reply so the silence streak resets.
+      "recap",
+      "reconnect",
     ])
     .gte("created_at", twentyFourHoursAgo.toISOString())
     .order("created_at", { ascending: false })

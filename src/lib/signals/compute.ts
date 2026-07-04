@@ -64,7 +64,18 @@ export async function recomputeUserSignals(userId: string): Promise<void> {
     .select("*", { count: "exact", head: true })
     .eq("user_id", userId)
     .eq("direction", "outbound")
-    .in("content_type", ["reflection", "quote", "check-in", "action", "gratitude", "manual"]);
+    .in("content_type", [
+      "reflection",
+      "quote",
+      "check-in",
+      "action",
+      "gratitude",
+      "manual",
+      // Recaps and reconnects are real prompts a user can reply to; counting
+      // them keeps reply_rate honest (replies to them are counted above).
+      "recap",
+      "reconnect",
+    ]);
 
   const replyEvents = events?.filter((e) => e.event_type === "reply") || [];
 

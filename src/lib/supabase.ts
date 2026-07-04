@@ -108,7 +108,7 @@ export type Database = {
           external_message_id: string | null;
           provider: "telnyx" | "twilio";
           status: "pending" | "sent" | "delivered" | "failed" | "received";
-          content_type: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          content_type: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack" | "recap" | "reconnect" | null;
           ai_generated: boolean;
           reply_to_message_id: string | null;
           created_at: string;
@@ -123,7 +123,7 @@ export type Database = {
           external_message_id?: string | null;
           provider?: "telnyx" | "twilio";
           status?: "pending" | "sent" | "delivered" | "failed" | "received";
-          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack" | "recap" | "reconnect" | null;
           ai_generated?: boolean;
           reply_to_message_id?: string | null;
           created_at?: string;
@@ -138,7 +138,7 @@ export type Database = {
           external_message_id?: string | null;
           provider?: "telnyx" | "twilio";
           status?: "pending" | "sent" | "delivered" | "failed" | "received";
-          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | null;
+          content_type?: "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack" | "recap" | "reconnect" | null;
           ai_generated?: boolean;
           reply_to_message_id?: string | null;
           created_at?: string;
