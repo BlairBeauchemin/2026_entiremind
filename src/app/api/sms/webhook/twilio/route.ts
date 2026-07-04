@@ -49,6 +49,47 @@ const HELP_RESPONSE =
   "Entiremind: For support email support@entiremind.com or visit entiremind.com/sms-policy. " +
   "Reply STOP to unsubscribe. Msg & data rates may apply.";
 
+/**
+ * If the user has an open testimonial request from the last 7 days, capture
+ * this reply as the testimonial for founder review. First qualifying reply
+ * wins; STOP/HELP keywords never reach this path.
+ */
+async function captureTestimonialReply(
+  supabase: SupabaseClient,
+  userId: string,
+  inboundText: string,
+) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 7);
+
+  const { data: pending } = await supabase
+    .from("testimonials")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("status", "requested")
+    .gte("requested_at", cutoff.toISOString())
+    .order("requested_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!pending) return;
+
+  const { error } = await supabase
+    .from("testimonials")
+    .update({
+      body: inboundText,
+      status: "received",
+      received_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", pending.id)
+    .eq("status", "requested");
+
+  if (error) {
+    console.error("Failed to capture testimonial reply:", error);
+  }
+}
+
 async function processEnrichmentAndAck(params: {
   userId: string;
   inboundMessageId: string;
@@ -235,6 +276,15 @@ export async function POST(request: NextRequest) {
       // retries from Anthropic / outbound send latency.
       const { userId, messageId } = result;
       after(async () => {
+        try {
+          await captureTestimonialReply(
+            createServiceRoleClient(),
+            userId,
+            text,
+          );
+        } catch (err) {
+          console.error("Testimonial capture failed:", err);
+        }
         try {
           await processEnrichmentAndAck({
             userId,

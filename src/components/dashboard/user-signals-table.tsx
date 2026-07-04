@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Loader2, Quote } from "lucide-react";
 
 interface UserSignal {
   userId: string;
@@ -18,6 +19,8 @@ interface UserSignal {
 
 interface UserSignalsTableProps {
   signals: UserSignal[];
+  /** Users who already have a non-dismissed testimonial row (ask disabled). */
+  testimonialUserIds?: string[];
 }
 
 function formatTime(iso: string | null): string {
@@ -44,7 +47,38 @@ function getEngagementIcon(score: number) {
   return <TrendingDown className="w-3 h-3" />;
 }
 
-export function UserSignalsTable({ signals }: UserSignalsTableProps) {
+export function UserSignalsTable({
+  signals,
+  testimonialUserIds = [],
+}: UserSignalsTableProps) {
+  const [askedIds, setAskedIds] = useState<Set<string>>(
+    new Set(testimonialUserIds),
+  );
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [askError, setAskError] = useState<string | null>(null);
+
+  async function requestTestimonial(userId: string) {
+    setPendingId(userId);
+    setAskError(null);
+    try {
+      const res = await fetch("/api/founder/testimonials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "request", userId }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setAskError(body.error || `Request failed (${res.status})`);
+        return;
+      }
+      setAskedIds((prev) => new Set(prev).add(userId));
+    } catch (err) {
+      setAskError(err instanceof Error ? err.message : "Network error");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
   if (signals.length === 0) {
     return (
       <div className="rounded-2xl border border-teal-900/10 bg-white/60 p-8 text-center">
@@ -58,6 +92,11 @@ export function UserSignalsTable({ signals }: UserSignalsTableProps) {
 
   return (
     <div className="rounded-2xl border border-teal-900/10 bg-white/60 overflow-hidden">
+      {askError && (
+        <div className="text-sm text-red-600 bg-red-50 border-b border-red-200 p-2 px-4">
+          {askError}
+        </div>
+      )}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -85,6 +124,9 @@ export function UserSignalsTable({ signals }: UserSignalsTableProps) {
               </th>
               <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
                 Last Reply
+              </th>
+              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+                Testimonial
               </th>
             </tr>
           </thead>
@@ -154,6 +196,27 @@ export function UserSignalsTable({ signals }: UserSignalsTableProps) {
                   <span className="text-sm text-teal-900/60 whitespace-nowrap">
                     {formatTime(signal.lastReplyAt)}
                   </span>
+                </td>
+                <td className="px-4 py-3">
+                  {askedIds.has(signal.userId) ? (
+                    <span className="text-xs text-teal-900/40 whitespace-nowrap">
+                      Asked
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => requestTestimonial(signal.userId)}
+                      disabled={pendingId === signal.userId}
+                      className="inline-flex items-center gap-1 text-xs font-medium text-navy border border-teal-900/20 px-2.5 py-1 rounded-full hover:bg-teal-900 hover:text-cream transition-colors disabled:opacity-50 whitespace-nowrap"
+                      title="Send a testimonial request SMS to this user"
+                    >
+                      {pendingId === signal.userId ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Quote className="w-3 h-3" />
+                      )}
+                      Ask
+                    </button>
+                  )}
                 </td>
               </motion.tr>
             ))}
