@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { compactUserMemory } from "@/lib/ai/memory";
+import { loadEntitlement } from "@/lib/billing/entitlement";
 
 /**
  * Weekly Memory Cron: Compact each active user's recent replies into a
@@ -70,6 +71,15 @@ export async function GET(request: Request) {
 
   for (const user of users) {
     try {
+      // Expired-trial users are out of the daily loop — compacting their
+      // memory (and staging recaps they'd never receive) wastes Sonnet spend.
+      // Their memory resumes updating the week after they upgrade.
+      const { entitlement } = await loadEntitlement(user.id);
+      if (entitlement === "expired") {
+        skipped++;
+        continue;
+      }
+
       const summary = await compactUserMemory(user.id);
       if (summary) {
         compacted++;

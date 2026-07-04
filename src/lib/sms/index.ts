@@ -207,6 +207,9 @@ export async function storeInboundSms(
       // count as a reply so the silence streak resets.
       "recap",
       "reconnect",
+      // A reply to the paywall message is a hot lead — link it so the
+      // founder dashboard shows what it answered.
+      "upgrade",
     ])
     .gte("created_at", twentyFourHoursAgo.toISOString())
     .order("created_at", { ascending: false })

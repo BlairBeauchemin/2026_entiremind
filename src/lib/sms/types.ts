@@ -7,7 +7,7 @@
 // database row types (lib/supabase.ts) still cover that value for reads.
 export type SmsProvider = "twilio";
 
-export type ContentType = "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack" | "recap" | "reconnect";
+export type ContentType = "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack" | "recap" | "reconnect" | "billing" | "upgrade";
 
 export interface SendSmsResult {
   success: boolean;

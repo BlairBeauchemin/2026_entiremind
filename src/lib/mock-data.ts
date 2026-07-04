@@ -51,6 +51,7 @@ export const mockSubscription: Subscription = {
   status: "active",
   currentPeriodEnd: null,
   cancelAtPeriodEnd: false,
+  trialEndsAt: null,
 };
 
 const today = new Date();

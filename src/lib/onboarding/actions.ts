@@ -10,6 +10,7 @@ import {
   mergeProfileIntoMemory,
 } from "@/lib/ai/memory";
 import { scoreProfile } from "@/lib/persona/score";
+import { TRIAL_DAYS } from "@/lib/billing/entitlement";
 import { QUIZ_VERSION } from "@/lib/persona/questions";
 import { buildWelcomeArchetypeLine } from "@/lib/persona/content";
 import type { PersonaProfile, QuizAnswers } from "@/lib/persona/types";
@@ -279,6 +280,20 @@ export async function completeFullOnboarding(
 
   if (completeError) {
     return { error: completeError.message };
+  }
+
+  // Start the free trial now — at onboarding completion, not signup, so a
+  // stalled signup doesn't burn trial days. Only set once (upgrades and
+  // re-onboarding must not extend it).
+  const trialEndsAt = new Date();
+  trialEndsAt.setDate(trialEndsAt.getDate() + TRIAL_DAYS);
+  const { error: trialError } = await adminClient
+    .from("subscriptions")
+    .update({ trial_ends_at: trialEndsAt.toISOString() })
+    .eq("user_id", user.id)
+    .is("trial_ends_at", null);
+  if (trialError) {
+    console.error("Failed to set trial_ends_at:", trialError.message);
   }
 
   const { data: userData } = await supabase
