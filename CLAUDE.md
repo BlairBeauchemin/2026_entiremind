@@ -480,6 +480,14 @@ Plan: `docs/prds/../plans/2026-07-04-monetization-growth.md`. Migration: `019_va
 - `customer.subscription.deleted` → farewell SMS with the way back; recovery to `active` clears the throttle.
 - `billing` messages never suppress the daily prompt and never count toward silence; `upgrade` messages excluded from silence detection, replies to them reply-linked (hot lead).
 
+**One-tap SMS upgrade links (`src/lib/billing/token.ts`):**
+- Plan: `docs/plans/2026-07-04-sms-upgrade-link.md`. HMAC-signed, purpose-bound tokens (`intent: upgrade|billing`) embedded as `https://www.entiremind.com/u/{token}` in trial-end, follow-up, dunning, and subscription-ended SMS. **Never a login** — a token only authorizes opening a payment flow for its user; `/u/*` routes must never set a session.
+- `GET /u/[token]` (public): upgrade intent → plan-choice interstitial (`UpgradePlanPicker` → `POST /api/upgrade-checkout` → Stripe Checkout); billing intent (past_due only) → 302 straight into the Stripe billing portal. Invalid/expired/errors degrade to `/auth?next=/dashboard/settings`.
+- Checkout session creation shared between `/api/checkout` (authenticated) and `/api/upgrade-checkout` (tokenized) via `src/lib/billing/checkout.ts`; SMS-driven sessions carry `metadata.source = 'sms-upgrade-link'`.
+- Success lands on `/welcome-back` (public; fulfillment is webhook-driven, no browser session needed).
+- Expiry: 60 days (upgrade), 14 days (billing). `/u/*` gets `Cache-Control: no-store` + `X-Robots-Tag: noindex` via next.config.
+- **Requires env var `UPGRADE_LINK_SECRET`** (32+ random bytes, e.g. `openssl rand -base64 32`). If unset, messages fall back to the settings URL — sends never fail.
+
 **Shareable archetype pages (`src/app/archetype/[slug]/`):**
 - Public, statically generated pages for the four archetypes — generic copy only (`ARCHETYPE_PUBLIC` in `src/lib/persona/content.ts`), zero user data. Invalid slugs 404 (`dynamicParams = false`).
 - `opengraph-image.tsx` renders the share card per archetype via `next/og` (params is a Promise in Next 16 — must be awaited).
@@ -523,6 +531,9 @@ STRIPE_YEARLY_PRICE_ID
 
 # Cron
 CRON_SECRET
+
+# SMS upgrade links (openssl rand -base64 32)
+UPGRADE_LINK_SECRET
 
 # AI (choose one provider)
 AI_PROVIDER=anthropic  # or 'openai'

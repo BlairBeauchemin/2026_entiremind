@@ -62,11 +62,14 @@ export async function getUpgradeMessagesSince(
 
 /**
  * The trial-end message, personalized from memory when available.
- * Falls back gracefully when the user has no memory blob.
+ * Falls back gracefully when the user has no memory blob. `link` is the
+ * tokenized one-tap upgrade URL; callers pass null when the link can't be
+ * issued (missing secret) and the settings URL is used instead.
  */
 export function buildTrialEndMessage(
   name: string | null,
   memoryTheme: string | null,
+  link: string | null = null,
 ): string {
   const greeting = name ? `${name}, our` : "Our";
   const middle = memoryTheme
@@ -74,17 +77,20 @@ export function buildTrialEndMessage(
     : `I've been glad to walk these first days with you — I'd like to keep going.`;
   return (
     `${greeting} ten days together are up. ${middle} ` +
-    `Continue here: ${SETTINGS_URL}`
+    `Continue here: ${link ?? SETTINGS_URL}`
   );
 }
 
 /** The single follow-up, a week later. Softer; last word. */
-export function buildUpgradeFollowupMessage(name: string | null): string {
+export function buildUpgradeFollowupMessage(
+  name: string | null,
+  link: string | null = null,
+): string {
   const greeting = name ? `${name} — no` : "No";
   return (
     `${greeting} pressure from me, just leaving the door open. ` +
     `Everything you shared is saved, and the daily practice picks right back up ` +
-    `whenever you do: ${SETTINGS_URL}`
+    `whenever you do: ${link ?? SETTINGS_URL}`
   );
 }
 

@@ -26,6 +26,15 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // Tokenized upgrade links: never cache, never index — the URL path
+        // carries a capability token.
+        source: "/u/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-store" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
+      {
         // Prevent Vercel edge / browser from caching any authenticated dashboard page.
         // force-dynamic sets no-store at the Next.js layer, but Vercel's edge can
         // override it. This config applies no-store at the infrastructure level so

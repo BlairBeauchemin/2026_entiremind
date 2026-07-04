@@ -28,24 +28,37 @@ export function shouldSendDunningNotice(
   return days >= DUNNING_THROTTLE_DAYS;
 }
 
-/** First notice: payment failed, card likely expired, messages continue. */
-export function buildPaymentFailedMessage(name: string | null): string {
+/**
+ * First notice: payment failed, card likely expired, messages continue.
+ * `link` is the tokenized one-tap billing-portal URL; null falls back to
+ * the authenticated settings page.
+ */
+export function buildPaymentFailedMessage(
+  name: string | null,
+  link: string | null = null,
+): string {
   const greeting = name ? `${name}, your` : "Your";
   return (
     greeting +
     " Entiremind payment didn't go through — usually just an expired card. " +
-    `You can update it in a minute here: ${SETTINGS_URL} — ` +
+    `You can update it in a minute here: ${link ?? SETTINGS_URL} — ` +
     "your messages continue in the meantime."
   );
 }
 
-/** Final notice: subscription ended after retries were exhausted. */
-export function buildSubscriptionEndedMessage(name: string | null): string {
+/**
+ * Final notice: subscription ended after retries were exhausted. `link` is
+ * a tokenized upgrade link (they'd be re-subscribing, not updating a card).
+ */
+export function buildSubscriptionEndedMessage(
+  name: string | null,
+  link: string | null = null,
+): string {
   const greeting = name ? `${name}, your` : "Your";
   return (
     greeting +
     " Entiremind subscription has ended. Your reflections and history are " +
     "saved. Whenever you want to pick the daily practice back up: " +
-    SETTINGS_URL
+    (link ?? SETTINGS_URL)
   );
 }

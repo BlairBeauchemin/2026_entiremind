@@ -19,6 +19,7 @@ import {
   buildUpgradeFollowupMessage,
   loadUpgradeTheme,
 } from "@/lib/billing/upgrade";
+import { buildUpgradeLink } from "@/lib/billing/token";
 
 /**
  * Daily Send Cron: Send AI-generated messages to all active users
@@ -149,10 +150,17 @@ export async function GET(request: Request) {
         });
 
         if (nudge !== "none") {
+          // Tokenized one-tap checkout link; falls back to the settings URL
+          // inside the builders if UPGRADE_LINK_SECRET isn't configured.
+          const link = buildUpgradeLink(user.id, "upgrade");
           const text =
             nudge === "send-first"
-              ? buildTrialEndMessage(user.name, await loadUpgradeTheme(user.id))
-              : buildUpgradeFollowupMessage(user.name);
+              ? buildTrialEndMessage(
+                  user.name,
+                  await loadUpgradeTheme(user.id),
+                  link,
+                )
+              : buildUpgradeFollowupMessage(user.name, link);
           const result = await sendSms(user.id, user.phone, text, {
             contentType: "upgrade",
           });

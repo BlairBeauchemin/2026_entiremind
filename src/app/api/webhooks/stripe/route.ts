@@ -7,6 +7,7 @@ import {
   buildPaymentFailedMessage,
   buildSubscriptionEndedMessage,
 } from "@/lib/billing/dunning";
+import { buildUpgradeLink } from "@/lib/billing/token";
 import type Stripe from "stripe";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -228,10 +229,15 @@ export async function POST(request: NextRequest) {
         // Tell the user their subscription ended and how to come back.
         const endedUser = await findUserForCustomer(supabase, customerId);
         if (endedUser) {
+          // Re-subscribe path: an upgrade-intent token (they have no active
+          // subscription to manage, so the portal is the wrong surface).
           const result = await sendSms(
             endedUser.userId,
             endedUser.phone,
-            buildSubscriptionEndedMessage(endedUser.name),
+            buildSubscriptionEndedMessage(
+              endedUser.name,
+              buildUpgradeLink(endedUser.userId, "upgrade"),
+            ),
             { contentType: "billing" },
           );
           if (!result.success) {
@@ -263,10 +269,14 @@ export async function POST(request: NextRequest) {
           dunningUser &&
           shouldSendDunningNotice(dunningUser.dunningNotifiedAt)
         ) {
+          // One-tap billing-portal link (14-day token, matching the retry cycle)
           const result = await sendSms(
             dunningUser.userId,
             dunningUser.phone,
-            buildPaymentFailedMessage(dunningUser.name),
+            buildPaymentFailedMessage(
+              dunningUser.name,
+              buildUpgradeLink(dunningUser.userId, "billing"),
+            ),
             { contentType: "billing" },
           );
           if (result.success) {
