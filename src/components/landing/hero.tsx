@@ -27,14 +27,14 @@ export function Hero() {
             </div>
 
             <h1 className="font-serif text-6xl lg:text-8xl leading-[0.95] text-navy font-medium">
-              Manifestation at the <br />
-              <span className="font-medium">speed of thought.</span>
+              Manifestation <br />
+              <span className="font-medium">that texts back.</span>
             </h1>
 
             <p className="text-lg lg:text-xl text-teal-900 max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans">
-              An SMS companion that aligns your intentions with reality.
-              We&apos;re building something new—sign up to be first when we
-              launch.
+              A lightly magical daily text that remembers what you&apos;re
+              calling in and meets you where you are. No app. No streaks. Just
+              a conversation that helps your intentions become real.
             </p>
 
             <div className="pt-4">
