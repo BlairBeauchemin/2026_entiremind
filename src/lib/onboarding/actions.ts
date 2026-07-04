@@ -3,7 +3,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
-import { sendWelcomeSms } from "@/lib/sms";
+import { after } from "next/server";
+import { sendSms, sendWelcomeSms } from "@/lib/sms";
+import { generateMessageForUser } from "@/lib/ai";
 import {
   buildSeedMemoryFromOnboarding,
   loadUserMemory,
@@ -279,6 +281,27 @@ export async function completeFullOnboarding(
     } catch (error) {
       console.error("Error sending welcome SMS:", error);
     }
+
+    // First real prompt arrives while the reveal is still fresh, instead of
+    // waiting for the next morning's cron. Runs after the response is sent so
+    // the AI call doesn't delay the reveal step. The prompt counts toward
+    // daily-send's "already sent today" check, so the user won't be double-
+    // prompted by a same-day cron run.
+    const phone = userData.phone;
+    after(async () => {
+      try {
+        const generated = await generateMessageForUser(user.id, "reflection");
+        const result = await sendSms(user.id, phone, generated.text, {
+          contentType: generated.contentType,
+          aiGenerated: true,
+        });
+        if (!result.success) {
+          console.error("Failed to send first prompt SMS:", result.error);
+        }
+      } catch (error) {
+        console.error("Error sending first prompt SMS:", error);
+      }
+    });
   }
 
   revalidateIntentionPaths();
