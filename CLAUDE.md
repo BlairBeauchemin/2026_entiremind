@@ -238,6 +238,7 @@ SMS_PROVIDER=telnyx
 TELNYX_API_KEY=your_api_key
 TELNYX_PHONE_NUMBER=+1234567890
 TELNYX_MESSAGING_PROFILE_ID=your_profile_id
+TELNYX_PUBLIC_KEY=your_portal_public_key  # Ed25519 key from the Telnyx portal; required — inbound webhooks are rejected without a valid signature
 ```
 
 #### Waitlist & Lead Capture

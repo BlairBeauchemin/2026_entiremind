@@ -1,4 +1,5 @@
 import Telnyx from "telnyx";
+import { createPublicKey, verify as cryptoVerify } from "crypto";
 import type { SmsProviderAdapter } from "../types";
 
 function getTelnyxClient() {
@@ -80,6 +81,60 @@ export interface TelnyxWebhookPayload {
     attempt: number;
     delivered_to: string;
   };
+}
+
+// Max allowed clock skew between Telnyx's timestamp header and our clock.
+// Prevents replay of captured webhook payloads.
+const TELNYX_TIMESTAMP_TOLERANCE_SECONDS = 5 * 60;
+
+// DER prefix for an Ed25519 SubjectPublicKeyInfo wrapper. Telnyx publishes the
+// raw 32-byte public key base64-encoded; Node's crypto needs the SPKI framing.
+const ED25519_SPKI_PREFIX = Buffer.from("302a300506032b6570032100", "hex");
+
+/**
+ * Verify a Telnyx webhook's Ed25519 signature.
+ *
+ * Telnyx signs `${timestamp}|${rawBody}` with its private key and sends the
+ * signature in `telnyx-signature-ed25519` plus the timestamp in
+ * `telnyx-timestamp`. The account's public key lives in the Telnyx portal and
+ * must be configured as TELNYX_PUBLIC_KEY. Returns false (never throws) on
+ * any missing input, malformed key, or stale timestamp.
+ */
+export function verifyTelnyxSignature(params: {
+  signatureBase64: string | null;
+  timestamp: string | null;
+  rawBody: string;
+}): boolean {
+  const { signatureBase64, timestamp, rawBody } = params;
+  const publicKeyBase64 = process.env.TELNYX_PUBLIC_KEY;
+
+  if (!publicKeyBase64 || !signatureBase64 || !timestamp) {
+    return false;
+  }
+
+  const timestampSeconds = Number(timestamp);
+  if (!Number.isFinite(timestampSeconds)) {
+    return false;
+  }
+  const skew = Math.abs(Date.now() / 1000 - timestampSeconds);
+  if (skew > TELNYX_TIMESTAMP_TOLERANCE_SECONDS) {
+    return false;
+  }
+
+  try {
+    const rawKey = Buffer.from(publicKeyBase64, "base64");
+    if (rawKey.length !== 32) return false;
+    const publicKey = createPublicKey({
+      key: Buffer.concat([ED25519_SPKI_PREFIX, rawKey]),
+      format: "der",
+      type: "spki",
+    });
+    const message = Buffer.from(`${timestamp}|${rawBody}`, "utf8");
+    const signature = Buffer.from(signatureBase64, "base64");
+    return cryptoVerify(null, message, publicKey, signature);
+  } catch {
+    return false;
+  }
 }
 
 /**

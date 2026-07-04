@@ -1,10 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { storeInboundSms } from "@/lib/sms";
-import { parseTelnyxWebhookPayload } from "@/lib/sms/providers/telnyx";
+import {
+  parseTelnyxWebhookPayload,
+  verifyTelnyxSignature,
+} from "@/lib/sms/providers/telnyx";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    // Verify the webhook actually came from Telnyx before trusting anything
+    // in it — otherwise anyone can forge inbound messages for any user.
+    // Requires TELNYX_PUBLIC_KEY (from the Telnyx portal); without it, or in
+    // production with an invalid signature, the request is rejected.
+    const rawBody = await request.text();
+
+    if (process.env.NODE_ENV === "production") {
+      const validSignature = verifyTelnyxSignature({
+        signatureBase64: request.headers.get("telnyx-signature-ed25519"),
+        timestamp: request.headers.get("telnyx-timestamp"),
+        rawBody,
+      });
+
+      if (!validSignature) {
+        console.error("Invalid or missing Telnyx webhook signature");
+        return NextResponse.json(
+          { error: "Invalid signature" },
+          { status: 401 },
+        );
+      }
+    }
+
+    let body: unknown;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
     const payload = parseTelnyxWebhookPayload(body);
 
     if (!payload) {

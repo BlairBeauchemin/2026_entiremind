@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { stripe } from "@/lib/stripe";
+import { resolveAppOrigin } from "@/lib/app-url";
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
     // Create Stripe Customer Portal session
     const session = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
-      return_url: `${request.headers.get("origin")}/dashboard/settings`,
+      return_url: `${resolveAppOrigin(request)}/dashboard/settings`,
     });
 
     return NextResponse.json({ url: session.url }, { status: 200 });

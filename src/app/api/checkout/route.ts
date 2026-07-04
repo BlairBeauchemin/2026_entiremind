@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { stripe, getPriceId, type PlanType } from "@/lib/stripe";
+import { resolveAppOrigin } from "@/lib/app-url";
 
 export async function POST(request: NextRequest) {
   try {
@@ -91,8 +92,8 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: `${request.headers.get("origin")}/dashboard/settings?success=true`,
-      cancel_url: `${request.headers.get("origin")}/dashboard/settings?canceled=true`,
+      success_url: `${resolveAppOrigin(request)}/dashboard/settings?success=true`,
+      cancel_url: `${resolveAppOrigin(request)}/dashboard/settings?canceled=true`,
       metadata: {
         supabase_user_id: user.id,
         plan,
@@ -102,9 +103,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url }, { status: 200 });
   } catch (error) {
     console.error("Error creating checkout session:", error);
-    const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: `Failed to create checkout session: ${message}` },
+      { error: "Failed to create checkout session" },
       { status: 500 }
     );
   }

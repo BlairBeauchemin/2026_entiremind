@@ -15,6 +15,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
+    // Founder/admin only: an open send endpoint would let any authenticated
+    // user send arbitrary texts to arbitrary numbers from our number.
+    const { data: senderProfile } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (!["admin", "founder"].includes(senderProfile?.role ?? "")) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     // Get request body
     const body = await request.json();
     const { text, toPhoneNumber } = body;

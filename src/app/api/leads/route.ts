@@ -32,6 +32,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Cap field lengths — this endpoint is unauthenticated, so unbounded
+    // strings are a cheap storage/DoS vector.
+    if (
+      name.length > 200 ||
+      email.length > 320 ||
+      phone.length > 20 ||
+      (smsConsentLanguage != null &&
+        (typeof smsConsentLanguage !== "string" ||
+          smsConsentLanguage.length > 1000))
+    ) {
+      return NextResponse.json({ error: "Input too long" }, { status: 400 });
+    }
+
     // Note: smsConsent is optional per Twilio A2P 10DLC compliance
     // Users can submit without consenting - we store the consent status
     // and only send SMS to users who have sms_consent = true
