@@ -2,7 +2,10 @@
  * Common types for SMS provider abstraction layer
  */
 
-export type SmsProvider = "telnyx" | "twilio";
+// Twilio is the only supported provider. Historical rows written by the
+// removed Telnyx integration keep provider='telnyx' in the database; the
+// database row types (lib/supabase.ts) still cover that value for reads.
+export type SmsProvider = "twilio";
 
 export type ContentType = "reflection" | "quote" | "check-in" | "action" | "gratitude" | "welcome" | "manual" | "ack";
 

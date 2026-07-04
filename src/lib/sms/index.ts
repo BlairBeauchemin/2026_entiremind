@@ -5,7 +5,6 @@ import type {
   SendSmsResult,
   ContentType,
 } from "./types";
-import { telnyxAdapter } from "./providers/telnyx";
 import { twilioAdapter } from "./providers/twilio";
 import { buildWelcomeMessage } from "./welcome";
 
@@ -19,14 +18,9 @@ export type {
 } from "./types";
 
 /**
- * Get the current SMS provider from environment
+ * Get the current SMS provider (Twilio is the only supported provider)
  */
 export function getSmsProvider(): SmsProvider {
-  const provider = process.env.SMS_PROVIDER;
-  if (provider === "telnyx") {
-    return "telnyx";
-  }
-  // Default to twilio
   return "twilio";
 }
 
@@ -34,15 +28,7 @@ export function getSmsProvider(): SmsProvider {
  * Get the adapter for the current SMS provider
  */
 function getProviderAdapter(): SmsProviderAdapter {
-  const provider = getSmsProvider();
-  switch (provider) {
-    case "telnyx":
-      return telnyxAdapter;
-    case "twilio":
-      return twilioAdapter;
-    default:
-      return twilioAdapter;
-  }
+  return twilioAdapter;
 }
 
 /**

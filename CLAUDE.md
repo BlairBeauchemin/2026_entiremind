@@ -23,7 +23,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 ## Architecture
 
 ### Primary Components
-- **SMS Engine**: Provider-agnostic SMS abstraction (supports Twilio and Telnyx) for two-way messaging
+- **SMS Engine**: Twilio integration for two-way messaging
 - **Web Dashboard**: Minimal profile, subscription status, pause/resume controls (not primary engagement surface)
 - **Signal Storage**: Behavioral signals persisted per user, queryable by founder
 - **Founder Review**: Inspect raw replies, tag patterns, guide system evolution
@@ -32,7 +32,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 - **Frontend**: Next.js 16 with App Router, TypeScript, Tailwind CSS v4
 - **Backend**: Supabase (Postgres, Auth, Edge Functions)
 - **Hosting**: Vercel (auto-deploys from `main` branch)
-- **Messaging**: SMS abstraction layer (`@/lib/sms`) supporting Twilio (default) and Telnyx
+- **Messaging**: SMS layer (`@/lib/sms`) built on Twilio
 - **AI**: OpenAI API (prompt drafting, tone variation, summarization — not autonomous)
 - **Components**: shadcn/ui with Radix UI primitives, Lucide icons
 - **Animations**: Framer Motion
@@ -123,7 +123,7 @@ npx shadcn@latest add [component]
 ## MVP Priorities
 
 1. Landing page with email/phone capture ✅
-2. SMS engine (Twilio/Telnyx integration, two-way messaging) ✅
+2. SMS engine (Twilio integration, two-way messaging) ✅
 3. Signal storage and founder review interface ✅
 4. User dashboard (profile, subscription, pause/resume) ✅
 5. Production deployment (Vercel + entiremind.com) ✅
@@ -206,39 +206,25 @@ npx shadcn@latest add [component]
 - Supabase Auth redirect URLs: `https://entiremind.com/**`, `https://www.entiremind.com/**`
 - Supabase Site URL: `https://entiremind.com`
 
-#### SMS Engine (Multi-Provider)
-- **Provider abstraction**: `src/lib/sms/` - supports Twilio (default) and Telnyx
-- **Provider selection**: Controlled by `SMS_PROVIDER` env var (`twilio` or `telnyx`)
-- **Send SMS**: `src/lib/sms/index.ts` - provider-agnostic wrapper functions
-- **Send endpoint**: `src/app/api/sms/send/route.ts` - authenticated SMS sending
-- **Webhook endpoints**:
-  - Twilio: `src/app/api/sms/webhook/twilio/route.ts`
-  - Telnyx: `src/app/api/sms/webhook/telnyx/route.ts`
+#### SMS Engine (Twilio)
+- **Provider layer**: `src/lib/sms/` - Twilio adapter behind a thin abstraction
+- **Send SMS**: `src/lib/sms/index.ts` - wrapper functions
+- **Send endpoint**: `src/app/api/sms/send/route.ts` - founder/admin-only SMS sending
+- **Webhook endpoint**: `src/app/api/sms/webhook/twilio/route.ts` (signature-validated)
 - **Welcome SMS**: Automatically sent after user completes onboarding
-- **Database**: `messages` table stores all SMS with `provider` and `external_message_id` columns
-- **Legacy code**: `src/lib/telnyx.ts` preserved but deprecated
+- **Database**: `messages` table stores all SMS with `provider` and `external_message_id` columns. Historical rows may have `provider = 'telnyx'` from the removed Telnyx integration; the DB CHECK constraint still allows that value for old rows.
 
-**Current Status (Apr 2026):**
-- Twilio integration code complete and configured in `.env.local`
+**Current Status:**
+- Twilio integration complete and configured in `.env.local`
 - Database migration `007_sms_provider_abstraction.sql` has been run
 - **A2P 10DLC approved and working** ✅
-- To switch back to Telnyx: set `SMS_PROVIDER=telnyx` in `.env.local`
+- Telnyx support was fully removed (July 2026) — Twilio is the only provider
 
-**Required env vars (Twilio - default):**
+**Required env vars (Twilio):**
 ```
-SMS_PROVIDER=twilio
 TWILIO_ACCOUNT_SID=your_account_sid
 TWILIO_AUTH_TOKEN=your_auth_token
 TWILIO_PHONE_NUMBER=+1234567890
-```
-
-**Required env vars (Telnyx - alternative):**
-```
-SMS_PROVIDER=telnyx
-TELNYX_API_KEY=your_api_key
-TELNYX_PHONE_NUMBER=+1234567890
-TELNYX_MESSAGING_PROFILE_ID=your_profile_id
-TELNYX_PUBLIC_KEY=your_portal_public_key  # Ed25519 key from the Telnyx portal; required — inbound webhooks are rejected without a valid signature
 ```
 
 #### Waitlist & Lead Capture
@@ -482,7 +468,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
 
 # SMS (Twilio)
-SMS_PROVIDER=twilio
 TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
 TWILIO_PHONE_NUMBER
