@@ -6,6 +6,7 @@ import { Loader2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { completeFullOnboarding } from "@/lib/onboarding/actions";
+import { analytics } from "@/lib/analytics";
 import { buildRevealContent } from "@/lib/persona/content";
 import type { PersonaProfile, QuizAnswers } from "@/lib/persona/types";
 
@@ -69,6 +70,7 @@ export function RevealStep({
       setSubmitting(false);
       return;
     }
+    analytics.onboardingComplete();
     router.push(redirectTo);
   }
 

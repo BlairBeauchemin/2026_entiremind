@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { SettingsProfileForm } from "@/components/dashboard/settings-profile-form";
 import { SettingsMessagingForm } from "@/components/dashboard/settings-messaging-form";
 import { SettingsSubscription } from "@/components/dashboard/settings-subscription";
+import { PurchaseTracker } from "@/components/analytics/purchase-tracker";
 import type { Subscription } from "@/lib/types";
 
 export default async function SettingsPage() {
@@ -53,8 +55,16 @@ export default async function SettingsPage() {
     cancelAtPeriodEnd: false,
   };
 
+  const currentSubscription = subscription || defaultSubscription;
+
   return (
     <div className="space-y-10">
+      <Suspense fallback={null}>
+        <PurchaseTracker
+          plan={currentSubscription.plan}
+          stripeSubscriptionId={currentSubscription.stripeSubscriptionId}
+        />
+      </Suspense>
       <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
         Settings
       </h1>
@@ -62,7 +72,7 @@ export default async function SettingsPage() {
       <div className="space-y-6">
         <SettingsProfileForm user={profile} />
         <SettingsMessagingForm status={profile?.status || "active"} />
-        <SettingsSubscription subscription={subscription || defaultSubscription} />
+        <SettingsSubscription subscription={currentSubscription} />
       </div>
     </div>
   );

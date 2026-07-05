@@ -10,6 +10,7 @@ import {
   cleanPhoneNumber,
   isValidUSPhone,
 } from "@/lib/utils/phone";
+import { analytics } from "@/lib/analytics";
 
 const SMS_CONSENT_LANGUAGE =
   "I agree to receive recurring automated SMS messages from Entiremind (up to 2 msgs/day depending on engagement). Msg & data rates may apply. Reply HELP for help or STOP to cancel. Consent not required for purchase.";
@@ -93,6 +94,10 @@ export function WaitlistModalSingle({
         throw new Error(data.error || "Something went wrong");
       }
 
+      analytics.generateLead({
+        lead_source: "waitlist_modal",
+        modal_version: "single",
+      });
       router.push("/thank-you");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

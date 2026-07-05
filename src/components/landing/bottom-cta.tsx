@@ -2,9 +2,15 @@
 
 import { useState } from "react";
 import { WaitlistModal } from "./waitlist-modal";
+import { analytics } from "@/lib/analytics";
 
 export function BottomCTA() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    analytics.leadFormOpen("bottom_cta");
+    setIsModalOpen(true);
+  };
 
   return (
     <>
@@ -23,7 +29,7 @@ export function BottomCTA() {
             Join the waitlist to be first when we launch.
           </p>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={openModal}
             className="bg-cream text-navy px-10 py-4 rounded-full text-lg font-medium hover:bg-cream/90 hover:shadow-lg hover:shadow-cream/10 transition-all duration-300 font-sans"
           >
             Join the Waitlist
