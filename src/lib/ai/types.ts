@@ -38,6 +38,8 @@ export interface UserContext {
 export interface GeneratedMessage {
   text: string;
   contentType: ContentType;
+  /** Set when the message is a curated library quote rather than AI-generated */
+  quoteId?: string;
 }
 
 export interface AiProviderAdapter {

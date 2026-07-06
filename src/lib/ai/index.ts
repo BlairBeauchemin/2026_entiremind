@@ -9,6 +9,11 @@ import type {
   RecentReplyContext,
 } from "./types";
 import { SYSTEM_PROMPT, buildUserPrompt, selectContentType } from "./prompts";
+import {
+  pickQuoteForUser,
+  formatQuoteSms,
+  mapCategoryToQuoteThemes,
+} from "../quotes";
 import { openaiAdapter } from "./providers/openai";
 import { anthropicAdapter } from "./providers/anthropic";
 import { loadUserMemory } from "./memory";
@@ -197,6 +202,22 @@ export async function generateMessageForUser(
   // Select content type (use preferred if provided, otherwise rules-based selection)
   const contentType =
     preferredContentType || (await selectContentType(context));
+
+  // Quotes come from the curated library, matched to the user's intention
+  // themes. If the library is empty the existing LLM path below is the fallback.
+  if (contentType === "quote") {
+    const themes = mapCategoryToQuoteThemes(
+      context.profile?.intention_category ?? null,
+    );
+    const quote = await pickQuoteForUser(userId, themes);
+    if (quote) {
+      return {
+        text: formatQuoteSms(quote),
+        contentType: "quote",
+        quoteId: quote.id,
+      };
+    }
+  }
 
   // Build the prompt
   const userPrompt = buildUserPrompt(context, contentType);
