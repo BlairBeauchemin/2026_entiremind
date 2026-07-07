@@ -40,6 +40,8 @@ export interface GeneratedMessage {
   contentType: ContentType;
   /** Set when the message is a curated library quote rather than AI-generated */
   quoteId?: string;
+  /** Set when a playbook technique shaped the prompt for this message */
+  techniqueId?: string;
 }
 
 export interface AiProviderAdapter {

@@ -53,6 +53,8 @@ export interface SendSmsOptions {
   aiGenerated?: boolean;
   /** Library quote id when the message is a curated quote */
   quoteId?: string;
+  /** Playbook technique id when a technique shaped the message */
+  techniqueId?: string;
 }
 
 /**
@@ -67,7 +69,7 @@ export async function sendSms(
   const supabase = createServiceRoleClient();
   const adapter = getProviderAdapter();
   const fromNumber = adapter.getPhoneNumber();
-  const { contentType, aiGenerated = false, quoteId } = options;
+  const { contentType, aiGenerated = false, quoteId, techniqueId } = options;
 
   try {
     // Send via the configured provider
@@ -86,6 +88,7 @@ export async function sendSms(
         content_type: contentType,
         ai_generated: aiGenerated,
         quote_id: quoteId ?? null,
+        technique_id: techniqueId ?? null,
       });
 
       return {
@@ -109,6 +112,7 @@ export async function sendSms(
         content_type: contentType,
         ai_generated: aiGenerated,
         quote_id: quoteId ?? null,
+        technique_id: techniqueId ?? null,
       })
       .select()
       .single();
@@ -155,6 +159,7 @@ export async function sendSms(
       content_type: contentType,
       ai_generated: aiGenerated,
       quote_id: quoteId ?? null,
+      technique_id: techniqueId ?? null,
     });
 
     return {

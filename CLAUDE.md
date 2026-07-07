@@ -494,6 +494,25 @@ ACTIVECAMPAIGN_FROM_NAME=Entiremind   # optional, defaults to Entiremind
 - User-facing insights surface ("here's what we've noticed") (Phase 3)
 - Fully autonomous intention updates without founder approval (Phase 4)
 
+#### Technique Playbook
+A curated, founder-editable library of distilled thinking-tools (from books like *Designing Your Life*, *Don't Believe Everything You Think*, *The Mountain Is You*, neuroscience-of-manifestation) stored as **prompt recipes** the daily-SMS engine injects, matched to a user's cognitive-distortion profile + current state. Internal-only — never shown to users.
+- **Database migration**: `supabase/migrations/019_techniques.sql`
+- **House stance**: `docs/methodology.md` — "thoughts are material, not master"; enact-don't-teach; IP hygiene (own names, no branded exercises, `source_*` internal-only); `gentle` safety flag.
+
+**Selection (`src/lib/techniques/`):**
+- `pickTechniqueForUser(context, contentType)` in `generateMessageForUser` after content-type selection (past the quote fast-path); returns `null` (probability roll, empty library, or no eligible match) → generic prompt path runs unchanged (zero regression)
+- Rolls `technique_apply_probability` (default 0.50; 0 disables); hard filters (content type · `gentle` when struggling/silent · tone compat · exclude last `technique_no_repeat_count`); scores `+3` distortion overlap, `+2` sentiment fit, `+1` category, `+priority`, `+jitter`
+- When a technique is picked, `buildUserPrompt(context, contentType, technique)` replaces the generic content-type instruction with a recipe frame ("turn into ONE question that enacts the approach — never name or explain it"); all persona/memory/reply blocks still stack
+- Every send tagged `messages.technique_id` (via `SendSmsOptions.techniqueId` / `GeneratedMessage.techniqueId`) → per-technique reply rate for free
+- Config knobs on `content_selection_config`: `technique_apply_probability`, `technique_no_repeat_count`
+
+**Curation:**
+- `scripts/digest-techniques.ts <notes.md>` — paste book takeaways (+ `Source: Title — Author`), Sonnet drafts technique rows in house voice with IP rules, inserts as `status='draft'`
+- Founder dashboard "Technique Playbook" section (`/dashboard/founder`): list + per-technique sends/reply-rate, edit-in-place, activate/retire/create. API `src/app/api/founder/techniques/route.ts` (create/update/activate/retire, founder-gated)
+- 10 seed techniques ship active in migration 019, one per distortion family
+
+**Deferred to v2:** signal-weighted (bandit) selection, reply-rate-by-distortion cross-tabs, A/B recipe variants.
+
 ---
 
 ## Deployment

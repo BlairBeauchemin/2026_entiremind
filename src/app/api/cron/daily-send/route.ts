@@ -113,6 +113,7 @@ export async function GET(request: Request) {
         contentType: generatedMessage.contentType,
         aiGenerated: !generatedMessage.quoteId,
         quoteId: generatedMessage.quoteId,
+        techniqueId: generatedMessage.techniqueId,
       });
 
       if (result.success) {

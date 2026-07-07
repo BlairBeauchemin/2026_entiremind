@@ -16,6 +16,10 @@ import {
   type FounderUserProfile,
 } from "@/components/dashboard/founder-user-insights";
 import { FounderOnboardingFunnel } from "@/components/dashboard/founder-onboarding-funnel";
+import {
+  TechniquePlaybook,
+  type TechniquePlaybookItem,
+} from "@/components/dashboard/technique-playbook";
 import { describeAnswers } from "@/lib/persona/questions";
 import type { QuizAnswers } from "@/lib/persona/types";
 import { logAdminViewedMessages } from "@/lib/audit";
@@ -189,6 +193,8 @@ export default async function FounderPage() {
         (msg.users as { phone: string | null })?.phone || msg.from_number,
     })) || [];
 
+  const techniques = await buildTechniquePlaybook(serviceSupabase);
+
   return (
     <div className="space-y-10">
       <div className="flex items-start justify-between gap-4">
@@ -213,6 +219,18 @@ export default async function FounderPage() {
           active intention; dismiss to keep the current one.
         </p>
         <IntentionShiftReview items={intentionShifts} />
+      </div>
+
+      <div>
+        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
+          Technique Playbook
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Thinking-tools the daily engine matches to each user&apos;s persona
+          and state. Draft new ones with the digest script, then activate here.
+          Reply rate is per technique.
+        </p>
+        <TechniquePlaybook techniques={techniques} />
       </div>
 
       <div>
@@ -261,6 +279,70 @@ export default async function FounderPage() {
 }
 
 type ServiceClient = ReturnType<typeof createServiceRoleClient>;
+
+/**
+ * Fetch all techniques and compute per-technique sends + reply rate by joining
+ * outbound messages (technique_id) to their inbound replies (reply_to_message_id).
+ */
+async function buildTechniquePlaybook(
+  supabase: ServiceClient,
+): Promise<TechniquePlaybookItem[]> {
+  const { data: rows } = await supabase
+    .from("techniques")
+    .select("*")
+    .order("created_at", { ascending: true });
+  if (!rows) return [];
+
+  // Outbound sends carrying a technique
+  const { data: sends } = await supabase
+    .from("messages")
+    .select("id, technique_id")
+    .eq("direction", "outbound")
+    .not("technique_id", "is", null);
+
+  const sendsByTechnique = new Map<string, string[]>();
+  for (const s of sends ?? []) {
+    const list = sendsByTechnique.get(s.technique_id) ?? [];
+    list.push(s.id);
+    sendsByTechnique.set(s.technique_id, list);
+  }
+
+  // Which of those outbound messages received a reply
+  const allSendIds = (sends ?? []).map((s) => s.id);
+  const repliedIds = new Set<string>();
+  if (allSendIds.length > 0) {
+    const { data: replies } = await supabase
+      .from("messages")
+      .select("reply_to_message_id")
+      .in("reply_to_message_id", allSendIds);
+    for (const r of replies ?? []) {
+      if (r.reply_to_message_id) repliedIds.add(r.reply_to_message_id);
+    }
+  }
+
+  return rows.map((t): TechniquePlaybookItem => {
+    const ids = sendsByTechnique.get(t.id) ?? [];
+    const replied = ids.filter((id) => repliedIds.has(id)).length;
+    return {
+      id: t.id,
+      name: t.name,
+      principle: t.principle,
+      prompt_recipe: t.prompt_recipe,
+      content_types: t.content_types ?? [],
+      target_distortions: t.target_distortions ?? [],
+      target_sentiments: t.target_sentiments ?? [],
+      tone_compatibility: t.tone_compatibility ?? [],
+      intention_categories: t.intention_categories ?? [],
+      gentle: t.gentle,
+      priority: t.priority,
+      source_title: t.source_title,
+      source_author: t.source_author,
+      status: t.status,
+      sends: ids.length,
+      replyRate: ids.length > 0 ? replied / ids.length : null,
+    };
+  });
+}
 
 async function buildUserInsights(
   supabase: ServiceClient,
