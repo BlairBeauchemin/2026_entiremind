@@ -15,6 +15,7 @@ import {
 } from "@/lib/ai/enrich";
 import { pickSoftAck } from "@/lib/acks";
 import { createServiceRoleClient } from "@/lib/supabase";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Twilio handles STOP/UNSUBSCRIBE at the platform level automatically, but we
 // log them here for our own records and to satisfy carrier review requirements.
