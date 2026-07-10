@@ -4,10 +4,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { WaitlistModal } from "./waitlist-modal";
+import { analytics } from "@/lib/analytics";
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    analytics.leadFormOpen("nav");
+    setIsModalOpen(true);
+  };
 
   return (
     <>
@@ -52,7 +58,7 @@ export function Navigation() {
                 Login
               </Link>
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={openModal}
                 className="bg-navy text-cream px-6 py-2.5 rounded-full text-sm font-medium hover:bg-navy/90 hover:shadow-lg hover:shadow-navy/10 transition-all duration-300"
               >
                 Join Waitlist
@@ -62,7 +68,7 @@ export function Navigation() {
             {/* Mobile buttons */}
             <div className="flex md:hidden items-center gap-4">
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={openModal}
                 className="bg-navy text-cream px-5 py-2 rounded-full text-sm font-medium hover:bg-navy/90 transition-all duration-300"
               >
                 Join Waitlist

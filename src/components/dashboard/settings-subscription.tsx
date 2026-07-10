@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Subscription } from "@/lib/types";
+import { analytics } from "@/lib/analytics";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -77,6 +78,7 @@ export function SettingsSubscription({
 
   const handleUpgrade = async (plan: "monthly" | "yearly") => {
     setLoading(true);
+    analytics.beginCheckout(plan);
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",

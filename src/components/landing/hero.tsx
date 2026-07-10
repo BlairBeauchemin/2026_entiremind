@@ -4,9 +4,15 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { PhoneMockup } from "./phone-mockup";
 import { WaitlistModal } from "./waitlist-modal";
+import { analytics } from "@/lib/analytics";
 
 export function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    analytics.leadFormOpen("hero");
+    setIsModalOpen(true);
+  };
 
   return (
     <>
@@ -39,7 +45,7 @@ export function Hero() {
 
             <div className="pt-4">
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={openModal}
                 className="bg-navy text-cream px-10 py-4 rounded-full text-lg font-medium hover:bg-navy/90 hover:shadow-lg hover:shadow-navy/10 transition-all duration-300 font-sans"
               >
                 Reserve My Spot

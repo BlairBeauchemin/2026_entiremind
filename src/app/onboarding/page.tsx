@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow";
+import { SignUpTracker } from "@/components/analytics/sign-up-tracker";
 
 export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-cream text-teal-900 font-sans relative selection:bg-em-purple-300/30 selection:text-teal-900">
+      <SignUpTracker />
       {/* Background grain */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-grain mix-blend-multiply" />
 
