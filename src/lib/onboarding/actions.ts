@@ -12,6 +12,7 @@ import {
   mergeProfileIntoMemory,
 } from "@/lib/ai/memory";
 import { scoreProfile } from "@/lib/persona/score";
+import { TRIAL_DAYS } from "@/lib/billing/entitlement";
 import { QUIZ_VERSION } from "@/lib/persona/questions";
 import { buildWelcomeArchetypeLine } from "@/lib/persona/content";
 import type { PersonaProfile, QuizAnswers } from "@/lib/persona/types";
@@ -51,6 +52,23 @@ export async function updateOnboardingName(
   return { success: true };
 }
 
+/**
+ * Server-side phone normalization — never trust the client's formatting.
+ * Accepts 10-digit US numbers (optionally with a leading 1 / +1) and returns
+ * canonical E.164, or null if the input isn't a plausible US number. E.164 is
+ * required so inbound webhook lookups (Twilio sends +1XXXXXXXXXX) match.
+ */
+function normalizeUSPhone(input: string): string | null {
+  if (typeof input !== "string" || input.length > 20) return null;
+  let digits = input.replace(/\D/g, "");
+  if (digits.length === 11 && digits.startsWith("1")) {
+    digits = digits.slice(1);
+  }
+  // Valid NANP numbers: area code and exchange can't start with 0 or 1.
+  if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(digits)) return null;
+  return `+1${digits}`;
+}
+
 export async function updateOnboardingPhone(
   phone: string,
 ): Promise<ActionResult> {
@@ -64,9 +82,14 @@ export async function updateOnboardingPhone(
     return { error: "Not authenticated" };
   }
 
+  const normalizedPhone = normalizeUSPhone(phone);
+  if (!normalizedPhone) {
+    return { error: "Please enter a valid 10-digit US phone number" };
+  }
+
   const { error } = await supabase
     .from("users")
-    .update({ phone })
+    .update({ phone: normalizedPhone })
     .eq("id", user.id);
 
   if (error) {
@@ -259,6 +282,20 @@ export async function completeFullOnboarding(
 
   if (completeError) {
     return { error: completeError.message };
+  }
+
+  // Start the free trial now — at onboarding completion, not signup, so a
+  // stalled signup doesn't burn trial days. Only set once (upgrades and
+  // re-onboarding must not extend it).
+  const trialEndsAt = new Date();
+  trialEndsAt.setDate(trialEndsAt.getDate() + TRIAL_DAYS);
+  const { error: trialError } = await adminClient
+    .from("subscriptions")
+    .update({ trial_ends_at: trialEndsAt.toISOString() })
+    .eq("user_id", user.id)
+    .is("trial_ends_at", null);
+  if (trialError) {
+    console.error("Failed to set trial_ends_at:", trialError.message);
   }
 
   const { data: userData } = await supabase

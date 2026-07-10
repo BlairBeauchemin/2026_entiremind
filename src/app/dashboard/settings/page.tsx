@@ -39,6 +39,7 @@ export default async function SettingsPage() {
         status: subscriptionResult.data.status,
         currentPeriodEnd: subscriptionResult.data.current_period_end,
         cancelAtPeriodEnd: subscriptionResult.data.cancel_at_period_end,
+        trialEndsAt: subscriptionResult.data.trial_ends_at,
       };
     }
   }
@@ -53,6 +54,7 @@ export default async function SettingsPage() {
     status: "active",
     currentPeriodEnd: null,
     cancelAtPeriodEnd: false,
+    trialEndsAt: null,
   };
 
   const currentSubscription = subscription || defaultSubscription;

@@ -4,7 +4,15 @@ import { createServiceRoleClient } from "@/lib/supabase";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, smsConsent, smsConsentLanguage } = body;
+    const { name, email, phone, smsConsent, smsConsentLanguage, source } = body;
+
+    // Attribution is client-supplied, so only accept known values —
+    // everything else falls back to the default landing_page source.
+    const validatedSource =
+      typeof source === "string" &&
+      /^share-(visionary|alchemist|seeker|phoenix)$/.test(source)
+        ? source
+        : "landing_page";
 
     // Validate all required fields
     const hasName = name && typeof name === "string" && name.trim();
@@ -30,6 +38,19 @@ export async function POST(request: NextRequest) {
         { error: "Phone number is required" },
         { status: 400 }
       );
+    }
+
+    // Cap field lengths — this endpoint is unauthenticated, so unbounded
+    // strings are a cheap storage/DoS vector.
+    if (
+      name.length > 200 ||
+      email.length > 320 ||
+      phone.length > 20 ||
+      (smsConsentLanguage != null &&
+        (typeof smsConsentLanguage !== "string" ||
+          smsConsentLanguage.length > 1000))
+    ) {
+      return NextResponse.json({ error: "Input too long" }, { status: 400 });
     }
 
     // Note: smsConsent is optional per Twilio A2P 10DLC compliance
@@ -76,7 +97,7 @@ export async function POST(request: NextRequest) {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       phone: phone.trim(),
-      source: "landing_page",
+      source: validatedSource,
       sms_consent: smsConsent === true,
       sms_consent_timestamp: new Date().toISOString(),
       sms_consent_ip: consentIp,

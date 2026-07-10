@@ -1,7 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createServiceRoleClient } from "@/lib/supabase";
+import { sendSms } from "@/lib/sms";
+import {
+  shouldSendDunningNotice,
+  buildPaymentFailedMessage,
+  buildSubscriptionEndedMessage,
+} from "@/lib/billing/dunning";
+import { buildUpgradeLink } from "@/lib/billing/token";
 import type Stripe from "stripe";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+/**
+ * Look up the phone + name behind a Stripe customer so lifecycle events can
+ * notify the user over SMS. Returns null when the customer has no matching
+ * subscription row or the user has no phone.
+ */
+async function findUserForCustomer(
+  supabase: SupabaseClient,
+  customerId: string,
+): Promise<{
+  userId: string;
+  phone: string;
+  name: string | null;
+  dunningNotifiedAt: string | null;
+} | null> {
+  const { data: sub } = await supabase
+    .from("subscriptions")
+    .select("user_id, dunning_notified_at")
+    .eq("stripe_customer_id", customerId)
+    .single();
+  if (!sub) return null;
+
+  const { data: user } = await supabase
+    .from("users")
+    .select("phone, name")
+    .eq("id", sub.user_id)
+    .single();
+  if (!user?.phone) return null;
+
+  return {
+    userId: sub.user_id,
+    phone: user.phone,
+    name: user.name,
+    dunningNotifiedAt: sub.dunning_notified_at ?? null,
+  };
+}
 
 // Map Stripe price IDs to plan names
 function getPlanFromPriceId(priceId: string): "monthly" | "yearly" | "free" {
@@ -144,6 +188,8 @@ export async function POST(request: NextRequest) {
               ? new Date(currentPeriodEndUpdated * 1000).toISOString()
               : null,
             cancel_at_period_end: stripeSubUpdated.cancel_at_period_end,
+            // Payment recovered → reset the dunning throttle for next time.
+            ...(status === "active" ? { dunning_notified_at: null } : {}),
           })
           .eq("stripe_customer_id", customerId);
 
@@ -170,6 +216,7 @@ export async function POST(request: NextRequest) {
             stripe_subscription_id: null,
             current_period_end: null,
             cancel_at_period_end: false,
+            dunning_notified_at: null,
           })
           .eq("stripe_customer_id", customerId);
 
@@ -177,6 +224,25 @@ export async function POST(request: NextRequest) {
           console.error("Error reverting to free plan:", error);
         } else {
           console.log(`Subscription cancelled, reverted to free: ${customerId}`);
+        }
+
+        // Tell the user their subscription ended and how to come back.
+        const endedUser = await findUserForCustomer(supabase, customerId);
+        if (endedUser) {
+          // Re-subscribe path: an upgrade-intent token (they have no active
+          // subscription to manage, so the portal is the wrong surface).
+          const result = await sendSms(
+            endedUser.userId,
+            endedUser.phone,
+            buildSubscriptionEndedMessage(
+              endedUser.name,
+              buildUpgradeLink(endedUser.userId, "upgrade"),
+            ),
+            { contentType: "billing" },
+          );
+          if (!result.success) {
+            console.error("Failed to send subscription-ended SMS:", result.error);
+          }
         }
         break;
       }
@@ -194,6 +260,33 @@ export async function POST(request: NextRequest) {
           console.error("Error setting past_due status:", error);
         } else {
           console.log(`Payment failed, marked past_due: ${customerId}`);
+        }
+
+        // Dunning: tell the user promptly, throttled across Stripe's retry
+        // cycle (this event fires on every retry — max ~1 text per 5 days).
+        const dunningUser = await findUserForCustomer(supabase, customerId);
+        if (
+          dunningUser &&
+          shouldSendDunningNotice(dunningUser.dunningNotifiedAt)
+        ) {
+          // One-tap billing-portal link (14-day token, matching the retry cycle)
+          const result = await sendSms(
+            dunningUser.userId,
+            dunningUser.phone,
+            buildPaymentFailedMessage(
+              dunningUser.name,
+              buildUpgradeLink(dunningUser.userId, "billing"),
+            ),
+            { contentType: "billing" },
+          );
+          if (result.success) {
+            await supabase
+              .from("subscriptions")
+              .update({ dunning_notified_at: new Date().toISOString() })
+              .eq("stripe_customer_id", customerId);
+          } else {
+            console.error("Failed to send dunning SMS:", result.error);
+          }
         }
         break;
       }

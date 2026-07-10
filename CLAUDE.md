@@ -23,7 +23,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 ## Architecture
 
 ### Primary Components
-- **SMS Engine**: Provider-agnostic SMS abstraction (supports Twilio and Telnyx) for two-way messaging
+- **SMS Engine**: Twilio integration for two-way messaging
 - **Web Dashboard**: Minimal profile, subscription status, pause/resume controls (not primary engagement surface)
 - **Signal Storage**: Behavioral signals persisted per user, queryable by founder
 - **Founder Review**: Inspect raw replies, tag patterns, guide system evolution
@@ -32,7 +32,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 - **Frontend**: Next.js 16 with App Router, TypeScript, Tailwind CSS v4
 - **Backend**: Supabase (Postgres, Auth, Edge Functions)
 - **Hosting**: Vercel (auto-deploys from `main` branch)
-- **Messaging**: SMS abstraction layer (`@/lib/sms`) supporting Twilio (default) and Telnyx
+- **Messaging**: SMS layer (`@/lib/sms`) built on Twilio
 - **AI**: OpenAI API (prompt drafting, tone variation, summarization — not autonomous)
 - **Components**: shadcn/ui with Radix UI primitives, Lucide icons
 - **Animations**: Framer Motion
@@ -139,7 +139,7 @@ npx shadcn@latest add [component]
 ## MVP Priorities
 
 1. Landing page with email/phone capture ✅
-2. SMS engine (Twilio/Telnyx integration, two-way messaging) ✅
+2. SMS engine (Twilio integration, two-way messaging) ✅
 3. Signal storage and founder review interface ✅
 4. User dashboard (profile, subscription, pause/resume) ✅
 5. Production deployment (Vercel + entiremind.com) ✅
@@ -222,38 +222,25 @@ npx shadcn@latest add [component]
 - Supabase Auth redirect URLs: `https://entiremind.com/**`, `https://www.entiremind.com/**`
 - Supabase Site URL: `https://entiremind.com`
 
-#### SMS Engine (Multi-Provider)
-- **Provider abstraction**: `src/lib/sms/` - supports Twilio (default) and Telnyx
-- **Provider selection**: Controlled by `SMS_PROVIDER` env var (`twilio` or `telnyx`)
-- **Send SMS**: `src/lib/sms/index.ts` - provider-agnostic wrapper functions
-- **Send endpoint**: `src/app/api/sms/send/route.ts` - authenticated SMS sending
-- **Webhook endpoints**:
-  - Twilio: `src/app/api/sms/webhook/twilio/route.ts`
-  - Telnyx: `src/app/api/sms/webhook/telnyx/route.ts`
+#### SMS Engine (Twilio)
+- **Provider layer**: `src/lib/sms/` - Twilio adapter behind a thin abstraction
+- **Send SMS**: `src/lib/sms/index.ts` - wrapper functions
+- **Send endpoint**: `src/app/api/sms/send/route.ts` - founder/admin-only SMS sending
+- **Webhook endpoint**: `src/app/api/sms/webhook/twilio/route.ts` (signature-validated)
 - **Welcome SMS**: Automatically sent after user completes onboarding
-- **Database**: `messages` table stores all SMS with `provider` and `external_message_id` columns
-- **Legacy code**: `src/lib/telnyx.ts` preserved but deprecated
+- **Database**: `messages` table stores all SMS with `provider` and `external_message_id` columns. Historical rows may have `provider = 'telnyx'` from the removed Telnyx integration; the DB CHECK constraint still allows that value for old rows.
 
-**Current Status (Apr 2026):**
-- Twilio integration code complete and configured in `.env.local`
+**Current Status:**
+- Twilio integration complete and configured in `.env.local`
 - Database migration `007_sms_provider_abstraction.sql` has been run
 - **A2P 10DLC approved and working** ✅
-- To switch back to Telnyx: set `SMS_PROVIDER=telnyx` in `.env.local`
+- Telnyx support was fully removed (July 2026) — Twilio is the only provider
 
-**Required env vars (Twilio - default):**
+**Required env vars (Twilio):**
 ```
-SMS_PROVIDER=twilio
 TWILIO_ACCOUNT_SID=your_account_sid
 TWILIO_AUTH_TOKEN=your_auth_token
 TWILIO_PHONE_NUMBER=+1234567890
-```
-
-**Required env vars (Telnyx - alternative):**
-```
-SMS_PROVIDER=telnyx
-TELNYX_API_KEY=your_api_key
-TELNYX_PHONE_NUMBER=+1234567890
-TELNYX_MESSAGING_PROFILE_ID=your_profile_id
 ```
 
 #### Waitlist & Lead Capture
@@ -438,6 +425,22 @@ Evolves the content engine from a daily message generator into a system that lis
 - `IntentionShiftReview` - pending intention shifts queue at top
 - `FounderUserInsights` - per-user expandable cards showing memory blob, recent theme cloud (last 30 days), sentiment trend bar (last 14 days), and reply-rate-by-content-type table
 
+**Weekly recap SMS ("here's what we've noticed"):**
+- The Monday memory-compaction Sonnet pass also writes an optional `recap_message` — a ≤300-char SMS reflecting 1–2 concrete specifics from the user's week back to them (null when the week has nothing real to recap; never invented)
+- Staged on `user_memory.pending_recap` / `recap_generated_at` (migration 018); a compaction with no recap clears any stale one
+- Daily-send delivers a fresh (<48h) staged recap **in place of** that morning's regular prompt, `content_type = 'recap'`; `takePendingRecap()` (in `src/lib/ai/memory.ts`) claims-then-clears so a recap can never double-send
+- Cost: $0 extra — piggybacks on the existing weekly Sonnet call
+
+**Silence recovery arc (`src/lib/reconnect.ts`):**
+- Daily-send checks `user_signals.consecutive_silences` before prompting:
+  - At `reconnect_after_silences` (default 5): sends a reconnect message (`content_type = 'reconnect'`) instead of the prompt — names the quiet, offers PAUSE. Sent once per silent stretch (tracked via reconnect outbound newer than `last_reply_at`)
+  - At `pause_after_silences` (default 9), only after an unanswered reconnect: sends a farewell and sets `users.status = 'paused'` — never pauses without warning
+- Thresholds founder-tunable in `content_selection_config` (migration 018)
+- SMS keywords in the Twilio webhook: PAUSE → status paused + confirmation; RESUME/UNPAUSE → status active + confirmation + synthetic reply signal so the silence streak resets (otherwise the arc would immediately re-pause them)
+- Replies to recap/reconnect messages link as replies (reset the streak) and count in reply-rate denominators
+- Recovery messages are deliberately template-based, not AI-generated
+- Pure decision logic (`decideSilenceRecovery`) unit-tested in `src/lib/reconnect.test.ts`
+
 **Timezone + preferred send hour (Phase 1 of Phase 2 UI; cron honoring deferred):**
 - `users.preferred_send_hour` (0–23, default 7) added to settings UI
 - Daily-send still goes out at 7:45 AM Pacific globally — preference is stored but not yet honored
@@ -466,12 +469,46 @@ Evolves the content engine from a daily message generator into a system that lis
 - `messages.content_type` CHECK extended to include `'ack'`
 - `users.preferred_send_hour` INTEGER added
 
+**Database changes (migration 018):**
+- `user_memory.pending_recap` TEXT + `recap_generated_at` TIMESTAMPTZ (staged weekly recap)
+- `messages.content_type` CHECK extended with `'recap'` and `'reconnect'`
+- `content_selection_config.reconnect_after_silences` (default 5) + `pause_after_silences` (default 9)
+
 **Cost notes:**
 - Enrichment + ack: Haiku, ~$0.0002 per inbound
 - Daily prompt: Haiku, ~$0.0002 per send
 - Weekly memory: Sonnet, ~$0.005 per active user per week
 - Soft acks: $0 (database lookup, no LLM call)
 - Prompt caching deliberately not enabled (system prompt is well under Haiku's 2048-token cache minimum at current scale)
+
+#### Monetization & Growth (July 2026)
+Plan: `docs/prds/../plans/2026-07-04-monetization-growth.md`. Migration: `020_value_ladder_dunning.sql`.
+
+**Free-trial value ladder (`src/lib/billing/`):**
+- `computeEntitlement()` (entitlement.ts) — single source of plan logic: `paid` (monthly/yearly with active/trialing/past_due), `trial` (inside 10-day window, or missing data — fails toward generosity), `expired`. Founder/admin always `paid`.
+- Trial starts at onboarding completion: `completeFullOnboarding` sets `subscriptions.trial_ends_at = now() + 10 days` (write-once). Existing users grandfathered with 14 days at migration time.
+- `daily-send` gates on entitlement first: `expired` users exit the daily loop into the upgrade path — trial-end SMS personalized from their memory theme (template-based, deliberately no LLM), one follow-up 7 days later, then quiet. Inbound enrichment + acks continue for everyone.
+- `weekly-memory` skips expired users (no Sonnet spend on gated accounts).
+- Dashboard: "Trial — N days left" / "Trial ended" chips in settings; non-dismissible `TrialEndedBanner` on `/dashboard` when expired.
+
+**Failed-payment dunning (`src/lib/billing/dunning.ts`):**
+- `invoice.payment_failed` → SMS notice (content_type `billing`), throttled to one per 5 days via `subscriptions.dunning_notified_at` (Stripe fires the event on every Smart Retry). Enable Smart Retries in the Stripe dashboard.
+- `customer.subscription.deleted` → farewell SMS with the way back; recovery to `active` clears the throttle.
+- `billing` messages never suppress the daily prompt and never count toward silence; `upgrade` messages excluded from silence detection, replies to them reply-linked (hot lead).
+
+**One-tap SMS upgrade links (`src/lib/billing/token.ts`):**
+- Plan: `docs/plans/2026-07-04-sms-upgrade-link.md`. HMAC-signed, purpose-bound tokens (`intent: upgrade|billing`) embedded as `https://www.entiremind.com/u/{token}` in trial-end, follow-up, dunning, and subscription-ended SMS. **Never a login** — a token only authorizes opening a payment flow for its user; `/u/*` routes must never set a session.
+- `GET /u/[token]` (public): upgrade intent → plan-choice interstitial (`UpgradePlanPicker` → `POST /api/upgrade-checkout` → Stripe Checkout); billing intent (past_due only) → 302 straight into the Stripe billing portal. Invalid/expired/errors degrade to `/auth?next=/dashboard/settings`.
+- Checkout session creation shared between `/api/checkout` (authenticated) and `/api/upgrade-checkout` (tokenized) via `src/lib/billing/checkout.ts`; SMS-driven sessions carry `metadata.source = 'sms-upgrade-link'`.
+- Success lands on `/welcome-back` (public; fulfillment is webhook-driven, no browser session needed).
+- Expiry: 60 days (upgrade), 14 days (billing). `/u/*` gets `Cache-Control: no-store` + `X-Robots-Tag: noindex` via next.config.
+- **Requires env var `UPGRADE_LINK_SECRET`** (32+ random bytes, e.g. `openssl rand -base64 32`). If unset, messages fall back to the settings URL — sends never fail.
+
+**Shareable archetype pages (`src/app/archetype/[slug]/`):**
+- Public, statically generated pages for the four archetypes — generic copy only (`ARCHETYPE_PUBLIC` in `src/lib/persona/content.ts`), zero user data. Invalid slugs 404 (`dynamicParams = false`).
+- `opengraph-image.tsx` renders the share card per archetype via `next/og` (params is a Promise in Next 16 — must be awaited).
+- `ShareArchetypeButton` (native share sheet + clipboard fallback) on the onboarding reveal step and the dashboard persona card.
+- Attribution: CTA links `/?src=share-{slug}`; waitlist modals pass `source` through; leads API validates against `^share-(visionary|alchemist|seeker|phoenix)$` and defaults to `landing_page` otherwise. Query share-driven signups via `leads.source LIKE 'share-%'`.
 
 ### Not Yet Implemented
 - Hourly send cadence honoring `preferred_send_hour` (waiting on Vercel Pro)
@@ -497,7 +534,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
 
 # SMS (Twilio)
-SMS_PROVIDER=twilio
 TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
 TWILIO_PHONE_NUMBER
@@ -511,6 +547,9 @@ STRIPE_YEARLY_PRICE_ID
 
 # Cron
 CRON_SECRET
+
+# SMS upgrade links (openssl rand -base64 32)
+UPGRADE_LINK_SECRET
 
 # AI (choose one provider)
 AI_PROVIDER=anthropic  # or 'openai'

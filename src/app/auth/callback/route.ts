@@ -1,12 +1,29 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
+/**
+ * Only allow same-site relative paths as post-auth destinations. Anything
+ * else ("//evil.com", absolute URLs, backslash tricks) is an open-redirect
+ * vector and falls back to the default.
+ */
+function sanitizeNextPath(next: string | null): string {
+  if (
+    next &&
+    next.startsWith("/") &&
+    !next.startsWith("//") &&
+    !next.includes("\\")
+  ) {
+    return next;
+  }
+  return "/onboarding";
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/onboarding";
+  const next = sanitizeNextPath(searchParams.get("next"));
 
   const supabase = await createClient();
   let error = null;

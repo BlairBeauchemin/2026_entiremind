@@ -97,6 +97,8 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
           phone: cleanPhoneNumber(phone),
           smsConsent,
           smsConsentLanguage: SMS_CONSENT_LANGUAGE,
+          // Share attribution (?src=share-{archetype}); server validates.
+          source: new URLSearchParams(window.location.search).get("src"),
         }),
       });
 

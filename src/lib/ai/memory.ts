@@ -66,6 +66,19 @@ function coerceSummary(raw: unknown): UserMemorySummary | null {
   };
 }
 
+// Recaps are sent as a single SMS; clamp anything the model lets sprawl.
+const RECAP_MAX_CHARS = 320;
+
+function coerceRecap(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return null;
+  if (trimmed.length > RECAP_MAX_CHARS) {
+    return `${trimmed.slice(0, RECAP_MAX_CHARS - 1).trimEnd()}…`;
+  }
+  return trimmed;
+}
+
 function coerceIntentionShift(raw: unknown): IntentionShiftDetection {
   const fallback: IntentionShiftDetection = {
     detected: false,
@@ -332,7 +345,11 @@ export async function compactUserMemory(
     return null;
   }
 
-  await persistMemory(userId, summary);
+  const recap = coerceRecap(
+    (parsed as Record<string, unknown>).recap_message,
+  );
+
+  await persistMemory(userId, summary, recap);
 
   // Intention shift detection (best-effort; failure should not block memory)
   if (
@@ -409,6 +426,7 @@ async function recordIntentionShift(params: {
 async function persistMemory(
   userId: string,
   summary: UserMemorySummary,
+  pendingRecap: string | null = null,
 ): Promise<void> {
   const supabase = createServiceRoleClient();
   const tokenCount = estimateTokenCount(JSON.stringify(summary));
@@ -428,13 +446,16 @@ async function persistMemory(
     });
   }
 
-  // Upsert current memory
+  // Upsert current memory. pending_recap is always written — a compaction
+  // with no recap clears any stale one from a previous week.
   const { error: upsertError } = await supabase.from("user_memory").upsert(
     {
       user_id: userId,
       summary,
       version: MEMORY_VERSION,
       token_count: tokenCount,
+      pending_recap: pendingRecap,
+      recap_generated_at: pendingRecap ? new Date().toISOString() : null,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" },
@@ -443,6 +464,44 @@ async function persistMemory(
   if (upsertError) {
     console.error(`Failed to persist memory for user ${userId}:`, upsertError);
   }
+}
+
+// A staged recap is only valid for a couple of days — it's written Monday
+// pre-dawn and meant for that morning's send. Anything older is stale.
+const RECAP_MAX_AGE_HOURS = 48;
+
+/**
+ * Claim the user's pending weekly recap, if one is staged and fresh.
+ * Clears it before returning so a recap is never delivered twice, even if
+ * the caller's send subsequently fails (dropping a recap is better than
+ * double-texting it).
+ */
+export async function takePendingRecap(userId: string): Promise<string | null> {
+  const supabase = createServiceRoleClient();
+
+  const { data, error } = await supabase
+    .from("user_memory")
+    .select("pending_recap, recap_generated_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error || !data?.pending_recap || !data.recap_generated_at) return null;
+
+  const ageHours =
+    (Date.now() - new Date(data.recap_generated_at).getTime()) / 3_600_000;
+
+  const { error: clearError } = await supabase
+    .from("user_memory")
+    .update({ pending_recap: null, recap_generated_at: null })
+    .eq("user_id", userId);
+
+  if (clearError) {
+    // If we can't claim it, don't send it — another run may also read it.
+    console.error(`Failed to claim recap for user ${userId}:`, clearError);
+    return null;
+  }
+
+  return ageHours <= RECAP_MAX_AGE_HOURS ? data.pending_recap : null;
 }
 
 /**

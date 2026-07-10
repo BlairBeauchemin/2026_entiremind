@@ -3,6 +3,8 @@ import { CurrentIntention } from "@/components/dashboard/current-intention";
 import { MessageFeed } from "@/components/dashboard/message-feed";
 import { PersonaCard } from "@/components/dashboard/persona-card";
 import { ArchetypeBanner } from "@/components/dashboard/archetype-banner";
+import { TrialEndedBanner } from "@/components/dashboard/trial-ended-banner";
+import { computeEntitlement } from "@/lib/billing/entitlement";
 import type { Message } from "@/lib/types";
 import type { PersonaProfile } from "@/lib/persona/types";
 
@@ -24,6 +26,7 @@ export default async function DashboardPage() {
   let currentIntention = null;
   let messages: Message[] = [];
   let personaProfile: PersonaProfile | null = null;
+  let trialEnded = false;
 
   if (authUser) {
     const { data: userData } = await supabase
@@ -32,6 +35,16 @@ export default async function DashboardPage() {
       .eq("id", authUser.id)
       .single();
     profile = userData;
+
+    // Trial state (own row, RLS-scoped read)
+    const { data: subRow } = await supabase
+      .from("subscriptions")
+      .select("plan, status, trial_ends_at")
+      .eq("user_id", authUser.id)
+      .maybeSingle();
+    trialEnded =
+      computeEntitlement(subRow ?? null) === "expired" &&
+      !["admin", "founder"].includes(userData?.role ?? "");
 
     // Persona profile (Onboarding v2) — renders a calm archetype card when present.
     const { data: personaRow } = await supabase
@@ -113,6 +126,9 @@ export default async function DashboardPage() {
       <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
         {getGreeting()}, {firstName}
       </h1>
+
+      {/* Trial ended: the account's current state, above everything else */}
+      {trialEnded && <TrialEndedBanner />}
 
       {/* Archetype discovery nudge (Onboarding v2 backfill) */}
       {showArchetypeBanner && <ArchetypeBanner />}

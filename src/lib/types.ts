@@ -28,6 +28,7 @@ export interface Subscription {
   status: "active" | "paused" | "cancelled" | "past_due" | "trialing";
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
+  trialEndsAt: string | null;
 }
 
 export interface Message {

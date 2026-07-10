@@ -7,6 +7,7 @@ import {
   createTwimlResponse,
 } from "@/lib/sms/providers/twilio";
 import { trackReply, trackUnprompted, trackStopRequest } from "@/lib/signals";
+import { PAUSE_CONFIRMATION, RESUME_CONFIRMATION } from "@/lib/reconnect";
 import { enrichInboundReply } from "@/lib/ai/enrich";
 import { pickSoftAck } from "@/lib/acks";
 import { createServiceRoleClient } from "@/lib/supabase";
@@ -44,6 +45,11 @@ const STOP_KEYWORDS = new Set([
   "QUIT",
 ]);
 const HELP_KEYWORDS = new Set(["HELP", "INFO"]);
+
+// App-level messaging controls (distinct from Twilio's carrier-level STOP):
+// PAUSE holds daily messages without unsubscribing; RESUME picks them back up.
+const PAUSE_KEYWORDS = new Set(["PAUSE"]);
+const RESUME_KEYWORDS = new Set(["RESUME", "UNPAUSE"]);
 
 const HELP_RESPONSE =
   "Entiremind: For support email support@entiremind.com or visit entiremind.com/sms-policy. " +
@@ -235,6 +241,76 @@ export async function POST(request: NextRequest) {
       console.log(`HELP keyword received from ${fromNumber}`);
       await storeInboundSms(fromNumber, toNumber, text, messageSid, "twilio");
       return new Response(createTwimlResponse(HELP_RESPONSE), {
+        status: 200,
+        headers: { "Content-Type": "text/xml" },
+      });
+    }
+
+    // PAUSE: hold daily messages (app-level, no unsubscribe)
+    if (PAUSE_KEYWORDS.has(normalizedText)) {
+      console.log(`PAUSE keyword received from ${fromNumber}`);
+      const stored = await storeInboundSms(
+        fromNumber,
+        toNumber,
+        text,
+        messageSid,
+        "twilio",
+      );
+      if (stored.success && stored.userId) {
+        const supabase = createServiceRoleClient();
+        const { error: pauseError } = await supabase
+          .from("users")
+          .update({ status: "paused" })
+          .eq("id", stored.userId);
+        if (pauseError) {
+          console.error("Failed to pause user via SMS keyword:", pauseError);
+        }
+        return new Response(createTwimlResponse(PAUSE_CONFIRMATION), {
+          status: 200,
+          headers: { "Content-Type": "text/xml" },
+        });
+      }
+      // Unknown number — nothing to pause, no reply
+      return new Response(createEmptyTwimlResponse(), {
+        status: 200,
+        headers: { "Content-Type": "text/xml" },
+      });
+    }
+
+    // RESUME: reactivate daily messages
+    if (RESUME_KEYWORDS.has(normalizedText)) {
+      console.log(`RESUME keyword received from ${fromNumber}`);
+      const stored = await storeInboundSms(
+        fromNumber,
+        toNumber,
+        text,
+        messageSid,
+        "twilio",
+      );
+      if (stored.success && stored.userId && stored.messageId) {
+        const supabase = createServiceRoleClient();
+        const { error: resumeError } = await supabase
+          .from("users")
+          .update({ status: "active" })
+          .eq("id", stored.userId);
+        if (resumeError) {
+          console.error("Failed to resume user via SMS keyword:", resumeError);
+        }
+        // Record the resume as a reply signal so the silence streak resets —
+        // otherwise the recovery arc would re-pause them the next morning.
+        await trackReply({
+          userId: stored.userId,
+          inboundMessageId: stored.messageId,
+          outboundMessageId: stored.replyToMessageId ?? null,
+          replyTimeMinutes: stored.replyTimeMinutes ?? null,
+          replyLength: text.length,
+        });
+        return new Response(createTwimlResponse(RESUME_CONFIRMATION), {
+          status: 200,
+          headers: { "Content-Type": "text/xml" },
+        });
+      }
+      return new Response(createEmptyTwimlResponse(), {
         status: 200,
         headers: { "Content-Type": "text/xml" },
       });

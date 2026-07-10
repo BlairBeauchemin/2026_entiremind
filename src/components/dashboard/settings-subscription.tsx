@@ -76,6 +76,17 @@ export function SettingsSubscription({
   const isPaidPlan = subscription.plan === "monthly" || subscription.plan === "yearly";
   const statusDisplay = getStatusDisplay(subscription.status);
 
+  // Free-plan users are either in their trial window or past it.
+  const trialDaysLeft =
+    isFreePlan && subscription.trialEndsAt
+      ? Math.ceil(
+          (new Date(subscription.trialEndsAt).getTime() - Date.now()) /
+            86_400_000,
+        )
+      : null;
+  const trialActive = trialDaysLeft !== null && trialDaysLeft > 0;
+  const trialExpired = trialDaysLeft !== null && trialDaysLeft <= 0;
+
   const handleUpgrade = async (plan: "monthly" | "yearly") => {
     setLoading(true);
     analytics.beginCheckout(plan);
@@ -147,6 +158,17 @@ export function SettingsSubscription({
           >
             {statusDisplay.label}
           </span>
+          {trialActive && (
+            <span className="px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide rounded-full bg-blue-500/20 text-blue-700">
+              Trial — {trialDaysLeft} {trialDaysLeft === 1 ? "day" : "days"}{" "}
+              left
+            </span>
+          )}
+          {trialExpired && (
+            <span className="px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide rounded-full bg-amber-500/20 text-amber-700">
+              Trial ended
+            </span>
+          )}
         </div>
 
         {/* Free plan: show upgrade options */}

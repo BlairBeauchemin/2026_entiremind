@@ -80,7 +80,7 @@ A free trial gives the user something to lose; failed-payment dunning recovers c
 - **Targets:** `src/lib/onboarding/actions.ts` (trial start at completion),
   `src/lib/billing/*`, `settings-subscription.tsx`, migration.
 - **Source:** `claude/security-review-validation-qivnr8` `7a06cff` (+ `7a06cff`'s
-  `019_value_ladder_dunning.sql`, `ff25b20` plan doc). Also pulls server-side phone
+  `020_value_ladder_dunning.sql`, `ff25b20` plan doc). Also pulls server-side phone
   normalization from the same branch's `onboarding/actions.ts` edits.
 - ⚠️ Migration `019` collides with the techniques branch — renumber on cherry-pick.
 
@@ -115,7 +115,7 @@ A weekly recap SMS reminds users what they've built; a silence-recovery arc re-e
 warmly (not naggingly) after consecutive silences.
 - **Targets:** engagement libs, cron, `src/lib/reconnect.ts`, migration.
 - **Source:** `claude/security-review-validation-qivnr8` `dbc20eb`
-  (+ `018_weekly_recap_silence_recovery.sql`).
+  (+ `019_weekly_recap_silence_recovery.sql`).
 - ⚠️ Migration `018` collides with three other branches — renumber.
 
 ### P2.2 🆕 Loss aversion (pause): "we'll hold your place" framing
@@ -151,9 +151,9 @@ The unmerged branches were built in parallel and **cannot all merge cleanly**:
 - **Migration number collisions:**
   - `018_*` is claimed by four branches: `018_messaging_simulator` (messaging-test-tool),
     `018_quotes_and_weekly_editions` (motivational-quotes *and* technique-playbook),
-    `018_testimonials` (market-research), `018_weekly_recap_silence_recovery` (security-review).
+    `018_testimonials` (market-research), `019_weekly_recap_silence_recovery` (security-review).
   - `019_*` is claimed by two: `019_techniques` (technique-playbook) vs.
-    `019_value_ladder_dunning` (security-review).
+    `020_value_ladder_dunning` (security-review).
   - **Any cherry-pick that carries a migration must renumber it** to the next free number
     at implementation time.
 - **Shared-file conflicts:** `src/lib/onboarding/actions.ts` is edited by three branches

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { buildRevealContent } from "@/lib/persona/content";
 import { VALUE_OPTIONS } from "@/lib/persona/questions";
+import { ShareArchetypeButton } from "@/components/share-archetype-button";
 import type { PersonaProfile, ValueId } from "@/lib/persona/types";
 
 interface PersonaCardProps {
@@ -40,6 +41,12 @@ export function PersonaCard({ profile, name }: PersonaCardProps) {
       <p className="mt-3 text-base md:text-lg text-navy/80 leading-relaxed">
         {content.archetype.paragraph}
       </p>
+      <div className="mt-4">
+        <ShareArchetypeButton
+          archetype={profile.archetype}
+          archetypeName={content.archetype.name}
+        />
+      </div>
 
       {/* Inner-critic pattern */}
       {content.innerCritic && (

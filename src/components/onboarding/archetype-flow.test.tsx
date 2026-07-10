@@ -119,7 +119,9 @@ describe("ArchetypeFlow (backfill)", () => {
       screen.getByRole("heading", { name: /The Visionary/i }),
     ).toBeInTheDocument();
 
-    clickButton(/archetype/i);
+    // Match the completion CTA specifically — the reveal now also renders a
+    // "Share your archetype" button.
+    clickButton(/save my archetype/i);
     await flush();
 
     expect(actions.completeArchetypeQuiz).toHaveBeenCalledTimes(1);

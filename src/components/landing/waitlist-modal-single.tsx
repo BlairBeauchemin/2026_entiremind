@@ -86,6 +86,8 @@ export function WaitlistModalSingle({
           phone: cleanPhoneNumber(phone),
           smsConsent,
           smsConsentLanguage: smsConsent ? SMS_CONSENT_LANGUAGE : null,
+          // Share attribution (?src=share-{archetype}); server validates.
+          source: new URLSearchParams(window.location.search).get("src"),
         }),
       });
 

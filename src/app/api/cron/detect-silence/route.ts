@@ -47,13 +47,14 @@ export async function GET(request: Request) {
   console.log(`Detecting silences for messages between ${windowStart.toISOString()} and ${windowEnd.toISOString()}`);
 
   // Find outbound messages in the window that don't have replies.
-  // Exclude 'ack' messages — they're reactive responses to user replies, not
-  // proactive prompts, so a missing reply to an ack is not a silence signal.
+  // Exclude 'ack' (reactive responses, not prompts), 'billing' (payment
+  // notices), and 'upgrade' (paywall messages) — no reply to those is not
+  // an engagement-silence signal.
   const { data: outboundMessages, error: fetchError } = await supabase
     .from("messages")
     .select("id, user_id, created_at, text")
     .eq("direction", "outbound")
-    .or("content_type.neq.ack,content_type.is.null")
+    .or("content_type.not.in.(ack,billing,upgrade),content_type.is.null")
     .gte("created_at", windowStart.toISOString())
     .lte("created_at", windowEnd.toISOString())
     .order("created_at", { ascending: true });
