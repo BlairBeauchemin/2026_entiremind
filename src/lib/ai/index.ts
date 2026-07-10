@@ -19,6 +19,7 @@ import {
   formatQuoteSms,
   mapCategoryToQuoteThemes,
 } from "../quotes";
+import { pickTechniqueForUser } from "../techniques";
 import { openaiAdapter } from "./providers/openai";
 import { anthropicAdapter } from "./providers/anthropic";
 import { loadUserMemory } from "./memory";
@@ -253,8 +254,12 @@ export async function generateMessageForUser(
     }
   }
 
+  // A playbook technique may shape this message, matched to the user's
+  // persona + state. Null (no match / probability roll) → generic prompt.
+  const technique = await pickTechniqueForUser(context, contentType);
+
   // Build the prompt
-  const userPrompt = buildUserPrompt(context, contentType);
+  const userPrompt = buildUserPrompt(context, contentType, technique);
 
   try {
     const text = await adapter.generateMessage(systemPrompt.body, userPrompt);
@@ -264,7 +269,7 @@ export async function generateMessageForUser(
     const finalText = truncated ? text.substring(0, 157) + "..." : text;
 
     console.log(
-      `Generated message via ${adapter.provider}: "${finalText.substring(0, 50)}..."`,
+      `Generated message via ${adapter.provider}${technique ? ` [${technique.name}]` : ""}: "${finalText.substring(0, 50)}..."`,
     );
 
     return {
@@ -276,6 +281,7 @@ export async function generateMessageForUser(
       systemPromptId: systemPrompt.id,
       systemPromptName: systemPrompt.name,
       selection,
+      techniqueId: technique?.id,
     };
   } catch (error) {
     console.error(

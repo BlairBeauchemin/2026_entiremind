@@ -1,4 +1,5 @@
 import type { UserContext, ContentType, SelectionDebug } from "./types";
+import type { Technique } from "../techniques/types";
 import { renderMemoryForPrompt } from "./memory";
 import { renderProfileForPrompt } from "../persona/prompt";
 import { createServiceRoleClient } from "../supabase";
@@ -51,11 +52,20 @@ export function getContentTypePrompt(contentType: ContentType): string {
 export function buildUserPrompt(
   context: UserContext,
   contentType: ContentType,
+  technique?: Technique | null,
 ): string {
   const parts: string[] = [];
 
-  // Add content type instruction
-  parts.push(getContentTypePrompt(contentType));
+  // A playbook technique, when present, replaces the generic content-type
+  // instruction with a recipe to enact — as a question, never a lesson. All
+  // the personalization blocks below still stack on top.
+  if (technique) {
+    parts.push(
+      `Today, work from this approach: "${technique.prompt_recipe}" Turn it into ONE short question that enacts the approach for this person. Never name or explain the technique; keep the calm Entiremind voice.`,
+    );
+  } else {
+    parts.push(getContentTypePrompt(contentType));
+  }
 
   // Add user context
   if (context.name) {

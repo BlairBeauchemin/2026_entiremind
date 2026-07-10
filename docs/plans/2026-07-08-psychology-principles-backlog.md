@@ -152,7 +152,7 @@ The unmerged branches were built in parallel and **cannot all merge cleanly**:
   - `018_*` is claimed by four branches: `021_messaging_simulator` (messaging-test-tool),
     `018_quotes_and_weekly_editions` (motivational-quotes *and* technique-playbook),
     `018_testimonials` (market-research), `019_weekly_recap_silence_recovery` (security-review).
-  - `019_*` is claimed by two: `019_techniques` (technique-playbook) vs.
+  - `019_*` is claimed by two: `023_techniques` (technique-playbook) vs.
     `020_value_ladder_dunning` (security-review).
   - **Any cherry-pick that carries a migration must renumber it** to the next free number
     at implementation time.
