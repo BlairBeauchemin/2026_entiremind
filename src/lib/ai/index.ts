@@ -40,7 +40,7 @@ export function getAiProvider(): AiProvider {
 /**
  * Get the adapter for the current AI provider
  */
-function getProviderAdapter(): AiProviderAdapter {
+export function getProviderAdapter(): AiProviderAdapter {
   const provider = getAiProvider();
   switch (provider) {
     case "openai":

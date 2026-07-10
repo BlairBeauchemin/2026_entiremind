@@ -40,6 +40,11 @@ export interface GeneratedMessage {
   contentType: ContentType;
 }
 
+export interface AiGenerateOptions {
+  /** Max output tokens. Defaults to 100 (SMS-length messages). */
+  maxTokens?: number;
+}
+
 export interface AiProviderAdapter {
   /**
    * The provider name for logging
@@ -49,5 +54,9 @@ export interface AiProviderAdapter {
   /**
    * Generate a message given system and user prompts
    */
-  generateMessage(systemPrompt: string, userPrompt: string): Promise<string>;
+  generateMessage(
+    systemPrompt: string,
+    userPrompt: string,
+    options?: AiGenerateOptions,
+  ): Promise<string>;
 }

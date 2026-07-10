@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import type { AiProviderAdapter } from "../types";
+import type { AiProviderAdapter, AiGenerateOptions } from "../types";
 
 let client: OpenAI | null = null;
 
@@ -21,6 +21,7 @@ export const openaiAdapter: AiProviderAdapter = {
   async generateMessage(
     systemPrompt: string,
     userPrompt: string,
+    options?: AiGenerateOptions,
   ): Promise<string> {
     const openai = getClient();
 
@@ -30,7 +31,7 @@ export const openaiAdapter: AiProviderAdapter = {
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      max_tokens: 100,
+      max_tokens: options?.maxTokens ?? 100,
       temperature: 0.8,
     });
 

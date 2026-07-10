@@ -1,25 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase";
-
-async function requireFounder() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { error: "Not authenticated" as const };
-
-  const { data: profile } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile || !["admin", "founder"].includes(profile.role ?? "")) {
-    return { error: "Forbidden" as const };
-  }
-  return { userId: user.id };
-}
+import { requireFounder } from "@/lib/auth/founder";
 
 /**
  * POST /api/founder/intention-shifts
