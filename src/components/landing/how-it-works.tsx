@@ -2,25 +2,27 @@ export function HowItWorks() {
   const steps = [
     {
       number: "01",
-      title: "Action",
-      description: "You receive a prompt or send an intention via SMS.",
+      title: "Discover Your Archetype",
+      description:
+        "A three-minute reflection reveals how you manifest — and what your inner critic whispers.",
     },
     {
       number: "02",
-      title: "Signal",
+      title: "A Morning Text Meets You",
       description:
-        "Your reply (or silence) is captured as a behavioral signal.",
+        "Each day, one short message tuned to your intention arrives. Nothing to open, nothing to keep up with.",
     },
     {
       number: "03",
-      title: "Learning",
+      title: "Reply in Your Own Words",
       description:
-        "The system analyzes patterns in your responses over time.",
+        "Whatever's true that day. It's a journal that answers back — reflecting your words, never judging them.",
     },
     {
       number: "04",
-      title: "Adjustment",
-      description: "Future prompts evolve to better serve your goals.",
+      title: "It Grows With You",
+      description:
+        "The more you share, the more it remembers — and the more each message feels like it was written for you.",
     },
   ];
 
@@ -39,11 +41,11 @@ export function HowItWorks() {
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
           <div className="max-w-2xl">
             <h2 className="font-serif text-5xl md:text-6xl mb-6 font-light italic">
-              The Feedback Loop
+              How It Works
             </h2>
             <p className="text-teal-100/80 text-xl font-light font-sans">
-              A continuous cycle of action, signal, and adjustment—designed to
-              compound your growth.
+              A gentle daily practice that starts with who you are and deepens
+              with every reply.
             </p>
           </div>
           <a

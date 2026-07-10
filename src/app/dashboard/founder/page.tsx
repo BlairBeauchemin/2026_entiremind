@@ -11,6 +11,10 @@ import {
   type IntentionShiftItem,
 } from "@/components/dashboard/intention-shift-review";
 import {
+  TestimonialReview,
+  type TestimonialItem,
+} from "@/components/dashboard/testimonial-review";
+import {
   FounderUserInsights,
   type FounderUserInsight,
   type FounderUserProfile,
@@ -139,6 +143,50 @@ export default async function FounderPage() {
     createdAt: row.created_at,
   }));
 
+  // Testimonials: review queue + which users have already been asked
+  const { data: testimonialRows } = await serviceSupabase
+    .from("testimonials")
+    .select(
+      `
+      *,
+      users:user_id (
+        name,
+        email
+      )
+    `,
+    )
+    .order("requested_at", { ascending: false });
+
+  type TestimonialRow = {
+    id: string;
+    user_id: string;
+    body: string | null;
+    status: TestimonialItem["status"];
+    consent: boolean;
+    requested_at: string;
+    received_at: string | null;
+    users: { name: string | null; email: string } | null;
+  };
+
+  const testimonials: TestimonialItem[] = (
+    (testimonialRows as TestimonialRow[] | null) ?? []
+  ).map((row) => ({
+    id: row.id,
+    userName: row.users?.name ?? null,
+    userEmail: row.users?.email ?? "Unknown",
+    body: row.body,
+    status: row.status,
+    consent: row.consent,
+    requestedAt: row.requested_at,
+    receivedAt: row.received_at,
+  }));
+
+  const testimonialUserIds = (
+    (testimonialRows as TestimonialRow[] | null) ?? []
+  )
+    .filter((row) => row.status !== "dismissed")
+    .map((row) => row.user_id);
+
   // Per-user insights: memory + recent themes + sentiment trend + reply-rate-by-type
   const insights = await buildUserInsights(serviceSupabase);
 
@@ -240,14 +288,29 @@ export default async function FounderPage() {
       <SchedulingSection initialMessages={formattedScheduledMessages} />
 
       <div>
+        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
+          Testimonials
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Replies to testimonial requests land here. Approve only when the
+          user&apos;s words clearly grant permission to share.
+        </p>
+        <TestimonialReview items={testimonials} />
+      </div>
+
+      <div>
         <h2 className="font-serif text-2xl text-navy font-medium mb-4">
           User Engagement Signals
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
           Engagement scores and behavioral signals for all users. Higher scores
-          indicate more engaged users.
+          indicate more engaged users. Use &ldquo;Ask&rdquo; to request a
+          testimonial from a highly engaged user.
         </p>
-        <UserSignalsTable signals={formattedSignals} />
+        <UserSignalsTable
+          signals={formattedSignals}
+          testimonialUserIds={testimonialUserIds}
+        />
       </div>
 
       <div>

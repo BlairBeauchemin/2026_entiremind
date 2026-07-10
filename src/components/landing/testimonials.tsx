@@ -27,9 +27,9 @@ export function Testimonials() {
                     "No login screens, no loading spinners. Just SMS.",
                 },
                 {
-                  title: "Emotional Buy-in",
+                  title: "A Moment of Being Seen",
                   description:
-                    "The act of typing your intention creates a contract with yourself.",
+                    "Your archetype reveal and the act of naming your intention create a quiet contract with yourself.",
                 },
                 {
                   title: "Founder Led",

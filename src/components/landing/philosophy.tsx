@@ -20,11 +20,11 @@ export function Philosophy() {
             <Zap className="w-5 h-5" />
           </div>
           <h3 className="font-serif text-3xl text-navy mb-4 font-medium">
-            Velocity of Learning
+            It Remembers You
           </h3>
           <p className="text-teal-900/70 leading-relaxed font-sans font-light">
-            The system operates as a real-time behavioral loop. Your actions
-            teach the system, and the system guides your next action.
+            Every reply teaches it a little more about what you&apos;re calling
+            in. Affirmation apps talk at you — Entiremind listens back.
           </p>
         </div>
 
@@ -34,11 +34,11 @@ export function Philosophy() {
             <MessageCircle className="w-5 h-5" />
           </div>
           <h3 className="font-serif text-3xl text-navy mb-4 font-medium">
-            Silence is a Signal
+            No Guilt, No Nagging
           </h3>
           <p className="text-teal-900/70 leading-relaxed font-sans font-light">
-            We don&apos;t nag. If you don&apos;t reply, we record the silence as
-            data. The system adapts to your rhythm, not the other way around.
+            Quiet days are honored, not punished. If you don&apos;t reply, it
+            softens and adapts to your rhythm — never the other way around.
           </p>
         </div>
 
@@ -52,7 +52,8 @@ export function Philosophy() {
           </h3>
           <p className="text-teal-900/70 leading-relaxed font-sans font-light">
             Calm, inspiring, and intuitive. No charts, no streaks, no
-            productivity theater. Just pure intention and reflection.
+            productivity theater. Just intention, reflection, and a little
+            wonder in your day.
           </p>
         </div>
       </div>

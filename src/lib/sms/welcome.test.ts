@@ -27,7 +27,7 @@ describe("buildWelcomeMessage", () => {
   });
 
   it("weaves in the archetype line and keeps compliance intact", () => {
-    const line = "Visionary energy. We see it. Your first prompt lands tomorrow morning.";
+    const line = "Visionary energy. We see it. Your first prompt is on its way.";
     const msg = buildWelcomeMessage("Maya", line);
     expect(msg).toContain(line);
     for (const token of COMPLIANCE) expect(msg).toContain(token);

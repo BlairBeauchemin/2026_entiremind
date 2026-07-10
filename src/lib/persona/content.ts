@@ -175,7 +175,7 @@ export function buildRevealContent(
 /** Short archetype line for the welcome SMS (e.g., "Visionary energy. We see it."). */
 export function buildWelcomeArchetypeLine(profile: PersonaProfile): string {
   const bare = ARCHETYPE_NAMES[profile.archetype].replace(/^The\s+/, "");
-  return `${bare} energy. We see it. Your first prompt lands tomorrow morning.`;
+  return `${bare} energy. We see it. Your first prompt is on its way.`;
 }
 
 export { ARCHETYPE_NAMES, DISTORTION_CONTENT };
