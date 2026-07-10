@@ -35,9 +35,29 @@ export interface UserContext {
   profile: PersonaProfile | null;
 }
 
+/** Why selectContentType landed on its choice — surfaced in the simulator's debug view. */
+export interface SelectionDebug {
+  excludedByNoRepeat: ContentType[];
+  quoteCapped: boolean;
+  gentleMode: boolean;
+  usedWeightedPick: boolean;
+  replyRates: Partial<Record<ContentType, { sends: number; rate: number }>>;
+}
+
 export interface GeneratedMessage {
   text: string;
   contentType: ContentType;
+  /** True when the AI call failed and a canned fallback was returned. */
+  fallback: boolean;
+  /** True when the generated text was truncated to fit 160 chars. */
+  truncated: boolean;
+  /** The exact user prompt sent to the model (for founder debugging). */
+  userPrompt: string;
+  /** system_prompts.id used, or null for the built-in default. */
+  systemPromptId: string | null;
+  systemPromptName: string;
+  /** Present when the content type came from rules-based selection. */
+  selection?: SelectionDebug;
 }
 
 export interface AiProviderAdapter {
@@ -49,5 +69,9 @@ export interface AiProviderAdapter {
   /**
    * Generate a message given system and user prompts
    */
-  generateMessage(systemPrompt: string, userPrompt: string): Promise<string>;
+  generateMessage(
+    systemPrompt: string,
+    userPrompt: string,
+    opts?: { maxTokens?: number },
+  ): Promise<string>;
 }

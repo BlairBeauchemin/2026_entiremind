@@ -8,6 +8,8 @@ import {
   Settings,
   X,
   LogOut,
+  Eye,
+  FlaskConical,
 } from "lucide-react";
 import { useUserContext } from "@/components/dashboard/user-context";
 import { signOut } from "@/lib/auth/actions";
@@ -16,6 +18,16 @@ const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Intentions", href: "/dashboard/intentions", icon: Target },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
+];
+
+// Founder-only tools; rendered only for admin/founder roles.
+const founderNavItems = [
+  { label: "Founder", href: "/dashboard/founder", icon: Eye },
+  {
+    label: "Simulator",
+    href: "/dashboard/founder/simulator",
+    icon: FlaskConical,
+  },
 ];
 
 function getPlanLabel(plan: string | undefined): string {
@@ -38,6 +50,10 @@ interface DashboardSidebarProps {
 export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
   const pathname = usePathname();
   const { user, subscription } = useUserContext();
+  const isFounder = ["admin", "founder"].includes(user?.role ?? "");
+  const visibleNavItems = isFounder
+    ? [...navItems, ...founderNavItems]
+    : navItems;
 
   const displayName = user?.name || user?.email || "User";
   const initials = user?.name
@@ -81,7 +97,7 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
         {/* Navigation */}
         <nav className="flex-1 px-4 mt-4">
           <ul className="space-y-1.5">
-            {navItems.map((item) => {
+            {visibleNavItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <li key={item.href}>

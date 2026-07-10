@@ -21,12 +21,13 @@ export const anthropicAdapter: AiProviderAdapter = {
   async generateMessage(
     systemPrompt: string,
     userPrompt: string,
+    opts?: { maxTokens?: number },
   ): Promise<string> {
     const anthropic = getClient();
 
     const response = await anthropic.messages.create({
       model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
-      max_tokens: 100,
+      max_tokens: opts?.maxTokens ?? 100,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
     });

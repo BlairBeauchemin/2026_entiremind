@@ -149,7 +149,7 @@ quiet moments a day"). Keep required compliance language intact.
 The unmerged branches were built in parallel and **cannot all merge cleanly**:
 
 - **Migration number collisions:**
-  - `018_*` is claimed by four branches: `018_messaging_simulator` (messaging-test-tool),
+  - `018_*` is claimed by four branches: `021_messaging_simulator` (messaging-test-tool),
     `018_quotes_and_weekly_editions` (motivational-quotes *and* technique-playbook),
     `018_testimonials` (market-research), `019_weekly_recap_silence_recovery` (security-review).
   - `019_*` is claimed by two: `019_techniques` (technique-playbook) vs.

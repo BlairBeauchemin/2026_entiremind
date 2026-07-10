@@ -21,6 +21,7 @@ export const openaiAdapter: AiProviderAdapter = {
   async generateMessage(
     systemPrompt: string,
     userPrompt: string,
+    opts?: { maxTokens?: number },
   ): Promise<string> {
     const openai = getClient();
 
@@ -30,7 +31,7 @@ export const openaiAdapter: AiProviderAdapter = {
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      max_tokens: 100,
+      max_tokens: opts?.maxTokens ?? 100,
       temperature: 0.8,
     });
 
