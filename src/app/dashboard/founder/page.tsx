@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { redirect } from "next/navigation";
@@ -263,6 +264,12 @@ export default async function FounderPage() {
             View all user messages to understand patterns and improve the
             experience.
           </p>
+          <Link
+            href="/dashboard/founder/marketing"
+            className="text-sm text-em-purple-400 hover:underline mt-1 inline-block"
+          >
+            Marketing Engine →
+          </Link>
         </div>
         <FounderRefreshButton />
       </div>

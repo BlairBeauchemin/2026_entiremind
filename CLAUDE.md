@@ -539,6 +539,64 @@ ACTIVECAMPAIGN_FROM_NAME=Entiremind   # optional, defaults to Entiremind
 
 **Manual setup:** create the AC list, verify the sending domain (DKIM) in AC, set env vars in Vercel. Run migration 022 + the import script before the first Monday draft.
 
+#### Marketing Content & Ads Engine (multi-brand)
+AI content engine for paid ads (Meta-first) and organic social (Instagram, TikTok, YouTube). Multi-brand by design: every table is keyed by `brands` — Entiremind is seeded as the first brand; future projects are new rows, not code.
+
+**Agentic loop:** trend research → campaign plan → copy/script → image (Gemini "Nano Banana", real) / video (Veo, stub) → founder review → publish/launch (platform adapters, placeholder credentials) → metrics → next week's plan.
+
+**Approval model (enforced in code, not just config):**
+- Paid ads ALWAYS require founder review — `terminalStatusFor()` in `src/lib/marketing/pipeline/generate.ts` plus a hard guard in `pipeline/publish.ts` (`reviewed_by` required for `target='ad'`)
+- Organic channels have per-channel `publish_mode`: `require_approval` (default) or `auto_publish`; the channels API rejects `auto_publish` for `meta_ads`
+- Meta ads are additionally created with `status: "PAUSED"` while `marketing_engine_config.ads_launch_paused` is true
+
+**Dual production path (`content_pieces.production_mode`):**
+- `ai_generated`: AI writes copy + generates the image; piece goes to review (or auto-schedule for organic auto_publish channels)
+- `founder_filmed`: AI writes a talking-head script → status `awaiting_footage` → founder films and uploads (direct-to-storage via signed upload URL — videos exceed Vercel's ~4.5 MB body limit) → `pending_review`
+
+**Manual control:** every creative field (headline, copy, caption, script, hashtags, image_prompt, CTA, budget, schedule) is founder-editable at any pre-publish status via `PATCH /api/founder/marketing/content/[id]`; images can be regenerated from an edited prompt; pieces can be created fully by hand (`POST /api/founder/marketing/content` with `mode: "manual"`).
+
+**Library (`src/lib/marketing/`):**
+- `ai.ts` - `generateStrictJson()` (zod-validated JSON from the existing AI provider adapter; adapters now accept `maxTokens`)
+- `prompts/` - campaign-plan, ad-copy, organic-post, video-script, trend-research, image-prompt (brand voice/visual guardrails injected everywhere)
+- `media/` - `MediaGeneratorAdapter`; `providers/gemini.ts` (real, `GEMINI_API_KEY`, model `gemini-2.5-flash-image`), `providers/veo.ts` (stub); `storage.ts` uploads to the public `marketing-media` bucket (public so Meta/IG can fetch creative URLs)
+- `publishers/` - `PublisherAdapter` registry keyed by platform; `providers/meta.ts` builds the real Marketing API chain (campaign → adset → adimage → adcreative → ad) and IG organic publish, logging placeholder requests + returning `stub_meta_*` ids until `META_*` env vars are set; TikTok/YouTube stubs
+- `trends/` - AI trend research (real) + google-trends/tiktok-trends stub sources → `trend_snapshots`
+- `pipeline/` - `plan.ts`, `generate.ts`, `regenerate.ts`, `publish.ts`, `metrics.ts`
+
+**Founder UI:** `/dashboard/founder/marketing` (linked from the founder page) — brand selector, review queue (approve/reject/edit + regenerate image), "Awaiting your footage" filming queue with script + upload, campaign list with "Plan content now" / "Run trend research", schedule & published table with "Publish now", per-campaign performance, trend panel, channel settings. Components in `src/components/dashboard/marketing/`.
+
+**API routes (founder-only, `src/app/api/founder/marketing/`):** brands (GET/POST, PATCH [id]), channels PATCH, campaigns (GET/POST, PATCH [id]), content (GET/POST, PATCH [id]), content/[id]/review, /upload (signed-URL two-step), /regenerate, /publish, and generate (modes: research | plan | generate). Shared guard: `requireFounder()` in `src/lib/auth/founder.ts`.
+
+**Crons (all in vercel.json):**
+- Marketing Planning: `0 11 * * 1` (weekly Monday) - trend research + plan per active brand
+- Marketing Generate: `0 13 * * *` - drain draft pieces (batch cap `max_generations_per_run`, stale-claim reaper)
+- Marketing Publish: `30 13 * * *` - publish scheduled pieces due now
+- Marketing Metrics: `0 14 * * *` - pull daily metrics into `content_metrics`
+
+**Config:** `marketing_engine_config` singleton (enabled, weekly_pieces_per_brand, batch caps, default budget, ads_launch_paused, video_enabled, image/video provider) — founder-tunable from Supabase without deploy.
+
+**Database (migration 018):** `brands`, `brand_channels`, `trend_snapshots`, `marketing_campaigns`, `content_pieces` (status lifecycle: draft → generating → [awaiting_footage →] pending_review → approved/rejected → scheduled → publishing → published|launched|failed), `media_assets`, `content_metrics`, `marketing_engine_config`, plus the public `marketing-media` storage bucket.
+
+**Required env vars (marketing engine):**
+```
+GEMINI_API_KEY=...            # real — Nano Banana image generation
+GEMINI_IMAGE_MODEL=gemini-2.5-flash-image  # optional
+
+# Placeholders until platform apps are approved (adapters stub until set):
+META_ACCESS_TOKEN=
+META_AD_ACCOUNT_ID=
+META_PAGE_ID=
+META_IG_BUSINESS_ID=
+META_API_VERSION=v21.0        # optional
+TIKTOK_ACCESS_TOKEN=
+TIKTOK_ADVERTISER_ID=
+YOUTUBE_CLIENT_ID=
+YOUTUBE_CLIENT_SECRET=
+YOUTUBE_REFRESH_TOKEN=
+```
+
+**Not yet wired (placeholders in place):** Veo video generation, live Meta/TikTok/YouTube API calls (Meta needs app review + Business verification: `ads_management`, `pages_manage_ads`, `instagram_content_publish`), live trend sources, real metrics pulls.
+
 ### Not Yet Implemented
 - Hourly send cadence honoring `preferred_send_hour` (waiting on Vercel Pro)
 - True timezone-aware delivery (Phase 2)

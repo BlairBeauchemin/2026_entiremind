@@ -23,6 +23,22 @@
     {
       "path": "/api/cron/weekly-edition-draft",
       "schedule": "0 16 * * 1"
+    },
+    {
+      "path": "/api/cron/marketing-planning",
+      "schedule": "0 11 * * 1"
+    },
+    {
+      "path": "/api/cron/marketing-generate",
+      "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/cron/marketing-publish",
+      "schedule": "30 13 * * *"
+    },
+    {
+      "path": "/api/cron/marketing-metrics",
+      "schedule": "0 14 * * *"
     }
   ]
 }

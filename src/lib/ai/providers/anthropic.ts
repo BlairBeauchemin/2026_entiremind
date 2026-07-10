@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type { AiProviderAdapter } from "../types";
+import type { AiProviderAdapter, AiGenerateOptions } from "../types";
 
 let client: Anthropic | null = null;
 
@@ -21,13 +21,13 @@ export const anthropicAdapter: AiProviderAdapter = {
   async generateMessage(
     systemPrompt: string,
     userPrompt: string,
-    opts?: { maxTokens?: number },
+    options?: AiGenerateOptions,
   ): Promise<string> {
     const anthropic = getClient();
 
     const response = await anthropic.messages.create({
       model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
-      max_tokens: opts?.maxTokens ?? 100,
+      max_tokens: options?.maxTokens ?? 100,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
     });
