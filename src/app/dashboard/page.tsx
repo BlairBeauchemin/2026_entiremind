@@ -5,6 +5,9 @@ import { PersonaCard } from "@/components/dashboard/persona-card";
 import { ArchetypeBanner } from "@/components/dashboard/archetype-banner";
 import { TrialEndedBanner } from "@/components/dashboard/trial-ended-banner";
 import { computeEntitlement } from "@/lib/billing/entitlement";
+import { QuoteOfTheDay } from "@/components/dashboard/quote-of-the-day";
+import { pickDeterministicQuote, mapCategoryToQuoteThemes } from "@/lib/quotes";
+import type { Quote } from "@/lib/quotes/types";
 import type { Message } from "@/lib/types";
 import type { PersonaProfile } from "@/lib/persona/types";
 
@@ -27,6 +30,7 @@ export default async function DashboardPage() {
   let messages: Message[] = [];
   let personaProfile: PersonaProfile | null = null;
   let trialEnded = false;
+  let dailyQuote: Quote | null = null;
 
   if (authUser) {
     const { data: userData } = await supabase
@@ -65,6 +69,22 @@ export default async function DashboardPage() {
         tone_preference: personaRow.tone_preference,
         intention_category: personaRow.intention_category,
       };
+    }
+
+    // Quote for today: deterministic per user per day, themed to the
+    // user's intention category when a persona profile exists.
+    const { data: quoteRows } = await supabase
+      .from("quotes")
+      .select("id, text, author, theme")
+      .eq("active", true);
+
+    if (quoteRows && quoteRows.length > 0) {
+      const today = new Date().toISOString().slice(0, 10);
+      dailyQuote = pickDeterministicQuote(
+        quoteRows as Quote[],
+        `${authUser.id}-${today}`,
+        mapCategoryToQuoteThemes(personaProfile?.intention_category ?? null),
+      );
     }
 
     // Fetch the user's active intention
@@ -135,6 +155,9 @@ export default async function DashboardPage() {
 
       {/* Current intention card */}
       {currentIntention && <CurrentIntention intention={currentIntention} />}
+
+      {/* Quote for today */}
+      {dailyQuote && <QuoteOfTheDay quote={dailyQuote} />}
 
       {/* Persona card (Onboarding v2) — only when the user has a profile */}
       {personaProfile && (

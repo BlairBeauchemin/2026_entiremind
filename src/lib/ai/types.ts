@@ -58,6 +58,8 @@ export interface GeneratedMessage {
   systemPromptName: string;
   /** Present when the content type came from rules-based selection. */
   selection?: SelectionDebug;
+  /** Set when the message is a curated library quote rather than AI-generated */
+  quoteId?: string;
 }
 
 export interface AiProviderAdapter {

@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     console.error("CRON_SECRET environment variable not set");
     return NextResponse.json(
       { error: "Server configuration error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -59,12 +59,13 @@ export async function GET(request: Request) {
 
   // Check if AI provider is configured
   const aiProvider = getAiProvider();
-  const apiKeyEnvVar = aiProvider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY";
+  const apiKeyEnvVar =
+    aiProvider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY";
   if (!process.env[apiKeyEnvVar]) {
     console.error(`${apiKeyEnvVar} environment variable not set`);
     return NextResponse.json(
       { error: `AI provider (${aiProvider}) not configured` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -87,7 +88,7 @@ export async function GET(request: Request) {
     console.error("Failed to fetch active users:", usersError);
     return NextResponse.json(
       { error: "Failed to fetch users" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -136,7 +137,9 @@ export async function GET(request: Request) {
         .limit(1);
 
       if (todayMessages && todayMessages.length > 0) {
-        console.log(`User ${user.id} already received a message today, skipping`);
+        console.log(
+          `User ${user.id} already received a message today, skipping`,
+        );
         continue;
       }
 
@@ -268,15 +271,21 @@ export async function GET(request: Request) {
       // Send the SMS
       const result = await sendSms(user.id, user.phone, generatedMessage.text, {
         contentType: generatedMessage.contentType,
-        aiGenerated: true,
+        aiGenerated: !generatedMessage.quoteId,
+        quoteId: generatedMessage.quoteId,
       });
 
       if (result.success) {
         sent++;
-        console.log(`Sent daily message to user ${user.id}: "${generatedMessage.text.substring(0, 50)}..."`);
+        console.log(
+          `Sent daily message to user ${user.id}: "${generatedMessage.text.substring(0, 50)}..."`,
+        );
       } else {
         failed++;
-        errors.push({ userId: user.id, error: result.error || "Unknown error" });
+        errors.push({
+          userId: user.id,
+          error: result.error || "Unknown error",
+        });
         console.error(`Failed to send to user ${user.id}:`, result.error);
       }
 
@@ -284,7 +293,8 @@ export async function GET(request: Request) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     } catch (error) {
       failed++;
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       errors.push({ userId: user.id, error: errorMessage });
       console.error(`Exception sending to user ${user.id}:`, error);
     }

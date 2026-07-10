@@ -510,6 +510,35 @@ Plan: `docs/prds/../plans/2026-07-04-monetization-growth.md`. Migration: `020_va
 - `ShareArchetypeButton` (native share sheet + clipboard fallback) on the onboarding reveal step and the dashboard persona card.
 - Attribution: CTA links `/?src=share-{slug}`; waitlist modals pass `source` through; leads API validates against `^share-(visionary|alchemist|seeker|phoenix)$` and defaults to `landing_page` otherwise. Query share-driven signups via `leads.source LIKE 'share-%'`.
 
+#### Curated Quote Library + Weekly Email Editions
+Curated, themed quote library feeding the `quote` SMS content type and a dashboard card, plus an AI-drafted weekly email pushed to ActiveCampaign as a draft campaign.
+- **Database migration**: `supabase/migrations/022_quotes_and_weekly_editions.sql`
+
+**Quote library (`quotes` table + `src/lib/quotes/`):**
+- 8 themes aligned with manifestation topics: abundance, confidence, trusting-the-process, gratitude, resilience, love, purpose, presence
+- Migration seeds a ~12-quote public-domain fallback; the real library is built by `scripts/import-quotes.ts` (`npx tsx scripts/import-quotes.ts [--source zenquotes|quotable] [--target 200]`) — fetches from ZenQuotes (Quotable dataset fallback), filters to ≤120 chars, categorizes via tag map + Haiku batch pass (rejects off-brand quotes), inserts with `source`/`source_tags`
+- ZenQuotes attribution: free tier requires "Quotes via ZenQuotes.io" on surfaces displaying imported quotes (check `quotes.source`)
+- When `selectContentType` picks `quote`, `generateMessageForUser` pulls from the library (matched to persona `intention_category` via `mapCategoryToQuoteThemes`), formatted `"text" — Author`; excludes the user's last 20 sent quotes via `messages.quote_id`; falls back to the LLM path if the library is empty
+- Dashboard: `QuoteOfTheDay` card on `/dashboard` — deterministic per user per day (`pickDeterministicQuote`, yellow left-border accent)
+- Founder curates by flipping `quotes.active` in Supabase
+
+**Weekly email editions (`weekly_editions` table + `src/lib/editions/`):**
+- Monday cron `/api/cron/weekly-edition-draft` (16:00 UTC): rotates to the least-recently-used theme, picks 3 library quotes (excluding the last 8 editions' quotes), drafts title/intro/reflection/question via direct Anthropic call (`ANTHROPIC_EDITION_MODEL`, default `claude-sonnet-4-6`), renders branded HTML (`src/lib/email-campaigns/template.ts`), and pushes it into the email provider as a **draft campaign**
+- **Nothing is ever auto-sent** — the founder reviews, tweaks, and sends from the provider's UI; the provider owns list management, unsubscribe compliance, and delivery
+- Daily cron `/api/cron/sync-email-contacts` (13:00 UTC): upserts active users + waitlist leads into the provider list (tagged `user`/`lead`, deduped by email, user wins)
+- Provider abstraction `src/lib/email-campaigns/` mirrors the SMS layer; ActiveCampaign is the only adapter (contact sync via v3 API; draft campaign creation via legacy v1 `message_add` + `campaign_create` because v3 cannot link a message to a campaign)
+
+**Required env vars (ActiveCampaign):**
+```
+ACTIVECAMPAIGN_API_URL=https://youraccount.api-us1.com
+ACTIVECAMPAIGN_API_KEY=your_api_key
+ACTIVECAMPAIGN_LIST_ID=1
+ACTIVECAMPAIGN_FROM_EMAIL=hello@entiremind.com
+ACTIVECAMPAIGN_FROM_NAME=Entiremind   # optional, defaults to Entiremind
+```
+
+**Manual setup:** create the AC list, verify the sending domain (DKIM) in AC, set env vars in Vercel. Run migration 022 + the import script before the first Monday draft.
+
 ### Not Yet Implemented
 - Hourly send cadence honoring `preferred_send_hour` (waiting on Vercel Pro)
 - True timezone-aware delivery (Phase 2)
