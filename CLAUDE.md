@@ -83,10 +83,26 @@ npx shadcn@latest add [component]
   - Secondary: Soft purple (#cbbbe3)
   - Accent: Warm yellow (#f9d97a)
 
+### Persuasion & Behavioral Design
+- **Required reading for any user-facing change**: `docs/design-philosophy.md`
+- Six principles govern onboarding, SMS, dashboard, paywall, and landing decisions:
+  **smart defaults, goal-gradient/progress, reciprocity, IKEA/endowment, loss-aversion,
+  and anchoring/contrast**
+- **Guardrail**: every lever passes the "trusted-friend test" — warm and honest, never a
+  growth hack. No fake urgency, no shame-based loss framing, no dark patterns, no
+  productivity theater
+- Run the design-review checklist in `docs/design-philosophy.md` on every PR that touches
+  a user-facing surface
+- The prioritized application backlog lives at
+  `docs/plans/2026-07-08-psychology-principles-backlog.md`
+
 ### Dashboard Principles
 - Supports trust, reflection, and control
 - NOT the primary engagement surface (SMS is)
-- No charts, streaks, or productivity metrics
+- No leaderboards, streaks, or productivity theater — nothing that induces guilt or a
+  "don't break the chain" reflex
+- A **single, calm reflection cue** is allowed (e.g. "You've reflected 12 times") when it
+  supports reflection rather than performance — gentle, non-gamified, never a streak
 - Minimal and calm
 
 ## Key Patterns
