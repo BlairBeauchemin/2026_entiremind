@@ -16,9 +16,12 @@ export const metadata: Metadata = {
   keywords: ["manifestation", "mindset", "SMS", "intentions", "goals"],
 };
 
-// GTM only loads when the env var is set, so local dev without it
-// produces no tracking traffic.
-const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+// GTM only loads when an id is available. NODE_ENV gating keeps local dev
+// from producing tracking traffic; production falls back to the known
+// container id until NEXT_PUBLIC_GTM_ID is set in Vercel.
+const gtmId =
+  process.env.NEXT_PUBLIC_GTM_ID ??
+  (process.env.NODE_ENV === "production" ? "GTM-WBJQRSNT" : undefined);
 
 export default function RootLayout({
   children,
