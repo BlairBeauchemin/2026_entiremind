@@ -90,4 +90,45 @@ export const analytics = {
       items: planItems(plan),
     });
   },
+
+  // --- Public quiz funnel (/quiz) ---
+
+  /** First question of the public quiz rendered. */
+  quizStart() {
+    trackEvent("quiz_start", {});
+  },
+
+  /** A quiz step was answered (step id, 1-based position). */
+  quizStep(step: string, position: number) {
+    trackEvent("quiz_step", { step, position });
+  },
+
+  /** Partial reveal shown (archetype name + hook, pre-gate). */
+  quizPartialReveal(archetype: string) {
+    trackEvent("quiz_partial_reveal", { archetype });
+  },
+
+  /**
+   * Email gate submitted successfully — this IS the lead conversion, so it
+   * also fires GA4 generate_lead (same event the waitlist modals use).
+   */
+  quizGateSubmit(archetype: string, withPhone: boolean) {
+    trackEvent("quiz_gate_submit", { archetype, with_phone: withPhone });
+    trackEvent("generate_lead", {
+      currency: CURRENCY,
+      value: 0,
+      lead_source: "quiz",
+      archetype,
+    });
+  },
+
+  /** Full reading rendered post-gate. */
+  quizComplete(archetype: string) {
+    trackEvent("quiz_complete", { archetype });
+  },
+
+  /** Share button used on the full reveal. */
+  quizShareClick(archetype: string) {
+    trackEvent("quiz_share_click", { archetype });
+  },
 };

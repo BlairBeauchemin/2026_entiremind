@@ -48,7 +48,7 @@ export async function GET(request: Request) {
       .select("email, name")
       .eq("status", "active")
       .not("email", "is", null),
-    supabase.from("leads").select("email, name"),
+    supabase.from("leads").select("email, name, source, archetype"),
   ]);
 
   if (usersError || leadsError) {
@@ -59,15 +59,21 @@ export async function GET(request: Request) {
     );
   }
 
-  // Dedupe by lowercased email; a lead who became a user is tagged 'user'
+  // Dedupe by lowercased email; a lead who became a user is tagged 'user'.
+  // Quiz-driven leads additionally carry 'quiz-lead' + their archetype so
+  // nurture automations in the provider can segment without any code here.
   const contacts = new Map<string, CampaignContact>();
   for (const lead of leads ?? []) {
     if (!lead.email) continue;
     const email = lead.email.toLowerCase().trim();
+    const tags = ["lead"];
+    if (lead.archetype) {
+      tags.push("quiz-lead", `archetype-${lead.archetype}`);
+    }
     contacts.set(email, {
       email,
       name: lead.name ?? undefined,
-      tags: ["lead"],
+      tags,
     });
   }
   for (const user of users ?? []) {
