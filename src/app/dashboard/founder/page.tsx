@@ -21,6 +21,8 @@ import {
   type FounderUserProfile,
 } from "@/components/dashboard/founder-user-insights";
 import { FounderOnboardingFunnel } from "@/components/dashboard/founder-onboarding-funnel";
+import { FounderConversionFunnel } from "@/components/dashboard/founder-conversion-funnel";
+import { buildConversionFunnel } from "@/lib/founder/conversion-funnel";
 import {
   TechniquePlaybook,
   type TechniquePlaybookItem,
@@ -207,6 +209,9 @@ export default async function FounderPage() {
   // Onboarding funnel: distinct users who reached each step (last 30 days)
   const funnelCounts = await buildOnboardingFunnel(serviceSupabase);
 
+  // Acquisition funnel: leads → signups → onboarded → paid, per source
+  const conversionFunnel = await buildConversionFunnel(serviceSupabase);
+
   // Transform user signals for display
   const formattedSignals =
     userSignals?.map((signal) => ({
@@ -295,6 +300,17 @@ export default async function FounderPage() {
           Reply rate is per technique.
         </p>
         <TechniquePlaybook techniques={techniques} />
+      </div>
+
+      <div>
+        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
+          Acquisition Funnel
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Leads → signups → onboarded → paid, matched by email, with a
+          per-source breakdown (landing page, quiz, archetype shares).
+        </p>
+        <FounderConversionFunnel funnel={conversionFunnel} />
       </div>
 
       <div>
