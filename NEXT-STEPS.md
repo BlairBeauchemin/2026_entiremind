@@ -34,6 +34,15 @@ The Supabase dashboard works fine from a phone browser. If you'd rather wait
 for a computer, that's OK — just know the cron jobs (silence detection,
 weekly memory, daily send extras) may log errors until then.
 
+**After the migrations, two quick sanity checks** (same SQL editor, from the
+merged PRs' verify steps):
+
+- `select name, status, gentle from techniques;` → should show 10 seed rows
+  (PR #10). Dial `technique_apply_probability` in `content_selection_config`
+  to taste — 0 disables techniques instantly, default is 0.50
+- `select count(*) from quotes;` → should show ~12 seeded fallback quotes
+  (PR #9; the real library comes from the import script, section 4)
+
 ## 2. Phone-friendly — review + merge PR #11
 
 - Try the quiz on the preview link above (it's the real thing, end to end)
@@ -51,6 +60,11 @@ weekly memory, daily send extras) may log errors until then.
     or use any password generator, 44+ chars)
   - `ACTIVECAMPAIGN_API_URL`, `ACTIVECAMPAIGN_API_KEY`,
     `ACTIVECAMPAIGN_LIST_ID`, `ACTIVECAMPAIGN_FROM_EMAIL`
+  - `GEMINI_API_KEY` — marketing engine image generation ("Nano Banana");
+    without it the daily marketing-generate cron fails on image pieces.
+    Get one at https://aistudio.google.com/apikey
+  - (An old `SMS_PROVIDER` var, if set, is now ignored — Twilio is the only
+    provider after the Telnyx removal. Safe to delete, harmless to keep.)
 - **ActiveCampaign** (their web app): create the list, verify sending domain
   (DKIM records — needs your DNS provider's app/site), then the two AC crons
   start working
@@ -76,8 +90,14 @@ weekly memory, daily send extras) may log errors until then.
   onboarded → paid, per source), Technique Playbook, testimonial review,
   intention shifts, simulator (`/dashboard/founder/simulator`), Marketing
   Engine (`/dashboard/founder/marketing`)
-- **Try the simulator** before the next real cohort: create a test persona,
-  step a simulated week, check the per-day "why" drawer
+- **Try the simulator** before the next real cohort (PR #8's verify step):
+  create a preset persona, "Step 1 day", check the per-day "why" drawer,
+  run the remaining week, view the end-of-week memory. Note: production
+  message generation is byte-identical to before until you explicitly
+  "Activate" a new system-prompt version there
+- **Marketing engine switches** live in the `marketing_engine_config` table
+  (Supabase): `enabled`, weekly piece count, `ads_launch_paused` (paid ads
+  additionally always require your review — enforced in code)
 - **Set up an AC nurture automation** for quiz leads — they arrive tagged
   `quiz-lead` + `archetype-{slug}`, so a per-archetype welcome sequence is
   pure AC config, no code
