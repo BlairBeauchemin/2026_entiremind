@@ -5,16 +5,19 @@ import {
   TREND_RESEARCH_SYSTEM_PROMPT,
   buildTrendResearchPrompt,
 } from "../prompts/trend-research";
-import { TrendResearchSchema } from "../pipeline/schemas";
+import {
+  RESEARCH_QUERIES_SYSTEM_PROMPT,
+  buildResearchQueriesPrompt,
+} from "../prompts/research-queries";
+import { TrendResearchSchema, ResearchQueriesSchema } from "../pipeline/schemas";
 import { computeSnapshotDelta } from "./delta";
-import type { TrendItem, TrendSourceAdapter } from "./types";
-import { googleTrendsSource } from "./providers/google-trends";
-import { tiktokTrendsSource } from "./providers/tiktok-trends";
-
-export type { TrendItem, TrendSourceAdapter } from "./types";
-
-// External data sources merge into the AI synthesis when wired
-const EXTERNAL_SOURCES: TrendSourceAdapter[] = [googleTrendsSource, tiktokTrendsSource];
+import {
+  executeResearchQueries,
+  getConfiguredResearchTools,
+  renderResearchItems,
+  type ResearchItem,
+  type ResearchQuery,
+} from "../research";
 
 export interface TrendResearchResult {
   success: boolean;
@@ -23,10 +26,14 @@ export interface TrendResearchResult {
 }
 
 /**
- * Run trend research for a brand: pull any configured external sources,
- * synthesize with an AI research pass over the brand's followed niches
- * (comparing against the previous snapshot for momentum + delta), and
- * persist a trend_snapshots row that campaign planning consumes.
+ * Agentic trend research for a brand:
+ *  1. The AI generates per-niche search queries.
+ *  2. Queries execute against the configured in-platform research tools
+ *     (YouTube real; TikTok/Instagram once their credentials land).
+ *  3. The AI synthesizes the real findings + its own knowledge into a
+ *     trend snapshot, compared against the previous one for momentum.
+ * Falls back gracefully to knowledge-only when no research tool is
+ * configured or the query step fails.
  */
 export async function runTrendResearch(brandId: string): Promise<TrendResearchResult> {
   const supabase = createServiceRoleClient();
@@ -40,6 +47,7 @@ export async function runTrendResearch(brandId: string): Promise<TrendResearchRe
     return { success: false, error: "Brand not found" };
   }
   const brand = brandData as BrandRow;
+  const niches = brand.niches ?? [];
 
   const { data: previousData } = await supabase
     .from("trend_snapshots")
@@ -50,30 +58,36 @@ export async function runTrendResearch(brandId: string): Promise<TrendResearchRe
     .maybeSingle();
   const previous = (previousData as TrendSnapshotRow) ?? null;
 
-  const externalItems: TrendItem[] = [];
-  for (const source of EXTERNAL_SOURCES) {
-    if (!source.isConfigured()) continue;
+  // Step 1 + 2: in-platform research (skipped when no tool is configured)
+  let researchItems: ResearchItem[] = [];
+  let queries: ResearchQuery[] = [];
+  if (getConfiguredResearchTools().length > 0) {
     try {
-      externalItems.push(...(await source.fetchTrends(brand)));
+      const generated = await generateStrictJson(
+        RESEARCH_QUERIES_SYSTEM_PROMPT,
+        buildResearchQueriesPrompt(brand, niches),
+        ResearchQueriesSchema,
+        1500,
+      );
+      queries = generated.queries;
+      researchItems = await executeResearchQueries(queries);
     } catch (error) {
-      console.error(`Trend source ${source.source} failed:`, error);
+      // Research is additive — synthesis still runs knowledge-only
+      console.error("Research query step failed, continuing knowledge-only:", error);
     }
   }
 
-  const extraContext =
-    externalItems.length > 0
-      ? externalItems.map((t) => `- ${t.trend}: ${t.relevance}`).join("\n")
-      : null;
-
+  // Step 3: synthesis
   let research;
   try {
     research = await generateStrictJson(
       TREND_RESEARCH_SYSTEM_PROMPT,
-      buildTrendResearchPrompt(brand, extraContext, {
-        niches: brand.niches ?? [],
+      buildTrendResearchPrompt(brand, null, {
+        niches,
         previousSnapshot: previous
           ? { createdAt: previous.created_at, insights: previous.insights }
           : null,
+        platformFindings: researchItems.length > 0 ? renderResearchItems(researchItems) : null,
       }),
       TrendResearchSchema,
     );
@@ -97,10 +111,13 @@ export async function runTrendResearch(brandId: string): Promise<TrendResearchRe
       source: "ai_research",
       summary: research.summary,
       insights: research.insights,
-      niches: brand.niches ?? [],
+      niches,
       previous_snapshot_id: previous?.id ?? null,
       delta,
-      raw: externalItems.length > 0 ? { external_items: externalItems } : null,
+      raw:
+        researchItems.length > 0
+          ? { research_items: researchItems, queries }
+          : null,
     })
     .select("id")
     .single();

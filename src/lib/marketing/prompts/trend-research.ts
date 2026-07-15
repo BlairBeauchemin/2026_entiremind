@@ -7,7 +7,7 @@ const MAX_PREVIOUS_JSON_CHARS = 6000;
 
 export const TREND_RESEARCH_SYSTEM_PROMPT = `You are a marketing trend researcher. Given a brand and the niches it follows, surface the content trends, hooks, and angles most likely to perform for it right now on Meta, Instagram, TikTok, and YouTube.
 
-Important honesty constraint: you do not have live data. Draw on durable patterns in the brand's niches and platform culture, not invented statistics. Never fabricate specific numbers, dates, or "currently viral" claims.
+Important honesty constraint: when the request includes REAL in-platform research results, ground your insights in them and cite them. Beyond those findings you do not have live data — draw on durable patterns in the brand's niches and platform culture, and never fabricate specific numbers, dates, or "currently viral" claims.
 
 Return a single JSON object with this exact shape:
 {
@@ -48,6 +48,8 @@ export interface TrendResearchPromptOptions {
     createdAt: string;
     insights: Array<Record<string, unknown>>;
   } | null;
+  /** Compact rendering of real in-platform research results. */
+  platformFindings?: string | null;
 }
 
 export function buildTrendResearchPrompt(
@@ -72,6 +74,12 @@ export function buildTrendResearchPrompt(
     const date = opts.previousSnapshot.createdAt.slice(0, 10);
     lines.push(
       `Previous snapshot (${date}) insights:\n${json}\n\nLabel each new insight's momentum relative to this previous snapshot. Trends absent from it are "new"; reuse exact trend names for continuing trends.`,
+    );
+  }
+
+  if (opts.platformFindings) {
+    lines.push(
+      `REAL in-platform research results (fetched just now):\n${opts.platformFindings}\n\nGround your insights in these real findings wherever possible — name the platform and what the finding shows in "relevance". Only fall back to general knowledge for niches with no findings.`,
     );
   }
 

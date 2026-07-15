@@ -91,6 +91,19 @@ export type CampaignPlan = z.infer<typeof CampaignPlanSchema>;
 export type PlannedPiece = CampaignPlan["pieces"][number];
 export type PlannedExperiment = CampaignPlan["experiments"][number];
 
+export const ResearchQueriesSchema = z.object({
+  queries: z
+    .array(
+      z.object({
+        query: z.string().min(1),
+        niche: z.string().default("general"),
+        platforms: z.array(z.enum(["youtube", "tiktok", "instagram"])).min(1),
+      }),
+    )
+    .max(8),
+});
+export type ResearchQueries = z.infer<typeof ResearchQueriesSchema>;
+
 export const TrendResearchSchema = z.object({
   summary: z.string().min(1),
   delta_summary: z.string().min(1),
