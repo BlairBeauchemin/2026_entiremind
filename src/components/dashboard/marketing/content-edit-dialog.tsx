@@ -11,6 +11,9 @@ import {
 import { Loader2, Sparkles } from "lucide-react";
 import type { ContentPieceView } from "./types";
 import { latestReadyImage } from "./types";
+import { VIDEO_STYLES, VIDEO_STYLE_GUIDANCE } from "@/lib/marketing/video-styles";
+
+const VIDEO_FORMATS = ["video_ad", "reel", "short"];
 
 interface ContentEditDialogProps {
   piece: ContentPieceView;
@@ -39,6 +42,7 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
   const [budget, setBudget] = useState(
     piece.dailyBudgetCents != null ? String(piece.dailyBudgetCents / 100) : "",
   );
+  const [videoStyle, setVideoStyle] = useState(piece.videoStyle ?? "");
   const [imageUrl, setImageUrl] = useState(latestReadyImage(piece)?.publicUrl ?? null);
   const [saving, setSaving] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
@@ -64,6 +68,9 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
             .map((h) => h.trim().replace(/^#/, ""))
             .filter(Boolean),
           daily_budget_cents: budget ? Math.round(parseFloat(budget) * 100) : null,
+          ...(VIDEO_FORMATS.includes(piece.format)
+            ? { video_style: videoStyle || null }
+            : {}),
         }),
       });
       if (!res.ok) {
@@ -163,6 +170,24 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
             Hashtags (comma-separated)
             <input value={hashtags} onChange={(e) => setHashtags(e.target.value)} className={fieldClass} />
           </label>
+
+          {VIDEO_FORMATS.includes(piece.format) && (
+            <label className="block text-sm text-teal-900/60">
+              Video style
+              <select
+                value={videoStyle}
+                onChange={(e) => setVideoStyle(e.target.value)}
+                className={fieldClass}
+              >
+                <option value="">(none)</option>
+                {VIDEO_STYLES.map((s) => (
+                  <option key={s} value={s}>
+                    {VIDEO_STYLE_GUIDANCE[s].label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <div className="space-y-1">
             <label className="block text-sm text-teal-900/60">

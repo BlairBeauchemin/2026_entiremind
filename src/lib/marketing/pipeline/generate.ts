@@ -134,6 +134,7 @@ export async function generateContentPiece(pieceId: string): Promise<GeneratePie
           piece.platform,
           piece.format,
           piece.production_mode === "founder_filmed",
+          piece.video_style,
         ),
         VideoScriptSchema,
       );
@@ -143,6 +144,7 @@ export async function generateContentPiece(pieceId: string): Promise<GeneratePie
       update.hashtags = script.hashtags;
       generationContext.scenes = script.scenes;
       generationContext.video_prompt = script.video_prompt;
+      generationContext.style_notes = script.style_notes;
       imagePrompt = script.video_prompt;
       if (piece.target === "ad") {
         // Ads still need CTA + primary text alongside the video script

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Upload } from "lucide-react";
 import type { ContentPieceView } from "./types";
 import { formatDateTime } from "./types";
+import { VIDEO_STYLE_GUIDANCE } from "@/lib/marketing/video-styles";
+import { isVideoStyle } from "@/lib/marketing/video-styles";
 
 interface FilmingQueueProps {
   pieces: ContentPieceView[];
@@ -110,6 +112,22 @@ export function FilmingQueue({ pieces: initialPieces }: FilmingQueueProps) {
           {piece.script && (
             <div className="rounded-xl bg-em-purple-300/10 border border-em-purple-300/30 p-4 text-sm text-teal-900/80 whitespace-pre-line">
               {piece.script}
+            </div>
+          )}
+
+          {piece.videoStyle && isVideoStyle(piece.videoStyle) && (
+            <div className="rounded-xl bg-em-yellow-200/20 border border-em-yellow-200/60 p-4 space-y-2">
+              <div className="text-sm font-medium text-navy">
+                How to film this — {VIDEO_STYLE_GUIDANCE[piece.videoStyle].label}
+              </div>
+              <ul className="text-xs text-teal-900/70 list-disc list-inside space-y-0.5">
+                {VIDEO_STYLE_GUIDANCE[piece.videoStyle].filmingTips.map((tip, i) => (
+                  <li key={i}>{tip}</li>
+                ))}
+              </ul>
+              {piece.styleNotes && (
+                <p className="text-xs text-teal-900/60 italic">{piece.styleNotes}</p>
+              )}
             </div>
           )}
 

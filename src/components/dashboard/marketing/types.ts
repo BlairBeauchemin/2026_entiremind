@@ -15,6 +15,10 @@ export interface ContentPieceView {
   platform: string;
   format: string;
   productionMode: "ai_generated" | "founder_filmed";
+  videoStyle: string | null;
+  styleNotes: string | null;
+  variantLabel: string | null;
+  experimentName: string | null;
   status: string;
   headline: string | null;
   bodyCopy: string | null;

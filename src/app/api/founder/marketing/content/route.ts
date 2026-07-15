@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { requireFounder, founderErrorStatus } from "@/lib/auth/founder";
+import { VIDEO_STYLES } from "@/lib/marketing/video-styles";
 
 const CreatePieceSchema = z.object({
   brand_id: z.string().uuid(),
@@ -10,6 +11,7 @@ const CreatePieceSchema = z.object({
   platform: z.enum(["meta_ads", "instagram", "tiktok", "youtube"]),
   format: z.enum(["image_ad", "video_ad", "carousel_ad", "post", "reel", "story", "short"]),
   production_mode: z.enum(["ai_generated", "founder_filmed"]).optional(),
+  video_style: z.enum(VIDEO_STYLES).nullable().optional(),
   headline: z.string().nullable().optional(),
   body_copy: z.string().nullable().optional(),
   caption: z.string().nullable().optional(),

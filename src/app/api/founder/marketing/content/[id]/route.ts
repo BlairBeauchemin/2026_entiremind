@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { requireFounder, founderErrorStatus } from "@/lib/auth/founder";
 import { EDITABLE_STATUSES } from "@/lib/marketing/types";
+import { VIDEO_STYLES } from "@/lib/marketing/video-styles";
 
 const UpdatePieceSchema = z.object({
   headline: z.string().nullable().optional(),
@@ -15,6 +16,7 @@ const UpdatePieceSchema = z.object({
   link_url: z.string().nullable().optional(),
   angle: z.string().nullable().optional(),
   production_mode: z.enum(["ai_generated", "founder_filmed"]).optional(),
+  video_style: z.enum(VIDEO_STYLES).nullable().optional(),
   daily_budget_cents: z.number().int().positive().nullable().optional(),
   targeting: z.record(z.string(), z.unknown()).nullable().optional(),
   scheduled_for: z.string().nullable().optional(),

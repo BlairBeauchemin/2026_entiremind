@@ -1,12 +1,35 @@
 import { createServiceRoleClient } from "../../supabase";
-import type { BrandRow, MarketingCampaignRow, TrendSnapshotRow } from "../types";
+import type { BrandRow, MarketingCampaignRow, TrendSnapshotRow, VideoStyle } from "../types";
 import { generateStrictJson } from "../ai";
 import { loadEngineConfig } from "../config";
+import { VIDEO_STYLE_GUIDANCE, isVideoStyle } from "../video-styles";
 import {
   CAMPAIGN_PLAN_SYSTEM_PROMPT,
   buildCampaignPlanPrompt,
 } from "../prompts/campaign-plan";
-import { CampaignPlanSchema } from "./schemas";
+import { CampaignPlanSchema, type PlannedPiece } from "./schemas";
+
+const VIDEO_FORMATS = ["video_ad", "reel", "short"];
+
+/**
+ * Video formats always carry a style; non-video formats never do; and
+ * founder_filmed pieces must get a style a founder can actually film.
+ */
+function coerceVideoStyle(piece: PlannedPiece): VideoStyle | null {
+  if (!VIDEO_FORMATS.includes(piece.format)) return null;
+
+  let style: VideoStyle =
+    piece.video_style && isVideoStyle(piece.video_style)
+      ? piece.video_style
+      : piece.production_mode === "founder_filmed"
+        ? "talking_head"
+        : "b_roll_voiceover";
+
+  if (piece.production_mode === "founder_filmed" && !VIDEO_STYLE_GUIDANCE[style].founderFilmable) {
+    style = "talking_head";
+  }
+  return style;
+}
 
 export interface PlanBrandContentOptions {
   campaignId?: string;
@@ -122,24 +145,26 @@ export async function planBrandContent(
   }
 
   // Enforce invariants the model must not be trusted with
-  const pieces = plan.pieces.filter((p) => {
-    if (p.target === "ad" && p.platform !== "meta_ads") return false;
-    if (p.target === "organic" && p.platform === "meta_ads") return false;
-    if (
-      p.production_mode === "founder_filmed" &&
-      !["reel", "short", "video_ad"].includes(p.format)
-    ) {
-      return false;
-    }
-    if (
-      p.production_mode === "ai_generated" &&
-      !config.video_enabled &&
-      ["video_ad", "reel", "short"].includes(p.format)
-    ) {
-      return false;
-    }
-    return true;
-  });
+  const pieces = plan.pieces
+    .filter((p) => {
+      if (p.target === "ad" && p.platform !== "meta_ads") return false;
+      if (p.target === "organic" && p.platform === "meta_ads") return false;
+      if (
+        p.production_mode === "founder_filmed" &&
+        !["reel", "short", "video_ad"].includes(p.format)
+      ) {
+        return false;
+      }
+      if (
+        p.production_mode === "ai_generated" &&
+        !config.video_enabled &&
+        ["video_ad", "reel", "short"].includes(p.format)
+      ) {
+        return false;
+      }
+      return true;
+    })
+    .map((p) => ({ ...p, video_style: coerceVideoStyle(p) }));
 
   let campaignId = existingCampaign?.id;
   if (!campaignId) {
@@ -178,6 +203,7 @@ export async function planBrandContent(
     platform: p.platform,
     format: p.format,
     production_mode: p.production_mode,
+    video_style: p.video_style,
     status: "draft" as const,
     angle: p.angle,
     headline: p.headline_hint || null,

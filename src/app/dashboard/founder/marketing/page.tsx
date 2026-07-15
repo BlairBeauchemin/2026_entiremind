@@ -9,6 +9,7 @@ import type {
   BrandChannelRow,
   ContentPieceRow,
   MarketingCampaignRow,
+  MarketingExperimentRow,
   MediaAssetRow,
   TrendSnapshotRow,
 } from "@/lib/supabase";
@@ -28,13 +29,22 @@ import { FounderRefreshButton } from "@/components/dashboard/founder-refresh-but
 
 type PieceWithMedia = ContentPieceRow & { media_assets: MediaAssetRow[] | null };
 
-function toPieceView(piece: PieceWithMedia): ContentPieceView {
+function toPieceView(
+  piece: PieceWithMedia,
+  experimentNames?: Map<string, string>,
+): ContentPieceView {
+  const context = (piece.generation_context ?? {}) as { style_notes?: string };
   return {
     id: piece.id,
     target: piece.target,
     platform: piece.platform,
     format: piece.format,
     productionMode: piece.production_mode,
+    videoStyle: piece.video_style,
+    styleNotes: context.style_notes ?? null,
+    variantLabel: piece.variant_label,
+    experimentName:
+      (piece.experiment_id ? experimentNames?.get(piece.experiment_id) : null) ?? null,
     status: piece.status,
     headline: piece.headline,
     bodyCopy: piece.body_copy,
@@ -139,7 +149,19 @@ export default async function MarketingPage({
 
   const channels = (channelsRes.data ?? []) as BrandChannelRow[];
   const campaigns = (campaignsRes.data ?? []) as MarketingCampaignRow[];
-  const pieces = ((piecesRes.data ?? []) as PieceWithMedia[]).map(toPieceView);
+
+  const { data: experimentRows } = await serviceSupabase
+    .from("marketing_experiments")
+    .select("*")
+    .eq("brand_id", selectedBrand.id)
+    .order("created_at", { ascending: false })
+    .limit(20);
+  const experiments = (experimentRows ?? []) as MarketingExperimentRow[];
+  const experimentNames = new Map(experiments.map((e) => [e.id, e.name]));
+
+  const pieces = ((piecesRes.data ?? []) as PieceWithMedia[]).map((p) =>
+    toPieceView(p, experimentNames),
+  );
   const snapshots = (snapshotRes.data ?? []) as TrendSnapshotRow[];
   const snapshot = snapshots[0] ?? null;
 

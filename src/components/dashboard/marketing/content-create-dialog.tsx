@@ -11,6 +11,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loader2, Plus } from "lucide-react";
+import { VIDEO_STYLES, VIDEO_STYLE_GUIDANCE } from "@/lib/marketing/video-styles";
+
+const VIDEO_FORMATS = ["video_ad", "reel", "short"];
 
 interface ContentCreateDialogProps {
   brandId: string;
@@ -36,6 +39,7 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
   const [platform, setPlatform] = useState("instagram");
   const [format, setFormat] = useState("post");
   const [productionMode, setProductionMode] = useState<"ai_generated" | "founder_filmed">("ai_generated");
+  const [videoStyle, setVideoStyle] = useState("");
   const [mode, setMode] = useState<"ai" | "manual">("ai");
   const [headline, setHeadline] = useState("");
   const [caption, setCaption] = useState("");
@@ -68,6 +72,7 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
           platform,
           format,
           production_mode: productionMode,
+          video_style: VIDEO_FORMATS.includes(format) ? videoStyle || null : null,
           mode,
           headline: headline || null,
           caption: caption || null,
@@ -165,6 +170,24 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
               </select>
             </label>
           </div>
+
+          {VIDEO_FORMATS.includes(format) && (
+            <label className="block text-sm text-teal-900/60">
+              Video style
+              <select
+                value={videoStyle}
+                onChange={(e) => setVideoStyle(e.target.value)}
+                className={fieldClass}
+              >
+                <option value="">Let the AI pick</option>
+                {VIDEO_STYLES.map((s) => (
+                  <option key={s} value={s}>
+                    {VIDEO_STYLE_GUIDANCE[s].label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label className="block text-sm text-teal-900/60">
             How should it be written?

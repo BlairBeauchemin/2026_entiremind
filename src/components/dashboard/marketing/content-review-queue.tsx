@@ -96,6 +96,13 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
               <Badge>{piece.platform}</Badge>
               <Badge>{piece.format}</Badge>
               {piece.productionMode === "founder_filmed" && <Badge tone="purple">Founder filmed</Badge>}
+              {piece.videoStyle && <Badge>{piece.videoStyle.replace(/_/g, " ")}</Badge>}
+              {piece.experimentName && (
+                <Badge tone="yellow">
+                  {piece.experimentName}
+                  {piece.variantLabel ? ` · ${piece.variantLabel}` : ""}
+                </Badge>
+              )}
               {piece.target === "ad" && <Badge tone="gray">{formatBudget(piece.dailyBudgetCents)}</Badge>}
               <span className="ml-auto text-[11px] uppercase tracking-widest text-teal-900/40">
                 {formatDateTime(piece.createdAt)}
