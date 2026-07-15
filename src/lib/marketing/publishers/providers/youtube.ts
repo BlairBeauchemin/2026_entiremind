@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { buildPlaceholderDailyMetrics } from "../../metrics/placeholder";
 import type { PublisherAdapter, PublishPostRequest, PublishResult, MetricsRequest, MetricsResult } from "../types";
 
 /**
@@ -35,8 +36,11 @@ export const youtubeAdapter: PublisherAdapter = {
 
   async getMetrics(req: MetricsRequest): Promise<MetricsResult> {
     if (!isConfigured()) {
-      console.log(`[youtube placeholder] metrics for piece ${req.piece.id} since ${req.since}`);
-      return { success: true, daily: [], placeholder: true };
+      return {
+        success: true,
+        daily: buildPlaceholderDailyMetrics(req.piece, req.since, new Date().toISOString().slice(0, 10)),
+        placeholder: true,
+      };
     }
     return { success: false, error: "YouTube metrics not yet implemented for live credentials" };
   },

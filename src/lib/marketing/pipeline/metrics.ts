@@ -52,6 +52,16 @@ export async function collectMetrics(): Promise<CollectMetricsResult> {
         continue;
       }
 
+      // Real data replaces any placeholder history for this piece so fake
+      // numbers never mix with actual platform reporting
+      if (!metrics.placeholder) {
+        await supabase
+          .from("content_metrics")
+          .delete()
+          .eq("content_piece_id", pieceRow.id)
+          .eq("raw->>placeholder", "true");
+      }
+
       for (const day of metrics.daily ?? []) {
         const { error } = await supabase.from("content_metrics").upsert(
           {
@@ -67,6 +77,7 @@ export async function collectMetrics(): Promise<CollectMetricsResult> {
             comments: day.comments,
             shares: day.shares,
             views: day.views,
+            raw: metrics.placeholder ? { placeholder: true } : null,
           },
           { onConflict: "content_piece_id,metric_date" },
         );

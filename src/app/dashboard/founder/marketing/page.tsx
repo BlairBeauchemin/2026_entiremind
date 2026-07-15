@@ -276,12 +276,20 @@ export default async function MarketingPage({
             <span className="text-navy font-medium">{selectedBrand.name}</span>.
             {draftCount > 0 && ` ${draftCount} piece${draftCount === 1 ? "" : "s"} queued for generation.`}
           </p>
-          <Link
-            href="/dashboard/founder"
-            className="text-sm text-em-purple-400 hover:underline mt-1 inline-block"
-          >
-            ← Back to Founder Review
-          </Link>
+          <div className="flex gap-4">
+            <Link
+              href="/dashboard/founder"
+              className="text-sm text-em-purple-400 hover:underline mt-1 inline-block"
+            >
+              ← Back to Founder Review
+            </Link>
+            <Link
+              href={`/dashboard/founder/marketing/analytics?brand=${selectedBrand.id}`}
+              className="text-sm text-em-purple-400 hover:underline mt-1 inline-block"
+            >
+              Analytics →
+            </Link>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <BrandSelector

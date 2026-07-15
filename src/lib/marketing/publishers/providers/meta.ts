@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { buildPlaceholderDailyMetrics } from "../../metrics/placeholder";
 import type {
   PublisherAdapter,
   PublishPostRequest,
@@ -224,8 +225,13 @@ async function getMetrics(req: MetricsRequest): Promise<MetricsResult> {
   //     &time_increment=1&time_range={since,until}
   // for ads, and GET /{media_id}/insights for organic IG posts.
   if (!adsConfigured() && !igConfigured()) {
-    console.log(`[meta placeholder] GET insights for piece ${req.piece.id} since ${req.since}`);
-    return { success: true, daily: [], placeholder: true };
+    // Deterministic fake data keeps analytics/experiments exercisable;
+    // rows are flagged placeholder and replaced once real creds report.
+    return {
+      success: true,
+      daily: buildPlaceholderDailyMetrics(req.piece, req.since, new Date().toISOString().slice(0, 10)),
+      placeholder: true,
+    };
   }
   return { success: false, error: "Meta metrics not yet implemented for live credentials" };
 }
