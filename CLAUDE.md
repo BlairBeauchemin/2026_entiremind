@@ -513,7 +513,37 @@ YOUTUBE_CLIENT_SECRET=
 YOUTUBE_REFRESH_TOKEN=
 ```
 
-**Not yet wired (placeholders in place):** Veo video generation, live Meta/TikTok/YouTube API calls (Meta needs app review + Business verification: `ads_management`, `pages_manage_ads`, `instagram_content_publish`), live trend sources, real metrics pulls.
+**Not yet wired (placeholders in place):** Veo video generation, live Meta/TikTok/YouTube API calls (Meta needs app review + Business verification: `ads_management`, `pages_manage_ads`, `instagram_content_publish`), real metrics pulls.
+
+#### Marketing Engine v2 (niches, research, video styles, experiments, analytics)
+Branch: `claude/marketing-engine-v2-trends-experiments` (based on the v1 branch). Migration `019_marketing_engine_v2.sql` — run right after 018.
+
+**Niche following + trend deltas:**
+- `brands.niches TEXT[]` — the topics trend research tracks per brand; chip editor on the marketing page; injected into all research prompts
+- Each `trend_snapshots` row links `previous_snapshot_id` and stores a `delta` JSONB (new/continued/dropped trends via pure `computeSnapshotDelta()` in `src/lib/marketing/trends/delta.ts`); insights carry `niche` + `momentum` (new/rising/steady/fading) labels; trend history timeline in the UI
+
+**In-platform research layer (AI-first, `src/lib/marketing/research/`):**
+- `ResearchToolAdapter` interface; agents call these during trend research
+- **YouTube REAL day one**: Data API v3 search + statistics + mostPopular via free `YOUTUBE_API_KEY` (no OAuth)
+- TikTok Research API (`TIKTOK_RESEARCH_TOKEN`) and Instagram hashtag research (reuses `META_*`) implemented with real request shapes, placeholder-log until credentials land
+- Agentic loop in `runTrendResearch`: AI generates per-niche queries (`prompts/research-queries.ts`) → queries execute across configured tools + trending pulls (dedupe, cap 40) → AI synthesizes real findings into the snapshot, citing platforms; knowledge-only fallback; `trend_snapshots.raw` stores `{research_items, queries}`
+
+**Video style recommendations:**
+- 8-style taxonomy in `src/lib/marketing/video-styles.ts` (talking_head, ugc_testimonial, b_roll_voiceover, pov, text_on_screen, greenscreen_react, slideshow, tutorial_demo) with per-style filming tips + AI generation notes; `content_pieces.video_style` column
+- Planner assigns styles (code-coerced: video formats always styled; founder_filmed limited to founder-filmable styles); scripts are style-tailored and return `style_notes`; filming queue shows "How to film this"
+
+**Experiments (testing plans):**
+- `marketing_experiments` table; variants are `content_pieces` sharing `experiment_id` + `variant_label`, differing ONLY in the tested variable (angle/hook/video_style/format/audience/cta)
+- Planner emits 1-2 experiments/week; `normalizePlannedExperiments()` (pure, `pipeline/experiments.ts`) enforces variable control — never trusts the model
+- `evaluateExperiment()` (pure): ads by CTR (conversions tie-break), organic by engagement rate; undecided until every variant ≥ `min_impressions`; ties stay undecided
+- Metrics cron advances planned→running→concluded; **recommend-only** — founder acts via "Got it" / "Double down: plan follow-up" (seeds next experiment with the winner, `parent_experiment_id` chain) / cancel. Routes: `src/app/api/founder/marketing/experiments/[id]/{ack,follow-up}` + PATCH cancel
+
+**Analytics (`/dashboard/founder/marketing/analytics`):**
+- Pure `src/lib/marketing/analytics.ts`: `aggregateByDimension` (angle/video_style/format/platform/target), zero-filled `buildDailySeries`, `hasPlaceholderData`
+- Lean page: 30-day SVG daily series, CSS-bar dimension breakdowns, read-only experiment outcomes; linked from the marketing page header
+- **Deterministic placeholder metrics**: unconfigured `getMetrics` adapters return plausible daily data seeded by piece-id hash (`src/lib/marketing/metrics/placeholder.ts`); rows flagged `raw.placeholder=true` + amber banner; a piece's placeholder history is deleted automatically once real credentials report
+
+**New env vars (v2):** `YOUTUBE_API_KEY` (real, free — YouTube research), `TIKTOK_RESEARCH_TOKEN` (placeholder until TikTok research app approval).
 
 ### Not Yet Implemented
 - Hourly send cadence honoring `preferred_send_hour` (waiting on Vercel Pro)

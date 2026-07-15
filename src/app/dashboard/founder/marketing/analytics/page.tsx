@@ -60,9 +60,9 @@ export default async function MarketingAnalyticsPage({
 
   const selectedBrand = brands.find((b) => b.id === brandParam || b.slug === brandParam) ?? brands[0];
 
-  const since = new Date(Date.now() - LOOKBACK_DAYS * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .slice(0, 10);
+  const sinceDate = new Date();
+  sinceDate.setDate(sinceDate.getDate() - LOOKBACK_DAYS);
+  const since = sinceDate.toISOString().slice(0, 10);
 
   const [piecesRes, metricsRes] = await Promise.all([
     serviceSupabase
