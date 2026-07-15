@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { loadEngineConfig } from "@/lib/marketing/config";
 import { collectMetrics } from "@/lib/marketing/pipeline/metrics";
+import { evaluateRunningExperiments } from "@/lib/marketing/pipeline/experiments";
 
 export const maxDuration = 300;
 
@@ -33,10 +34,15 @@ export async function GET(request: Request) {
   }
 
   const result = await collectMetrics();
+
+  // Fresh metrics in hand: advance experiment lifecycles (recommend-only —
+  // conclusions never publish or promote anything)
+  const experiments = await evaluateRunningExperiments();
+
   const duration = Date.now() - startTime;
 
   console.log(
-    `Marketing metrics complete: ${result.updated} rows upserted across ${result.processed} pieces in ${duration}ms`,
+    `Marketing metrics complete: ${result.updated} rows upserted across ${result.processed} pieces; experiments ${experiments.started} started, ${experiments.concluded} concluded in ${duration}ms`,
   );
 
   return NextResponse.json({
@@ -44,7 +50,13 @@ export async function GET(request: Request) {
     processed: result.processed,
     updated: result.updated,
     failed: result.failed,
+    experiments_checked: experiments.checked,
+    experiments_started: experiments.started,
+    experiments_concluded: experiments.concluded,
     duration_ms: duration,
-    errors: result.errors.length > 0 ? result.errors : undefined,
+    errors:
+      result.errors.length > 0 || experiments.errors.length > 0
+        ? [...result.errors, ...experiments.errors]
+        : undefined,
   });
 }

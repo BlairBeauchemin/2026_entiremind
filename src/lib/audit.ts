@@ -7,9 +7,11 @@ export type AuditAction =
   | "update_user"
   | "send_message"
   | "review_content"
-  | "publish_content";
+  | "publish_content"
+  | "ack_experiment"
+  | "plan_follow_up";
 
-export type ResourceType = "message" | "user" | "intention" | "content_piece";
+export type ResourceType = "message" | "user" | "intention" | "content_piece" | "experiment";
 
 /**
  * Log an audit entry for admin/founder actions

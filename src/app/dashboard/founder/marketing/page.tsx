@@ -22,6 +22,8 @@ import { ChannelSettings } from "@/components/dashboard/marketing/channel-settin
 import { TrendPanel, type TrendSnapshotView, type TrendInsightView } from "@/components/dashboard/marketing/trend-panel";
 import { TrendHistory, type TrendHistoryItem } from "@/components/dashboard/marketing/trend-history";
 import { NicheEditor } from "@/components/dashboard/marketing/niche-editor";
+import { ExperimentList } from "@/components/dashboard/marketing/experiment-list";
+import { buildExperimentViews } from "@/lib/marketing/experiment-views";
 import { ContentCreateDialog } from "@/components/dashboard/marketing/content-create-dialog";
 import { MetricsSummary, type MetricsSummaryRow } from "@/components/dashboard/marketing/metrics-summary";
 import type { ContentPieceView } from "@/components/dashboard/marketing/types";
@@ -158,6 +160,7 @@ export default async function MarketingPage({
     .limit(20);
   const experiments = (experimentRows ?? []) as MarketingExperimentRow[];
   const experimentNames = new Map(experiments.map((e) => [e.id, e.name]));
+  const experimentViews = await buildExperimentViews(selectedBrand.id);
 
   const pieces = ((piecesRes.data ?? []) as PieceWithMedia[]).map((p) =>
     toPieceView(p, experimentNames),
@@ -313,6 +316,15 @@ export default async function MarketingPage({
           generates them one batch at a time.
         </p>
         <CampaignList brandId={selectedBrand.id} campaigns={campaignViews} />
+      </div>
+
+      <div>
+        <h2 className="font-serif text-2xl text-navy font-medium mb-2">Experiments</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Controlled tests the planner set up — one variable at a time. Winners are recommended,
+          never auto-promoted.
+        </p>
+        <ExperimentList experiments={experimentViews} />
       </div>
 
       <div>

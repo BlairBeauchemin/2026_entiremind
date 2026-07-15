@@ -17,6 +17,7 @@ import {
   buildVideoScriptPrompt,
 } from "../prompts/video-script";
 import { buildImagePrompt } from "../prompts/image-prompt";
+import { buildExperimentBlock, type ExperimentContext } from "../prompts/shared";
 import { AdCopySchema, OrganicPostSchema, VideoScriptSchema } from "./schemas";
 import { generateAndStoreMedia } from "../media";
 import type { MediaAspectRatio } from "../media/types";
@@ -119,6 +120,14 @@ export async function generateContentPiece(pieceId: string): Promise<GeneratePie
     generated_at: new Date().toISOString(),
   };
 
+  // Experiment variants must hold everything constant except the tested
+  // variable — the block tells the copywriter what not to change.
+  const experimentCtx =
+    (piece.generation_context?.experiment as ExperimentContext | undefined) ?? null;
+  const experimentBlock = buildExperimentBlock(experimentCtx);
+  const withExperiment = (prompt: string): string =>
+    experimentBlock ? `${prompt}\n\n${experimentBlock}` : prompt;
+
   try {
     const update: Record<string, unknown> = {};
     let imagePrompt: string | null = null;
@@ -127,14 +136,16 @@ export async function generateContentPiece(pieceId: string): Promise<GeneratePie
       // Video script path (founder-filmed always needs a script; so do AI video formats)
       const script = await generateStrictJson(
         VIDEO_SCRIPT_SYSTEM_PROMPT,
-        buildVideoScriptPrompt(
-          brand,
-          campaign,
-          piece.angle,
-          piece.platform,
-          piece.format,
-          piece.production_mode === "founder_filmed",
-          piece.video_style,
+        withExperiment(
+          buildVideoScriptPrompt(
+            brand,
+            campaign,
+            piece.angle,
+            piece.platform,
+            piece.format,
+            piece.production_mode === "founder_filmed",
+            piece.video_style,
+          ),
         ),
         VideoScriptSchema,
       );
@@ -150,7 +161,7 @@ export async function generateContentPiece(pieceId: string): Promise<GeneratePie
         // Ads still need CTA + primary text alongside the video script
         const adCopy = await generateStrictJson(
           AD_COPY_SYSTEM_PROMPT,
-          buildAdCopyPrompt(brand, campaign, piece.angle),
+          withExperiment(buildAdCopyPrompt(brand, campaign, piece.angle)),
           AdCopySchema,
         );
         update.body_copy = adCopy.body_copy;
@@ -159,7 +170,7 @@ export async function generateContentPiece(pieceId: string): Promise<GeneratePie
     } else if (piece.target === "ad") {
       const adCopy = await generateStrictJson(
         AD_COPY_SYSTEM_PROMPT,
-        buildAdCopyPrompt(brand, campaign, piece.angle),
+        withExperiment(buildAdCopyPrompt(brand, campaign, piece.angle)),
         AdCopySchema,
       );
       update.headline = adCopy.headline;
@@ -170,7 +181,9 @@ export async function generateContentPiece(pieceId: string): Promise<GeneratePie
     } else {
       const post = await generateStrictJson(
         ORGANIC_POST_SYSTEM_PROMPT,
-        buildOrganicPostPrompt(brand, campaign, piece.angle, piece.platform, piece.format),
+        withExperiment(
+          buildOrganicPostPrompt(brand, campaign, piece.angle, piece.platform, piece.format),
+        ),
         OrganicPostSchema,
       );
       update.caption = post.caption;

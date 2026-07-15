@@ -8,6 +8,7 @@ import {
   buildCampaignPlanPrompt,
 } from "../prompts/campaign-plan";
 import { CampaignPlanSchema, type PlannedPiece } from "./schemas";
+import { normalizePlannedExperiments } from "./experiments";
 
 const VIDEO_FORMATS = ["video_ad", "reel", "short"];
 
@@ -36,12 +37,15 @@ export interface PlanBrandContentOptions {
   count?: number;
   brief?: string | null;
   createdBy?: string | null;
+  /** Set when this plan is a follow-up doubling down on a concluded experiment. */
+  parentExperimentId?: string | null;
 }
 
 export interface PlanBrandContentResult {
   success: boolean;
   campaignId?: string;
   pieceIds?: string[];
+  experimentIds?: string[];
   error?: string;
 }
 
@@ -166,6 +170,12 @@ export async function planBrandContent(
     })
     .map((p) => ({ ...p, video_style: coerceVideoStyle(p) }));
 
+  // Experiments: drop/repair whatever the model got wrong
+  const normalized = normalizePlannedExperiments({
+    experiments: plan.experiments,
+    pieces,
+  });
+
   let campaignId = existingCampaign?.id;
   if (!campaignId) {
     const { data: campaign, error: campaignError } = await supabase
@@ -195,26 +205,68 @@ export async function planBrandContent(
       .eq("id", campaignId);
   }
 
+  // Persist surviving experiments (status planned) and map names -> ids
+  const experimentIdByName = new Map<string, string>();
+  for (const experiment of normalized.experiments) {
+    const { data: experimentRow, error: experimentError } = await supabase
+      .from("marketing_experiments")
+      .insert({
+        brand_id: brandId,
+        campaign_id: campaignId,
+        parent_experiment_id: opts.parentExperimentId ?? null,
+        name: experiment.name,
+        hypothesis: experiment.hypothesis,
+        variable: experiment.variable,
+        min_impressions: experiment.min_impressions,
+      })
+      .select("id")
+      .single();
+
+    if (experimentError || !experimentRow) {
+      console.error("Failed to create experiment:", experimentError);
+      continue;
+    }
+    experimentIdByName.set(experiment.name, experimentRow.id as string);
+  }
+
   const now = Date.now();
-  const rows = pieces.map((p) => ({
-    brand_id: brandId,
-    campaign_id: campaignId,
-    target: p.target,
-    platform: p.platform,
-    format: p.format,
-    production_mode: p.production_mode,
-    video_style: p.video_style,
-    status: "draft" as const,
-    angle: p.angle,
-    headline: p.headline_hint || null,
-    daily_budget_cents: p.target === "ad" ? config.default_daily_budget_cents : null,
-    scheduled_for: new Date(now + p.scheduled_offset_days * 24 * 60 * 60 * 1000).toISOString(),
-    generation_context: {
-      planned_at: new Date().toISOString(),
-      trend_snapshot_id: snapshot?.id ?? null,
-      headline_hint: p.headline_hint,
-    },
-  }));
+  const rows = normalized.pieces.map((p) => {
+    const experimentId = p.experiment_name
+      ? (experimentIdByName.get(p.experiment_name) ?? null)
+      : null;
+    return {
+      brand_id: brandId,
+      campaign_id: campaignId,
+      target: p.target,
+      platform: p.platform,
+      format: p.format,
+      production_mode: p.production_mode,
+      video_style: p.video_style,
+      status: "draft" as const,
+      angle: p.angle,
+      headline: p.headline_hint || null,
+      daily_budget_cents: p.target === "ad" ? config.default_daily_budget_cents : null,
+      scheduled_for: new Date(now + p.scheduled_offset_days * 24 * 60 * 60 * 1000).toISOString(),
+      experiment_id: experimentId,
+      variant_label: experimentId ? p.variant_label : null,
+      generation_context: {
+        planned_at: new Date().toISOString(),
+        trend_snapshot_id: snapshot?.id ?? null,
+        headline_hint: p.headline_hint,
+        ...(experimentId && p.experiment_name
+          ? {
+              experiment: {
+                id: experimentId,
+                name: p.experiment_name,
+                variable: normalized.experiments.find((e) => e.name === p.experiment_name)
+                  ?.variable,
+                variant_label: p.variant_label,
+              },
+            }
+          : {}),
+      },
+    };
+  });
 
   if (rows.length === 0) {
     return { success: false, error: "Planner produced no valid pieces" };
@@ -233,5 +285,6 @@ export async function planBrandContent(
     success: true,
     campaignId,
     pieceIds: (inserted ?? []).map((r: { id: string }) => r.id),
+    experimentIds: Array.from(experimentIdByName.values()),
   };
 }
