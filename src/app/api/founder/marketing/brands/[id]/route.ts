@@ -11,6 +11,7 @@ const UpdateBrandSchema = z.object({
   target_audience: z.string().optional(),
   visual_style: z.string().optional(),
   website_url: z.string().url().nullable().optional(),
+  niches: z.array(z.string().trim().min(1).max(60)).max(20).optional(),
   status: z.enum(["active", "paused"]).optional(),
 });
 

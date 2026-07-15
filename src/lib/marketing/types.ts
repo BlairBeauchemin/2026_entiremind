@@ -18,6 +18,10 @@ export type {
   CampaignType,
   CampaignStatus,
   PublishMode,
+  VideoStyle,
+  ExperimentVariable,
+  ExperimentStatus,
+  TrendMomentum,
   BrandRow,
   BrandChannelRow,
   TrendSnapshotRow,
@@ -26,6 +30,7 @@ export type {
   MediaAssetRow,
   ContentMetricRow,
   MarketingEngineConfigRow,
+  MarketingExperimentRow,
 } from "../supabase";
 
 /** Statuses in which the founder may still edit creative fields. */

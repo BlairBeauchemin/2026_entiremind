@@ -19,6 +19,8 @@ import { CampaignList, type CampaignView } from "@/components/dashboard/marketin
 import { ContentScheduleTable } from "@/components/dashboard/marketing/content-schedule-table";
 import { ChannelSettings } from "@/components/dashboard/marketing/channel-settings";
 import { TrendPanel, type TrendSnapshotView, type TrendInsightView } from "@/components/dashboard/marketing/trend-panel";
+import { TrendHistory, type TrendHistoryItem } from "@/components/dashboard/marketing/trend-history";
+import { NicheEditor } from "@/components/dashboard/marketing/niche-editor";
 import { ContentCreateDialog } from "@/components/dashboard/marketing/content-create-dialog";
 import { MetricsSummary, type MetricsSummaryRow } from "@/components/dashboard/marketing/metrics-summary";
 import type { ContentPieceView } from "@/components/dashboard/marketing/types";
@@ -132,14 +134,31 @@ export default async function MarketingPage({
       .select("*")
       .eq("brand_id", selectedBrand.id)
       .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
+      .limit(8),
   ]);
 
   const channels = (channelsRes.data ?? []) as BrandChannelRow[];
   const campaigns = (campaignsRes.data ?? []) as MarketingCampaignRow[];
   const pieces = ((piecesRes.data ?? []) as PieceWithMedia[]).map(toPieceView);
-  const snapshot = snapshotRes.data as TrendSnapshotRow | null;
+  const snapshots = (snapshotRes.data ?? []) as TrendSnapshotRow[];
+  const snapshot = snapshots[0] ?? null;
+
+  const trendHistory: TrendHistoryItem[] = snapshots.map((s) => {
+    const delta = (s.delta ?? {}) as {
+      summary?: string;
+      new_trends?: string[];
+      dropped_trends?: string[];
+    };
+    return {
+      id: s.id,
+      source: s.source,
+      deltaSummary: delta.summary ?? null,
+      newTrends: delta.new_trends ?? [],
+      droppedTrends: delta.dropped_trends ?? [],
+      insightCount: (s.insights ?? []).length,
+      createdAt: s.created_at,
+    };
+  });
 
   const reviewQueue = pieces.filter((p) => p.status === "pending_review");
   const filmingQueue = pieces.filter((p) => p.status === "awaiting_footage");
@@ -291,11 +310,28 @@ export default async function MarketingPage({
       </div>
 
       <div>
+        <h2 className="font-serif text-2xl text-navy font-medium mb-2">Followed Niches</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          The topics trend research tracks for this brand. Edit anytime — the next research run
+          picks them up.
+        </p>
+        <NicheEditor brandId={selectedBrand.id} niches={selectedBrand.niches ?? []} />
+      </div>
+
+      <div>
         <h2 className="font-serif text-2xl text-navy font-medium mb-2">Trend Research</h2>
         <p className="text-sm text-muted-foreground mb-4">
           Latest research snapshot feeding campaign planning. AI-sourced until live trend APIs are wired.
         </p>
         <TrendPanel snapshot={snapshotView} />
+      </div>
+
+      <div>
+        <h2 className="font-serif text-2xl text-navy font-medium mb-2">Trend History</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          How the landscape shifted snapshot to snapshot — what appeared, what faded.
+        </p>
+        <TrendHistory items={trendHistory} />
       </div>
 
       <div>

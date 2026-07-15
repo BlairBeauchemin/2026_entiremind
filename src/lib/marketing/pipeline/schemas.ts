@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ALLOWED_CTAS } from "../types";
+import { VIDEO_STYLES } from "../video-styles";
 
 export const AdCopySchema = z.object({
   headline: z.string().min(1),
@@ -30,8 +31,18 @@ export const VideoScriptSchema = z.object({
   video_prompt: z.string(),
   caption: z.string(),
   hashtags: z.array(z.string()),
+  style_notes: z.string().default(""),
 });
 export type VideoScript = z.infer<typeof VideoScriptSchema>;
+
+export const ExperimentVariableSchema = z.enum([
+  "angle",
+  "hook",
+  "video_style",
+  "format",
+  "audience",
+  "cta",
+]);
 
 export const CampaignPlanSchema = z.object({
   campaign: z.object({
@@ -43,6 +54,16 @@ export const CampaignPlanSchema = z.object({
       notes: z.string(),
     }),
   }),
+  experiments: z
+    .array(
+      z.object({
+        name: z.string().min(1),
+        hypothesis: z.string().min(1),
+        variable: ExperimentVariableSchema,
+        min_impressions: z.number().int().min(100).max(100000).default(1000),
+      }),
+    )
+    .default([]),
   pieces: z.array(
     z.object({
       target: z.enum(["ad", "organic"]),
@@ -57,10 +78,33 @@ export const CampaignPlanSchema = z.object({
         "short",
       ]),
       production_mode: z.enum(["ai_generated", "founder_filmed"]),
+      video_style: z.enum(VIDEO_STYLES).nullable().default(null),
       angle: z.string(),
       headline_hint: z.string(),
       scheduled_offset_days: z.number().min(0).max(6),
+      experiment_name: z.string().nullable().default(null),
+      variant_label: z.string().nullable().default(null),
     }),
   ),
 });
 export type CampaignPlan = z.infer<typeof CampaignPlanSchema>;
+export type PlannedPiece = CampaignPlan["pieces"][number];
+export type PlannedExperiment = CampaignPlan["experiments"][number];
+
+export const TrendResearchSchema = z.object({
+  summary: z.string().min(1),
+  delta_summary: z.string().min(1),
+  insights: z.array(
+    z.object({
+      trend: z.string(),
+      niche: z.string().default("general"),
+      momentum: z.enum(["new", "rising", "steady", "fading"]),
+      relevance: z.string(),
+      suggested_angle: z.string(),
+      hooks: z.array(z.string()),
+      formats: z.array(z.string()),
+      suggested_video_styles: z.array(z.string()).default([]),
+    }),
+  ),
+});
+export type TrendResearch = z.infer<typeof TrendResearchSchema>;

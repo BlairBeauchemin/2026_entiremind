@@ -41,6 +41,24 @@ export type CampaignStatus =
   | "completed"
   | "archived";
 export type PublishMode = "require_approval" | "auto_publish";
+export type VideoStyle =
+  | "talking_head"
+  | "ugc_testimonial"
+  | "b_roll_voiceover"
+  | "pov"
+  | "text_on_screen"
+  | "greenscreen_react"
+  | "slideshow"
+  | "tutorial_demo";
+export type ExperimentVariable =
+  | "angle"
+  | "hook"
+  | "video_style"
+  | "format"
+  | "audience"
+  | "cta";
+export type ExperimentStatus = "planned" | "running" | "concluded" | "cancelled";
+export type TrendMomentum = "new" | "rising" | "steady" | "fading";
 
 // Database types
 export type Database = {
@@ -378,6 +396,7 @@ export type Database = {
           target_audience: string;
           visual_style: string;
           website_url: string | null;
+          niches: string[];
           status: "active" | "paused";
           created_at: string;
           updated_at: string;
@@ -392,6 +411,7 @@ export type Database = {
           target_audience?: string;
           visual_style?: string;
           website_url?: string | null;
+          niches?: string[];
           status?: "active" | "paused";
           created_at?: string;
           updated_at?: string;
@@ -406,6 +426,7 @@ export type Database = {
           target_audience?: string;
           visual_style?: string;
           website_url?: string | null;
+          niches?: string[];
           status?: "active" | "paused";
           created_at?: string;
           updated_at?: string;
@@ -457,6 +478,9 @@ export type Database = {
           summary: string;
           insights: Array<Record<string, unknown>>;
           raw: Record<string, unknown> | null;
+          niches: string[];
+          previous_snapshot_id: string | null;
+          delta: Record<string, unknown> | null;
           created_at: string;
         };
         Insert: {
@@ -466,6 +490,9 @@ export type Database = {
           summary: string;
           insights?: Array<Record<string, unknown>>;
           raw?: Record<string, unknown> | null;
+          niches?: string[];
+          previous_snapshot_id?: string | null;
+          delta?: Record<string, unknown> | null;
           created_at?: string;
         };
         Update: {
@@ -475,6 +502,9 @@ export type Database = {
           summary?: string;
           insights?: Array<Record<string, unknown>>;
           raw?: Record<string, unknown> | null;
+          niches?: string[];
+          previous_snapshot_id?: string | null;
+          delta?: Record<string, unknown> | null;
           created_at?: string;
         };
       };
@@ -552,6 +582,9 @@ export type Database = {
           platform: MarketingPlatform;
           format: ContentFormat;
           production_mode: ProductionMode;
+          video_style: VideoStyle | null;
+          experiment_id: string | null;
+          variant_label: string | null;
           status: ContentPieceStatus;
           headline: string | null;
           body_copy: string | null;
@@ -586,6 +619,9 @@ export type Database = {
           platform: MarketingPlatform;
           format: ContentFormat;
           production_mode?: ProductionMode;
+          video_style?: VideoStyle | null;
+          experiment_id?: string | null;
+          variant_label?: string | null;
           status?: ContentPieceStatus;
           headline?: string | null;
           body_copy?: string | null;
@@ -620,6 +656,9 @@ export type Database = {
           platform?: MarketingPlatform;
           format?: ContentFormat;
           production_mode?: ProductionMode;
+          video_style?: VideoStyle | null;
+          experiment_id?: string | null;
+          variant_label?: string | null;
           status?: ContentPieceStatus;
           headline?: string | null;
           body_copy?: string | null;
@@ -762,6 +801,62 @@ export type Database = {
           created_at?: string;
         };
       };
+      marketing_experiments: {
+        Row: {
+          id: string;
+          brand_id: string;
+          campaign_id: string | null;
+          parent_experiment_id: string | null;
+          name: string;
+          hypothesis: string;
+          variable: ExperimentVariable;
+          status: ExperimentStatus;
+          min_impressions: number;
+          primary_metric: "auto" | "ctr" | "conversions" | "engagement_rate";
+          winner_piece_id: string | null;
+          conclusion: string | null;
+          concluded_at: string | null;
+          acknowledged_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          brand_id: string;
+          campaign_id?: string | null;
+          parent_experiment_id?: string | null;
+          name: string;
+          hypothesis: string;
+          variable: ExperimentVariable;
+          status?: ExperimentStatus;
+          min_impressions?: number;
+          primary_metric?: "auto" | "ctr" | "conversions" | "engagement_rate";
+          winner_piece_id?: string | null;
+          conclusion?: string | null;
+          concluded_at?: string | null;
+          acknowledged_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          brand_id?: string;
+          campaign_id?: string | null;
+          parent_experiment_id?: string | null;
+          name?: string;
+          hypothesis?: string;
+          variable?: ExperimentVariable;
+          status?: ExperimentStatus;
+          min_impressions?: number;
+          primary_metric?: "auto" | "ctr" | "conversions" | "engagement_rate";
+          winner_piece_id?: string | null;
+          conclusion?: string | null;
+          concluded_at?: string | null;
+          acknowledged_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       marketing_engine_config: {
         Row: {
           id: number;
@@ -824,6 +919,7 @@ export type ContentPieceRow = Database["public"]["Tables"]["content_pieces"]["Ro
 export type MediaAssetRow = Database["public"]["Tables"]["media_assets"]["Row"];
 export type ContentMetricRow = Database["public"]["Tables"]["content_metrics"]["Row"];
 export type MarketingEngineConfigRow = Database["public"]["Tables"]["marketing_engine_config"]["Row"];
+export type MarketingExperimentRow = Database["public"]["Tables"]["marketing_experiments"]["Row"];
 
 // Lazy-initialized browser client
 let browserClient: SupabaseClient | null = null;
