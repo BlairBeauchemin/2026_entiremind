@@ -80,13 +80,13 @@ export default async function ArchetypePage({
 
         <div className="space-y-3 pt-2">
           <Link
-            href={`/?src=share-${slug}`}
+            href={`/quiz?src=share-${slug}`}
             className="inline-block rounded-xl bg-navy px-8 py-3.5 text-sm font-medium text-white transition-colors hover:bg-navy/90"
           >
             Discover your archetype
           </Link>
           <p className="text-xs text-teal-900/50">
-            2 minutes. Then a daily practice by text.
+            8 taps, 2 minutes. Then a daily practice by text.
           </p>
         </div>
       </div>

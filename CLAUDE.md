@@ -597,6 +597,24 @@ YOUTUBE_REFRESH_TOKEN=
 
 **Not yet wired (placeholders in place):** Veo video generation, live Meta/TikTok/YouTube API calls (Meta needs app review + Business verification: `ads_management`, `pages_manage_ads`, `instagram_content_publish`), live trend sources, real metrics pulls.
 
+#### Public Archetype Quiz + SEO Plumbing + Site Config (July 2026)
+Migration: `025_public_quiz_leads.sql`.
+
+**Public quiz (`/quiz`, no auth):**
+- Same eight tap screens as the authed `ArchetypeFlow` — identical step components, `questions.ts` config, and pure `scoreProfile()`; only the ending differs, built on the design-philosophy "partial value before contact capture" principle: taps → **partial reveal** (archetype name + hook line — the feel-seen moment) → **email gate** (name/phone/SMS-consent optional, honeypot field) → **full reveal** (same `buildRevealContent()` reading onboarding users get) + share
+- Components in `src/components/quiz/`; sessionStorage persistence so refresh keeps progress; quiz share copy in `src/lib/persona/share.ts` (archetype-level only — inner-critic content never appears in public copy; unit-tested)
+- API `POST /api/quiz/lead` — zod-validated, server re-runs `scoreProfile()` (client results never trusted), **upserts on `leads.email`**: retakes refresh quiz fields but never clobber original `source`, revoke prior `sms_consent`, or overwrite a stored phone. New leads get `source='quiz'` (or validated `share-{slug}`)
+- Share attribution loop: `/archetype/[slug]` CTAs now link `/quiz?src=share-{slug}`; the gate forwards `source`; funnel queries see `landing_page` / `quiz` / `share-*`
+- Analytics: `quiz_start`, `quiz_step`, `quiz_partial_reveal`, `quiz_gate_submit` (also fires GA4 `generate_lead` with `lead_source: quiz`), `quiz_complete`, `quiz_share_click` in `src/lib/analytics.ts`
+- ActiveCampaign contact sync tags quiz leads `quiz-lead` + `archetype-{slug}` — nurture automations segment in AC, no code
+- `leads` columns added (migration 025): `archetype`, `quiz_answers`, `quiz_version`, `quiz_completed_at`
+
+**SEO plumbing:**
+- `src/app/sitemap.ts` (public pages + quiz + 4 archetype pages), `src/app/robots.ts` (disallow /dashboard, /onboarding, /auth, /api, /u), `src/app/opengraph-image.tsx` (site-default OG card), full `metadataBase`/OpenGraph/Twitter defaults in `layout.tsx`
+
+**Site config (`src/config/site.ts`):**
+- `siteConfig` (name, tagline, description, url, supportEmail, keywords, gtmId) + `absoluteUrl()` — the templating seed for future business ideas. New code imports it; existing hardcoded "Entiremind" strings migrate opportunistically when files are touched.
+
 ### Not Yet Implemented
 - Hourly send cadence honoring `preferred_send_hour` (waiting on Vercel Pro)
 - True timezone-aware delivery (Phase 2)
