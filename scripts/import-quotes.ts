@@ -74,7 +74,7 @@ async function fetchFromZenQuotes(calls: number): Promise<RawQuote[]> {
 /** Quotable open dataset (GitHub JSON dump) — includes tags, no rate limits. */
 async function fetchFromQuotableDataset(): Promise<RawQuote[]> {
   const url =
-    "https://raw.githubusercontent.com/quotable-io/data/master/data/generated/quotes.json";
+    "https://raw.githubusercontent.com/quotable-io/data/master/data/quotes.json";
   console.log("  Downloading Quotable dataset...");
   const res = await fetch(url);
   if (!res.ok) {
