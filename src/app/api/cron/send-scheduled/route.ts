@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireCronAuth } from "@/lib/cron-auth";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { sendSms } from "@/lib/sms";
 
@@ -9,22 +10,8 @@ import { sendSms } from "@/lib/sms";
  * Security: Protected by CRON_SECRET header (Vercel adds this automatically)
  */
 export async function GET(request: Request) {
-  // Verify cron secret for security
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 }
-    );
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
   const supabase = createServiceRoleClient();
   const now = new Date().toISOString();
@@ -42,7 +29,7 @@ export async function GET(request: Request) {
     console.error("Failed to fetch pending messages:", fetchError);
     return NextResponse.json(
       { error: "Failed to fetch pending messages" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -65,7 +52,7 @@ export async function GET(request: Request) {
       const result = await sendSms(
         scheduledMsg.user_id,
         scheduledMsg.to_phone,
-        scheduledMsg.text
+        scheduledMsg.text,
       );
 
       if (result.success) {
@@ -95,7 +82,7 @@ export async function GET(request: Request) {
         failed++;
         console.error(
           `Failed to send scheduled message ${scheduledMsg.id}:`,
-          result.error
+          result.error,
         );
       }
     } catch (error) {
@@ -104,13 +91,17 @@ export async function GET(request: Request) {
         .from("scheduled_messages")
         .update({
           status: "failed",
-          error_message: error instanceof Error ? error.message : "Unknown error",
+          error_message:
+            error instanceof Error ? error.message : "Unknown error",
           updated_at: new Date().toISOString(),
         })
         .eq("id", scheduledMsg.id);
 
       failed++;
-      console.error(`Exception sending scheduled message ${scheduledMsg.id}:`, error);
+      console.error(
+        `Exception sending scheduled message ${scheduledMsg.id}:`,
+        error,
+      );
     }
   }
 

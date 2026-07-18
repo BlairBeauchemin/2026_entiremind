@@ -71,12 +71,14 @@ export function buildTrialEndMessage(
   memoryTheme: string | null,
   link: string | null = null,
 ): string {
+  // Duration-agnostic on purpose: trial lengths differ (10-day standard,
+  // 14-day grandfathered), and this message must never state a wrong number.
   const greeting = name ? `${name}, our` : "Our";
   const middle = memoryTheme
     ? `You've told me about ${memoryTheme}, and where you're headed — I'd like to keep walking with you.`
     : `I've been glad to walk these first days with you — I'd like to keep going.`;
   return (
-    `${greeting} ten days together are up. ${middle} ` +
+    `${greeting} first days together are up. ${middle} ` +
     `Continue here: ${link ?? SETTINGS_URL}`
   );
 }

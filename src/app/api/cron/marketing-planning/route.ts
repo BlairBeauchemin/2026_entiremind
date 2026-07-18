@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireCronAuth } from "@/lib/cron-auth";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { loadEngineConfig } from "@/lib/marketing/config";
 import { runTrendResearch } from "@/lib/marketing/trends";
@@ -16,22 +17,16 @@ export const maxDuration = 300;
 export async function GET(request: Request) {
   const startTime = Date.now();
 
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
   const config = await loadEngineConfig();
   if (!config.enabled) {
-    return NextResponse.json({ success: true, processed: 0, message: "Engine disabled" });
+    return NextResponse.json({
+      success: true,
+      processed: 0,
+      message: "Engine disabled",
+    });
   }
 
   const supabase = createServiceRoleClient();
@@ -42,7 +37,10 @@ export async function GET(request: Request) {
 
   if (brandsError) {
     console.error("Failed to fetch brands:", brandsError);
-    return NextResponse.json({ error: "Failed to fetch brands" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch brands" },
+      { status: 500 },
+    );
   }
 
   let planned = 0;
@@ -53,7 +51,9 @@ export async function GET(request: Request) {
     try {
       const research = await runTrendResearch(brand.id);
       if (!research.success) {
-        console.error(`Trend research failed for ${brand.name}: ${research.error}`);
+        console.error(
+          `Trend research failed for ${brand.name}: ${research.error}`,
+        );
       }
 
       const plan = await planBrandContent(brand.id, {

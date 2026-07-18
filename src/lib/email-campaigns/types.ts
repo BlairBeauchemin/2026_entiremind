@@ -36,6 +36,9 @@ export interface CreateDraftCampaignResult {
 export interface EmailCampaignProviderAdapter {
   provider: EmailCampaignProvider;
 
+  /** Whether the provider's required env vars are set (callers no-op when not) */
+  isConfigured(): boolean;
+
   /** Upsert contacts into the provider's list with tags */
   syncContacts(contacts: CampaignContact[]): Promise<SyncContactsResult>;
 

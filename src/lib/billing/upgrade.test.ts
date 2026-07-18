@@ -45,7 +45,7 @@ describe("decideUpgradeNudge", () => {
 describe("upgrade messages", () => {
   it("trial-end message personalizes from a memory theme", () => {
     const msg = buildTrialEndMessage("Blair", "self-worth at work");
-    expect(msg).toContain("Blair, our ten days");
+    expect(msg).toContain("Blair, our first days");
     expect(msg).toContain("self-worth at work");
     expect(msg).toContain("https://www.entiremind.com/dashboard/settings");
     expect(msg.length).toBeLessThanOrEqual(400);
@@ -53,7 +53,7 @@ describe("upgrade messages", () => {
 
   it("trial-end message degrades gracefully without name or memory", () => {
     const msg = buildTrialEndMessage(null, null);
-    expect(msg.startsWith("Our ten days")).toBe(true);
+    expect(msg.startsWith("Our first days")).toBe(true);
     expect(msg).not.toContain("undefined");
     expect(msg).toContain("https://www.entiremind.com/dashboard/settings");
   });

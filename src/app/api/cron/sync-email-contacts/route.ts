@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase";
+import { requireCronAuth } from "@/lib/cron-auth";
 import {
   getEmailCampaignAdapter,
   type CampaignContact,
@@ -20,21 +21,21 @@ export const maxDuration = 300;
 export async function GET(request: Request) {
   const startTime = Date.now();
 
-  // Verify cron secret for security
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 },
+  // No provider configured yet: clean no-op rather than a daily 500.
+  const adapter = getEmailCampaignAdapter();
+  if (!adapter.isConfigured()) {
+    console.log(
+      `Contact sync skipped: ${adapter.provider} env vars not configured`,
     );
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({
+      success: true,
+      synced: 0,
+      failed: 0,
+      skipped: "unconfigured",
+    });
   }
 
   const supabase = createServiceRoleClient();
@@ -90,7 +91,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ success: true, synced: 0, failed: 0 });
   }
 
-  const adapter = getEmailCampaignAdapter();
   const result = await adapter.syncContacts([...contacts.values()]);
 
   const duration = Date.now() - startTime;

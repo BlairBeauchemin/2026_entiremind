@@ -10,7 +10,10 @@ const CreateBrandSchema = z.object({
   slug: z
     .string()
     .min(1)
-    .regex(/^[a-z0-9-]+$/, "slug must be lowercase letters, numbers, and hyphens"),
+    .regex(
+      /^[a-z0-9-]+$/,
+      "slug must be lowercase letters, numbers, and hyphens",
+    ),
   description: z.string().optional(),
   product_summary: z.string().optional(),
   brand_voice: z.string().optional(),
@@ -22,13 +25,20 @@ const CreateBrandSchema = z.object({
 export async function GET() {
   const auth = await requireFounder();
   if ("error" in auth) {
-    return NextResponse.json({ error: auth.error }, { status: founderErrorStatus(auth.error) });
+    return NextResponse.json(
+      { error: auth.error },
+      { status: founderErrorStatus(auth.error) },
+    );
   }
 
   const supabase = createServiceRoleClient();
+  // brand_channels columns listed explicitly: `credentials` holds provider
+  // API secrets and must never reach the browser.
   const { data, error } = await supabase
     .from("brands")
-    .select("*, brand_channels(*)")
+    .select(
+      "*, brand_channels(id, brand_id, platform, publish_mode, connected, external_account_id, config, created_at, updated_at)",
+    )
     .order("created_at", { ascending: true });
 
   if (error) {
@@ -40,7 +50,10 @@ export async function GET() {
 export async function POST(request: Request) {
   const auth = await requireFounder();
   if ("error" in auth) {
-    return NextResponse.json({ error: auth.error }, { status: founderErrorStatus(auth.error) });
+    return NextResponse.json(
+      { error: auth.error },
+      { status: founderErrorStatus(auth.error) },
+    );
   }
 
   let body: unknown;
@@ -68,9 +81,9 @@ export async function POST(request: Request) {
   }
 
   // Every brand gets its four channel rows up front (disconnected)
-  const { error: channelError } = await supabase.from("brand_channels").insert(
-    PLATFORMS.map((platform) => ({ brand_id: brand.id, platform })),
-  );
+  const { error: channelError } = await supabase
+    .from("brand_channels")
+    .insert(PLATFORMS.map((platform) => ({ brand_id: brand.id, platform })));
   if (channelError) {
     console.error("Failed to create brand channels:", channelError);
   }

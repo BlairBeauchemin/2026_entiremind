@@ -114,6 +114,14 @@ async function ensureTagId(tagName: string): Promise<string> {
 export const activeCampaignAdapter: EmailCampaignProviderAdapter = {
   provider: "activecampaign",
 
+  isConfigured(): boolean {
+    return Boolean(
+      process.env.ACTIVECAMPAIGN_API_URL &&
+      process.env.ACTIVECAMPAIGN_API_KEY &&
+      process.env.ACTIVECAMPAIGN_LIST_ID,
+    );
+  },
+
   async syncContacts(contacts: CampaignContact[]): Promise<SyncContactsResult> {
     const { listId } = getConfig();
     let synced = 0;

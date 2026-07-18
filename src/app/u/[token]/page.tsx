@@ -27,7 +27,15 @@ export default async function UpgradeLinkPage({
 }) {
   const { token } = await params;
 
-  const payload = verifyUpgradeToken(token);
+  // verifyUpgradeToken never throws on bad input, but it does when
+  // UPGRADE_LINK_SECRET is unset — degrade to the authenticated path
+  // instead of a 500.
+  let payload: ReturnType<typeof verifyUpgradeToken> = null;
+  try {
+    payload = verifyUpgradeToken(token);
+  } catch (err) {
+    console.error("Upgrade token verification unavailable:", err);
+  }
   if (!payload) {
     redirect("/auth?next=/dashboard/settings");
   }

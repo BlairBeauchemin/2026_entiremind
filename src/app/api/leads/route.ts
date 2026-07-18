@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase";
+import { isLeadWriteThrottled } from "@/lib/lead-throttle";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,23 +21,17 @@ export async function POST(request: NextRequest) {
     const hasPhone = phone && typeof phone === "string" && phone.trim();
 
     if (!hasName) {
-      return NextResponse.json(
-        { error: "Name is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
     if (!hasEmail) {
-      return NextResponse.json(
-        { error: "Email is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
     if (!hasPhone) {
       return NextResponse.json(
         { error: "Phone number is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -62,7 +57,7 @@ export async function POST(request: NextRequest) {
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -71,26 +66,40 @@ export async function POST(request: NextRequest) {
     if (phoneDigits.length < 10 || phoneDigits.length > 15) {
       return NextResponse.json(
         { error: "Invalid phone number" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Check if Supabase is configured
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.log("Lead captured (Supabase not configured):", { name, email, phone });
+    if (
+      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      !process.env.SUPABASE_SERVICE_ROLE_KEY
+    ) {
+      console.log("Lead captured (Supabase not configured):", {
+        name,
+        email,
+        phone,
+      });
       return NextResponse.json(
         { success: true, message: "Lead captured" },
-        { status: 201 }
+        { status: 201 },
       );
     }
 
     const supabase = createServiceRoleClient();
 
+    if (await isLeadWriteThrottled(supabase)) {
+      return NextResponse.json(
+        { error: "Too many requests, please try again shortly" },
+        { status: 429 },
+      );
+    }
+
     // Capture consent IP from request headers
     const forwardedFor = request.headers.get("x-forwarded-for");
     const consentIp = forwardedFor
       ? forwardedFor.split(",")[0].trim()
-      : request.headers.get("x-real-ip") ?? "unknown";
+      : (request.headers.get("x-real-ip") ?? "unknown");
 
     // Insert lead into database
     const { error } = await supabase.from("leads").insert({
@@ -108,25 +117,25 @@ export async function POST(request: NextRequest) {
       if (error.code === "23505") {
         return NextResponse.json(
           { error: "This email is already on the waitlist" },
-          { status: 409 }
+          { status: 409 },
         );
       }
       console.error("Supabase error:", error);
       return NextResponse.json(
         { error: "Failed to save lead" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     return NextResponse.json(
       { success: true, message: "Lead captured" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Error capturing lead:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
