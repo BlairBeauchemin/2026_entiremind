@@ -3,6 +3,8 @@ import {
   signUpgradeToken,
   verifyUpgradeToken,
   buildUpgradeLink,
+  BILLING_TOKEN_TTL_DAYS,
+  UPGRADE_TOKEN_TTL_DAYS,
 } from "./token";
 
 const NOW = new Date("2026-07-04T12:00:00Z");
@@ -22,15 +24,18 @@ describe("upgrade-link tokens", () => {
     expect(payload).toEqual({
       uid: "user-123",
       intent: "upgrade",
-      exp: Math.floor(NOW.getTime() / 1000) + 60 * 86_400,
+      exp: Math.floor(NOW.getTime() / 1000) + UPGRADE_TOKEN_TTL_DAYS * 86_400,
     });
   });
 
-  it("billing tokens carry the shorter 14-day expiry", () => {
+  it("billing tokens carry the shorter expiry", () => {
     const token = signUpgradeToken("user-123", "billing", NOW);
     const payload = verifyUpgradeToken(token, NOW);
     expect(payload?.intent).toBe("billing");
-    expect(payload?.exp).toBe(Math.floor(NOW.getTime() / 1000) + 14 * 86_400);
+    expect(BILLING_TOKEN_TTL_DAYS).toBeLessThan(UPGRADE_TOKEN_TTL_DAYS);
+    expect(payload?.exp).toBe(
+      Math.floor(NOW.getTime() / 1000) + BILLING_TOKEN_TTL_DAYS * 86_400,
+    );
   });
 
   it("rejects a tampered payload (uid swap)", () => {
@@ -62,7 +67,14 @@ describe("upgrade-link tokens", () => {
   });
 
   it("rejects malformed input without throwing", () => {
-    for (const garbage of ["", ".", "abc", "a.b.c", "!!!.###", "a".repeat(2000)]) {
+    for (const garbage of [
+      "",
+      ".",
+      "abc",
+      "a.b.c",
+      "!!!.###",
+      "a".repeat(2000),
+    ]) {
       expect(verifyUpgradeToken(garbage, NOW)).toBeNull();
     }
   });
@@ -74,7 +86,10 @@ describe("upgrade-link tokens", () => {
   });
 
   it("buildUpgradeLink produces an SMS-sized URL on the right path", () => {
-    const link = buildUpgradeLink("2f9d3a44-9c1b-4a55-8a6d-1f2e3d4c5b6a", "upgrade");
+    const link = buildUpgradeLink(
+      "2f9d3a44-9c1b-4a55-8a6d-1f2e3d4c5b6a",
+      "upgrade",
+    );
     expect(link).toMatch(/^https:\/\/www\.entiremind\.com\/u\//);
     expect(link!.length).toBeLessThan(250);
   });

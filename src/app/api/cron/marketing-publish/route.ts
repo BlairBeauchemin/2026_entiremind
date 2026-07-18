@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireCronAuth } from "@/lib/cron-auth";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { loadEngineConfig } from "@/lib/marketing/config";
 import { publishContentPiece } from "@/lib/marketing/pipeline/publish";
@@ -15,22 +16,16 @@ export const maxDuration = 300;
 export async function GET(request: Request) {
   const startTime = Date.now();
 
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
   const config = await loadEngineConfig();
   if (!config.enabled) {
-    return NextResponse.json({ success: true, processed: 0, message: "Engine disabled" });
+    return NextResponse.json({
+      success: true,
+      processed: 0,
+      message: "Engine disabled",
+    });
   }
 
   const supabase = createServiceRoleClient();
@@ -44,7 +39,10 @@ export async function GET(request: Request) {
 
   if (dueError) {
     console.error("Failed to fetch scheduled pieces:", dueError);
-    return NextResponse.json({ error: "Failed to fetch scheduled pieces" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch scheduled pieces" },
+      { status: 500 },
+    );
   }
 
   let published = 0;
@@ -58,7 +56,8 @@ export async function GET(request: Request) {
         published++;
       } else {
         failed++;
-        if (result.error) errors.push({ pieceId: piece.id, error: result.error });
+        if (result.error)
+          errors.push({ pieceId: piece.id, error: result.error });
       }
     } catch (err) {
       failed++;

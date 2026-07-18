@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase";
+import { requireCronAuth } from "@/lib/cron-auth";
 import { trackSilence } from "@/lib/signals";
 
 // Silence detection window: messages older than this without a reply are considered silent
@@ -16,22 +17,8 @@ const SILENCE_WINDOW_HOURS = 20;
 export async function GET(request: Request) {
   const startTime = Date.now();
 
-  // Verify cron secret for security
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 }
-    );
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
   const supabase = createServiceRoleClient();
 
@@ -44,7 +31,9 @@ export async function GET(request: Request) {
   const windowStart = new Date();
   windowStart.setHours(windowStart.getHours() - SILENCE_WINDOW_HOURS - 24); // 24 hour lookback
 
-  console.log(`Detecting silences for messages between ${windowStart.toISOString()} and ${windowEnd.toISOString()}`);
+  console.log(
+    `Detecting silences for messages between ${windowStart.toISOString()} and ${windowEnd.toISOString()}`,
+  );
 
   // Find outbound messages in the window that don't have replies.
   // Exclude 'ack' (reactive responses, not prompts), 'billing' (payment
@@ -56,7 +45,7 @@ export async function GET(request: Request) {
   // double-track them.
   const { data: outboundMessages, error: fetchError } = await supabase
     .from("messages")
-    .select("id, user_id, created_at, text, users:user_id!inner(is_test)")
+    .select("id, user_id, created_at, text, users!inner(is_test)")
     .eq("direction", "outbound")
     .eq("users.is_test", false)
     .or("content_type.not.in.(ack,billing,upgrade),content_type.is.null")
@@ -68,7 +57,7 @@ export async function GET(request: Request) {
     console.error("Failed to fetch outbound messages:", fetchError);
     return NextResponse.json(
       { error: "Failed to fetch messages" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -138,12 +127,14 @@ export async function GET(request: Request) {
     });
 
     silencesDetected++;
-    console.log(`Detected silence for message ${msg.id} (user: ${msg.user_id})`);
+    console.log(
+      `Detected silence for message ${msg.id} (user: ${msg.user_id})`,
+    );
   }
 
   const duration = Date.now() - startTime;
   console.log(
-    `Silence detection complete: ${silencesDetected} new silences, ${alreadyProcessed} already processed in ${duration}ms`
+    `Silence detection complete: ${silencesDetected} new silences, ${alreadyProcessed} already processed in ${duration}ms`,
   );
 
   return NextResponse.json({

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireCronAuth } from "@/lib/cron-auth";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { loadEngineConfig } from "@/lib/marketing/config";
 import {
@@ -18,22 +19,16 @@ export const maxDuration = 300;
 export async function GET(request: Request) {
   const startTime = Date.now();
 
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
   const config = await loadEngineConfig();
   if (!config.enabled) {
-    return NextResponse.json({ success: true, processed: 0, message: "Engine disabled" });
+    return NextResponse.json({
+      success: true,
+      processed: 0,
+      message: "Engine disabled",
+    });
   }
 
   const reaped = await reapStaleGenerating();
@@ -48,7 +43,10 @@ export async function GET(request: Request) {
 
   if (draftsError) {
     console.error("Failed to fetch draft pieces:", draftsError);
-    return NextResponse.json({ error: "Failed to fetch drafts" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch drafts" },
+      { status: 500 },
+    );
   }
 
   let generated = 0;
@@ -62,7 +60,8 @@ export async function GET(request: Request) {
         generated++;
       } else {
         failed++;
-        if (result.error) errors.push({ pieceId: draft.id, error: result.error });
+        if (result.error)
+          errors.push({ pieceId: draft.id, error: result.error });
       }
     } catch (err) {
       failed++;

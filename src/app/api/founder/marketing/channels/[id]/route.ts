@@ -53,11 +53,15 @@ export async function PATCH(
     );
   }
 
+  // Explicit columns: `credentials` holds provider API secrets and must
+  // never reach the browser.
   const { data: updated, error } = await supabase
     .from("brand_channels")
     .update(parsed.data)
     .eq("id", id)
-    .select()
+    .select(
+      "id, brand_id, platform, publish_mode, connected, external_account_id, config, created_at, updated_at",
+    )
     .single();
 
   if (error) {

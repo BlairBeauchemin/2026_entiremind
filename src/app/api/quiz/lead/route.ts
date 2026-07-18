@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createServiceRoleClient } from "@/lib/supabase";
+import { isLeadWriteThrottled } from "@/lib/lead-throttle";
 import { scoreProfile } from "@/lib/persona/score";
 import {
   INTENTION_CATEGORIES,
@@ -22,8 +23,10 @@ import {
  * answers are re-scored server-side (client-computed results are never
  * trusted for storage), and writes are idempotent upserts on leads.email.
  *
- * Upsert rules protect existing lead rows: original source and any prior SMS
- * consent are never clobbered, and a stored phone number is never overwritten.
+ * Upsert rules protect existing lead rows: email ownership is unverified, so
+ * a retake only refreshes quiz fields — contact details (phone, name) and SMS
+ * consent are written on first insert only. Otherwise anyone who knows an
+ * email could grant SMS consent or attach a phone on someone else's row.
  */
 
 const optionIds = (options: { id: string }[]) =>
@@ -109,6 +112,14 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = createServiceRoleClient();
+
+    if (await isLeadWriteThrottled(supabase)) {
+      return NextResponse.json(
+        { error: "Too many requests, please try again shortly" },
+        { status: 429 },
+      );
+    }
+
     const forwardedFor = request.headers.get("x-forwarded-for");
     const consentIp = forwardedFor
       ? forwardedFor.split(",")[0].trim()
@@ -124,22 +135,16 @@ export async function POST(request: NextRequest) {
 
     const { data: existing } = await supabase
       .from("leads")
-      .select("id, phone, sms_consent")
+      .select("id, name")
       .eq("email", email)
       .maybeSingle();
 
     if (existing) {
-      // Retake or waitlisted email: refresh quiz fields; add name/phone only
-      // where missing; only upgrade consent (never revoke); never touch source.
+      // Retake or waitlisted email: refresh quiz fields only. The submitter
+      // hasn't proven they own this email, so contact fields and SMS consent
+      // on an existing row are off-limits (name backfills only if empty).
       const update: Record<string, unknown> = { ...quizFields };
-      if (name) update.name = name;
-      if (phone && !existing.phone) update.phone = phone;
-      if (smsConsent === true && existing.sms_consent !== true) {
-        update.sms_consent = true;
-        update.sms_consent_timestamp = now;
-        update.sms_consent_ip = consentIp;
-        update.sms_consent_language = smsConsentLanguage ?? null;
-      }
+      if (name && !existing.name) update.name = name;
       const { error } = await supabase
         .from("leads")
         .update(update)

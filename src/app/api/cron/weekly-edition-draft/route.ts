@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireCronAuth } from "@/lib/cron-auth";
 import { generateEditionDraft, pushEditionToProvider } from "@/lib/editions";
 
 export const maxDuration = 60;
@@ -15,22 +16,8 @@ export const maxDuration = 60;
 export async function GET(request: Request) {
   const startTime = Date.now();
 
-  // Verify cron secret for security
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 },
-    );
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
   const draft = await generateEditionDraft();
   console.log(`Weekly edition draft: ${draft.status}`, draft.detail ?? "");

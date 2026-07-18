@@ -24,8 +24,13 @@ export interface UpgradeTokenPayload {
 
 /** Trial-end links: "whenever you're ready" should stay true for a while. */
 export const UPGRADE_TOKEN_TTL_DAYS = 60;
-/** Dunning links: time-boxed by Stripe's retry cycle. */
-export const BILLING_TOKEN_TTL_DAYS = 14;
+/**
+ * Dunning links: short-lived. A billing token opens the Stripe billing
+ * portal (payment method, invoices, cancel) with no second factor, so a
+ * forwarded SMS shouldn't stay live for weeks — Stripe re-sends dunning
+ * notices across its retry cycle anyway, each with a fresh link.
+ */
+export const BILLING_TOKEN_TTL_DAYS = 2;
 
 function getSecret(): Buffer {
   const secret = process.env.UPGRADE_LINK_SECRET;

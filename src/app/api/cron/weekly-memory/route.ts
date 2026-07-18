@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase";
+import { requireCronAuth } from "@/lib/cron-auth";
+import { getAiProvider } from "@/lib/ai";
 import { compactUserMemory } from "@/lib/ai/memory";
 import { loadEntitlement } from "@/lib/billing/entitlement";
 
@@ -15,27 +17,17 @@ import { loadEntitlement } from "@/lib/billing/entitlement";
 export async function GET(request: Request) {
   const startTime = Date.now();
 
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
+  const aiProvider = getAiProvider();
+  const apiKeyEnvVar =
+    aiProvider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY";
+  if (!process.env[apiKeyEnvVar]) {
+    console.error(`${apiKeyEnvVar} environment variable not set`);
     return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 }
-    );
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("ANTHROPIC_API_KEY not set");
-    return NextResponse.json(
-      { error: "AI provider not configured" },
-      { status: 500 }
+      { error: `AI provider (${aiProvider}) not configured` },
+      { status: 500 },
     );
   }
 
@@ -55,7 +47,7 @@ export async function GET(request: Request) {
     console.error("Failed to fetch users:", usersError);
     return NextResponse.json(
       { error: "Failed to fetch users" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -103,7 +95,7 @@ export async function GET(request: Request) {
 
   const duration = Date.now() - startTime;
   console.log(
-    `Weekly memory complete: ${compacted} compacted, ${skipped} skipped, ${errors.length} errored in ${duration}ms`
+    `Weekly memory complete: ${compacted} compacted, ${skipped} skipped, ${errors.length} errored in ${duration}ms`,
   );
 
   return NextResponse.json({

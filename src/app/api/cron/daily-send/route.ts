@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireCronAuth } from "@/lib/cron-auth";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { sendSms } from "@/lib/sms";
 import { generateMessageForUser, getAiProvider } from "@/lib/ai";
@@ -40,22 +41,8 @@ import { buildUpgradeLink } from "@/lib/billing/token";
 export async function GET(request: Request) {
   const startTime = Date.now();
 
-  // Verify cron secret for security
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 },
-    );
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    console.error("Invalid cron authorization");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(request);
+  if (authError) return authError;
 
   // Check if AI provider is configured
   const aiProvider = getAiProvider();
@@ -176,7 +163,10 @@ export async function GET(request: Request) {
             console.log(`Sent ${nudge} upgrade message to user ${user.id}`);
           } else {
             failed++;
-            errors.push({ userId: user.id, error: result.error || "Unknown error" });
+            errors.push({
+              userId: user.id,
+              error: result.error || "Unknown error",
+            });
           }
         }
         continue;
@@ -218,7 +208,10 @@ export async function GET(request: Request) {
             sent++;
           } else {
             failed++;
-            errors.push({ userId: user.id, error: result.error || "Unknown error" });
+            errors.push({
+              userId: user.id,
+              error: result.error || "Unknown error",
+            });
           }
           continue;
         }
@@ -238,7 +231,10 @@ export async function GET(request: Request) {
             );
           } else {
             failed++;
-            errors.push({ userId: user.id, error: result.error || "Unknown error" });
+            errors.push({
+              userId: user.id,
+              error: result.error || "Unknown error",
+            });
           }
           continue;
         }
@@ -260,7 +256,10 @@ export async function GET(request: Request) {
           console.log(`Sent weekly recap to user ${user.id}`);
         } else {
           failed++;
-          errors.push({ userId: user.id, error: result.error || "Unknown error" });
+          errors.push({
+            userId: user.id,
+            error: result.error || "Unknown error",
+          });
         }
         continue;
       }
