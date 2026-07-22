@@ -144,6 +144,7 @@ export async function stepDay(runId: string): Promise<SimDayResult> {
       provider: "simulator",
       status: "sent",
       content_type: generated.contentType,
+      message_mode: generated.mode,
       ai_generated: true,
       created_at: outboundAt.toISOString(),
     })
@@ -182,6 +183,8 @@ export async function stepDay(runId: string): Promise<SimDayResult> {
     system_prompt_id: generated.systemPromptId,
     system_prompt_name: generated.systemPromptName,
     content_type: generated.contentType,
+    mode: generated.mode,
+    mode_selection: generated.modeSelection ?? null,
     fallback: generated.fallback,
     truncated: generated.truncated,
     selection: generated.selection ?? null,

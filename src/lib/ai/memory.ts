@@ -14,6 +14,13 @@ export interface UserMemorySummary {
   tone_notes: string | null;
 }
 
+/** An archived past memory version (from user_memory_history). */
+export interface MemoryHistoryEntry {
+  summary: UserMemorySummary;
+  version: number;
+  created_at: string;
+}
+
 const MEMORY_LOOKBACK_DAYS = 7;
 const MEMORY_VERSION = 1;
 const INTENTION_SHIFT_MIN_CONFIDENCE = 0.6;
@@ -313,7 +320,7 @@ export async function compactUserMemory(
   const userMessage = buildUserMessage(typedReplies, currentIntention);
 
   const response = await anthropic.messages.create({
-    model: process.env.ANTHROPIC_MEMORY_MODEL || "claude-sonnet-4-6",
+    model: process.env.ANTHROPIC_MEMORY_MODEL || "claude-sonnet-5",
     max_tokens: 1000,
     system: MEMORY_SYSTEM_PROMPT,
     messages: [{ role: "user", content: userMessage }],
@@ -550,4 +557,124 @@ export function renderMemoryForPrompt(summary: UserMemorySummary): string {
     lines.push(`- Tone: ${summary.tone_notes}`);
   }
   return lines.join("\n");
+}
+
+/**
+ * Load the most recent archived memory versions for a user (oldest of the set
+ * is used to contrast "a few weeks ago" against now in `callback` mode).
+ * Returns newest-first; empty when the user has no archived history yet.
+ */
+export async function loadMemoryHistory(
+  userId: string,
+  limit = 3,
+): Promise<MemoryHistoryEntry[]> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("user_memory_history")
+    .select("summary, version, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error || !data) return [];
+  return data
+    .filter((row) => row.summary)
+    .map((row) => ({
+      summary: row.summary as UserMemorySummary,
+      version: (row.version as number) ?? MEMORY_VERSION,
+      created_at: row.created_at as string,
+    }));
+}
+
+/**
+ * Render a "then vs. now" contrast from the oldest archived memory version to
+ * the current one, for `callback` mode. Returns null when there's no history
+ * or no discernible shift — the caller then falls back to a non-callback mode.
+ */
+export function renderProgressionForPrompt(
+  current: UserMemorySummary,
+  past: MemoryHistoryEntry[],
+): string | null {
+  if (past.length === 0) return null;
+  // Oldest of the loaded set gives the widest, most legible contrast.
+  const oldest = past[past.length - 1];
+  const then = oldest.summary;
+
+  const thenState = then.recent_emotional_state?.trim() || "";
+  const nowState = current.recent_emotional_state?.trim() || "";
+  const thenThemes = then.themes.slice(0, 3).join(", ");
+  const nowThemes = current.themes.slice(0, 3).join(", ");
+
+  // Require a real difference in either the emotional state or the themes.
+  const stateShifted =
+    thenState.length > 0 && nowState.length > 0 && thenState !== nowState;
+  const themesShifted =
+    thenThemes.length > 0 && nowThemes.length > 0 && thenThemes !== nowThemes;
+  if (!stateShifted && !themesShifted) return null;
+
+  const weeksAgo = Math.max(
+    1,
+    Math.round(
+      (Date.now() - new Date(oldest.created_at).getTime()) /
+        (7 * 24 * 3_600_000),
+    ),
+  );
+  const whenLabel = weeksAgo === 1 ? "About a week ago" : `About ${weeksAgo} weeks ago`;
+
+  const parts: string[] = [];
+  parts.push("How this user has shifted over time (for a callback):");
+  const thenBits: string[] = [];
+  if (thenThemes) thenBits.push(`working with ${thenThemes}`);
+  if (thenState) thenBits.push(`felt ${thenState}`);
+  const nowBits: string[] = [];
+  if (nowThemes) nowBits.push(`working with ${nowThemes}`);
+  if (nowState) nowBits.push(`feels ${nowState}`);
+  parts.push(`- ${whenLabel}: ${thenBits.join("; ") || "unclear"}`);
+  parts.push(`- Now: ${nowBits.join("; ") || "unclear"}`);
+  if (current.last_breakthrough) {
+    parts.push(`- Recent breakthrough: ${current.last_breakthrough}`);
+  }
+  return parts.join("\n");
+}
+
+// Content types that count as real daily prompts (mirrors ai/prompts ALL_TYPES).
+// Recovery/upgrade/ack/welcome/recap sends are excluded so the anti-repetition
+// signal reflects only genuine morning prompts.
+const DAILY_PROMPT_CONTENT_TYPES = [
+  "reflection",
+  "quote",
+  "check-in",
+  "action",
+  "gratitude",
+];
+
+/**
+ * Load the openings of the user's recent daily prompts so the generator can be
+ * told not to reuse the same shape/opener. Returns short opening fragments
+ * (first ~8 words), most recent first.
+ */
+export async function loadRecentOutboundOpenings(
+  userId: string,
+  limit = 5,
+  asOf: Date = new Date(),
+): Promise<string[]> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("messages")
+    .select("text, created_at")
+    .eq("user_id", userId)
+    .eq("direction", "outbound")
+    .in("content_type", DAILY_PROMPT_CONTENT_TYPES)
+    .lte("created_at", asOf.toISOString())
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error || !data) return [];
+  return data
+    .map((row) => (typeof row.text === "string" ? row.text.trim() : ""))
+    .filter((t) => t.length > 0)
+    .map((t) => {
+      const words = t.split(/\s+/).slice(0, 8).join(" ");
+      return words.length < t.length ? `${words}…` : words;
+    });
 }

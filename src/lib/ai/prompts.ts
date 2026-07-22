@@ -1,6 +1,12 @@
-import type { UserContext, ContentType, SelectionDebug } from "./types";
+import type {
+  UserContext,
+  ContentType,
+  MessageMode,
+  SelectionDebug,
+  ModeSelectionDebug,
+} from "./types";
 import type { Technique } from "../techniques/types";
-import { renderMemoryForPrompt } from "./memory";
+import { renderMemoryForPrompt, renderProgressionForPrompt } from "./memory";
 import { renderProfileForPrompt } from "../persona/prompt";
 import { createServiceRoleClient } from "../supabase";
 
@@ -10,10 +16,10 @@ import { createServiceRoleClient } from "../supabase";
 export const SYSTEM_PROMPT = `You are a thoughtful guide for Entiremind, an SMS-based manifestation and reflection system. Your role is to send brief, warm morning messages that help users align their thoughts and intentions.
 
 Guidelines:
-- Keep messages under 160 characters (SMS limit)
+- Keep messages under 160 characters (SMS limit) unless told a higher ceiling
 - Be warm and genuine, but not cheesy or overly enthusiastic
 - Never use emojis
-- End with a gentle question or invitation to reflect
+- Output only the message text itself — no preamble, quotes, labels, or explanation
 - If you know the user's name, use it naturally (once, at the beginning)
 - If you know their intention, subtly reference it without being repetitive
 - Vary your tone and approach day to day
@@ -47,24 +53,59 @@ export function getContentTypePrompt(contentType: ContentType): string {
 }
 
 /**
- * Build the user prompt for message generation
+ * The rhetorical-stance instruction for a message. `question` reproduces the
+ * pre-feeling-seen behavior (a content-typed prompt ending in a question); the
+ * other modes are declarative and MUST NOT end with a question — that's how the
+ * "always end with a question" mandate becomes conditional per mode.
+ */
+export function getModeInstruction(
+  mode: MessageMode,
+  contentType: ContentType,
+): string {
+  switch (mode) {
+    case "mirror":
+      return "Reflect back ONE specific thing this person has said, or a real pattern you've noticed about them. Make a single declarative observation that helps them feel genuinely seen. Do NOT ask a question.";
+    case "callback":
+      return "Deliberately reference something from a while ago and contrast it with where they are now — a 'then vs. now' that shows you remember. One or two short sentences. Do NOT ask a question.";
+    case "attunement":
+      return "Offer one grounded, encouraging statement that lands — something true about where they are right now. No advice, no homework. Do NOT ask a question.";
+    case "question":
+    default:
+      return `${getContentTypePrompt(contentType)} End with a gentle question or invitation to reflect.`;
+  }
+}
+
+/** Whether a mode should be encouraged to reference specifics / quote the user. */
+function isFeelingSeenMode(mode: MessageMode): boolean {
+  return mode === "mirror" || mode === "callback";
+}
+
+/**
+ * Build the user prompt for message generation.
+ *
+ * @param mode        Rhetorical stance (defaults to `question` = legacy behavior).
+ * @param charCeiling Soft character ceiling stated to the model (160 for
+ *                    question/attunement; higher for mirror/callback).
  */
 export function buildUserPrompt(
   context: UserContext,
   contentType: ContentType,
   technique?: Technique | null,
+  mode: MessageMode = "question",
+  charCeiling = 160,
 ): string {
   const parts: string[] = [];
 
   // A playbook technique, when present, replaces the generic content-type
   // instruction with a recipe to enact — as a question, never a lesson. All
-  // the personalization blocks below still stack on top.
+  // the personalization blocks below still stack on top. (Technique sends are
+  // always `question` mode — see selectMessageMode — so no conflict.)
   if (technique) {
     parts.push(
       `Today, work from this approach: "${technique.prompt_recipe}" Turn it into ONE short question that enacts the approach for this person. Never name or explain the technique; keep the calm Entiremind voice.`,
     );
   } else {
-    parts.push(getContentTypePrompt(contentType));
+    parts.push(getModeInstruction(mode, contentType));
   }
 
   // Add user context
@@ -83,15 +124,30 @@ export function buildUserPrompt(
     parts.push(renderProfileForPrompt(context.profile));
   }
 
-  // Inject the compacted memory blob (refreshed weekly)
+  const showSpecifics = isFeelingSeenMode(mode);
+
+  // Inject the compacted memory blob (refreshed weekly). On feeling-seen modes
+  // the model is encouraged to reference a specific thread and may quote the
+  // user's own words; on ordinary days it stays light-touch, as before.
   if (context.memory) {
     parts.push(renderMemoryForPrompt(context.memory));
     parts.push(
-      "Let the memory inform tone and direction, but do not quote it back to the user. Pick at most one thread to lean on; do not list themes.",
+      showSpecifics
+        ? "Reference ONE specific open thread or theme above. You may quote 2-4 of their own words in quotation marks. Be precise, not generic — this is the moment they feel remembered."
+        : "Let the memory inform tone and direction, but do not quote it back to the user. Pick at most one thread to lean on; do not list themes.",
     );
   }
 
-  // Inject the most recent substantive reply, if any
+  // For callback mode, inject a "then vs. now" contrast from archived memory.
+  if (mode === "callback" && context.memoryHistory && context.memory) {
+    const progression = renderProgressionForPrompt(
+      context.memory,
+      context.memoryHistory,
+    );
+    if (progression) parts.push(progression);
+  }
+
+  // Inject the most recent substantive reply, if any.
   if (context.recentReply) {
     const r = context.recentReply;
     const themeStr =
@@ -100,7 +156,21 @@ export function buildUserPrompt(
       `Their most recent reply (${r.hoursAgo}h ago) sat in: ${themeStr}. Emotional state: ${r.emotionalState} (${r.sentiment}). What they said: "${r.text}"`,
     );
     parts.push(
-      "You may subtly reference this if it fits naturally. Do not quote it back. Do not force a callback if today's prompt would land better fresh.",
+      showSpecifics
+        ? "Reflect this back with precision — you may quote a few of their own words. Show them you actually read it."
+        : "You may subtly reference this if it fits naturally. Do not quote it back. Do not force a callback if today's prompt would land better fresh.",
+    );
+  }
+
+  // Anti-repetition: show the model its own recent openings so it stops
+  // regressing to the same shape day after day.
+  if (context.recentOutboundOpenings.length > 0) {
+    parts.push(
+      `Your recent messages to this person opened like this:\n${context.recentOutboundOpenings
+        .map((o) => `- "${o}"`)
+        .join(
+          "\n",
+        )}\nDo NOT reuse these openings or sentence shapes. Never open with "Good morning [name], what's one thing".`,
     );
   }
 
@@ -113,7 +183,9 @@ export function buildUserPrompt(
     parts.push("They've been engaged. You can go a bit deeper.");
   }
 
-  parts.push("Remember: under 160 characters, no emojis, warm but not cheesy.");
+  parts.push(
+    `Remember: under ${charCeiling} characters, no emojis, warm but not cheesy.`,
+  );
 
   return parts.join("\n\n");
 }
@@ -129,6 +201,11 @@ interface ContentSelectionConfig {
   earned_reply_lookback_days: number;
   quote_max_per_week: number;
   silence_threshold: number;
+  // Feeling-seen message modes (migration 026)
+  feeling_seen_enabled: boolean;
+  mirror_target_per_week: number;
+  callback_target_per_week: number;
+  mode_char_ceiling: number;
 }
 
 const DEFAULT_CONFIG: ContentSelectionConfig = {
@@ -138,6 +215,10 @@ const DEFAULT_CONFIG: ContentSelectionConfig = {
   earned_reply_lookback_days: 30,
   quote_max_per_week: 1,
   silence_threshold: 3,
+  feeling_seen_enabled: false,
+  mirror_target_per_week: 2,
+  callback_target_per_week: 1,
+  mode_char_ceiling: 300,
 };
 
 const ALL_TYPES: ContentType[] = [
@@ -171,6 +252,14 @@ async function loadConfig(): Promise<ContentSelectionConfig> {
       data.quote_max_per_week ?? DEFAULT_CONFIG.quote_max_per_week,
     silence_threshold:
       data.silence_threshold ?? DEFAULT_CONFIG.silence_threshold,
+    feeling_seen_enabled:
+      data.feeling_seen_enabled ?? DEFAULT_CONFIG.feeling_seen_enabled,
+    mirror_target_per_week:
+      data.mirror_target_per_week ?? DEFAULT_CONFIG.mirror_target_per_week,
+    callback_target_per_week:
+      data.callback_target_per_week ?? DEFAULT_CONFIG.callback_target_per_week,
+    mode_char_ceiling:
+      data.mode_char_ceiling ?? DEFAULT_CONFIG.mode_char_ceiling,
   };
 }
 
@@ -377,4 +466,199 @@ export async function selectContentTypeDetailed(
   }
 
   return { contentType: pickUniform(candidates), debug };
+}
+
+// ============================================================================
+// Message mode selection (feeling-seen redesign)
+// ============================================================================
+
+/** Count how many of each mode were sent in the trailing `days` window. */
+async function loadRecentModeCounts(
+  userId: string,
+  days: number,
+  asOf: Date,
+): Promise<Partial<Record<MessageMode, number>>> {
+  const supabase = createServiceRoleClient();
+  const cutoff = new Date(asOf);
+  cutoff.setDate(cutoff.getDate() - days);
+
+  const { data } = await supabase
+    .from("messages")
+    .select("message_mode")
+    .eq("user_id", userId)
+    .eq("direction", "outbound")
+    .not("message_mode", "is", null)
+    .gte("created_at", cutoff.toISOString())
+    .lte("created_at", asOf.toISOString());
+
+  const counts: Partial<Record<MessageMode, number>> = {};
+  for (const row of (data as { message_mode: string | null }[]) ?? []) {
+    const m = row.message_mode as MessageMode | null;
+    if (m) counts[m] = (counts[m] ?? 0) + 1;
+  }
+  return counts;
+}
+
+export interface ModeDecisionInput {
+  /** content_selection_config.feeling_seen_enabled */
+  enabled: boolean;
+  /** A playbook technique is shaping this send — force `question`. */
+  techniqueActive: boolean;
+  /** Feeling-seen modes the user has the signal to support right now. */
+  eligible: MessageMode[];
+  /** Count of each mode sent in the trailing 7 days (for cadence). */
+  sentThisWeek: Partial<Record<MessageMode, number>>;
+  mirrorTarget: number;
+  callbackTarget: number;
+  /** Injectable for tests; defaults to Math.random. */
+  random?: () => number;
+}
+
+/**
+ * Pure mode decision. Returns `question` (today's behavior) unless the feature
+ * is enabled, no technique is active, and the user is eligible. mirror/callback
+ * are cadence-driven: each is spread across a rolling 7-day window by firing
+ * today with probability (target - sentThisWeek) / 7, so ~target land per week.
+ * attunement is an occasional softener; question is the default otherwise.
+ */
+export function decideMessageMode(input: ModeDecisionInput): ModeSelectionDebug {
+  const rnd = input.random ?? Math.random;
+  const base: ModeSelectionDebug = {
+    mode: "question",
+    enabled: input.enabled,
+    techniqueActive: input.techniqueActive,
+    forcedByCadence: false,
+    eligible: input.eligible,
+  };
+
+  if (!input.enabled || input.techniqueActive) return base;
+
+  const isEligible = (m: MessageMode) => input.eligible.includes(m);
+
+  // Cadence — callback first (rarer), then mirror.
+  const cadence: Array<{ mode: MessageMode; target: number }> = [
+    { mode: "callback", target: input.callbackTarget },
+    { mode: "mirror", target: input.mirrorTarget },
+  ];
+  for (const { mode, target } of cadence) {
+    if (!isEligible(mode) || target <= 0) continue;
+    const needed = target - (input.sentThisWeek[mode] ?? 0);
+    if (needed <= 0) continue;
+    if (rnd() < needed / 7) {
+      return { ...base, mode, forcedByCadence: true };
+    }
+  }
+
+  // Occasional attunement softener; otherwise the default question.
+  if (isEligible("attunement") && rnd() < 0.15) {
+    return { ...base, mode: "attunement" };
+  }
+  return base;
+}
+
+/**
+ * Select the rhetorical mode for a user's next daily prompt, plus the character
+ * ceiling to state to the model. Loads config + recent-mode counts, computes
+ * eligibility from the context, and defers the decision to `decideMessageMode`.
+ *
+ * Invariant: returns `question` with the legacy 160-char ceiling whenever the
+ * feature is off, a technique is active, or the user lacks the required signal.
+ */
+export async function selectMessageMode(
+  context: UserContext,
+  techniqueActive: boolean,
+  asOf: Date = new Date(),
+): Promise<{ mode: MessageMode; debug: ModeSelectionDebug; charCeiling: number }> {
+  const config = await loadConfig();
+
+  // Fast path: feature off — no extra query, identical to today.
+  if (!config.feeling_seen_enabled || techniqueActive) {
+    return {
+      mode: "question",
+      debug: {
+        mode: "question",
+        enabled: config.feeling_seen_enabled,
+        techniqueActive,
+        forcedByCadence: false,
+        eligible: [],
+      },
+      charCeiling: 160,
+    };
+  }
+
+  const eligible: MessageMode[] = [];
+  const hasReply = context.recentReply != null;
+  const hasThreads = (context.memory?.open_threads.length ?? 0) > 0;
+  if (hasReply || hasThreads) eligible.push("mirror");
+  if (
+    context.memory &&
+    context.memoryHistory &&
+    renderProgressionForPrompt(context.memory, context.memoryHistory) != null
+  ) {
+    eligible.push("callback");
+  }
+  if (context.memory) eligible.push("attunement");
+
+  const sentThisWeek = await loadRecentModeCounts(context.userId, 7, asOf);
+
+  const debug = decideMessageMode({
+    enabled: config.feeling_seen_enabled,
+    techniqueActive,
+    eligible,
+    sentThisWeek,
+    mirrorTarget: config.mirror_target_per_week,
+    callbackTarget: config.callback_target_per_week,
+  });
+
+  const charCeiling =
+    debug.mode === "mirror" || debug.mode === "callback"
+      ? config.mode_char_ceiling
+      : 160;
+
+  return { mode: debug.mode, debug, charCeiling };
+}
+
+/**
+ * Per-mode reply rate over a lookback window (for founder measurement). Reuses
+ * the same reply_to_message_id join as the per-content-type rates.
+ */
+export async function computeReplyRateByMode(
+  userId: string,
+  lookbackDays = 30,
+  asOf: Date = new Date(),
+): Promise<Partial<Record<MessageMode, { sends: number; rate: number }>>> {
+  const supabase = createServiceRoleClient();
+  const cutoff = new Date(asOf);
+  cutoff.setDate(cutoff.getDate() - lookbackDays);
+
+  const { data } = await supabase
+    .from("messages")
+    .select("id, message_mode")
+    .eq("user_id", userId)
+    .eq("direction", "outbound")
+    .not("message_mode", "is", null)
+    .gte("created_at", cutoff.toISOString())
+    .lte("created_at", asOf.toISOString());
+
+  const rows = (data as { id: string; message_mode: string | null }[]) ?? [];
+  const repliedIds = await loadInboundsForOutbounds(rows.map((r) => r.id));
+
+  const stats = new Map<MessageMode, { sends: number; replies: number }>();
+  for (const row of rows) {
+    const m = row.message_mode as MessageMode | null;
+    if (!m) continue;
+    const entry = stats.get(m) ?? { sends: 0, replies: 0 };
+    entry.sends += 1;
+    if (repliedIds.has(row.id)) entry.replies += 1;
+    stats.set(m, entry);
+  }
+
+  const out: Partial<Record<MessageMode, { sends: number; rate: number }>> = {};
+  for (const [mode, entry] of stats) {
+    out[mode] = {
+      sends: entry.sends,
+      rate: entry.sends > 0 ? entry.replies / entry.sends : 0,
+    };
+  }
+  return out;
 }

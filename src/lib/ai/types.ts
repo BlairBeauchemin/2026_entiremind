@@ -2,7 +2,7 @@
  * AI content generation types
  */
 
-import type { UserMemorySummary } from "./memory";
+import type { UserMemorySummary, MemoryHistoryEntry } from "./memory";
 import type { PersonaProfile } from "../persona/types";
 
 export type ContentType =
@@ -11,6 +11,14 @@ export type ContentType =
   | "check-in"
   | "action"
   | "gratitude";
+
+/**
+ * Rhetorical stance of a daily prompt — an axis orthogonal to ContentType.
+ * `question` reproduces the pre-feeling-seen behavior (ends with a question);
+ * the others are the feeling-seen beats and only fire when the founder has
+ * enabled the feature and the user has the signal to support them.
+ */
+export type MessageMode = "question" | "mirror" | "callback" | "attunement";
 
 export type AiProvider = "openai" | "anthropic";
 
@@ -33,6 +41,29 @@ export interface UserContext {
   recentReply: RecentReplyContext | null;
   /** Derived persona profile (Onboarding v2). Null for unprofiled users. */
   profile: PersonaProfile | null;
+  /**
+   * The last few outbound daily-prompt openings, fed back so the model does
+   * not reuse the same shape/opener day after day. Set by buildUserContext.
+   */
+  recentOutboundOpenings: string[];
+  /**
+   * Archived past memory versions, used only for `callback` mode to contrast
+   * "a few weeks ago" with now. Loaded lazily (null until a callback is chosen).
+   */
+  memoryHistory?: MemoryHistoryEntry[] | null;
+}
+
+/** Why selectMessageMode landed on its choice — surfaced in the simulator. */
+export interface ModeSelectionDebug {
+  mode: MessageMode;
+  /** content_selection_config.feeling_seen_enabled at decision time. */
+  enabled: boolean;
+  /** A playbook technique is active, so mode was forced to `question`. */
+  techniqueActive: boolean;
+  /** The mode was forced to hit its weekly cadence target. */
+  forcedByCadence: boolean;
+  /** Modes that passed the eligibility gates (had the signal to run). */
+  eligible: MessageMode[];
 }
 
 /** Why selectContentType landed on its choice — surfaced in the simulator's debug view. */
@@ -62,11 +93,20 @@ export interface GeneratedMessage {
   quoteId?: string;
   /** Set when a playbook technique shaped the prompt for this message */
   techniqueId?: string;
+  /** Rhetorical stance used for this message. */
+  mode: MessageMode;
+  /** Present when the mode came from rules-based selection. */
+  modeSelection?: ModeSelectionDebug;
 }
 
 export interface AiGenerateOptions {
   /** Max output tokens. Defaults to 100 (SMS-length messages). */
   maxTokens?: number;
+  /**
+   * Override the model for this call (else ANTHROPIC_MODEL / built-in default).
+   * Used to route the feeling-seen modes to a stronger model than the default.
+   */
+  model?: string;
 }
 
 export interface AiProviderAdapter {

@@ -5,6 +5,7 @@ import type {
   SendSmsResult,
   ContentType,
 } from "./types";
+import type { MessageMode } from "../ai/types";
 import { twilioAdapter } from "./providers/twilio";
 import { buildWelcomeMessage } from "./welcome";
 
@@ -41,6 +42,8 @@ export interface SendSmsOptions {
   quoteId?: string;
   /** Playbook technique id when a technique shaped the message */
   techniqueId?: string;
+  /** Rhetorical mode of a daily prompt (question/mirror/callback/attunement) */
+  messageMode?: MessageMode;
 }
 
 /**
@@ -55,7 +58,13 @@ export async function sendSms(
   const supabase = createServiceRoleClient();
   const adapter = getProviderAdapter();
   const fromNumber = adapter.getPhoneNumber();
-  const { contentType, aiGenerated = false, quoteId, techniqueId } = options;
+  const {
+    contentType,
+    aiGenerated = false,
+    quoteId,
+    techniqueId,
+    messageMode,
+  } = options;
 
   try {
     // Send via the configured provider
@@ -75,6 +84,7 @@ export async function sendSms(
         ai_generated: aiGenerated,
         quote_id: quoteId ?? null,
         technique_id: techniqueId ?? null,
+        message_mode: messageMode ?? null,
       });
 
       return {
@@ -99,6 +109,7 @@ export async function sendSms(
         ai_generated: aiGenerated,
         quote_id: quoteId ?? null,
         technique_id: techniqueId ?? null,
+        message_mode: messageMode ?? null,
       })
       .select()
       .single();
@@ -146,6 +157,7 @@ export async function sendSms(
       ai_generated: aiGenerated,
       quote_id: quoteId ?? null,
       technique_id: techniqueId ?? null,
+      message_mode: messageMode ?? null,
     });
 
     return {

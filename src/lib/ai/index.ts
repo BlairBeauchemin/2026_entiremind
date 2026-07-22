@@ -8,7 +8,11 @@ import type {
   AiProviderAdapter,
   RecentReplyContext,
 } from "./types";
-import { buildUserPrompt, selectContentTypeDetailed } from "./prompts";
+import {
+  buildUserPrompt,
+  selectContentTypeDetailed,
+  selectMessageMode,
+} from "./prompts";
 import {
   loadActiveSystemPrompt,
   loadSystemPromptById,
@@ -22,8 +26,13 @@ import {
 import { pickTechniqueForUser } from "../techniques";
 import { openaiAdapter } from "./providers/openai";
 import { anthropicAdapter } from "./providers/anthropic";
-import { loadUserMemory } from "./memory";
+import {
+  loadUserMemory,
+  loadMemoryHistory,
+  loadRecentOutboundOpenings,
+} from "./memory";
 import type { PersonaProfile } from "../persona/types";
+import type { MessageMode } from "./types";
 
 const RECENT_REPLY_LOOKBACK_HOURS = 48;
 
@@ -101,6 +110,15 @@ export async function buildUserContext(
   // Load the derived persona profile (Onboarding v2). Null for unprofiled users.
   const profile = await loadUserProfile(userId);
 
+  // Anti-repetition + progression signals (feeling-seen redesign). Both are
+  // cheap indexed reads and harmless when the feature is disabled.
+  const recentOutboundOpenings = await loadRecentOutboundOpenings(
+    userId,
+    5,
+    asOf,
+  );
+  const memoryHistory = await loadMemoryHistory(userId, 3);
+
   return {
     userId,
     name: user?.name || null,
@@ -111,6 +129,8 @@ export async function buildUserContext(
     memory,
     recentReply,
     profile,
+    recentOutboundOpenings,
+    memoryHistory,
   };
 }
 
@@ -211,6 +231,8 @@ export async function generateMessageForUser(
     asOf?: Date;
     /** Pin generation to a specific prompt version (simulator A/B runs). */
     systemPromptId?: string | null;
+    /** Pin the rhetorical mode (simulator A/B runs). */
+    preferredMode?: MessageMode;
   },
 ): Promise<GeneratedMessage> {
   const adapter = getProviderAdapter();
@@ -250,6 +272,7 @@ export async function generateMessageForUser(
         systemPromptId: null,
         systemPromptName: "quote-library",
         selection,
+        mode: "question",
       };
     }
   }
@@ -258,18 +281,52 @@ export async function generateMessageForUser(
   // persona + state. Null (no match / probability roll) → generic prompt.
   const technique = await pickTechniqueForUser(context, contentType);
 
+  // Choose the rhetorical mode. A technique forces `question` (its recipe
+  // already replaces the instruction). preferredMode pins it for the simulator.
+  let mode: MessageMode;
+  let modeSelection: GeneratedMessage["modeSelection"];
+  let charCeiling = 160;
+  if (opts?.preferredMode) {
+    mode = opts.preferredMode;
+    charCeiling =
+      mode === "mirror" || mode === "callback"
+        ? await loadModeCharCeiling()
+        : 160;
+  } else {
+    const decided = await selectMessageMode(context, technique != null, asOf);
+    mode = decided.mode;
+    modeSelection = decided.debug;
+    charCeiling = decided.charCeiling;
+  }
+
   // Build the prompt
-  const userPrompt = buildUserPrompt(context, contentType, technique);
+  const userPrompt = buildUserPrompt(
+    context,
+    contentType,
+    technique,
+    mode,
+    charCeiling,
+  );
+
+  // Route the feeling-seen beats to a stronger model when one is configured;
+  // give them a little more token headroom for the higher char ceiling.
+  const model = modelForMode(mode);
+  const maxTokens = charCeiling > 160 ? 160 : 100;
 
   try {
-    const text = await adapter.generateMessage(systemPrompt.body, userPrompt);
+    const text = await adapter.generateMessage(systemPrompt.body, userPrompt, {
+      model,
+      maxTokens,
+    });
 
-    // Ensure we're under 160 characters
-    const truncated = text.length > 160;
-    const finalText = truncated ? text.substring(0, 157) + "..." : text;
+    // Ensure we're under the mode's character ceiling.
+    const truncated = text.length > charCeiling;
+    const finalText = truncated
+      ? text.substring(0, charCeiling - 3) + "..."
+      : text;
 
     console.log(
-      `Generated message via ${adapter.provider}${technique ? ` [${technique.name}]` : ""}: "${finalText.substring(0, 50)}..."`,
+      `Generated message via ${adapter.provider} [${mode}]${technique ? ` [${technique.name}]` : ""}: "${finalText.substring(0, 50)}..."`,
     );
 
     return {
@@ -282,6 +339,8 @@ export async function generateMessageForUser(
       systemPromptName: systemPrompt.name,
       selection,
       techniqueId: technique?.id,
+      mode,
+      modeSelection,
     };
   } catch (error) {
     console.error(
@@ -289,26 +348,10 @@ export async function generateMessageForUser(
       error,
     );
 
-    // Fallback message
-    const fallbackMessages: Record<ContentType, string> = {
-      reflection: context.name
-        ? `Good morning, ${context.name}. What's one thing you'd like to notice about yourself today?`
-        : "Good morning. What's one thing you'd like to notice about yourself today?",
-      "check-in": context.name
-        ? `Morning, ${context.name}. How are you feeling as you start your day?`
-        : "Morning. How are you feeling as you start your day?",
-      action: context.name
-        ? `Hi ${context.name}. What's one small step you could take today toward what matters to you?`
-        : "What's one small step you could take today toward what matters to you?",
-      gratitude: context.name
-        ? `Good morning, ${context.name}. What's one thing, big or small, that you're grateful for today?`
-        : "Good morning. What's one thing, big or small, that you're grateful for today?",
-      quote:
-        "Small shifts in attention can lead to meaningful changes over time.",
-    };
-
     return {
-      text: fallbackMessages[contentType],
+      // Fallback must NOT fabricate specifics (no memory access at error time),
+      // so mirror/callback degrade to a safe warm statement, never a fake mirror.
+      text: buildFallbackMessage(mode, contentType, context.name),
       contentType,
       fallback: true,
       truncated: false,
@@ -316,8 +359,68 @@ export async function generateMessageForUser(
       systemPromptId: systemPrompt.id,
       systemPromptName: systemPrompt.name,
       selection,
+      mode,
+      modeSelection,
     };
   }
+}
+
+/**
+ * Model override for a given mode. Feeling-seen beats (mirror/callback) can be
+ * routed to a stronger model via ANTHROPIC_FEELING_SEEN_MODEL; everything else
+ * uses the adapter default (ANTHROPIC_MODEL or the built-in).
+ */
+function modelForMode(mode: MessageMode): string | undefined {
+  if (mode === "mirror" || mode === "callback") {
+    return process.env.ANTHROPIC_FEELING_SEEN_MODEL || undefined;
+  }
+  return undefined;
+}
+
+/** Char ceiling for pinned feeling-seen modes (simulator path). */
+async function loadModeCharCeiling(): Promise<number> {
+  const supabase = createServiceRoleClient();
+  const { data } = await supabase
+    .from("content_selection_config")
+    .select("mode_char_ceiling")
+    .eq("id", 1)
+    .single();
+  return (data?.mode_char_ceiling as number) ?? 300;
+}
+
+/**
+ * Build a safe fallback message when the LLM call fails. Question mode uses the
+ * classic content-type prompts; attunement and the feeling-seen modes use warm,
+ * specifics-free statements (memory isn't available at error time, so a mirror
+ * must never invent a detail).
+ */
+function buildFallbackMessage(
+  mode: MessageMode,
+  contentType: ContentType,
+  name: string | null,
+): string {
+  if (mode === "mirror" || mode === "callback" || mode === "attunement") {
+    return name
+      ? `${name}, whatever today holds, you're further along than it feels. Keep going.`
+      : "Whatever today holds, you're further along than it feels. Keep going.";
+  }
+
+  const fallbackMessages: Record<ContentType, string> = {
+    reflection: name
+      ? `Good morning, ${name}. What's one thing you'd like to notice about yourself today?`
+      : "Good morning. What's one thing you'd like to notice about yourself today?",
+    "check-in": name
+      ? `Morning, ${name}. How are you feeling as you start your day?`
+      : "Morning. How are you feeling as you start your day?",
+    action: name
+      ? `Hi ${name}. What's one small step you could take today toward what matters to you?`
+      : "What's one small step you could take today toward what matters to you?",
+    gratitude: name
+      ? `Good morning, ${name}. What's one thing, big or small, that you're grateful for today?`
+      : "Good morning. What's one thing, big or small, that you're grateful for today?",
+    quote: "Small shifts in attention can lead to meaningful changes over time.",
+  };
+  return fallbackMessages[contentType];
 }
 
 /**
