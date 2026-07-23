@@ -34,6 +34,8 @@ function context(overrides: Partial<UserContext> = {}): UserContext {
     },
     recentReply: null,
     profile: null,
+    recentOutboundOpenings: [],
+    memoryHistory: null,
     ...overrides,
   };
 }

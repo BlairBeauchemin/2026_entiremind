@@ -273,6 +273,7 @@ export async function GET(request: Request) {
         aiGenerated: !generatedMessage.quoteId,
         quoteId: generatedMessage.quoteId,
         techniqueId: generatedMessage.techniqueId,
+        messageMode: generatedMessage.mode,
       });
 
       if (result.success) {

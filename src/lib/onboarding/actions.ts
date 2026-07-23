@@ -331,6 +331,7 @@ export async function completeFullOnboarding(
         const result = await sendSms(user.id, phone, generated.text, {
           contentType: generated.contentType,
           aiGenerated: true,
+          messageMode: generated.mode,
         });
         if (!result.success) {
           console.error("Failed to send first prompt SMS:", result.error);

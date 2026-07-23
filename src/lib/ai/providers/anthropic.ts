@@ -25,11 +25,26 @@ export const anthropicAdapter: AiProviderAdapter = {
   ): Promise<string> {
     const anthropic = getClient();
 
+    const model =
+      options?.model ||
+      process.env.ANTHROPIC_MODEL ||
+      "claude-haiku-4-5-20251001";
+
+    // Sonnet 5 / Opus default to adaptive thinking when `thinking` is omitted.
+    // For a one-line SMS with a small max_tokens that's actively harmful — the
+    // thinking budget can eat the whole output and truncate the message — so
+    // disable it for non-Haiku models. Haiku's default is already thinking-off.
+    // Never set `temperature`: Sonnet 5 / Opus reject sampling params with a 400.
+    const thinking = /haiku/i.test(model)
+      ? undefined
+      : ({ type: "disabled" } as const);
+
     const response = await anthropic.messages.create({
-      model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
+      model,
       max_tokens: options?.maxTokens ?? 100,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
+      thinking,
     });
 
     const content = response.content[0];
