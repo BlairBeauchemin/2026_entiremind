@@ -11,44 +11,39 @@ Written to be read from a phone. Sections are ordered by urgency.
 
 ---
 
-## 0. NEW (July 26) — enrichment / memory learning-loop fix
+## 0. WHERE WE LEFT OFF — enrichment / memory learning-loop fix (July 26, DONE)
 
-Branch `claude/enrichment-memory-loop-fix`. Fixes the silent enrichment drops
-(daily gen's `ANTHROPIC_MODEL=claude-sonnet-5` was also being used by
-enrichment, which timed out / returned thinking blocks and left `insights` null).
+The learning loop was silently dropping replies: enrichment shared
+`ANTHROPIC_MODEL` with daily generation, so when daily gen moved to
+`claude-sonnet-5` enrichment ran on Sonnet too (thinking-on + a 3s timeout) and
+left `messages.insights` null — including your "focus on manifestation" texts.
+That's why the daily messages kept fixating on the shoulder.
 
-**Do these after merge:**
+**All shipped & verified today (PR #15, merged → deployed to prod):**
+- ✅ Enrichment hardened — its own `ANTHROPIC_ENRICH_MODEL` (Haiku), thinking off,
+  10s timeout, one retry, loud on failure. Never inherits the Sonnet daily model.
+- ✅ Migration `027_reply_steer.sql` applied — steer columns on `user_memory`.
+- ✅ Reconcile cron run once by hand — backfilled all 7 null-insights replies
+  (`reconciled: 7, stillFailed: 0`). The two "manifestation" texts now carry
+  `directive: "manifestation"`; the shoulder-mention reply was re-tagged with the
+  real theme (motivation / side project).
+- ✅ Temp test knobs reverted (`mirror_target_per_week`=2, `callback_target_per_week`=1,
+  `technique_apply_probability`=0.50).
+- ✅ Memory blob for 714-872-2834 is manifestation-focused (no shoulder).
 
-1. **Run migration `027_reply_steer.sql`** (Supabase SQL editor). Adds
-   `user_memory.active_steer`, `steer_set_at`, `steer_nudged`. Safe to re-run.
-   Until it runs, the steer feature simply stays dormant (code reads the columns
-   defensively) — enrichment hardening works regardless.
+**The one thing to watch:** tomorrow's 7:45 AM Pacific daily send — it should read
+as manifestation / side-project focused, not shoulder. If it drifts back, check
+`select summary->'themes', summary->'open_threads' from user_memory where user_id
+= (select id from users where phone like '%7148722834%');`.
 
-2. **(Optional) set `ANTHROPIC_ENRICH_MODEL` in Vercel** → leave unset to default
-   to Haiku (recommended). Enrichment no longer inherits `ANTHROPIC_MODEL`, so the
-   Sonnet daily-gen model can't slow it down again. Optional `ENRICH_TIMEOUT_MS`
-   (default 10000).
-
-3. **Backfill the existing null-insights replies** — the reconcile cron is built
-   but NOT scheduled (Vercel cron-slot limit). Run it once by hand:
-   ```
-   curl -H "Authorization: Bearer $CRON_SECRET" \
-     https://www.entiremind.com/api/cron/reconcile-enrichment
-   ```
-   When a cron slot frees up, add to `vercel.json`:
-   `{ "path": "/api/cron/reconcile-enrichment", "schedule": "0 8 * * *" }`.
-
-4. **Revert the TEMP test knobs** in `content_selection_config` (SQL editor):
-   `mirror_target_per_week` 20 → 2, `callback_target_per_week` 0 → 1,
-   `technique_apply_probability` 0 → 0.50. Also review the "Craft pass v1
-   (feeling-seen)" `system_prompts` row's `is_active`. (The manually rewritten
-   `user_memory` blob for 714-872-2834 was test data.)
-
-**Verify after deploy:** text in "can we focus on manifestation?" → check
-`select insights->>'directive', (select active_steer from user_memory um where
-um.user_id = m.user_id) from messages m where direction='inbound' order by
-created_at desc limit 1;` and confirm the next morning's prompt is about
-manifestation, not the shoulder.
+**Still open (low priority, when you want):**
+- Schedule the reconcile cron once a Vercel cron slot frees up — add
+  `{ "path": "/api/cron/reconcile-enrichment", "schedule": "0 8 * * *" }` to
+  `vercel.json`. (Inline retry + fallback already prevent silent losses; this is
+  just belt-and-suspenders.)
+- Optional live test of the steer: text "can we focus on X" → expect an ack
+  pointing you to set it in-app, `user_memory.active_steer` populated, and the next
+  morning's prompt to follow X.
 
 ---
 

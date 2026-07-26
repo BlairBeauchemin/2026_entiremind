@@ -355,7 +355,10 @@ AI_PROVIDER=anthropic
 
 # Anthropic (Claude) - default
 ANTHROPIC_API_KEY=sk-ant-...
-ANTHROPIC_MODEL=claude-haiku-4-5-20251001  # optional, defaults to claude-haiku-4-5-20251001
+ANTHROPIC_MODEL=claude-sonnet-5             # daily prompt generation (prod uses claude-sonnet-5)
+ANTHROPIC_MEMORY_MODEL=claude-sonnet-5     # optional, weekly compaction (defaults to claude-sonnet-5)
+ANTHROPIC_ENRICH_MODEL=claude-haiku-4-5-20251001  # optional; enrichment's OWN model, NEVER inherits ANTHROPIC_MODEL (defaults to Haiku)
+ENRICH_TIMEOUT_MS=10000                     # optional, per-attempt enrichment timeout
 
 # OR OpenAI
 AI_PROVIDER=openai
@@ -373,12 +376,20 @@ Evolves the content engine from a daily message generator into a system that lis
 - **Database migration**: `supabase/migrations/013_content_engine_v2.sql`
 
 **Reply enrichment + acknowledgement (every inbound gets feedback):**
-- `src/lib/ai/enrich.ts` - Haiku-powered enrichment with 3s timeout, returns sentiment, emotional_state, themes, category, modality, mentions, open_thread, substantive flag, and (when substantive) an AI mirror line
+- `src/lib/ai/enrich.ts` - Haiku-powered enrichment, returns sentiment, emotional_state, themes, category, modality, mentions, open_thread, substantive flag, `directive`, `enriched` flag, and (when substantive) an AI mirror line
+- **Enrichment has its OWN model** via `resolveEnrichModel()` (`ANTHROPIC_ENRICH_MODEL`, default Haiku) — it must never inherit `ANTHROPIC_MODEL` (that's the daily-gen model, now Sonnet). Regression fixed July 2026: sharing the var silently broke enrichment when daily gen moved to Sonnet (thinking-on + 3s race → null insights). Enrich now: pins Haiku, disables thinking for non-Haiku, 10s timeout (`ENRICH_TIMEOUT_MS`), one retry, and `console.error`s on final failure.
 - `src/lib/ai/prompts/enrich.ts` - System prompt for the enrichment + mirror call
 - `src/lib/acks/` - Soft-ack library reader, picks from `soft_acks` table, excludes the user's last 5 ack texts to avoid repetition
-- Twilio webhook uses `next/server` `after()` to enrich + ack in the background — Twilio gets its TwiML response immediately
+- Twilio webhook uses `next/server` `after()` to enrich + ack in the background — Twilio gets its TwiML response immediately (`maxDuration=30` gives the retry headroom)
 - Substantive replies (≥30 chars or strong emotional/thematic signal) get an AI-generated mirror; short replies get a soft ack from the curated library
+- **Never silently lost**: when the model call fails, `buildFallbackEnrichment()` persists minimal insights (`enriched:false`, `substantive` from length) so `insights` is never null; the reconcile cron re-enriches those rows later
 - STOP/HELP keywords bypass acks entirely
+
+**Enrichment reliability + explicit topic steers (migration 027, July 2026):**
+- **Reconcile cron** `src/app/api/cron/reconcile-enrichment/route.ts` - re-enriches recent inbound with `insights IS NULL` or `insights->>'enriched'='false'`. CRON_SECRET-guarded. **Built but NOT scheduled** (Vercel cron-slot limit) — add `{ "path": "/api/cron/reconcile-enrichment", "schedule": "0 8 * * *" }` to `vercel.json` when a slot frees. Manually runnable to backfill: `curl -H "Authorization: Bearer $CRON_SECRET" https://www.entiremind.com/api/cron/reconcile-enrichment`
+- **Explicit "focus on X"**: enrichment sets `insights.directive` when a reply explicitly asks to change focus. `src/lib/ai/steer.ts` persists it as `user_memory.active_steer` (+ `steer_set_at`, `steer_nudged`); `buildUserPrompt` injects it at TOP priority (decays after `STEER_TTL_DAYS`=10). The intention is NEVER auto-rewritten — the first directive per window sends an ack nudging the user to set it in-app (`/dashboard/settings`). Weekly compaction folds the steer into themes then clears it. Reconcile backfill does NOT set steers or send SMS (insights-only).
+- **`loadRecentSubstantiveReply`** (`src/lib/ai/index.ts`) uses `deriveSubstantive()` — falls back to a length heuristic when `insights` is null, so a long reply surfaces next-day even if enrichment hasn't run.
+- **Memory rebalance**: `MEMORY_SYSTEM_PROMPT` weights current intention + recent replies over stale recurring topics and drops stale open threads; `buildUserPrompt` demotes the memory block to "background, not the agenda."
 
 **User memory + weekly compaction:**
 - `src/lib/ai/memory.ts` - `compactUserMemory()`, `loadUserMemory()`, `renderMemoryForPrompt()`, `buildSeedMemoryFromOnboarding()`
@@ -678,6 +689,8 @@ UPGRADE_LINK_SECRET
 # AI (choose one provider)
 AI_PROVIDER=anthropic  # or 'openai'
 ANTHROPIC_API_KEY      # if using anthropic (default)
+ANTHROPIC_MODEL=claude-sonnet-5           # daily prompt generation
+ANTHROPIC_ENRICH_MODEL                    # optional; enrichment's own model (defaults Haiku, never inherits ANTHROPIC_MODEL)
 OPENAI_API_KEY         # if using openai
 
 # Admin
