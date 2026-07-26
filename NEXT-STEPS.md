@@ -11,6 +11,47 @@ Written to be read from a phone. Sections are ordered by urgency.
 
 ---
 
+## 0. NEW (July 26) — enrichment / memory learning-loop fix
+
+Branch `claude/enrichment-memory-loop-fix`. Fixes the silent enrichment drops
+(daily gen's `ANTHROPIC_MODEL=claude-sonnet-5` was also being used by
+enrichment, which timed out / returned thinking blocks and left `insights` null).
+
+**Do these after merge:**
+
+1. **Run migration `027_reply_steer.sql`** (Supabase SQL editor). Adds
+   `user_memory.active_steer`, `steer_set_at`, `steer_nudged`. Safe to re-run.
+   Until it runs, the steer feature simply stays dormant (code reads the columns
+   defensively) — enrichment hardening works regardless.
+
+2. **(Optional) set `ANTHROPIC_ENRICH_MODEL` in Vercel** → leave unset to default
+   to Haiku (recommended). Enrichment no longer inherits `ANTHROPIC_MODEL`, so the
+   Sonnet daily-gen model can't slow it down again. Optional `ENRICH_TIMEOUT_MS`
+   (default 10000).
+
+3. **Backfill the existing null-insights replies** — the reconcile cron is built
+   but NOT scheduled (Vercel cron-slot limit). Run it once by hand:
+   ```
+   curl -H "Authorization: Bearer $CRON_SECRET" \
+     https://www.entiremind.com/api/cron/reconcile-enrichment
+   ```
+   When a cron slot frees up, add to `vercel.json`:
+   `{ "path": "/api/cron/reconcile-enrichment", "schedule": "0 8 * * *" }`.
+
+4. **Revert the TEMP test knobs** in `content_selection_config` (SQL editor):
+   `mirror_target_per_week` 20 → 2, `callback_target_per_week` 0 → 1,
+   `technique_apply_probability` 0 → 0.50. Also review the "Craft pass v1
+   (feeling-seen)" `system_prompts` row's `is_active`. (The manually rewritten
+   `user_memory` blob for 714-872-2834 was test data.)
+
+**Verify after deploy:** text in "can we focus on manifestation?" → check
+`select insights->>'directive', (select active_steer from user_memory um where
+um.user_id = m.user_id) from messages m where direction='inbound' order by
+created_at desc limit 1;` and confirm the next morning's prompt is about
+manifestation, not the shoulder.
+
+---
+
 ## 1. URGENT — run the migrations (needs ~15 min, phone browser works)
 
 Production `main` was deployed today with 8 merged branches. The code expects

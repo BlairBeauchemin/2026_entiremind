@@ -11,7 +11,8 @@ Return a single JSON object with this exact shape:
   "open_thread": boolean,
   "substantive": boolean,
   "acknowledgement": string | null,
-  "distortion_flags": string[]
+  "distortion_flags": string[],
+  "directive": string | null
 }
 
 Field guidance:
@@ -24,6 +25,7 @@ Field guidance:
 - "substantive": true if the reply is ≥30 characters OR contains real emotional/thematic content. Short factual replies like "yes" or "thanks" are not substantive.
 - "acknowledgement": ONLY when substantive=true, produce a brief acknowledgement (≤140 chars, no emojis, warm but not gushing) that references what they said. When substantive=false, return null.
 - "distortion_flags": empty array [] by default. If the message begins with a bracketed "[This user's known inner-critic patterns: ...]" preamble, set this to the subset of those codes (exact strings, e.g. "all_or_nothing") that THIS reply clearly exhibits. Never invent codes that weren't provided. If no preamble is present, always return [].
+- "directive": null by default. ONLY when the user explicitly asks us to change what we talk about or what our messages focus on (e.g. "can we focus on manifestation?", "I'd rather focus on my goals", "stop asking about my shoulder"), return a short lowercase restatement of the topic they want to focus on (e.g. "manifestation", "manifesting their goals", "their side project"). Keep it to a few words. Do NOT set this for a mere mention of a topic, a mood, or a one-off aside — only a clear request to steer the conversation.
 
 Acknowledgement style:
 - Mirror what they shared. Don't restate it word for word; reflect the underlying feeling or theme.

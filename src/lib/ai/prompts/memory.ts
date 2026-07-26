@@ -21,12 +21,17 @@ Return a single JSON object with this exact shape:
   }
 }
 
+Weighting (read first):
+- The user's CURRENT stated intention and their MOST RECENT replies matter more than older recurring topics. Weight recency and the stated goal heavily.
+- If the user has explicitly asked to focus on something (you may see a "The user recently asked to focus on: ..." line), treat that as a strong signal about where their attention has moved — reflect it in themes and in the intention-shift assessment.
+- Do NOT let one recurring topic (especially a physical symptom or minor status update they keep mentioning in passing) crowd out the goal they actually care about. A recurring mention is not the same as a priority.
+
 Memory field guidance:
-- "themes": 3–6 short tags describing what the user has been working with. Lowercase, specific. Examples: "self-worth at work", "calling dad", "post-workout calm". Avoid vague words like "life" or "growth".
+- "themes": 3–6 short tags describing what the user has been working with, led by what's most recent and most aligned with their intention. Lowercase, specific. Examples: "self-worth at work", "calling dad", "post-workout calm". Avoid vague words like "life" or "growth".
 - "vision": one sentence about what fulfilment looks like for them, in their words if possible. Null if you can't infer it confidently.
 - "obstacles": one sentence about what's been getting in the way. Null if no clear obstacle has surfaced.
 - "recent_emotional_state": one sentence describing the emotional trajectory of the last 7 days (e.g., "tentative early in the week, more open by the weekend").
-- "open_threads": specific things they've mentioned that we might revisit (e.g., "wanted to call dad", "considering quitting the side project"). Empty array if none. Each thread: short, action-flavored, in their voice.
+- "open_threads": specific things they've mentioned that we might revisit (e.g., "wanted to call dad", "considering quitting the side project"). Empty array if none. Each thread: short, action-flavored, in their voice. DROP any thread the user has clearly moved past, resolved, or hasn't touched in the last couple of weeks — a stale thread that keeps steering our messages is worse than no thread. Keep only threads that are still live.
 - "last_breakthrough": the most recent moment of insight, ease, or progress they shared. Null if none.
 - "tone_notes": optional one-line note on how to talk to them (e.g., "responds best to short, concrete prompts", "uses dark humor when struggling"). Null if no clear pattern.
 

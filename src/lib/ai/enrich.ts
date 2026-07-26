@@ -34,9 +34,81 @@ export interface ReplyEnrichment {
   acknowledgement: string | null;
   /** Which of the user's known inner-critic patterns this reply exhibits. */
   distortion_flags: Distortion[];
+  /**
+   * When the user explicitly asks us to change what we talk about ("can we
+   * focus on manifestation?"), a short normalized restatement of that steer.
+   * Null when the reply carries no explicit topic directive.
+   */
+  directive: string | null;
+  /**
+   * True when this payload came from a real model enrichment; false when it's
+   * the deterministic fallback (see buildFallbackEnrichment). The reconcile
+   * cron re-enriches rows where this is false. Absent on pre-existing rows,
+   * which are treated as already-enriched.
+   */
+  enriched: boolean;
 }
 
-const ENRICH_TIMEOUT_MS = 3000;
+// The enrich call runs in the webhook's background `after()` — Twilio already
+// has its TwiML response, so a tight race just drops signal. Give the model
+// real headroom; env-tunable for tuning without a deploy.
+const ENRICH_TIMEOUT_MS = Number(process.env.ENRICH_TIMEOUT_MS) || 10000;
+const ENRICH_MAX_ATTEMPTS = 2;
+
+/**
+ * Resolve the model for the enrichment call. Deliberately its OWN env var —
+ * enrichment must never inherit ANTHROPIC_MODEL (which the daily generator may
+ * point at a slow, thinking-enabled Sonnet). Defaults to Haiku.
+ */
+export function resolveEnrichModel(): string {
+  return process.env.ANTHROPIC_ENRICH_MODEL || "claude-haiku-4-5-20251001";
+}
+
+/**
+ * A reply is "substantive" when it clears this length, or when the enrichment
+ * model explicitly said so. Shared by the fallback payload and the next-day
+ * reference so both agree.
+ */
+export const SUBSTANTIVE_MIN_CHARS = 30;
+
+/**
+ * Decide whether a reply is substantive. Prefers the model's `substantive`
+ * flag when present; otherwise (enrichment missing/failed) falls back to a
+ * length heuristic so a long reply still surfaces even before it's enriched.
+ */
+export function deriveSubstantive(
+  insights: { substantive?: boolean } | null | undefined,
+  text: string,
+): boolean {
+  if (insights && typeof insights.substantive === "boolean") {
+    return insights.substantive;
+  }
+  return text.trim().length >= SUBSTANTIVE_MIN_CHARS;
+}
+
+/**
+ * Deterministic minimal enrichment used when the model call fails outright.
+ * Guarantees an inbound reply is never left with fully-null insights: at least
+ * `substantive` is derived from length so the next-day reference and memory
+ * compaction can still see it, and `enriched: false` flags it for the reconcile
+ * cron to re-enrich later.
+ */
+export function buildFallbackEnrichment(replyText: string): ReplyEnrichment {
+  return {
+    sentiment: "neutral",
+    emotional_state: "unknown",
+    themes: [],
+    category: "other",
+    modality: "reflective",
+    mentions: [],
+    open_thread: false,
+    substantive: replyText.trim().length >= SUBSTANTIVE_MIN_CHARS,
+    acknowledgement: null,
+    distortion_flags: [],
+    directive: null,
+    enriched: false,
+  };
+}
 
 let client: Anthropic | null = null;
 
@@ -120,6 +192,12 @@ export function coerceEnrichment(raw: unknown): ReplyEnrichment | null {
         .slice(0, DISTORTIONS.length)
     : [];
 
+  const directiveRaw = obj.directive;
+  const directive =
+    typeof directiveRaw === "string" && directiveRaw.trim().length > 0
+      ? directiveRaw.trim().slice(0, 160)
+      : null;
+
   return {
     sentiment,
     emotional_state,
@@ -131,6 +209,8 @@ export function coerceEnrichment(raw: unknown): ReplyEnrichment | null {
     substantive: Boolean(obj.substantive),
     acknowledgement,
     distortion_flags,
+    directive,
+    enriched: true,
   };
 }
 
@@ -157,57 +237,97 @@ export function buildEnrichInput(
 }
 
 /**
+ * One enrichment attempt. Returns the parsed enrichment, or null on timeout or
+ * malformed output. Throws on an API error so the caller's retry loop can see it.
+ */
+async function attemptEnrich(
+  anthropic: Anthropic,
+  replyText: string,
+  knownPatterns: Distortion[],
+  model: string,
+): Promise<ReplyEnrichment | null> {
+  // Non-Haiku models (e.g. Sonnet) default to adaptive thinking, which returns a
+  // thinking block as content[0] and can eat the whole output — disable it so
+  // the JSON always lands in the first text block. Haiku is already thinking-off.
+  const thinking = /haiku/i.test(model)
+    ? undefined
+    : ({ type: "disabled" } as const);
+
+  const call = anthropic.messages.create({
+    model,
+    max_tokens: 400,
+    system: ENRICH_SYSTEM_PROMPT,
+    messages: [
+      { role: "user", content: buildEnrichInput(replyText, knownPatterns) },
+    ],
+    thinking,
+  });
+
+  const timeout = new Promise<null>((resolve) =>
+    setTimeout(() => resolve(null), ENRICH_TIMEOUT_MS),
+  );
+
+  const response = await Promise.race([call, timeout]);
+  if (!response) {
+    console.warn("Enrich call timed out");
+    return null;
+  }
+
+  const block = response.content[0];
+  if (block.type !== "text" || !block.text) {
+    console.warn("Enrich response had no text content");
+    return null;
+  }
+
+  const trimmed = block.text.trim();
+  const jsonStart = trimmed.indexOf("{");
+  const jsonEnd = trimmed.lastIndexOf("}");
+  if (jsonStart < 0 || jsonEnd <= jsonStart) {
+    console.warn("Enrich response did not contain JSON");
+    return null;
+  }
+
+  return coerceEnrichment(JSON.parse(trimmed.slice(jsonStart, jsonEnd + 1)));
+}
+
+/**
  * Classify an inbound reply and (when substantive) generate a brief acknowledgement.
- * Returns null on timeout, malformed output, or any API failure — callers should
- * fall back to the soft-ack library in that case.
+ * Retries once on timeout/malformed output/API error. Returns null only after all
+ * attempts fail — callers must then persist buildFallbackEnrichment so the reply
+ * is never left with fully-null insights.
  */
 export async function enrichInboundReply(
   replyText: string,
   knownPatterns: Distortion[] = [],
 ): Promise<ReplyEnrichment | null> {
-  try {
-    const anthropic = getClient();
+  const anthropic = getClient();
+  const model = resolveEnrichModel();
+  let lastError: unknown = null;
 
-    const call = anthropic.messages.create({
-      model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
-      max_tokens: 400,
-      system: ENRICH_SYSTEM_PROMPT,
-      messages: [
-        { role: "user", content: buildEnrichInput(replyText, knownPatterns) },
-      ],
-    });
-
-    const timeout = new Promise<null>((resolve) =>
-      setTimeout(() => resolve(null), ENRICH_TIMEOUT_MS),
-    );
-
-    const response = await Promise.race([call, timeout]);
-    if (!response) {
-      console.warn("Enrich call timed out");
-      return null;
+  for (let attempt = 1; attempt <= ENRICH_MAX_ATTEMPTS; attempt++) {
+    try {
+      const result = await attemptEnrich(
+        anthropic,
+        replyText,
+        knownPatterns,
+        model,
+      );
+      if (result) return result;
+    } catch (err) {
+      lastError = err;
     }
-
-    const block = response.content[0];
-    if (block.type !== "text" || !block.text) {
-      console.warn("Enrich response had no text content");
-      return null;
+    if (attempt < ENRICH_MAX_ATTEMPTS) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
     }
-
-    const trimmed = block.text.trim();
-    const jsonStart = trimmed.indexOf("{");
-    const jsonEnd = trimmed.lastIndexOf("}");
-    if (jsonStart < 0 || jsonEnd <= jsonStart) {
-      console.warn("Enrich response did not contain JSON");
-      return null;
-    }
-
-    const jsonStr = trimmed.slice(jsonStart, jsonEnd + 1);
-    const parsed = JSON.parse(jsonStr);
-    return coerceEnrichment(parsed);
-  } catch (err) {
-    console.error("Enrich call failed:", err);
-    return null;
   }
+
+  // Log loudly so a persistent enrichment failure surfaces in error monitoring
+  // instead of hiding behind the soft-ack fallback (the original silent bug).
+  console.error(
+    "Enrich call failed after all attempts:",
+    lastError ?? "no usable result (timeout or malformed output)",
+  );
+  return null;
 }
 
 /**
