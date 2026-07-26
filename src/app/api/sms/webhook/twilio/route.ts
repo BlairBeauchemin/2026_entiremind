@@ -12,7 +12,9 @@ import {
   enrichInboundReply,
   loadKnownPatterns,
   persistEnrichment,
+  buildFallbackEnrichment,
 } from "@/lib/ai/enrich";
+import { applyDirective } from "@/lib/ai/steer";
 import { pickSoftAck } from "@/lib/acks";
 import { createServiceRoleClient } from "@/lib/supabase";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -33,6 +35,10 @@ const HELP_KEYWORDS = new Set(["HELP", "INFO"]);
 // PAUSE holds daily messages without unsubscribing; RESUME picks them back up.
 const PAUSE_KEYWORDS = new Set(["PAUSE"]);
 const RESUME_KEYWORDS = new Set(["RESUME", "UNPAUSE"]);
+
+// Give the background enrich+ack job (up to two model attempts) room to finish
+// after the TwiML response returns. The response itself is still immediate.
+export const maxDuration = 30;
 
 const HELP_RESPONSE =
   "Entiremind: For support email support@entiremind.com or visit entiremind.com/sms-policy. " +
@@ -89,22 +95,34 @@ async function processEnrichmentAndAck(params: {
   const supabase = createServiceRoleClient();
 
   const knownPatterns = await loadKnownPatterns(supabase, userId);
-  const enrichment = await enrichInboundReply(inboundText, knownPatterns);
+  // Fall back to a deterministic minimal enrichment when the model call fails —
+  // an inbound reply must never be left with fully-null insights (the reconcile
+  // cron will later re-enrich rows flagged enriched:false).
+  const enrichment =
+    (await enrichInboundReply(inboundText, knownPatterns)) ??
+    buildFallbackEnrichment(inboundText);
 
-  if (enrichment) {
-    await persistEnrichment(supabase, { userId, inboundMessageId, enrichment });
-  }
+  await persistEnrichment(supabase, { userId, inboundMessageId, enrichment });
+
+  // Honor an explicit "let's focus on X" — persist the steer and, the first time
+  // in a steer window, nudge the user (in the ack) toward setting it as their
+  // main intention in-app. Never rewrites the intention here.
+  const steerAck = enrichment.directive
+    ? await applyDirective(supabase, userId, enrichment.directive)
+    : null;
 
   const useMirror = Boolean(
-    enrichment && enrichment.substantive && enrichment.acknowledgement,
+    enrichment.substantive && enrichment.acknowledgement,
   );
-  const ackText = useMirror
-    ? (enrichment!.acknowledgement as string)
-    : await pickSoftAck(userId);
+  const ackText =
+    steerAck ??
+    (useMirror
+      ? (enrichment.acknowledgement as string)
+      : await pickSoftAck(userId));
 
   const ackResult = await sendSms(userId, fromPhoneNumber, ackText, {
     contentType: "ack",
-    aiGenerated: useMirror,
+    aiGenerated: useMirror && !steerAck,
   });
 
   if (!ackResult.success) {

@@ -51,6 +51,12 @@ export interface UserContext {
    * "a few weeks ago" with now. Loaded lazily (null until a callback is chosen).
    */
   memoryHistory?: MemoryHistoryEntry[] | null;
+  /**
+   * A fresh explicit topic-steer the user asked for ("focus on manifestation"),
+   * or null. Injected at top priority in buildUserPrompt so a recent directive
+   * outranks older memory themes. Decays after STEER_TTL_DAYS.
+   */
+  activeSteer?: string | null;
 }
 
 /** Why selectMessageMode landed on its choice — surfaced in the simulator. */

@@ -24,6 +24,8 @@ import {
   mapCategoryToQuoteThemes,
 } from "../quotes";
 import { pickTechniqueForUser } from "../techniques";
+import { deriveSubstantive } from "./enrich";
+import { loadActiveSteer } from "./steer";
 import { openaiAdapter } from "./providers/openai";
 import { anthropicAdapter } from "./providers/anthropic";
 import {
@@ -119,6 +121,9 @@ export async function buildUserContext(
   );
   const memoryHistory = await loadMemoryHistory(userId, 3);
 
+  // A fresh explicit topic-steer, if any (tolerant of the pre-migration schema).
+  const activeSteer = await loadActiveSteer(supabase, userId, asOf);
+
   return {
     userId,
     name: user?.name || null,
@@ -131,6 +136,7 @@ export async function buildUserContext(
     profile,
     recentOutboundOpenings,
     memoryHistory,
+    activeSteer,
   };
 }
 
@@ -206,16 +212,20 @@ async function loadRecentSubstantiveReply(
 
   if (!reply) return null;
   const row = reply as ReplyRow;
-  if (!row.insights?.substantive) return null;
+  // Use the enrichment's substantive flag when present; otherwise fall back to a
+  // length heuristic so a long reply whose enrichment failed/hasn't run yet is
+  // still surfaced to the next-day prompt (the enrichment silent-drop bug left
+  // exactly these replies invisible here).
+  if (!deriveSubstantive(row.insights, row.text)) return null;
 
   const ageMs = asOf.getTime() - new Date(row.created_at).getTime();
   const hoursAgo = Math.round(ageMs / (1000 * 60 * 60));
 
   return {
     text: row.text,
-    themes: row.insights.themes ?? [],
-    emotionalState: row.insights.emotional_state ?? "unspecified",
-    sentiment: row.insights.sentiment ?? "neutral",
+    themes: row.insights?.themes ?? [],
+    emotionalState: row.insights?.emotional_state ?? "unspecified",
+    sentiment: row.insights?.sentiment ?? "neutral",
     hoursAgo,
   };
 }

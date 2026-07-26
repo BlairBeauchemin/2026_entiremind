@@ -117,6 +117,16 @@ export function buildUserPrompt(
     parts.push(`Their stated intention is: "${context.intention}"`);
   }
 
+  // A fresh explicit steer outranks everything below. This is the user telling
+  // us, in their own words, what to focus on — honor it over older memory themes.
+  if (context.activeSteer) {
+    parts.push(
+      `IMPORTANT — the user recently asked us to focus on: "${context.activeSteer}". ` +
+        `Make today's message about this. It takes priority over any older themes or open threads below. ` +
+        `If the memory conflicts with this focus or their stated intention, follow the focus and the intention.`,
+    );
+  }
+
   // Inject the derived persona profile block (Onboarding v2). Sits with the
   // memory block so it shares the same per-user cached section. No profile, no
   // block — unprofiled users get exactly the pre-v2 prompt.
@@ -135,6 +145,13 @@ export function buildUserPrompt(
       showSpecifics
         ? "Reference ONE specific open thread or theme above. You may quote 2-4 of their own words in quotation marks. Be precise, not generic — this is the moment they feel remembered."
         : "Let the memory inform tone and direction, but do not quote it back to the user. Pick at most one thread to lean on; do not list themes.",
+    );
+    // Rebalance: memory is context, not the agenda. Their stated intention (and
+    // any fresh steer) always win over a stale recurring topic.
+    parts.push(
+      `This memory is background, not the agenda. Prefer their stated intention${
+        context.activeSteer ? " and the focus they just asked for" : ""
+      } and their most recent reply over older recurring themes. Do not fixate on a topic they haven't raised lately.`,
     );
   }
 

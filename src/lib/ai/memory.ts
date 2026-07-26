@@ -3,6 +3,7 @@ import { createServiceRoleClient } from "../supabase";
 import { MEMORY_SYSTEM_PROMPT } from "./prompts/memory";
 import { tonePromptPhrase, distortionPromptHint } from "../persona/prompt";
 import type { PersonaProfile } from "../persona/types";
+import { loadActiveSteer, clearSteer } from "./steer";
 
 export interface UserMemorySummary {
   themes: string[];
@@ -139,11 +140,15 @@ interface ReplyForCompaction {
 function buildUserMessage(
   replies: ReplyForCompaction[],
   currentIntention: string | null,
+  activeSteer: string | null = null,
 ): string {
   const lines: string[] = [];
   lines.push(
     `Current intention: ${currentIntention ? `"${currentIntention}"` : "(none on file)"}`,
   );
+  if (activeSteer) {
+    lines.push(`The user recently asked to focus on: "${activeSteer}"`);
+  }
   lines.push("");
   lines.push(
     `Below are the last ${MEMORY_LOOKBACK_DAYS} days of replies from this user, oldest first. Each entry is indexed. Each entry includes brief metadata when available.`,
@@ -315,9 +320,17 @@ export async function compactUserMemory(
     .single();
   const currentIntention = intentionRow?.text ?? null;
 
+  // A fresh explicit steer feeds the compaction so it can fold the new focus
+  // into themes / the intention-shift check. Cleared after a successful compact.
+  const activeSteer = await loadActiveSteer(supabase, userId, asOf);
+
   const typedReplies = replies as ReplyForCompaction[];
   const anthropic = getClient();
-  const userMessage = buildUserMessage(typedReplies, currentIntention);
+  const userMessage = buildUserMessage(
+    typedReplies,
+    currentIntention,
+    activeSteer,
+  );
 
   const response = await anthropic.messages.create({
     model: process.env.ANTHROPIC_MEMORY_MODEL || "claude-sonnet-5",
@@ -359,6 +372,12 @@ export async function compactUserMemory(
   );
 
   await persistMemory(userId, summary, recap);
+
+  // The steer has now been folded into memory — clear it so the interim
+  // top-priority override doesn't outlive its absorption.
+  if (activeSteer) {
+    await clearSteer(supabase, userId);
+  }
 
   // Intention shift detection (best-effort; failure should not block memory)
   if (

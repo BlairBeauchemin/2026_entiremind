@@ -71,3 +71,37 @@ describe("buildUserPrompt profile block", () => {
     }
   });
 });
+
+describe("buildUserPrompt active steer", () => {
+  it("omits the steer block when there is no active steer", () => {
+    const prompt = buildUserPrompt(context({ activeSteer: null }), "reflection");
+    expect(prompt).not.toContain("recently asked us to focus on");
+  });
+
+  it("injects the steer with a top-priority instruction", () => {
+    const prompt = buildUserPrompt(
+      context({ activeSteer: "manifestation" }),
+      "reflection",
+    );
+    expect(prompt).toContain('recently asked us to focus on: "manifestation"');
+    expect(prompt).toContain("takes priority");
+  });
+
+  it("places the steer block before the memory block", () => {
+    const prompt = buildUserPrompt(
+      context({ activeSteer: "manifestation" }),
+      "reflection",
+    );
+    expect(prompt.indexOf("recently asked us to focus on")).toBeLessThan(
+      prompt.indexOf("What we know about this user:"),
+    );
+  });
+
+  it("references the steer in the memory rebalancing note", () => {
+    const prompt = buildUserPrompt(
+      context({ activeSteer: "manifestation" }),
+      "reflection",
+    );
+    expect(prompt).toContain("the focus they just asked for");
+  });
+});
