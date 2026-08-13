@@ -19,3 +19,17 @@ export const siteConfig = {
 export function absoluteUrl(path: string): string {
   return new URL(path, siteConfig.url).toString();
 }
+
+/**
+ * Metadata for unlinked staging surfaces (landing variants we deploy to look
+ * at but don't want in search). These duplicate `/`, so without this they read
+ * as competing copies of the homepage.
+ *
+ * Deliberately `noindex` rather than a robots.txt Disallow: Disallow stops the
+ * crawl, so the noindex is never seen and the bare URL can still be indexed if
+ * anything links to it. Keep staging routes crawlable and let this tag do the
+ * work.
+ */
+export const stagingMetadata = {
+  robots: { index: false, follow: false },
+} as const;
