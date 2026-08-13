@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { TangleHead } from "./tangle-head";
+import { LANDING_COPY as C } from "./copy";
 import { WaitlistModal } from "@/components/landing/waitlist-modal";
 import { analytics } from "@/lib/analytics";
 
@@ -37,23 +38,21 @@ export function NotationHero() {
 
             <div className="relative z-10">
               <p className="font-hand text-[0.68rem] uppercase tracking-[0.32em] text-nt-gold">
-                Entiremind
+                {C.eyebrow.brand}
                 <span className="mx-3 text-nt-gold/40">·</span>
-                <span className="text-nt-vellum/55">Opening by waitlist</span>
+                <span className="text-nt-vellum/55">{C.eyebrow.status}</span>
               </p>
 
               <h1 className="mt-8 font-plate text-[2.6rem] font-medium leading-[1.02] tracking-[-0.015em] text-nt-vellum sm:text-6xl lg:text-[4.4rem]">
-                One text each morning.
+                {C.headline.lead}
                 <span className="block text-nt-gold-pale">
-                  It remembers what you said.
+                  {C.headline.turn}
                 </span>
               </h1>
 
               {/* The annotating second hand, set in the margin. */}
               <p className="mt-7 max-w-[34rem] font-hand text-[1.02rem] leading-[1.7] text-nt-vellum/75">
-                A manifestation practice that lives in your text thread — not in
-                another app you will stop opening. Reply, or stay quiet. Both
-                teach it how to meet you tomorrow.
+                {C.subhead}
               </p>
 
               <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -62,7 +61,7 @@ export function NotationHero() {
                   onClick={openWaitlist}
                   className="group inline-flex items-center justify-center gap-3 bg-nt-vermilion px-8 py-4 font-hand text-[0.95rem] font-medium tracking-wide text-nt-vellum transition-colors duration-300 hover:bg-nt-vermilion-bright focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-nt-gold"
                 >
-                  Join the waitlist
+                  {C.cta.label}
                   <span
                     aria-hidden
                     className="inline-block transition-transform duration-300 group-hover:translate-x-1"
@@ -72,8 +71,8 @@ export function NotationHero() {
                 </button>
 
                 <p className="font-hand text-[0.82rem] leading-relaxed text-nt-vellum/50">
-                  A 10-day trial when we open.
-                  <br className="hidden sm:block" /> No card to join the list.
+                  {C.cta.reassurance[0]}
+                  <br className="hidden sm:block" /> {C.cta.reassurance[1]}
                 </p>
               </div>
             </div>
@@ -83,7 +82,7 @@ export function NotationHero() {
 
               {/* Plate caption, in the hand that annotates rather than states. */}
               <p className="absolute -bottom-4 right-0 font-plate text-[0.9rem] italic text-nt-gold/70">
-                fig. i — the same thought, circling
+                {C.figure}
               </p>
             </div>
           </div>

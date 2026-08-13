@@ -1,5 +1,5 @@
 import { Bodoni_Moda, Archivo } from "next/font/google";
-import { NotationHero } from "@/components/landing-notation/notation-hero";
+import { NotationHero } from "@/components/landing-worlds/notation-hero";
 import { stagingMetadata } from "@/config/site";
 
 export const metadata = stagingMetadata;

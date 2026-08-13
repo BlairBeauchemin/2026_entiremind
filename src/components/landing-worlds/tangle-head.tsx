@@ -47,9 +47,46 @@ const STRANDS = [
 const RESOLVED =
   "M 150 250 C 190 236, 232 244, 268 262 C 316 286, 348 300, 400 300";
 
-export function TangleHead({ className }: { className?: string }) {
+/**
+ * Each world draws the same anatomy in its own hand. `ink` is a drawn plate
+ * line, `stitch` is floss worked through cloth, `plot` is a plotted technical
+ * contour. The geometry never changes — only the instrument does.
+ */
+export type TangleHand = "ink" | "stitch" | "plot";
+
+export interface TangleHeadProps {
+  className?: string;
+  hand?: TangleHand;
+  /** CSS colour values, e.g. "var(--color-nt-vellum)". */
+  profileColor?: string;
+  tangleColor?: string;
+  threadColor?: string;
+  /** The struck compass marks. Off for worlds whose grammar rules rather than draws. */
+  compass?: boolean;
+  compassColor?: string;
+}
+
+const HAND_STYLE: Record<
+  TangleHand,
+  { profile: number; tangle: number; thread: number; dash?: string; cap: "round" | "butt" }
+> = {
+  ink: { profile: 1.6, tangle: 2.1, thread: 2.4, cap: "round" },
+  stitch: { profile: 2.2, tangle: 2.6, thread: 2.8, dash: "5 4", cap: "butt" },
+  plot: { profile: 1, tangle: 1.1, thread: 1.4, cap: "butt" },
+};
+
+export function TangleHead({
+  className,
+  hand = "ink",
+  profileColor = "var(--color-nt-vellum)",
+  tangleColor = "var(--color-nt-vermilion)",
+  threadColor = "var(--color-nt-gold)",
+  compass = true,
+  compassColor = "var(--color-nt-gold)",
+}: TangleHeadProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
+  const style = HAND_STYLE[hand];
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -73,24 +110,28 @@ export function TangleHead({ className }: { className?: string }) {
         role="img"
         aria-label="A profile drawn in one line, the thinking inside it tangled and then resolving into a single thread."
       >
-        {/* Hand-ruled circle: the plate's compass mark, struck before the drawing. */}
-        <circle
-          cx="196"
-          cy="246"
-          r="184"
-          stroke="var(--color-nt-gold)"
-          strokeOpacity="0.28"
-          strokeWidth="1"
-        />
-        <circle
-          cx="196"
-          cy="246"
-          r="168"
-          stroke="var(--color-nt-gold)"
-          strokeOpacity="0.14"
-          strokeWidth="1"
-          strokeDasharray="2 7"
-        />
+        {/* Struck compass marks, laid down before the drawing itself. */}
+        {compass && (
+          <>
+            <circle
+              cx="196"
+              cy="246"
+              r="184"
+              stroke={compassColor}
+              strokeOpacity="0.28"
+              strokeWidth="1"
+            />
+            <circle
+              cx="196"
+              cy="246"
+              r="168"
+              stroke={compassColor}
+              strokeOpacity="0.14"
+              strokeWidth="1"
+              strokeDasharray="2 7"
+            />
+          </>
+        )}
 
         {/* Group carries the scroll fade; each strand owns its own draw-in, so
             the two never fight over the same property. */}
@@ -99,9 +140,10 @@ export function TangleHead({ className }: { className?: string }) {
             <motion.path
               key={d}
               d={d}
-              stroke="var(--color-nt-vermilion)"
-              strokeWidth={2.1}
-              strokeLinecap="round"
+              stroke={tangleColor}
+              strokeWidth={style.tangle}
+              strokeLinecap={style.cap}
+              strokeDasharray={style.dash}
               strokeOpacity={0.82}
               initial={reduceMotion ? false : { pathLength: 0 }}
               animate={{ pathLength: 1 }}
@@ -116,17 +158,17 @@ export function TangleHead({ className }: { className?: string }) {
 
         <motion.path
           d={RESOLVED}
-          stroke="var(--color-nt-gold)"
-          strokeWidth={2.4}
+          stroke={threadColor}
+          strokeWidth={style.thread}
           strokeLinecap="round"
           style={reduceMotion ? { opacity: 1 } : { pathLength: threadDraw }}
         />
 
         <path
           d={PROFILE}
-          stroke="var(--color-nt-vellum)"
-          strokeWidth={1.6}
-          strokeLinecap="round"
+          stroke={profileColor}
+          strokeWidth={style.profile}
+          strokeLinecap={style.cap}
           strokeLinejoin="round"
         />
       </svg>

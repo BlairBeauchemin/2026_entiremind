@@ -67,11 +67,31 @@
   --color-nt-vellum-deep: #d3c2a3;
   --color-nt-verdigris: #2f6b60;
 
-  /* Faces are loaded per-route by next/font, which self-hosts under a
-     generated family name — so these point at its variables, never at the
-     family name, which would not resolve. */
-  --font-plate: var(--font-plate-face), Georgia, serif;
-  --font-hand: var(--font-hand-face), system-ui, sans-serif;
+  /* Embroidery sampler world (/v4). Linen ground, dyed floss, worked cloth. */
+  --color-em-linen: #d8cbb2;
+  --color-em-linen-pale: #e7dcc7;
+  --color-em-linen-deep: #c2b193;
+  --color-em-madder: #a83f34;
+  --color-em-indigo: #2f4470;
+  --color-em-sage: #6d7f5c;
+  --color-em-saffron: #d09a3c;
+  --color-em-thread-dark: #3d3225;
+
+  /* Geigy-era identity world (/v5). Ruled paper, one signal, technical calm. */
+  --color-gg-paper: #f2f0ea;
+  --color-gg-paper-deep: #e4e1d8;
+  --color-gg-ink: #1a1a18;
+  --color-gg-signal: #e2542a;
+  --color-gg-cobalt: #2a4b8d;
+  --color-gg-rule: #b8b5aa;
+
+  /* Category-standard world (/v6). The wellness default, played straight. */
+  --color-cs-cream: #faf6f0;
+  --color-cs-sand: #efe6da;
+  --color-cs-ink: #3a3a42;
+  --color-cs-lilac: #b9a8d4;
+  --color-cs-sage: #9fb3a0;
+  --color-cs-gold: #e3b96b;
 
   /* Custom colors for the landing page */
   --color-navy: #2E2A58;
@@ -84,6 +104,26 @@
   --color-em-purple-100: #f3effa;
   --color-em-yellow-400: #f9d97a;
   --color-em-yellow-100: #fef9e6;
+
+}
+
+/*
+ * Landing-world faces.
+ *
+ * Deliberately plain classes rather than @theme tokens. Each world loads its
+ * own faces per-route with next/font, which self-hosts them under a generated
+ * family name, so the value has to stay late-bound through a variable. A
+ * @theme entry whose value references a variable that does not exist when the
+ * theme is parsed is dropped — silently, along with every token declared after
+ * it — so these two lines cost three palettes' worth of utilities before they
+ * were moved out here.
+ */
+.font-plate {
+  font-family: var(--font-plate-face), Georgia, serif;
+}
+
+.font-hand {
+  font-family: var(--font-hand-face), system-ui, sans-serif;
 }
 
 :root {
