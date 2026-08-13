@@ -5,6 +5,9 @@ import { SacredLoop } from "@/components/landing-v2/sacred-loop";
 import { SacredTestimonial } from "@/components/landing-v2/sacred-testimonial";
 import { SacredCTA } from "@/components/landing-v2/sacred-cta";
 import { SacredFooter } from "@/components/landing-v2/sacred-footer";
+import { stagingMetadata } from "@/config/site";
+
+export const metadata = stagingMetadata;
 
 export default function LandingV2() {
   return (
