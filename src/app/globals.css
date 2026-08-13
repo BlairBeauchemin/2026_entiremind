@@ -45,6 +45,34 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
+  /* ---------------------------------------------------------------
+     Notation world (landing redesign, /v3). Namespaced `nt-*` so the
+     redesign can be judged on a live route without altering the tokens
+     the dashboard, quiz, archetype pages, and OG images all read.
+     Promote into the global palette only once a direction is approved.
+
+     Gouache-on-vellum, after the analytical-psychology plate tradition:
+     a saturated plate ground, ink line work, one vermilion alarm, gold
+     for annotation and rule, vellum for inverted reading passages.
+     --------------------------------------------------------------- */
+  --color-nt-plate: #1b2a5e;
+  --color-nt-plate-deep: #101a3c;
+  --color-nt-plate-raised: #24356e;
+  --color-nt-ink: #14110d;
+  --color-nt-vermilion: #c8442a;
+  --color-nt-vermilion-bright: #e05a3c;
+  --color-nt-gold: #d7a548;
+  --color-nt-gold-pale: #e8c885;
+  --color-nt-vellum: #e9dec9;
+  --color-nt-vellum-deep: #d3c2a3;
+  --color-nt-verdigris: #2f6b60;
+
+  /* Faces are loaded per-route by next/font, which self-hosts under a
+     generated family name — so these point at its variables, never at the
+     family name, which would not resolve. */
+  --font-plate: var(--font-plate-face), Georgia, serif;
+  --font-hand: var(--font-hand-face), system-ui, sans-serif;
+
   /* Custom colors for the landing page */
   --color-navy: #2E2A58;
   --color-cream: #fdfbf7;
