@@ -93,6 +93,41 @@
   --color-cs-sage: #9fb3a0;
   --color-cs-gold: #e3b96b;
 
+  /* Sanctuary world — unapologetically spiritual. Dusk, gold leaf, candlelight. */
+  --color-sn-dusk: #1a1633;
+  --color-sn-dusk-deep: #100d22;
+  --color-sn-dusk-raised: #262046;
+  --color-sn-gold: #d8ab55;
+  --color-sn-gold-bright: #f0cd84;
+  --color-sn-rose: #b6738a;
+  --color-sn-mist: #ded8ee;
+
+  /* Correspondence world — grounded, lightly magical. Onionskin and postmark. */
+  --color-cr-paper: #ede4d4;
+  --color-cr-paper-pale: #f7f1e5;
+  --color-cr-paper-deep: #dccdb3;
+  --color-cr-ink: #2b2a33;
+  --color-cr-ink-blue: #38477a;
+  --color-cr-stamp: #b0453c;
+  --color-cr-airmail: #2f6b8f;
+
+  /* Atelier world — grounded daily practice. Plaster, linen, unglazed clay. */
+  --color-at-plaster: #e6dfd4;
+  --color-at-plaster-deep: #d2c8b8;
+  --color-at-clay: #b5714f;
+  --color-at-clay-pale: #d59a78;
+  --color-at-ink: #33302b;
+  --color-at-ochre: #c78d34;
+  --color-at-slate: #6f7269;
+
+  /* Field Notes world — quietly evidence-based, still warm. */
+  --color-fn-paper: #f2ece0;
+  --color-fn-paper-deep: #e2d9c8;
+  --color-fn-ink: #23231f;
+  --color-fn-rule: #b9b1a0;
+  --color-fn-annotate: #9a5a3c;
+  --color-fn-specimen: #4f6b4a;
+
   /* Custom colors for the landing page */
   --color-navy: #2E2A58;
   --color-cream: #fdfbf7;
