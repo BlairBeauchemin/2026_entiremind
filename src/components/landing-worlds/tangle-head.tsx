@@ -52,7 +52,14 @@ const RESOLVED =
  * line, `stitch` is floss worked through cloth, `plot` is a plotted technical
  * contour. The geometry never changes — only the instrument does.
  */
-export type TangleHand = "ink" | "stitch" | "plot" | "gilded" | "penned";
+export type TangleHand =
+  | "ink"
+  | "stitch"
+  | "plot"
+  | "gilded"
+  | "penned"
+  | "etched"
+  | "aura";
 
 export interface TangleHeadProps {
   className?: string;
@@ -77,6 +84,10 @@ const HAND_STYLE: Record<
   gilded: { profile: 1.4, tangle: 3, thread: 3.4, cap: "round" },
   // A nib on paper: fine contour, the snarl worked over until it darkens.
   penned: { profile: 1.3, tangle: 1.7, thread: 2, cap: "round" },
+  // Cut into stone: blunt ends, even depth, no taper.
+  etched: { profile: 2.6, tangle: 2.2, thread: 2.6, cap: "butt" },
+  // Field rather than line: soft, wide, the snarl reading as emitted light.
+  aura: { profile: 1.2, tangle: 4.2, thread: 3.6, cap: "round" },
 };
 
 export function TangleHead({

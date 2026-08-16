@@ -128,6 +128,43 @@
   --color-fn-annotate: #9a5a3c;
   --color-fn-specimen: #4f6b4a;
 
+  /* --- Metaphysical set (/mystic) ------------------------------------- */
+
+  /* Ars Memoria — tarot & esoteric publishing, 1970s revival, dark jewel. */
+  --color-ar-night: #1c1030;
+  --color-ar-night-deep: #120a20;
+  --color-ar-wine: #6d1f3f;
+  --color-ar-gold: #c9973f;
+  --color-ar-gold-bright: #e8c477;
+  --color-ar-verd: #2c6357;
+  --color-ar-parch: #e6d7bb;
+
+  /* Ephemeris — celestial, contemporary luxe, luminous. */
+  --color-ep-dawn: #efe7f2;
+  --color-ep-dawn-deep: #ddd0e6;
+  --color-ep-opal: #a9c6df;
+  --color-ep-blush: #e5b7c4;
+  --color-ep-sky: #6d80b8;
+  --color-ep-ink: #2c2740;
+  --color-ep-silver: #c3c8d6;
+
+  /* Resonance — sacred geometry & energy, timeless, luminous. */
+  --color-rs-light: #fbf7ef;
+  --color-rs-halo: #f4e3c4;
+  --color-rs-aura-warm: #e8a26a;
+  --color-rs-aura-cool: #7fb3b3;
+  --color-rs-aura-deep: #8a6bb0;
+  --color-rs-ink: #34302c;
+
+  /* Hermetica — ancient mystery school, dark jewel, carved. */
+  --color-hm-stone: #221f1c;
+  --color-hm-stone-deep: #15130f;
+  --color-hm-stone-raised: #312c25;
+  --color-hm-gold: #b78a3c;
+  --color-hm-gold-bright: #dcb86a;
+  --color-hm-lapis: #2c4a7a;
+  --color-hm-bone: #ddd2bd;
+
   /* Custom colors for the landing page */
   --color-navy: #2E2A58;
   --color-cream: #fdfbf7;
