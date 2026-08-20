@@ -737,12 +737,18 @@ A curated, founder-editable library of distilled thinking-tools (from books like
 
 **Deferred to v2:** signal-weighted (bandit) selection, reply-rate-by-distortion cross-tabs, A/B recipe variants.
 
-#### The Space (`/space`) — affirmations + breathing focus surface
+#### The Space (`/space`) — affirmations under a night sky
 
 A full-bleed, mobile-first place users go _deliberately_ to sit with their own affirmations
-while an interactive mandala breathes. The one surface in the product with no timer, no
+under a drifting, twinkling starfield. The one surface in the product with no timer, no
 session count, and no completion state — you arrive, you breathe, you leave, and nothing
 tracks whether you came back.
+
+**The sky accumulates, and that is the point.** A sparse ambient starfield seeded from the
+user's id, plus **one bright warm star per affirmation**, each placed by its own id hash.
+Saving an affirmation ignites its star; it then stays in the same spot on every future
+visit. (An interactive breathing mandala shipped first and was replaced — the sky reads
+better and carries the endowment idea more literally.)
 
 - **Database migration**: `supabase/migrations/028_affirmations.sql` (`affirmations` table; RLS
   `auth.uid() = user_id`). Deliberately **no** sessions/visits table — nothing that could grow
@@ -757,31 +763,45 @@ tracks whether you came back.
   (`src/lib/supabase/redirect-rules.ts`) and `isRouteWithRules` (`src/lib/supabase/proxy.ts`) —
   omitting the second means `isOnboarded` is always false and onboarded users get bounced to
   `/onboarding`. Also `disallow`ed in `src/app/robots.ts`
-- Entry points: sidebar nav item ("The Space") + `SpaceEntryCard` on `/dashboard`
+- Entry points: sidebar nav item ("The Space") + `SpaceEntryCard` on `/dashboard` (a static
+  inline-SVG star preview with a `.star-twinkle` CSS keyframe — no canvas on the dashboard)
 
-**The visual (`src/components/space/breathing-mandala.tsx` + `src/lib/space/`):**
+**The sky (`src/components/space/starfield-sky.tsx` + `src/lib/space/`):**
 
 - One canvas, one rAF loop, **zero React state written per frame**. The breath is published to
   CSS as a `--breath` custom property on the surface element; the affirmation's opacity is a
   plain `calc()` off it. React hears from the loop once per completed breath (`onCycle`) and on tap
-- `breath.ts` — 4s inhale / 2s hold / 6s exhale / 1s rest (13s cycle). One eased 0→1→0 amplitude
-  drives mandala scale, stroke alpha, glow radius and text opacity, so the scene moves as one organism
-- `mandala.ts` — each affirmation id hashes (FNV-1a → mulberry32) to its own deterministic mandala,
-  so a line the user wrote always comes back wearing the same face. Fixed 4-layer stack
-  (ring → petals → rays → scalloped rim) with symmetry 6/8/12; `segmentsFor()` scales tessellation
-  by element size so every seed stays under `SEGMENT_BUDGET` (600 path segments/frame, unit-tested)
-- `render.ts` — the pure drawing pass, split out from the component so it can be exercised against
-  a mock 2D context (`render.test.ts`). A canvas that draws nothing looks identical to one that
-  works, so the draw calls and coordinate finiteness are asserted directly
-- **Touch/drag**: Pointer Events only, `touch-action: none` (a vertical drag warps the mandala
-  instead of scrolling the page). Horizontal drag → damped spin; vertical drag → perspective
-  squash; held finger → local bloom. The bloom displaces points **outward from the mandala's
-  centre**, scaled by nearness to the finger — a field pointing away from the touch point reverses
-  direction across it and puts a hard cusp in the rim exactly where the user is looking
+- `breath.ts` — 4s inhale / 2s hold / 6s exhale / 1s rest (13s cycle). The eased 0→1→0 amplitude
+  lifts the brightness of the whole field together, so the sky inhales as one organism rather
+  than as a few hundred independently-blinking points
+- `starfield.ts` — `buildAmbientSky()` (220 stars, depth cubed so most are faint) and
+  `starForAffirmation(id)`. `AFFIRMATION_ALPHA_FLOOR` (0.95) sits above the ambient ceiling
+  **by construction**, so a backdrop star can never outshine one of the user's own — unit-tested
+  across seeds rather than left to luck. Every `Star` carries a stable `id`
+- `render.ts` — the pure drawing pass, split out so it can be exercised against a mock 2D
+  context (`render.test.ts`). A canvas that draws nothing looks identical to one that works,
+  so draw calls, coordinate finiteness and the per-frame `DRAW_BUDGET` (400 ops) are asserted
+  directly
+- **Parallax + wrapping**: `wrapUnit()` wraps every drawn position into 0..1, so panning is
+  endless and a drag can never run off the edge into empty black. Depth scales how far each
+  star moves, which is the entire illusion of depth
+- **Glows are pre-rendered sprites**, not arcs. A flat-alpha disc leaves a hard edge that reads
+  as a grey ring around the star; a real gradient per star would mean hundreds of
+  CanvasGradient allocations per frame. Two 64px sprites (white + warm) are built once by the
+  component and blitted scaled
+- **Touch/drag**: Pointer Events only, `touch-action: none` (a vertical drag pans the sky
+  instead of scrolling the page). Drag pans with a short damped coast; a held finger flares
+  nearby stars via a squared-Lorentzian falloff — the plain form has a long tail that lifts the
+  whole sky whenever you touch anywhere, which reads as a global brightness bug
 - Tap (<260ms, <12px travel) advances the affirmation; drags never do
+- **Ignition** (`IGNITE_MS` 2200): an `Ignition` references its star by **`starId`, never by
+  object reference**. `starForAffirmation` returns a fresh object each call, so identity
+  matching fails silently — the flare simply never draws, with nothing to debug. This bit once;
+  `render.test.ts` has a regression guard that builds the ignition from the id alone
 - Perf: DPR capped at 2, rAF paused on `visibilitychange` (clock rolled forward on return so the
-  breath resumes mid-stride), no per-frame canvas blur, gradient built once per resize
-- `prefers-reduced-motion: reduce` → static geometry, no rotation, no bloom; opacity-only breath
+  breath resumes mid-stride), glows only on the brightest ~30 stars
+- `prefers-reduced-motion: reduce` → no twinkle, no drift, no pan, no flare, no glow sprites;
+  ignition becomes a fade-in and the breath survives as brightness only
 
 **Affirmations:**
 
@@ -793,7 +813,9 @@ tracks whether you came back.
   `src/lib/ai/prompts/affirmations.ts` (present tense, first person, no "I will", no hustle, no
   outcome promises)
 - Drawer (`affirmation-drawer.tsx`) lives _inside_ `/space` as a sheet — leaving the surface to
-  edit would break what the surface is for. Reorder is up/down chevrons, not drag-and-drop
+  edit would break what the surface is for. Reorder is up/down chevrons, not drag-and-drop.
+  Its `onCreated` callback is what fires the ignition, and its overlay is deliberately light
+  (the sheet stays open on save, so an opaque scrim would play the payoff to nobody)
 - **Never empty**: with no affirmations the space falls back to the user's active intention as the
   focus line, so day one is never a blank stage
 

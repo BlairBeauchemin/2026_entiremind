@@ -1,51 +1,99 @@
 /**
- * The mandala's drawing pass.
+ * The sky's drawing pass.
  *
  * Split out from the React component so it can be exercised against a mock 2D
  * context: a canvas that silently draws nothing (a single NaN in the geometry
  * poisons an entire path) looks exactly like a canvas that works, so the draw
  * calls themselves are worth asserting on.
  *
- * Nothing here touches the DOM, React, or time — everything the frame needs
- * arrives as an argument.
+ * Nothing here touches the DOM, React, or the clock — everything the frame
+ * needs arrives as an argument.
  */
 
-import { RAY_SEGMENTS, segmentsFor, type MandalaSpec } from "./mandala";
+import {
+  HALO_ALPHA_THRESHOLD,
+  twinkleAt,
+  wrapUnit,
+  type Star,
+} from "./starfield";
 
-/** Brand line colours. The seed mixes between them per mandala. */
-export const LINE_PURPLE = [203, 187, 227] as const; // #cbbbe3
-export const LINE_TEAL = [124, 176, 186] as const; // lifted from #204147 so it reads on dark
-export const GLOW_WARM = "249, 217, 122"; // #f9d97a
+/** Star colour. Barely-blue white, warmed for the affirmation stars. */
+export const STAR_WHITE = "255, 252, 245";
+export const STAR_WARM = "249, 217, 122"; // #f9d97a — the brand's warm yellow
 
-/** Bloom feel — how far the pattern opens under a finger, and how wide. */
-export const BLOOM_PUSH = 0.17; // fraction of the mandala radius
-export const BLOOM_RADIUS = 0.42; // fraction of the mandala radius
+/**
+ * How far a full pan of the unit square carries a star at depth 1. Depth
+ * scales this down, and that difference between near and far is the entire
+ * illusion of depth — without it a drag just slides a flat image.
+ */
+export const PARALLAX_DEPTH_FLOOR = 0.25;
+
+/** Radius of the finger's influence, as a fraction of the smaller viewport axis. */
+export const FLARE_RADIUS = 0.28;
+/** How much a star directly under the finger brightens and swells. */
+export const FLARE_ALPHA_GAIN = 0.9;
+export const FLARE_RADIUS_GAIN = 1.6;
+
+/** How long a newly saved star takes to settle into the sky. */
+export const IGNITE_MS = 2200;
+/**
+ * Peak core-radius multiplier at the instant a star ignites. Kept modest on
+ * purpose: pushing the solid core to seven times its size draws a flat yellow
+ * disc that reads as a sun, not as a star catching light. The drama belongs in
+ * the glow, which spreads much further.
+ */
+export const IGNITE_RADIUS_PEAK = 3.2;
+/** How much wider the glow reaches at the peak of an ignition. */
+export const IGNITE_GLOW_SPREAD = 2.4;
 
 export interface PointerState {
   x: number;
   y: number;
-  /** 0-1 bloom intensity. Rises while held, decays after release. */
+  /** 0-1 flare intensity. Rises while held, decays after release. */
   strength: number;
   held: boolean;
 }
 
-export interface MotionState {
-  /** Extra rotation from flicks, in radians. */
-  spinAccum: number;
-  spinVel: number;
-  /** Vertical-drag squash, -1..1, springs back to 0. */
-  tilt: number;
-  tiltTarget: number;
+export interface SkyMotion {
+  /** Accumulated pan, in unit-square terms. Wrapped at draw time. */
+  pan: { x: number; y: number };
+  /** Residual velocity from a flick, decaying toward rest. */
+  panVel: { x: number; y: number };
   pointer: PointerState;
 }
 
+/**
+ * Pre-rendered radial-gradient discs, one per star tint.
+ *
+ * A glow drawn as a flat-alpha arc has a hard edge and reads as a grey ring
+ * around the star rather than as light coming off it. A real gradient per star
+ * would mean allocating hundreds of CanvasGradients per frame; blitting one
+ * pre-rendered sprite is both correct and far cheaper. Built by the component
+ * (it needs a real canvas) and passed in, so this module stays pure.
+ */
+export interface GlowSprites {
+  white: CanvasImageSource;
+  warm: CanvasImageSource;
+}
+
+/**
+ * A star arriving in the sky.
+ *
+ * Identified by `starId`, not by a Star object: the caller does not have the
+ * instance that is in the sky array, and matching on object identity fails
+ * silently — the flare simply never draws, with nothing to debug.
+ * `startedAt` is a performance.now() timestamp.
+ */
+export interface Ignition {
+  starId: string;
+  startedAt: number;
+}
+
 /** A motion state at complete rest — the loop's starting point, and the tests'. */
-export function restingMotion(): MotionState {
+export function restingMotion(): SkyMotion {
   return {
-    spinAccum: 0,
-    spinVel: 0,
-    tilt: 0,
-    tiltTarget: 0,
+    pan: { x: 0, y: 0 },
+    panVel: { x: 0, y: 0 },
     pointer: { x: 0, y: 0, strength: 0, held: false },
   };
 }
@@ -54,185 +102,153 @@ export function clamp(value: number, min: number, max: number): number {
   return value < min ? min : value > max ? max : value;
 }
 
-/** Fill the shorter axis, leaving room for the affirmation to sit over it. */
-export function radiusFor(width: number, height: number): number {
-  return Math.min(width, height) * 0.44;
+/**
+ * Ignition progress 0..1, or null once the flare is spent.
+ *
+ * Returning null rather than 1 lets the caller drop finished ignitions from its
+ * list instead of re-checking them every frame forever.
+ */
+export function ignitionProgress(
+  ignition: Ignition,
+  now: number,
+): number | null {
+  const elapsed = now - ignition.startedAt;
+  if (elapsed < 0) return 0;
+  if (elapsed >= IGNITE_MS) return null;
+  return elapsed / IGNITE_MS;
 }
 
-export function mixChannel(a: number, b: number, t: number): number {
-  return Math.round(a + (b - a) * t);
+/** Fast at first, long tail — a flare that decays linearly looks mechanical. */
+function easeOutQuart(t: number): number {
+  return 1 - Math.pow(1 - t, 4);
 }
 
-export function drawSpec(
+export interface DrawSkyOptions {
+  stars: Star[];
+  width: number;
+  height: number;
+  /** Seconds since the surface opened. Drives twinkle and drift. */
+  seconds: number;
+  motion: SkyMotion;
+  /** 0-1 breath amplitude — the whole field brightens on the inhale. */
+  breath: number;
+  /** Active ignitions, and the timestamp to measure them against. */
+  ignitions?: Ignition[];
+  now?: number;
+  /** Omit to skip glows entirely — the stars still draw as points. */
+  glowSprites?: GlowSprites;
+  reduced: boolean;
+}
+
+/**
+ * Draw one frame of the sky.
+ *
+ * Returns the number of draw operations issued (star cores plus glow blits), so
+ * the per-frame budget can be asserted in tests rather than trusted.
+ */
+export function drawSky(
   ctx: CanvasRenderingContext2D,
-  spec: MandalaSpec,
-  cx: number,
-  cy: number,
-  radius: number,
-  seconds: number,
-  motion: MotionState,
-  alpha: number,
-  reduced: boolean,
-) {
-  if (alpha <= 0.001) return;
+  options: DrawSkyOptions,
+): number {
+  const {
+    stars,
+    width,
+    height,
+    seconds,
+    motion,
+    breath,
+    ignitions = [],
+    now = 0,
+    glowSprites,
+    reduced,
+  } = options;
 
-  const stroke = [
-    mixChannel(LINE_PURPLE[0], LINE_TEAL[0], spec.hueMix),
-    mixChannel(LINE_PURPLE[1], LINE_TEAL[1], spec.hueMix),
-    mixChannel(LINE_PURPLE[2], LINE_TEAL[2], spec.hueMix),
-  ];
-  const rgb = `${stroke[0]}, ${stroke[1]}, ${stroke[2]}`;
+  const minAxis = Math.min(width, height);
+  const flareRadius = minAxis * FLARE_RADIUS;
+  const flareRadiusSq = flareRadius * flareRadius;
+  const bloom = reduced ? 0 : motion.pointer.strength;
 
-  // Vertical drag squashes the disc; the widening on the other axis is what
-  // sells it as a tilt rather than a shrink.
-  const sy = 1 - motion.tilt * 0.18;
-  const sx = 1 + motion.tilt * 0.09;
+  // The breath lifts the whole field together, so the sky inhales as one rather
+  // than as a few hundred independently-blinking points.
+  const breathGain = 0.72 + 0.28 * breath;
 
-  const bloom = motion.pointer.strength;
-  const push = radius * BLOOM_PUSH;
-  const falloff = radius * BLOOM_RADIUS;
-  const falloffSq = falloff * falloff;
-  const px = motion.pointer.x;
-  const py = motion.pointer.y;
+  // The igniting star is already in `stars`; the flare is an overlay on its
+  // normal draw rather than a separate sprite, so it inherits the twinkle,
+  // parallax and breath the rest of the sky has.
+  const igniting = new Map<string, number>();
+  for (const ignition of ignitions) {
+    const progress = ignitionProgress(ignition, now);
+    if (progress !== null) igniting.set(ignition.starId, progress);
+  }
 
-  /** Map a point in mandala space to screen space, through tilt and bloom. */
-  const place = (angle: number, r: number): [number, number] => {
-    let x = cx + Math.cos(angle) * r * sx;
-    let y = cy + Math.sin(angle) * r * sy;
+  let arcs = 0;
+
+  for (const star of stars) {
+    // Depth scales parallax: distant stars barely move, near ones sweep.
+    const depthPan =
+      PARALLAX_DEPTH_FLOOR + star.depth * (1 - PARALLAX_DEPTH_FLOOR);
+    const x = wrapUnit(star.x + motion.pan.x * depthPan) * width;
+    const y = wrapUnit(star.y + motion.pan.y * depthPan) * height;
+
+    let alpha = star.baseAlpha * breathGain;
+    let radius = star.radius;
+
+    if (!reduced) alpha *= twinkleAt(star, seconds);
 
     if (bloom > 0.002) {
-      const dx = x - px;
-      const dy = y - py;
-      const distSq = dx * dx + dy * dy;
-      // Squared Lorentzian rather than plain: the plain form has a long tail
-      // that nudges the far edge of the pattern by a couple of pixels whenever
-      // a finger touches anywhere, which reads as the whole mandala being loose
-      // rather than as it blooming under the fingertip. Squaring collapses the
-      // tail to nothing while leaving full strength at the touch point.
-      const falloff = falloffSq / (distSq + falloffSq);
-      const strength = bloom * falloff * falloff;
-
-      // Displace outward from the mandala's centre, not away from the finger.
-      // A field pointing away from the touch point reverses direction as it
-      // crosses that point, which puts a hard cusp in the rim exactly where the
-      // user is looking. Radiating from the centre keeps the field smooth
-      // everywhere and reads better anyway: the pattern opens where you touch
-      // it, like a flower, instead of being shoved.
-      const ox = x - cx;
-      const oy = y - cy;
-      const outward = Math.sqrt(ox * ox + oy * oy);
-      if (outward > 0.001) {
-        x += (ox / outward) * strength * push;
-        y += (oy / outward) * strength * push;
-      }
+      const dx = x - motion.pointer.x;
+      const dy = y - motion.pointer.y;
+      // Squared Lorentzian: the plain form has a long tail that lifts the whole
+      // sky whenever a finger touches anywhere, which reads as a global
+      // brightness bug rather than as stars responding to a touch.
+      const falloff = flareRadiusSq / (dx * dx + dy * dy + flareRadiusSq);
+      const near = bloom * falloff * falloff;
+      alpha += near * FLARE_ALPHA_GAIN;
+      radius += near * FLARE_RADIUS_GAIN;
     }
-    return [x, y];
-  };
 
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-
-  for (const layer of spec.layers) {
-    const segments = segmentsFor(layer.count);
-    const spin = reduced ? 0 : seconds * layer.spin + motion.spinAccum;
-    const layerRadius = radius * layer.radius;
-
-    ctx.strokeStyle = `rgba(${rgb}, ${(layer.alpha * alpha).toFixed(3)})`;
-    ctx.lineWidth = layer.width;
-    ctx.beginPath();
-
-    for (let i = 0; i < layer.count; i++) {
-      const base = (i * Math.PI * 2) / layer.count + spin;
-
-      switch (layer.kind) {
-        case "ring": {
-          // A small circle riding the layer's radius.
-          const ringRadius = layerRadius * 0.42;
-          for (let s = 0; s <= segments; s++) {
-            const theta = (s / segments) * Math.PI * 2;
-            const ox =
-              Math.cos(base) * layerRadius + Math.cos(theta) * ringRadius;
-            const oy =
-              Math.sin(base) * layerRadius + Math.sin(theta) * ringRadius;
-            const r = Math.hypot(ox, oy);
-            const a = Math.atan2(oy, ox);
-            const [x, y] = place(a, r);
-            if (s === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          break;
-        }
-
-        case "petals": {
-          // Two bowed edges from the centre out to a shared tip.
-          for (const side of [-1, 1]) {
-            for (let s = 0; s <= segments; s++) {
-              const t = s / segments;
-              const bow =
-                Math.sin(Math.PI * t) * layer.curvature * layer.spread;
-              const [x, y] = place(base + side * bow * 0.5, layerRadius * t);
-              if (s === 0) ctx.moveTo(x, y);
-              else ctx.lineTo(x, y);
-            }
-          }
-          break;
-        }
-
-        case "rays": {
-          // Faint hairlines spanning the gap between the petal tips and the
-          // rim. Starting them at the centre instead left them reading as
-          // stray scratches across the middle of the pattern. Walked in steps
-          // rather than drawn end-to-end so the bloom bends them.
-          const inner = layerRadius * 0.72;
-          for (let s = 0; s <= RAY_SEGMENTS; s++) {
-            const t = s / RAY_SEGMENTS;
-            const [x, y] = place(base, inner + (layerRadius - inner) * t);
-            if (s === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          break;
-        }
-
-        case "arcs": {
-          // A pair of shallow concentric arcs capping the outer edge.
-          for (const inset of [1, 0.94]) {
-            for (let s = 0; s <= segments; s++) {
-              const t = s / segments;
-              const angle = base - layer.spread / 2 + layer.spread * t;
-              // Outward, not inward: pulling the midpoint in turns the rim into
-              // a polygon, which is the one shape a mandala must not be.
-              const bulge = 1 + layer.curvature * 0.22 * Math.sin(Math.PI * t);
-              const [x, y] = place(angle, layerRadius * inset * bulge);
-              if (s === 0) ctx.moveTo(x, y);
-              else ctx.lineTo(x, y);
-            }
-          }
-          break;
-        }
+    const ignitionAt = igniting.get(star.id);
+    let flare = 0;
+    if (ignitionAt !== undefined) {
+      // Reduced motion still gets the star, just without the theatre.
+      if (reduced) {
+        alpha *= Math.min(1, ignitionAt * 4);
+      } else {
+        flare = 1 - easeOutQuart(ignitionAt);
+        alpha = Math.max(alpha, star.baseAlpha) + flare * 0.6;
+        radius += flare * star.radius * (IGNITE_RADIUS_PEAK - 1);
       }
     }
 
-    ctx.stroke();
-  }
+    alpha = clamp(alpha, 0, 1);
+    if (alpha < 0.02 || radius <= 0) continue;
 
-  // Warm points where the rim's scallops meet — the only saturated colour on
-  // screen, and the only place shadowBlur is paid for. They borrow the rim
-  // layer's radius and rotation so they sit *on* the structure and turn with
-  // it, instead of drifting across it on a clock of their own.
-  const rim = spec.layers[spec.layers.length - 1];
-  const glowRadius = radius * rim.radius;
-  const glowSpin = reduced ? 0 : seconds * rim.spin + motion.spinAccum;
-  const junctionOffset = Math.PI / spec.glowCount;
-  ctx.fillStyle = `rgba(${GLOW_WARM}, ${(0.85 * alpha).toFixed(3)})`;
-  ctx.shadowColor = `rgba(${GLOW_WARM}, ${(0.6 * alpha).toFixed(3)})`;
-  ctx.shadowBlur = 6 + 14 * alpha;
-  for (let i = 0; i < spec.glowCount; i++) {
-    const angle =
-      (i * Math.PI * 2) / spec.glowCount + junctionOffset + glowSpin;
-    const [x, y] = place(angle, glowRadius);
+    const tint = star.isAffirmation ? STAR_WARM : STAR_WHITE;
+
+    // A glow would be lovely on all 220 stars and unaffordable on all 220; the
+    // brightest few carry it and the rest read as points, which is how a real
+    // sky looks anyway.
+    const wantsGlow =
+      ignitionAt !== undefined ||
+      star.isAffirmation ||
+      alpha > HALO_ALPHA_THRESHOLD;
+
+    if (wantsGlow && !reduced && glowSprites) {
+      const sprite = star.isAffirmation ? glowSprites.warm : glowSprites.white;
+      // An igniting star throws light much further than it grows.
+      const reach = radius * 5 * (1 + flare * IGNITE_GLOW_SPREAD);
+      ctx.globalAlpha = clamp(alpha * 0.5, 0, 1);
+      ctx.drawImage(sprite, x - reach, y - reach, reach * 2, reach * 2);
+      ctx.globalAlpha = 1;
+      arcs++;
+    }
+
     ctx.beginPath();
-    ctx.arc(x, y, 2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${tint}, ${alpha.toFixed(3)})`;
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fill();
+    arcs++;
   }
-  ctx.shadowBlur = 0;
+
+  return arcs;
 }

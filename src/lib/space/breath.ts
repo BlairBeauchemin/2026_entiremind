@@ -1,7 +1,7 @@
 /**
  * The breath clock for The Space.
  *
- * Everything on screen — mandala scale, stroke opacity, glow radius, the
+ * Everything on screen — star brightness, halo size, the
  * affirmation's own fade — reads from the single normalised amplitude this
  * module produces, so the whole scene moves as one organism rather than as a
  * pile of independently-timed animations.

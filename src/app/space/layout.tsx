@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  * A sibling of /dashboard rather than a child, so none of the dashboard chrome
  * (sidebar, cream ground, max-width column) reaches it. `100dvh` rather than
  * `100vh` because mobile browser chrome collapses on scroll and `vh` would
- * leave the mandala clipped behind it.
+ * leave the sky clipped behind it.
  */
 export default function SpaceLayout({
   children,
@@ -21,7 +21,7 @@ export default function SpaceLayout({
 }) {
   return (
     <div
-      className="relative h-[100dvh] w-full overflow-hidden overscroll-none bg-[#0d2126] text-cream"
+      className="relative h-[100dvh] w-full overflow-hidden overscroll-none bg-[#05080f] text-cream"
       style={{
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: "env(safe-area-inset-bottom)",

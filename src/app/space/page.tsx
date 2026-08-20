@@ -55,6 +55,8 @@ export default async function SpacePage() {
     <SpaceView
       affirmations={affirmations}
       intention={intentionResult.data?.text ?? null}
+      // Seeds the backdrop stars, so a person's sky is the same every visit.
+      skySeed={user.id}
     />
   );
 }

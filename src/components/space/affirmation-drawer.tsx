@@ -45,6 +45,12 @@ export interface AffirmationDrawerProps {
   onOpenChange: (open: boolean) => void;
   affirmations: Affirmation[];
   onChanged: (next: Affirmation[]) => void;
+  /**
+   * A new affirmation was saved. The sky uses this to ignite its star — the
+   * payoff for committing the words, so it fires on create only, never on an
+   * edit, a reorder or an archive.
+   */
+  onCreated?: (id: string) => void;
 }
 
 export function AffirmationDrawer({
@@ -52,6 +58,7 @@ export function AffirmationDrawer({
   onOpenChange,
   affirmations,
   onChanged,
+  onCreated,
 }: AffirmationDrawerProps) {
   const [draftText, setDraftText] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -97,6 +104,9 @@ export function AffirmationDrawer({
       }
       if (source === "user") setDraftText("");
       setSuggestions((prev) => prev.filter((s) => s !== text));
+      // Before the refresh, so the star starts arriving the moment the row
+      // exists rather than after a second round-trip.
+      onCreated?.(result.affirmation.id);
       await refresh();
     });
   };
@@ -149,7 +159,10 @@ export function AffirmationDrawer({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
-                  className="fixed inset-0 z-40 bg-[#0d2126]/80 backdrop-blur-sm"
+                  // Deliberately light: saving keeps the sheet open so you can
+                  // add several, which means the new star ignites behind it. An
+                  // opaque scrim would play the payoff to nobody.
+                  className="fixed inset-0 z-40 bg-[#05101a]/45"
                 />
               </DialogPrimitive.Overlay>
 

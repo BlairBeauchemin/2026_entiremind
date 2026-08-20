@@ -5,18 +5,23 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { BREATHS_PER_AFFIRMATION } from "@/lib/space/breath";
+import { IGNITE_MS } from "@/lib/space/render";
 import type { Affirmation } from "@/lib/affirmations";
-import { BreathingMandala } from "./breathing-mandala";
+import { StarfieldSky } from "./starfield-sky";
 import { AffirmationDisplay } from "./affirmation-display";
 import { AffirmationDrawer } from "./affirmation-drawer";
 
 /**
  * The Space.
  *
- * Deliberately has no timer, no session count, and no end state — you arrive,
- * you breathe, you leave. The only two controls fade out when you stop touching
- * the screen and come back the moment you move, so the surface can go fully
- * quiet without ever becoming a trap.
+ * A night sky you sit under while your own words come and go. Deliberately has
+ * no timer, no session count, and no end state — you arrive, you breathe, you
+ * leave. The only two controls fade out when you stop touching the screen and
+ * come back the moment you move, so the surface can go fully quiet without ever
+ * becoming a trap.
+ *
+ * The sky accumulates: one bright star per affirmation, in the same place every
+ * visit. Writing a new one lights a new star.
  */
 
 /** How long the exit and edit controls linger before fading away. */
@@ -26,19 +31,24 @@ export interface SpaceViewProps {
   affirmations: Affirmation[];
   /** The user's active intention — the focus line when nothing else exists. */
   intention: string | null;
+  /** Stable per-user seed for the backdrop stars. */
+  skySeed: string;
 }
 
 export function SpaceView({
   affirmations: initialAffirmations,
   intention,
+  skySeed,
 }: SpaceViewProps) {
   const [affirmations, setAffirmations] = useState(initialAffirmations);
   const [index, setIndex] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [chromeVisible, setChromeVisible] = useState(true);
+  const [ignitingId, setIgnitingId] = useState<string | null>(null);
 
   const surfaceRef = useRef<HTMLDivElement | null>(null);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const igniteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Breath bookkeeping. Both are refs: they change on a 13-second beat and
   // nothing renders off them directly.
@@ -80,6 +90,7 @@ export function SpaceView({
     scheduleHide();
     return () => {
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      if (igniteTimerRef.current) clearTimeout(igniteTimerRef.current);
     };
   }, [scheduleHide]);
 
@@ -97,6 +108,16 @@ export function SpaceView({
     },
     [wakeChrome],
   );
+
+  /**
+   * A star has just been earned. Cleared once the flare has had time to play so
+   * that saving the *same* text twice still reads as a change to the sky.
+   */
+  const handleCreated = useCallback((id: string) => {
+    setIgnitingId(id);
+    if (igniteTimerRef.current) clearTimeout(igniteTimerRef.current);
+    igniteTimerRef.current = setTimeout(() => setIgnitingId(null), IGNITE_MS);
+  }, []);
 
   const advance = useCallback(() => {
     lastAdvanceRef.current = cycleRef.current;
@@ -124,29 +145,31 @@ export function SpaceView({
       onPointerMove={wakeChrome}
       onPointerDown={wakeChrome}
       className="relative h-full w-full"
-      // --breath is written here every frame by the mandala; everything that
-      // wants to move with the breath reads it from this scope.
+      // --breath is written here every frame by the sky; everything that wants
+      // to move with the breath reads it from this scope.
       style={{ ["--breath" as string]: "0.5" }}
     >
-      {/* Ambient ground. Static — no per-frame blur, which mobile cannot afford. */}
+      {/* Deep space. Static — no per-frame blur, which mobile cannot afford. */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(120% 90% at 50% 45%, #16333b 0%, #0d2126 55%, #08171b 100%)",
+            "radial-gradient(130% 100% at 50% 8%, #14243f 0%, #0a1428 38%, #05080f 100%)",
         }}
       />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.18] bg-grain mix-blend-overlay" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.12] bg-grain mix-blend-overlay" />
 
-      <BreathingMandala
-        seedId={current?.id ?? "empty-space"}
+      <StarfieldSky
+        skySeed={skySeed}
+        affirmationIds={affirmations.map((a) => a.id)}
+        igniteId={ignitingId}
         breathTargetRef={surfaceRef}
         onCycle={handleCycle}
         onTap={handleTap}
       />
 
       {/* The words. pointer-events-none throughout so the whole screen stays
-          draggable — there is no dead zone in the middle of the mandala. */}
+          draggable — there is no dead zone in the middle of the sky. */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
         {current ? (
           <AffirmationDisplay
@@ -167,7 +190,7 @@ export function SpaceView({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute inset-x-0 top-0 flex items-center justify-between p-4"
+            className="absolute inset-x-0 top-0 z-10 flex items-center justify-between p-4"
           >
             <Link
               href="/dashboard"
@@ -200,7 +223,7 @@ export function SpaceView({
               transition={{ duration: 0.5 }}
               className="pointer-events-none absolute inset-x-0 bottom-8 text-center text-xs tracking-widest text-cream/35"
             >
-              TAP FOR THE NEXT · DRAG TO PLAY
+              TAP FOR THE NEXT · DRAG THE SKY
             </motion.p>
           )}
         </AnimatePresence>
@@ -211,6 +234,7 @@ export function SpaceView({
         onOpenChange={handleDrawerOpenChange}
         affirmations={affirmations}
         onChanged={setAffirmations}
+        onCreated={handleCreated}
       />
     </div>
   );

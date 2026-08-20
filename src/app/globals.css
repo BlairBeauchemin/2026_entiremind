@@ -315,12 +315,30 @@ html {
   filter: drop-shadow(0 0 8px rgba(249, 217, 122, 0.4));
 }
 
+/* Star twinkle (The Space entry card preview). The live sky at /space draws its
+   own stars on canvas; this is the CSS-only version for the dashboard, which
+   should not be running an animation loop. */
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.star-twinkle {
+  animation: star-twinkle 4s ease-in-out infinite;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .geometry-rotate,
   .geometry-rotate-reverse,
   .geometry-draw,
-  .geometry-pulse {
+  .geometry-pulse,
+  .star-twinkle {
     animation: none;
   }
 }

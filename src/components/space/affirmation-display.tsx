@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
  * The line the user is sitting with.
  *
  * Two nested opacities, deliberately: the wrapper carries the breath (driven
- * from the `--breath` custom property the mandala writes each frame, so it
+ * from the `--breath` custom property the sky writes each frame, so it
  * costs no React renders), and the inner element carries the crossfade between
  * one line and the next. Nested opacity multiplies, so they compose without
  * either one having to know about the other — and Framer Motion's inline
@@ -37,9 +37,10 @@ export function AffirmationDisplay({
         a feature. The full set is exposed statically below instead.
       */}
       {/*
-        Capped well inside the mandala's diameter so the line wraps to two or
-        three short lines and the rim still reads around it. Letting it run the
-        full width made the words cut the pattern in half.
+        Capped short of the full width so the line wraps to two or three
+        lines and sits as a block in the middle of the sky. Running edge to
+        edge made the words a banner across the stars rather than something
+        held within them.
       */}
       <div
         aria-hidden="true"
