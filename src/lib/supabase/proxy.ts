@@ -38,10 +38,14 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isAuthed = !!user;
 
-  // Onboarding status is only needed for the dashboard/onboarding/auth families
-  // (and never for the callback) — avoid a DB round-trip on every other request.
+  // Onboarding status is only needed for the dashboard/space/onboarding/auth
+  // families (and never for the callback) — avoid a DB round-trip on every
+  // other request. /space must be listed here as well as in resolveRouteRedirect:
+  // without the lookup, isOnboarded is always false and the rule would bounce
+  // onboarded users straight back to /onboarding.
   const isRouteWithRules =
     pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/space") ||
     pathname.startsWith("/onboarding") ||
     pathname.startsWith("/auth");
 

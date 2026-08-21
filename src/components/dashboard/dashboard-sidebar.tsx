@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   LayoutDashboard,
   Target,
+  Orbit,
   Settings,
   X,
   LogOut,
@@ -17,6 +18,8 @@ import { signOut } from "@/lib/auth/actions";
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Intentions", href: "/dashboard/intentions", icon: Target },
+  // Lives outside /dashboard so it can run full-bleed; still nav'd from here.
+  { label: "The Space", href: "/space", icon: Orbit },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
