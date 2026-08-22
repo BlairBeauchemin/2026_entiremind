@@ -88,6 +88,12 @@ review; an internal technique playbook.
 - Nothing is auto-sent to users on the marketing side, and paid ads always require
   founder review.
 
+**Future direction (recorded, not scheduled):** physical products — guided journals
+and card decks — once a user base exists, with Intelligent Change's *The Life
+Designer* as the format model. Nothing is designed or committed. The one binding
+consequence today: **the visual system must survive being printed**, which rules out
+identity that depends on screen gradients, glow, or backlit colour.
+
 **Explicitly undecided:** whether SMS-only remains inviolable. It is the current
 confirmed mechanic and the basis of the positioning above, but it was *not* pinned as
 an immutable constraint when asked, so future work should treat a broadened surface
@@ -117,6 +123,14 @@ as a possible product decision rather than an assumed one.
   — taps, then a partial reveal, then the gate, then the full personalized reading.
 - **IP hygiene:** techniques are informed by books, never copies. Source titles and
   authors are internal lineage only and are never surfaced to users.
+- **Named aspirational reference: Intelligent Change** (intelligentchange.com). The
+  founder has confirmed this brand as the target for tone, copy and visual style —
+  same category, same audience, physical journals and card decks. Their stated
+  position, *"Manifestation isn't magic. It's clarity, belief, and consistent
+  action,"* is functionally identical to this product's own methodology, which makes
+  them a genuine reference rather than merely an admired one. Their **commerce**
+  patterns are explicitly *not* adopted: mystery-discount popups, struck-through
+  pricing, and volume-purchase urgency all fail the trusted-friend test above.
 
 ## Evidence on Hand
 

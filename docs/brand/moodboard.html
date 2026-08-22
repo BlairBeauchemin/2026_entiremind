@@ -1,7 +1,7 @@
 <title>Entiremind Brand Territories</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cinzel:wght@400;600&family=Petrona:ital,wght@0,300;0,400;0,600;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300&family=Karla:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Prata&family=Cinzel:wght@400;600&family=Petrona:ital,wght@0,300;0,400;0,600;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300&family=Karla:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
 
 <style>
   :root {
@@ -327,6 +327,72 @@
 
   footer { border-top: 1px solid var(--rule); padding-block: 3rem; color: var(--paper-faint); font-size: .85rem; }
 
+  /* ---------- Intelligent Change teardown ---------- */
+  .layers { display: grid; gap: 1.25rem; }
+  @media (min-width: 860px) { .layers { grid-template-columns: 1fr 1fr; align-items: start; } }
+  .layer { border: 1px solid var(--rule); background: var(--ink-raised); padding: clamp(1.15rem,3vw,1.6rem); }
+  .layer h3 { font-size: 1.1rem; color: #F0E4C8; margin-bottom: .7rem; }
+  .layer p { font-size: .9rem; color: var(--paper-dim); }
+  .layer .tag { display: inline-block; font-family: var(--f-mono); font-size: .65rem; letter-spacing: .1em;
+                text-transform: uppercase; padding: .15em .5em; border: 1px solid; margin-bottom: .8rem; }
+  .tag.take { color: #A8C49C; border-color: #4A6440; }
+  .tag.adapt { color: var(--gold-bright); border-color: var(--gold-dim); }
+  .tag.refuse { color: #E08A5A; border-color: #7A3A17; }
+  .spec { font-family: var(--f-mono); font-size: .72rem; color: var(--gold); margin-top: .8rem;
+          padding-top: .7rem; border-top: 1px solid var(--rule); }
+
+  .quotecard {
+    background: #E8E4DA; color: #23201A; border: 1px solid #C9BFA8; padding: 1.6rem 1.3rem 1.1rem;
+    text-align: center; max-width: 300px; margin-inline: auto;
+  }
+  .quotecard .tab { width: 15px; height: 13px; margin: 0 auto 1.1rem;
+    background: #3B4EBF; clip-path: polygon(50% 100%, 0 0, 100% 0); }
+  .quotecard q { display: block; quotes: none; font-family: "Prata", Georgia, serif; font-size: 1.02rem; line-height: 1.42; }
+  .quotecard .attr { font-family: var(--f-body); font-size: .58rem; font-weight: 500; letter-spacing: .2em;
+    text-transform: uppercase; color: #6A6252; margin-top: 1.1rem; }
+  .quotecard .mk { font-family: "Prata", Georgia, serif; font-size: .8rem; color: #3B3730; margin-top: 1.5rem; }
+
+  /* ---------- Territory IV: Daylight ---------- */
+  #daylight { background: #F2EFE9; color: #23201A; }
+  #daylight h2 { font-family: "Prata", Georgia, serif; color: #14120F; }
+  #daylight .plate-num { color: #9B3B22; }
+  #daylight .thesis, #daylight .wins { color: #3E382E; }
+  #daylight .panel { border-color: #D3C9B6; background: #F8F5EE; }
+  #daylight .panel h4 { color: #84692A; }
+  #daylight strong { color: #14120F; }
+  #daylight code { color: #7A3B1C; background: rgba(155,59,34,.09); }
+  #daylight .sw code { color: #3E382E; background: none; }
+  #daylight .sw small { color: #5B5346; opacity: 1; }
+  #daylight .stamp { color: #6B6355; opacity: 1; }
+  #daylight .cost { border-color: #9B3B22; background: rgba(155,59,34,.06); color: #3E382E; }
+  #daylight .cost b { color: #9B3B22; }
+  #daylight .bub.them { background: #E4DFD3; color: #23201A; border-radius: 14px; }
+  #daylight .bub.you { background: #3B4EBF; color: #F4F2EC; border-radius: 14px; }
+
+  .emblems { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+  @media (min-width: 560px) { .emblems { grid-template-columns: repeat(4, 1fr); } }
+  .emblem { margin: 0; text-align: center; }
+  .emblem-mark svg { width: 100%; height: auto; max-width: 78px; }
+  .emblem figcaption { display: block; margin-top: .6rem; }
+  .emblem figcaption b { display: block; font-family: "Prata", Georgia, serif; font-weight: 400;
+    font-size: .92rem; color: #14120F; }
+  .emblem figcaption span { display: block; font-size: .72rem; line-height: 1.35; color: #5B5346; margin-top: .2rem; }
+
+  .ic-hero { background: #F8F5EE; border: 1px solid #D3C9B6; padding: clamp(1.5rem,5vw,2.6rem); }
+  .ic-hero .k { font-family: var(--f-body); font-size: .6875rem; font-weight: 500; letter-spacing: .24em;
+    text-transform: uppercase; color: #84692A; }
+  .ic-hero h3 { font-family: "Prata", Georgia, serif; font-size: clamp(1.6rem,1.1rem + 2.4vw,2.6rem);
+    line-height: 1.12; color: #14120F; margin: .9rem 0 .8rem; }
+  .ic-hero p { color: #4A4438; max-width: 42ch; font-size: .98rem; }
+  .ic-cta { display: inline-block; margin-top: 1.3rem; padding: .75rem 1.7rem; background: #14120F;
+    color: #F2EFE9; font-family: var(--f-body); font-weight: 500; font-size: .78rem;
+    letter-spacing: .16em; text-transform: uppercase; text-decoration: none; }
+
+  .reversal { border: 1px solid var(--gold-dim); background: rgba(201,162,75,.06);
+    padding: clamp(1.15rem,3vw,1.6rem); margin-top: clamp(2rem,5vw,3rem); }
+  .reversal b { display: block; font-family: var(--f-body); font-size: .6875rem; font-weight: 500;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
@@ -336,17 +402,17 @@
   <div class="wrap">
     <p class="eyebrow">Brand Direction · August 2026</p>
     <h1>Entiremind<br>Brand Territories</h1>
-    <p class="sub lede">Five references, deconstructed. Three directions, rendered. One recommendation, defended.</p>
-    <p class="verdict">Your references are unanimous — and they point almost exactly opposite to what is currently live at entiremind.com. That is the finding. Everything below is what to do about it.</p>
+    <p class="sub lede">Six references, deconstructed. Four directions, rendered. One recommendation, defended — and one reversed.</p>
+    <p class="verdict">Your first five references were unanimous. The sixth — Intelligent Change — agrees with them about every symbol and disagrees about the light. That disagreement is the whole decision, and it reversed this document's original recommendation.</p>
   </div>
 </header>
 
 <section>
   <div class="wrap">
     <p class="eyebrow">What you sent</p>
-    <p class="lede">Five images: a foil tarot card, a tarot deck box, a tarot-reading promo flyer, a stock manifestation silhouette, and a tea-reading event graphic.</p>
+    <p class="lede">First five images: a foil tarot card, a tarot deck box, a tarot-reading promo flyer, a stock manifestation silhouette, and a tea-reading event graphic. Then a sixth reference of a different kind — a competitor.</p>
     <p>Read as a set, they agree on far more than they disagree on. Every one of them is <strong>dark</strong>. Every one is <strong>warm</strong> — the light source is fire, not daylight. Four of five use <strong>gold as the only accent</strong>. All five treat their subject as an <strong>object with weight</strong>: a card you hold, a box you open, a cup you drink from. And none of them is a screen.</p>
-    <p>That last point matters more than it looks. <strong>Not one reference is digital product design.</strong> They set a mood bar, not an interface bar — so the translation work is the actual job, and no reference here shows you what it looks like when it becomes a website. That translation is what the three territories below are for.</p>
+    <p>That last point matters more than it looks. <strong>Not one reference is digital product design.</strong> They set a mood bar, not an interface bar — so the translation work is the actual job, and no reference here shows you what it looks like when it becomes a website. That translation is what the territories below are for — and it is exactly the gap the sixth reference closes.</p>
   </div>
 </section>
 
@@ -481,14 +547,100 @@
 
 <div class="wide"><div class="ornament"><span>◆</span></div></div>
 
+
+<div class="wide"><div class="ornament"><span>◆ ◆ ◆</span></div></div>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <p class="eyebrow">Reference 06 · Intelligent Change</p>
+    <h2 style="font-size:clamp(1.6rem,1.1rem + 2.2vw,2.4rem);line-height:1.12;margin-bottom:1.25rem;">The competitor who already solved the problem this document was stuck on.</h2>
+    <p class="lede">Journals and card decks, same audience, same category. And the first line of their manifestation deck copy is this:</p>
+    <p class="verdict" style="margin-block:1.75rem;">"Manifestation isn't magic. It's clarity, belief, and consistent action."</p>
+    <p>Set that beside your own <code>docs/methodology.md</code> — <em>"thoughts are material, not master … you act to gather evidence for the life you're building"</em> — and it is the same position in different words.</p>
+    <p>They wear the entire esoteric vocabulary: the radiant eye, the sunburst, moon phases, alchemical vessels, arches, a triangle-in-circle house mark. Then they disclaim magic in the first sentence of body copy. <strong>The iconography carries meaning without making a prediction.</strong> That is precisely the manoeuvre this document told you was necessary, executed by someone selling to your customer.</p>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wide">
+    <p class="eyebrow">Six layers, and what transfers</p>
+    <div class="layers">
+
+      <article class="layer">
+        <h3>Type</h3>
+        <span class="tag take">Take</span>
+        <p>A bold, high-contrast serif logotype, tightly set. Serif carries meaning; a letterspaced uppercase sans carries mechanics (<code>ADD TO CART</code>). The two never blur into each other.</p>
+        <p>Two signatures worth stealing outright: <strong>roman and italic mixed inside a single sentence</strong> — "our beliefs <em>create the world</em> we live in" — and <strong>letterspaced small caps for attribution</strong>. Their titles also stack at mixed scale: <em>The</em> / <strong>LIFE</strong> / <em>Designer</em>, three sizes in one lockup.</p>
+        <div class="quotecard" style="margin-top:1.2rem">
+          <div class="tab" aria-hidden="true"></div>
+          <q>We can change the world by changing our beliefs, because our beliefs <em>create the world</em> we live in.</q>
+          <p class="attr">Dr. Bruce Lipton</p>
+          <p class="mk">Intelligent Change</p>
+        </div>
+        <p style="font-size:.8rem;color:var(--paper-faint);margin-top:.7rem">Their card, rebuilt in Prata — the italic clause, the letterspaced attribution and the wordmark sign-off are the whole system in one object.</p>
+        <p class="spec">Face unconfirmed — reads as Canela or Tiempos Headline, but this environment could not load the site, so treat that as a guess. Closest Google equivalents by attribute: Prata, Bodoni Moda.</p>
+      </article>
+
+      <article class="layer">
+        <h3>Colour</h3>
+        <span class="tag adapt">Adapt</span>
+        <p>A linen ground, near-black type, gold foil — and then <strong>exactly one saturated colour per product</strong>. Red for Manifestation, cobalt for Motivational. The colour is the product's identity, not decoration.</p>
+        <p>The Life Designer's interior alternates cream and cobalt spread by spread, so the ground colour itself marks progress through the five pillars.</p>
+        <div class="strip" style="margin-top:.9rem" role="img" aria-label="Palette sampled from the screenshots">
+          <span style="background:#F2EFE9"></span><span style="background:#D0CABB"></span>
+          <span style="background:#14120F"></span><span style="background:#C7402F"></span>
+          <span style="background:#3B4EBF"></span><span style="background:#C9A24B"></span>
+        </div>
+      </article>
+
+      <article class="layer">
+        <h3>Iconography</h3>
+        <span class="tag take">Take</span>
+        <p>Fine, even-weight, strictly symmetrical line engraving — no shading, no fills, no perspective. Radiating eye, sunburst, moon phases, portals, vessels, a butterfly.</p>
+        <p>The rule that matters: <strong>each product gets its own emblem inside one drawing system.</strong> An eye for Manifestation, a wave for Motivational. Same hand, different symbol.</p>
+        <p class="spec">This is the answer to the biggest gap in your repo — four archetypes with no visual identity. See Territory IV.</p>
+      </article>
+
+      <article class="layer">
+        <h3>Photography</h3>
+        <span class="tag adapt">Adapt</span>
+        <p>Overhead or over-shoulder, natural light, neutral textures — bouclé, travertine, cream knit — and hands always in frame. Product shots float on flat pale ground with one soft contact shadow.</p>
+        <p>The rule they never break: <strong>the model's wardrobe colour-matches the product.</strong> Red sweater with the red box, blue-striped shirt with the blue box. It is why the lifestyle shots read as composed rather than stocky.</p>
+        <p class="spec">Cheaper for you than Candlelight's low-light stills, and it survives being shot on a phone in daylight.</p>
+      </article>
+
+      <article class="layer">
+        <h3>Copy &amp; structure</h3>
+        <span class="tag take">Take</span>
+        <p>Quote on the front, practical prompt on the back. Two faces, one object — structurally identical to a prompt that arrives and a reply that answers it.</p>
+        <p>The Life Designer runs on five pillars: <strong>Identity, Mindset, Core Values, Ideal Day, Life Vision.</strong> Your onboarding already collects intention, vision, obstacles and aligned-state. That is the same instrument with different labels.</p>
+        <p class="spec">Enact, don't teach — their prompts ask, they never lecture. Same rule as your methodology.</p>
+      </article>
+
+      <article class="layer">
+        <h3>Commerce</h3>
+        <span class="tag refuse">Refuse</span>
+        <p>Sticky black add-to-cart bar, struck-through pricing, New / Bestseller pills, a rotating announcement bar, a <em>MYSTERY DISCOUNT</em> popup, "the more you buy, the more you save."</p>
+        <p>Several of these fail the trusted-friend test in your own <code>docs/design-philosophy.md</code>, which bans manufactured urgency and obscured cost. <strong>Admiring a brand's art direction does not oblige you to adopt its growth tactics.</strong> Take the type, the colour, the emblems. Leave the popup.</p>
+      </article>
+
+    </div>
+
+    <div class="reversal">
+      <b>What this reference changed</b>
+      <p style="margin:0">This document originally recommended <strong>Candlelight</strong> — warm near-black, one light source. Intelligent Change uses nearly the same symbol vocabulary on the opposite ground: bright linen, daylight, saturated primaries. Since you responded to both, the icon set is effectively settled and the real open question was only ever <strong>the light</strong>. You chose daylight. Territory IV below is the result, and it supersedes the earlier recommendation rather than sitting beside it.</p>
+    </div>
+  </div>
+</section>
+
 <section style="padding-top:0">
   <div class="wrap">
     <p class="eyebrow">The tension worth naming</p>
-    <h2 style="font-size:clamp(1.5rem,1.1rem + 1.8vw,2.2rem);margin-bottom:1.25rem;">Every reference you sent is a divination product. Entiremind explicitly is not one.</h2>
+    <h2 style="font-size:clamp(1.5rem,1.1rem + 1.8vw,2.2rem);margin-bottom:1.25rem;">Your first five references were divination products. Entiremind explicitly is not one.</h2>
     <p>Four of the five are tarot or tea-reading. Your own <code>docs/methodology.md</code> stakes out the opposite ground, deliberately:</p>
     <p class="verdict" style="margin-block:1.5rem;">"Thoughts are material, not master. You don't obey your thoughts and you don't fight them — you choose which ones to feed, and you act to gather evidence for the life you're building."</p>
     <p>That line reconciles manifestation with cognitive defusion. It is thought-<em>skeptical</em>. A brand that dresses in tarot iconography makes a promise of prediction that the product then refuses to keep — and the gap between the two is exactly where trust leaks.</p>
-    <p>This is not an argument against the aesthetic. It is an argument for taking the <strong>materials</strong> — gold, candlelight, aged paper, the weight of a held object, the upright/shadow duality — and refusing the <strong>claim</strong>. Every territory below is built to pass that test. Territory I sits closest to the line and is flagged accordingly.</p>
+    <p>This is not an argument against the aesthetic. It is an argument for taking the <strong>materials</strong> — gold, aged paper, the weight of a held object, the upright/shadow duality — and refusing the <strong>claim</strong>. Every territory below is built to pass that test. Territory I sits closest to the line and is flagged accordingly.</p><p>Reference 06 is the proof this is achievable rather than merely desirable: Intelligent Change wears the eye, the sunburst and the moon phases, and opens its manifestation copy by denying that any of it is magic. <strong>Symbolism without prediction is a real position, and it is already selling.</strong></p>
   </div>
 </section>
 
@@ -505,8 +657,8 @@
           <tr>
             <td>Cream editorial</td>
             <td><code>src/app/page.tsx</code> — live</td>
-            <td>Competent and quiet. The refs want warmth and material richness this has none of; the detector found no defects, which confirms the problem is timidity, not sloppiness.</td>
-            <td class="fate dead">replace</td>
+            <td>Reference 06 partially rescues this. The <em>ground</em> was right all along — a pale warm neutral is exactly what Intelligent Change stands on. What is missing is contrast, saturation and ornament: no black, no committed accent, no line art, nothing with weight. The detector found no defects, so the problem was always timidity, not sloppiness.</td>
+            <td class="fate live">keep the ground, raise the contrast</td>
           </tr>
           <tr>
             <td>Pastel sunset gradient</td>
@@ -612,10 +764,11 @@
 <section class="plate" id="candle">
   <div class="wide">
     <div class="plate-head">
-      <span class="plate-num">TERRITORY II</span>
+      <span class="plate-num">TERRITORY II · NOW THE NIGHT MODE, NOT THE WORLD</span>
       <h2>Candlelight</h2>
       <p class="thesis">Take the one substitution that reference 05 makes and build everything on it: <em>the mystery is a room at night, not outer space.</em> Warm near-black, one light source, real objects photographed in low light — a phone face-down on a table, a cup, a window before dawn. No glyphs. No stars. No tarot.</p>
       <p class="wins"><b>Bets that:</b> differentiation is the problem — that looking like every other pastel wellness brand is what's costing you.</p>
+      <p class="wins" style="color:#D8A94A"><b>Revised:</b> this was the original recommendation. Reference 06 moved the brand into daylight, so Candlelight now survives as the <em>evening</em> expression inside Territory IV — the dark mode, the late-night message, the packaging. Intelligent Change runs exactly this split: a pale site, saturated boxes.</p>
     </div>
 
     <div class="specimen-grid">
@@ -749,25 +902,95 @@
   </div>
 </section>
 
+<!-- ============ IV. DAYLIGHT ============ -->
+<section class="plate" id="daylight">
+  <div class="wide">
+    <div class="plate-head">
+      <span class="plate-num">TERRITORY IV · THE RECOMMENDATION</span>
+      <h2>Daylight</h2>
+      <p class="thesis">Everything the first five references taught you about symbol and material, moved onto reference 06's ground. Warm linen, near-black high-contrast serif, fine gold line art, one saturated colour per archetype, and a great deal of air. The mystery is still there — it is just <em>lit</em>.</p>
+      <p class="wins"><b>Bets that:</b> credibility is the problem — that a pre-launch brand asking for a phone number needs to look established before it looks unusual.</p>
+    </div>
+
+    <div class="specimen-grid">
+      <div>
+        <div class="panel">
+        <h4>The system · one emblem per archetype</h4>
+        <div class="emblems"><figure class="emblem"><div class="emblem-mark" style="color:#3B4EBF"><svg viewBox="0 0 120 120" role="img" aria-label="The Visionary emblem: an eye at the centre of a radiant" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><line x1="90.0" y1="60.0" x2="112.0" y2="60.0"/><line x1="89.0" y1="67.8" x2="102.5" y2="71.4"/><line x1="86.0" y1="75.0" x2="105.0" y2="86.0"/><line x1="81.2" y1="81.2" x2="91.1" y2="91.1"/><line x1="75.0" y1="86.0" x2="86.0" y2="105.0"/><line x1="67.8" y1="89.0" x2="71.4" y2="102.5"/><line x1="60.0" y1="90.0" x2="60.0" y2="112.0"/><line x1="52.2" y1="89.0" x2="48.6" y2="102.5"/><line x1="45.0" y1="86.0" x2="34.0" y2="105.0"/><line x1="38.8" y1="81.2" x2="28.9" y2="91.1"/><line x1="34.0" y1="75.0" x2="15.0" y2="86.0"/><line x1="31.0" y1="67.8" x2="17.5" y2="71.4"/><line x1="30.0" y1="60.0" x2="8.0" y2="60.0"/><line x1="31.0" y1="52.2" x2="17.5" y2="48.6"/><line x1="34.0" y1="45.0" x2="15.0" y2="34.0"/><line x1="38.8" y1="38.8" x2="28.9" y2="28.9"/><line x1="45.0" y1="34.0" x2="34.0" y2="15.0"/><line x1="52.2" y1="31.0" x2="48.6" y2="17.5"/><line x1="60.0" y1="30.0" x2="60.0" y2="8.0"/><line x1="67.8" y1="31.0" x2="71.4" y2="17.5"/><line x1="75.0" y1="34.0" x2="86.0" y2="15.0"/><line x1="81.2" y1="38.8" x2="91.1" y2="28.9"/><line x1="86.0" y1="45.0" x2="105.0" y2="34.0"/><line x1="89.0" y1="52.2" x2="102.5" y2="48.6"/><path d="M38 60Q60 42 82 60Q60 78 38 60Z"/><circle cx="60" cy="60" r="6.5"/><circle cx="60" cy="60" r="2" fill="currentColor" stroke="none"/></svg></div><figcaption><b>The Visionary</b><span>You see it before it exists.</span></figcaption></figure>
+<figure class="emblem"><div class="emblem-mark" style="color:#C7402F"><svg viewBox="0 0 120 120" role="img" aria-label="The Alchemist emblem: a triangle over a circle" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="60" cy="72" r="20"/><path d="M60 30L82 70H38Z"/><line x1="46" y1="58" x2="74" y2="58"/><path d="M60 16Q61.32 20.68 66 22Q61.32 23.32 60 28Q58.68 23.32 54 22Q58.68 20.68 60 16Z"/><path d="M30 40Q30.88 43.12 34 44Q30.88 44.88 30 48Q29.12 44.88 26 44Q29.12 43.12 30 40Z"/><path d="M90 40Q90.88 43.12 94 44Q90.88 44.88 90 48Q89.12 44.88 86 44Q89.12 43.12 90 40Z"/></svg></div><figcaption><b>The Alchemist</b><span>You turn intention into motion.</span></figcaption></figure>
+<figure class="emblem"><div class="emblem-mark" style="color:#2F6B5E"><svg viewBox="0 0 120 120" role="img" aria-label="The Seeker emblem: a portal with a star beyond it" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M38 96V62a22 22 0 0 1 44 0v34"/><line x1="30" y1="96" x2="90" y2="96"/><path d="M60 45Q61.54 50.46 67 52Q61.54 53.54 60 59Q58.46 53.54 53 52Q58.46 50.46 60 45Z"/><line x1="72.0" y1="52.0" x2="79.0" y2="52.0"/><line x1="68.5" y1="60.5" x2="73.4" y2="65.4"/><line x1="60.0" y1="64.0" x2="60.0" y2="71.0"/><line x1="51.5" y1="60.5" x2="46.6" y2="65.4"/><line x1="48.0" y1="52.0" x2="41.0" y2="52.0"/><line x1="51.5" y1="43.5" x2="46.6" y2="38.6"/><line x1="60.0" y1="40.0" x2="60.0" y2="33.0"/><line x1="68.5" y1="43.5" x2="73.4" y2="38.6"/></svg></div><figcaption><b>The Seeker</b><span>You know what you are done with.</span></figcaption></figure>
+<figure class="emblem"><div class="emblem-mark" style="color:#B07A1E"><svg viewBox="0 0 120 120" role="img" aria-label="The Phoenix emblem: rays rising from an arc" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M34 84a26 26 0 0 1 52 0"/><line x1="30.0" y1="84.0" x2="8.0" y2="84.0"/><line x1="37.0" y1="64.7" x2="27.8" y2="57.0"/><line x1="54.8" y1="54.5" x2="51.0" y2="32.8"/><line x1="75.0" y1="58.0" x2="81.0" y2="47.6"/><line x1="88.2" y1="73.7" x2="108.9" y2="66.2"/><line x1="88.2" y1="94.3" x2="99.5" y2="98.4"/><line x1="75.0" y1="110.0" x2="86.0" y2="129.0"/><line x1="54.8" y1="113.5" x2="52.7" y2="125.4"/><line x1="37.0" y1="103.3" x2="20.2" y2="117.4"/><path d="M60 24Q61.32 28.68 66 30Q61.32 31.32 60 36Q58.68 31.32 54 30Q58.68 28.68 60 24Z"/></svg></div><figcaption><b>The Phoenix</b><span>You rebuild through action.</span></figcaption></figure></div>
+        <p style="font-size:.85rem;color:#5B5346;margin-top:1.4rem;">This is the single highest-leverage thing in the document. Intelligent Change gives Manifestation an eye and Motivational a wave — same hand, different symbol. You already have four archetypes and four inner critics written; they have never had a face. One drawing system, one emblem and one colour each, and the quiz reveal finally has something to hand over.</p>
+        <p style="font-size:.85rem;color:#5B5346;margin-top:.9rem;"><strong>These are placeholders drawn to show the rule, not final artwork.</strong> The system is the deliverable; the illustration is a commission.</p>
+        </div>
+        <div class="panel" style="margin-top:1.25rem;">
+          <h4>In the thread</h4>
+          <div class="thread">
+            <div class="bub them">Good morning. What's one thing you want to be true by tonight?</div>
+            <div class="stamp">7:45 AM</div>
+            <div class="bub you">that I actually started the thing instead of researching it again</div>
+            <div class="bub them">Then that's the whole day. Tell me when it's started.</div>
+          </div>
+          <p style="font-size:.85rem;color:#5B5346;margin-top:1.1rem;">The bubble takes the reader's own archetype colour. It is the one place the brand shows up inside a surface it does not control.</p></div>
+      </div>
+
+      <div>
+        <div class="ic-hero">
+          <p class="k">Now accepting early signals</p>
+          <h3>One text a day. The one you'd have written yourself.</h3>
+          <p>No app to open. No streak to protect. A question that arrives before the day does — and something that actually listens when you answer.</p>
+          <a class="ic-cta" href="#recommendation">Find your archetype</a>
+        </div>
+
+        <div class="panel" style="margin-top:1.25rem;">
+          <h4>Palette</h4>
+          <div class="swatches">
+            <div class="sw"><i style="background:#F2EFE9;box-shadow:inset 0 0 0 1px #D3C9B6"></i><code>#F2EFE9</code><small>Linen</small></div>
+            <div class="sw"><i style="background:#14120F"></i><code>#14120F</code><small>Ink</small></div>
+            <div class="sw"><i style="background:#C9A24B"></i><code>#C9A24B</code><small>Leaf</small></div>
+            <div class="sw"><i style="background:#3B4EBF"></i><code>#3B4EBF</code><small>Visionary</small></div>
+            <div class="sw"><i style="background:#C7402F"></i><code>#C7402F</code><small>Alchemist</small></div>
+          </div>
+          <p style="font-size:.85rem;color:#5B5346;margin-top:1.1rem;">Linen and ink are constant. The saturated colour is never decorative — it belongs to whichever archetype the reader is, so the site quietly changes colour depending on who took the quiz.</p>
+        </div>
+
+        <div class="panel" style="margin-top:1.25rem;">
+          <h4>Type · Prata + Karla</h4>
+          <p style="font-family:'Prata',Georgia,serif;font-size:2.1rem;line-height:1.1;color:#14120F;margin-bottom:.5rem;">Entiremind</p>
+          <p style="font-family:'Karla',sans-serif;font-size:.6875rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#84692A;margin-bottom:.9rem;">Always listening</p>
+          <p style="font-size:.92rem;color:#3E382E;margin:0;">High-contrast serif for anything that carries meaning; letterspaced uppercase Karla for anything that is a control. Borrow their italic-inside-a-sentence emphasis and their small-caps attribution wholesale — both are free.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cost">
+      <b>What it costs you</b>
+      Linen, black serif and gold celestial line art is becoming the default look of this entire category — Intelligent Change is not the only one standing here. Choosing it buys instant credibility and spends your distinctiveness. The hedge is that the four emblems and the upright/shadow structure carry the difference, because neither can be copied without copying the product underneath. If those two do not get built properly, this territory is just a well-set version of what everyone else already has.
+    </div>
+  </div>
+</section>
+
 <!-- ============ RECOMMENDATION ============ -->
 <section id="recommendation">
   <div class="wrap">
     <div class="rec">
-      <p class="eyebrow">The recommendation</p>
-      <h2>Build Candlelight. Borrow the Deck's one good idea. Hold the Almanac for later.</h2>
-      <p><strong>Candlelight is the pick.</strong> It gives you everything you are actually drawn to in these references — warmth, depth, gold, the sense of a held ritual — without making a claim your own methodology refuses. It is the only one of the three that matches the real lighting conditions of your product, which is read before dawn and last thing at night. And it walks away from the pastel gradient that reference 04 proves you are still standing in.</p>
-      <p><strong>Then take one thing from The Deck:</strong> the upright/inverted structure. Not the cards, not the foil, not the pentacles — the <em>anatomy</em>. Your archetype reveal should show the shadow alongside the strength, inverted, the way reference 01 does. You already wrote both halves. Nothing else in your product would make a person feel as seen as that does, and it costs a layout decision rather than an illustration budget.</p>
-      <p><strong>The Almanac is not rejected — it is early.</strong> It solves retention, and you have no retention problem yet because you have no users yet. Revisit it once real reply data exists; it is the natural second act, and it can be built inside Candlelight's palette without a rebrand.</p>
+      <p class="eyebrow">The recommendation · revised</p>
+      <h2>Build Daylight. Keep the Deck's anatomy. Candlelight becomes night. The Almanac still waits.</h2>
+      <p><strong>Daylight is the pick, and it replaces the earlier one.</strong> Reference 06 settled the argument this document could not settle on its own: the esoteric symbol set and an explicitly anti-magic stance can coexist, because someone is already selling that combination to your customer. Once that is established, the only real question was the ground — and a pre-launch brand asking strangers for a phone number is better served by looking established than by looking rare.</p>
+      <p><strong>The emblems are the actual work.</strong> One drawing system, four archetypes, four colours, four symbols. This is the thing you own that a competitor cannot copy without copying the product underneath it, and it is the reason the quiz reveal will feel like receiving something rather than reading a result. If only one item on this page gets built, make it this one.</p>
+      <p><strong>Keep the inverted-shadow structure from The Deck.</strong> It survived the change of ground intact and now has two independent precedents: the tarot card's reversed meanings, and Intelligent Change's quote-front / prompt-back. Show the shadow beside the strength. You have already written both halves.</p>
+      <p><strong>Candlelight is not discarded — it is demoted to the evening.</strong> Dark mode, late-night messages, and eventually the packaging. Intelligent Change runs the same split: a pale site, saturated boxes. <strong>The Almanac stays deferred</strong>; it solves retention, and you have no retention problem until you have users.</p>
 
       <div class="ornament"><span>◆</span></div>
 
       <p class="eyebrow" style="margin-bottom:1rem;">If you take this, the next moves are</p>
       <ol class="steps">
-        <li><span>Delete the fabricated proof. <code>sacred-hero.tsx:70</code> claims "Join 2,000+ others" beside three stock-photo avatars. You have no users. It violates your own trusted-friend guardrail, and it should go before anything else ships.</span></li>
-        <li><span>Reconcile the palette of record. <code>CLAUDE.md</code> says teal is primary; the code made navy primary. Whichever territory wins, one source of truth has to survive.</span></li>
-        <li><span>Commission or shoot the low-light stills. Candlelight cannot be evaluated — or shipped — without them. This is the long-lead item; start it first.</span></li>
-        <li><span>Rebuild the archetype reveal around the upright/shadow pairing before touching the landing page. It is the highest-leverage surface you own and the only one that is genuinely yours.</span></li>
-        <li><span>Then write <code>DESIGN.md</code>. Not before — it should record the world you chose, and it will bind every design decision that follows it.</span></li>
+        <li><span>Delete the fabricated proof. <code>sacred-hero.tsx:70</code> claims "Join 2,000+ others" beside three stock-photo avatars. You have no users, it breaks your own trusted-friend guardrail, and it should go before anything else ships.</span></li>
+        <li><span>Commission the four archetype emblems as real line art. This is the long-lead item and the only genuinely proprietary asset on the page — start it first.</span></li>
+        <li><span>Rebuild the archetype reveal around the emblem plus the upright/shadow pairing, before touching the landing page. It is the highest-leverage surface you own.</span></li>
+        <li><span>Re-ground the site: keep the cream, add real black, one archetype accent, and gold line art. This is a contrast and ornament problem, not a rebuild — the incumbent ground was right.</span></li>
+        <li><span>Reconcile the palette of record. <code>CLAUDE.md</code> still declares teal primary while the code uses navy; both are now wrong. Fix it when <code>DESIGN.md</code> is written.</span></li>
+        <li><span>Then write <code>DESIGN.md</code> — and not before. It should record the world you chose and will bind everything after it.</span></li>
       </ol>
     </div>
   </div>
