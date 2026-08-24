@@ -74,14 +74,28 @@ npx shadcn@latest add [component]
 
 ## Design Guidelines
 
+> **`DESIGN.md` at the repo root is the single visual authority.** Colours,
+> typography, spacing, shapes and component values live there and nowhere else.
+> Do not restate token values in this file — that duplication is exactly what caused
+> the drift documented below.
+
 - **Lightly magical aesthetic** — calm, inspiring, intuitive
 - Simple layouts, soft spacing, calm typography, no visual noise
 - Conversion-optimized landing page for email/phone capture
 - Mobile-responsive layouts
-- Theme colors:
-  - Primary: Dark teal (#204147)
-  - Secondary: Soft purple (#cbbbe3)
-  - Accent: Warm yellow (#f9d97a)
+- **The world is "Daylight"**: warm linen ground, near-black ink, a single saturated
+  cobalt, gold as foil-style ornament only. It should read as *printed*, not
+  rendered — physical journals and decks are a stated future direction, so no
+  identity may depend on gradients, glow, or backlit colour. There is **no dark
+  mode** in scope.
+
+**Palette drift — resolved August 2026.** This file previously declared teal
+`#204147` primary, soft purple `#cbbbe3` secondary and warm yellow `#f9d97a` accent,
+while `src/app/globals.css` had actually made navy `#2E2A58` primary and demoted teal
+to body text. Both were wrong and both are retired, along with cream `#fdfbf7`.
+The palette of record is now cobalt `#2A3A9C` on linen `#F2EFE9` — see `DESIGN.md`.
+`globals.css` still carries the old token names and has **not** been migrated yet;
+that rename is tracked as outstanding work.
 
 ### Persuasion & Behavioral Design
 - **Required reading for any user-facing change**: `docs/design-philosophy.md`
