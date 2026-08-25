@@ -20,7 +20,8 @@ export function PhoneAuthForm({ onOtpSent }: PhoneAuthFormProps) {
   const formatPhoneDisplay = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
     if (cleaned.length <= 3) return cleaned;
-    if (cleaned.length <= 6) return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3)}`;
+    if (cleaned.length <= 6)
+      return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3)}`;
     return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6, 10)}`;
   };
 
@@ -71,11 +72,11 @@ export function PhoneAuthForm({ onOtpSent }: PhoneAuthFormProps) {
       className="space-y-6"
     >
       <div className="space-y-2">
-        <Label htmlFor="phone" className="text-sm font-medium text-teal-900">
+        <Label htmlFor="phone" className="text-sm font-medium text-ink">
           Phone number
         </Label>
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-900/50 select-none">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted select-none">
             +1
           </span>
           <Input
@@ -84,7 +85,7 @@ export function PhoneAuthForm({ onOtpSent }: PhoneAuthFormProps) {
             value={formatPhoneDisplay(phone)}
             onChange={handlePhoneChange}
             placeholder="(555) 123-4567"
-            className="pl-12 h-12 bg-white/60 border-white/60 rounded-xl focus:border-em-purple-300 focus:ring-em-purple-300/20"
+            className="pl-12 h-12 bg-surface border-rule rounded-sm focus:border-cobalt focus:ring-cobalt"
             disabled={isLoading}
             autoComplete="tel-national"
           />
@@ -103,7 +104,7 @@ export function PhoneAuthForm({ onOtpSent }: PhoneAuthFormProps) {
       <Button
         type="submit"
         disabled={isLoading || phone.length !== 10}
-        className="w-full h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium transition-colors"
+        className="w-full h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium transition-colors"
       >
         {isLoading ? (
           <Loader2 className="w-5 h-5 animate-spin" />
@@ -112,7 +113,7 @@ export function PhoneAuthForm({ onOtpSent }: PhoneAuthFormProps) {
         )}
       </Button>
 
-      <p className="text-xs text-center text-teal-900/50">
+      <p className="text-xs text-center text-muted">
         We&apos;ll send you a one-time code to verify your phone number
       </p>
     </motion.form>

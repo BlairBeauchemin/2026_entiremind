@@ -97,17 +97,17 @@ export default async function UpgradeLinkPage({
   const firstName = user.name?.split(" ")[0] || null;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-em-purple-100 to-white flex items-center justify-center px-6 py-16">
+    <main className="min-h-screen bg-linen flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-lg space-y-8 text-center">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted">
           Entiremind
         </p>
 
         <div className="space-y-3">
-          <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
+          <h1 className="font-serif text-3xl md:text-4xl text-ink">
             {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
           </h1>
-          <p className="text-teal-900/70 leading-relaxed">
+          <p className="text-muted leading-relaxed">
             Everything you&apos;ve shared is saved. Pick a plan and the daily
             practice picks right back up tomorrow morning.
           </p>
@@ -115,7 +115,7 @@ export default async function UpgradeLinkPage({
 
         <UpgradePlanPicker token={token} />
 
-        <p className="text-xs text-teal-900/50">
+        <p className="text-xs text-muted">
           Secure checkout by Stripe. Cancel anytime from your settings.
         </p>
       </div>

@@ -22,7 +22,6 @@ export function SacredCTA() {
         </div>
 
         {/* Ambient glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-em-purple-300/10 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-3xl mx-auto px-6 relative z-10">
           <motion.div
@@ -38,7 +37,7 @@ export function SacredCTA() {
                 width="60"
                 height="30"
                 viewBox="0 0 60 30"
-                className="text-em-purple-300/40"
+                className="text-muted"
                 aria-hidden="true"
               >
                 <line
@@ -61,10 +60,10 @@ export function SacredCTA() {
               </svg>
             </div>
 
-            <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl text-navy font-medium mb-8 tracking-tight">
+            <h2 className="font-serif text-display text-ink mb-8 text-balance">
               Begin Your Alignment
             </h2>
-            <p className="text-xl text-teal-900 mb-12 font-light font-sans max-w-xl mx-auto leading-relaxed tracking-wide">
+            <p className="text-xl text-ink mb-12 font-light font-sans max-w-xl mx-auto leading-relaxed tracking-wide">
               Join the waitlist and receive early access to the Entiremind
               experience. Your intentions are waiting.
             </p>
@@ -72,7 +71,7 @@ export function SacredCTA() {
             {/* CTA Button */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-navy text-cream px-10 py-4 rounded-full text-lg font-medium hover:bg-navy/90 hover:shadow-lg hover:shadow-navy/10 transition-all duration-300 font-sans"
+              className="bg-cobalt text-linen px-10 py-4 rounded-sm text-lg font-medium hover:bg-cobalt-deep transition-all duration-300 font-sans"
             >
               Reserve My Spot
             </button>
@@ -83,7 +82,7 @@ export function SacredCTA() {
                 width="120"
                 height="40"
                 viewBox="0 0 120 40"
-                className="text-em-purple-300/20"
+                className="text-muted"
                 aria-hidden="true"
               >
                 <path

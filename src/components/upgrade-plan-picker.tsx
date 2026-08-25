@@ -40,32 +40,32 @@ export function UpgradePlanPicker({ token }: { token: string }) {
         <button
           onClick={() => choose("monthly")}
           disabled={loading !== null}
-          className="rounded-xl border border-navy/20 bg-white/60 p-5 text-left transition-colors hover:bg-white/80 disabled:opacity-50"
+          className="rounded-sm border border-cobalt bg-surface p-5 text-left transition-colors hover:border-cobalt disabled:opacity-50"
         >
-          <div className="font-serif text-lg text-navy">
+          <div className="font-serif text-lg text-ink">
             {loading === "monthly" ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
               "Monthly"
             )}
           </div>
-          <div className="mt-1 text-sm text-teal-900/60">
+          <div className="mt-1 text-sm text-muted">
             Billed monthly, cancel anytime
           </div>
         </button>
         <button
           onClick={() => choose("yearly")}
           disabled={loading !== null}
-          className="rounded-xl border border-navy/20 bg-white/60 p-5 text-left transition-colors hover:bg-white/80 disabled:opacity-50"
+          className="rounded-sm border border-cobalt bg-surface p-5 text-left transition-colors hover:border-cobalt disabled:opacity-50"
         >
-          <div className="font-serif text-lg text-navy">
+          <div className="font-serif text-lg text-ink">
             {loading === "yearly" ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
               "Yearly"
             )}
           </div>
-          <div className="mt-1 text-sm text-teal-900/60">
+          <div className="mt-1 text-sm text-muted">
             Save with annual billing
           </div>
         </button>

@@ -35,37 +35,37 @@ export function FullReveal({
       className="space-y-8"
     >
       <section className="text-center space-y-3">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted">
           You are
         </p>
-        <h1 className="font-serif text-3xl text-navy font-medium">
+        <h1 className="font-serif text-3xl text-ink">
           {content.archetype.name}
         </h1>
-        <p className="text-teal-900/70 text-sm leading-relaxed text-left">
+        <p className="text-muted text-sm leading-relaxed text-left">
           {content.archetype.paragraph}
         </p>
       </section>
 
       {content.innerCritic && (
-        <section className="space-y-2 rounded-2xl bg-white/40 border border-white/60 p-5">
-          <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+        <section className="space-y-2 rounded-sm bg-surface border border-rule p-5">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-muted">
             Your inner critic&apos;s favorite trick
           </p>
-          <h2 className="font-serif text-xl text-navy font-medium">
+          <h2 className="font-serif text-xl text-ink">
             {content.innerCritic.name}
           </h2>
-          <p className="text-teal-900/70 text-sm leading-relaxed">
+          <p className="text-muted text-sm leading-relaxed">
             {content.innerCritic.oneLiner}
           </p>
         </section>
       )}
 
       <section className="space-y-3">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted">
           How the daily practice would meet you
         </p>
         {content.howItWorks.map((line) => (
-          <p key={line} className="text-teal-900/70 text-sm leading-relaxed">
+          <p key={line} className="text-muted text-sm leading-relaxed">
             {line}
           </p>
         ))}
@@ -73,10 +73,10 @@ export function FullReveal({
 
       <div className="space-y-4 text-center pt-2">
         <ShareResult archetype={profile.archetype} />
-        <p className="text-xs text-teal-900/50">
+        <p className="text-xs text-muted">
           You&apos;re on the list — we&apos;ll email your reading and let you
           know when the daily practice opens.{" "}
-          <Link href="/" className="underline hover:text-teal-900/80">
+          <Link href="/" className="underline hover:text-cobalt">
             Back to Entiremind
           </Link>
         </p>

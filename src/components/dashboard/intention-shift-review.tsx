@@ -29,7 +29,9 @@ function formatDate(iso: string): string {
   });
 }
 
-export function IntentionShiftReview({ items: initialItems }: IntentionShiftReviewProps) {
+export function IntentionShiftReview({
+  items: initialItems,
+}: IntentionShiftReviewProps) {
   const [items, setItems] = useState(initialItems);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,8 @@ export function IntentionShiftReview({ items: initialItems }: IntentionShiftRevi
   if (items.length === 0) {
     return (
       <div className="text-sm text-muted-foreground italic">
-        No pending intention shifts. The weekly memory pass will surface any here.
+        No pending intention shifts. The weekly memory pass will surface any
+        here.
       </div>
     );
   }
@@ -67,7 +70,7 @@ export function IntentionShiftReview({ items: initialItems }: IntentionShiftRevi
   return (
     <div className="space-y-3">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
           {error}
         </div>
       )}
@@ -77,14 +80,14 @@ export function IntentionShiftReview({ items: initialItems }: IntentionShiftRevi
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
-          className="bg-white/60 border border-em-purple-300/40 rounded-2xl p-5 space-y-3"
+          className="bg-surface border border-rule rounded-sm p-5 space-y-3"
         >
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-sm font-medium text-navy">
+              <div className="text-sm font-medium text-ink">
                 {item.userName ?? item.userEmail}
               </div>
-              <div className="text-[11px] uppercase tracking-widest text-teal-900/40">
+              <div className="text-[11px] uppercase tracking-widest text-muted">
                 {formatDate(item.createdAt)}
                 {item.confidence !== null
                   ? ` · confidence ${Math.round(item.confidence * 100)}%`
@@ -95,21 +98,23 @@ export function IntentionShiftReview({ items: initialItems }: IntentionShiftRevi
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+              <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
                 Current
               </div>
-              <div className="font-serif text-navy">{item.currentIntention}</div>
+              <div className="font-serif text-ink">{item.currentIntention}</div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-em-purple-400 mb-1">
+              <div className="text-[10px] uppercase tracking-widest text-cobalt mb-1">
                 Proposed
               </div>
-              <div className="font-serif text-navy">{item.proposedIntention}</div>
+              <div className="font-serif text-ink">
+                {item.proposedIntention}
+              </div>
             </div>
           </div>
 
           {item.rationale && (
-            <div className="text-sm text-teal-900/60 italic">{item.rationale}</div>
+            <div className="text-sm text-muted italic">{item.rationale}</div>
           )}
 
           <div className="flex gap-2 pt-1">
@@ -117,7 +122,7 @@ export function IntentionShiftReview({ items: initialItems }: IntentionShiftRevi
               type="button"
               onClick={() => handleAction(item.id, "approve")}
               disabled={pendingId === item.id}
-              className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+              className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
             >
               {pendingId === item.id ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -132,7 +137,7 @@ export function IntentionShiftReview({ items: initialItems }: IntentionShiftRevi
               variant="outline"
               onClick={() => handleAction(item.id, "dismiss")}
               disabled={pendingId === item.id}
-              className="border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+              className="border-rule text-muted hover:bg-surface rounded-sm"
             >
               <X className="w-4 h-4 mr-1" /> Dismiss
             </Button>

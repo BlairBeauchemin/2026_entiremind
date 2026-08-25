@@ -61,14 +61,14 @@ export function PhoneStep({ onNext, onBack }: PhoneStepProps) {
     >
       <div className="text-center space-y-2">
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-full bg-em-yellow-400/20 flex items-center justify-center">
-            <MessageSquare className="w-6 h-6 text-em-yellow-500" />
+          <div className="w-12 h-12 rounded-full bg-cobalt-wash flex items-center justify-center">
+            <MessageSquare className="w-6 h-6 text-cobalt" />
           </div>
         </div>
-        <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
+        <h1 className="font-serif text-2xl md:text-3xl text-ink">
           Your phone number
         </h1>
-        <p className="text-teal-900/60 text-sm">
+        <p className="text-muted text-sm">
           We&apos;ll send you gentle prompts via SMS to help you reflect and
           manifest.
         </p>
@@ -78,12 +78,12 @@ export function PhoneStep({ onNext, onBack }: PhoneStepProps) {
         <div className="space-y-2">
           <Label
             htmlFor="phone"
-            className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
+            className="text-[10px] font-medium uppercase tracking-widest text-muted"
           >
             Phone Number
           </Label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-900/40">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted">
               +1
             </span>
             <Input
@@ -92,13 +92,13 @@ export function PhoneStep({ onNext, onBack }: PhoneStepProps) {
               value={phone}
               onChange={handlePhoneChange}
               placeholder="(555) 123-4567"
-              className="h-12 pl-12 bg-white/60 border-white/60 rounded-xl text-navy placeholder:text-teal-900/30"
+              className="h-12 pl-12 bg-surface border-rule rounded-sm text-ink placeholder:text-muted"
               autoFocus
             />
           </div>
         </div>
 
-        <p className="text-xs text-teal-900/40">
+        <p className="text-xs text-muted">
           Standard SMS rates may apply. You can pause or adjust messages
           anytime.
         </p>
@@ -111,14 +111,14 @@ export function PhoneStep({ onNext, onBack }: PhoneStepProps) {
             variant="outline"
             aria-label="Go back"
             onClick={onBack}
-            className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+            className="h-12 px-4 border-rule text-muted hover:bg-surface rounded-sm"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <Button
             type="submit"
             disabled={isLoading}
-            className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium"
+            className="flex-1 h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

@@ -94,7 +94,7 @@ export function SacredValues() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="font-serif text-5xl md:text-6xl text-navy font-medium tracking-tight"
+          className="font-serif text-5xl md:text-6xl text-ink tracking-tight"
         >
           The Philosophy of Less
         </motion.h2>
@@ -103,7 +103,7 @@ export function SacredValues() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-xl text-teal-900 leading-relaxed font-light font-sans tracking-wide"
+          className="text-xl text-ink leading-relaxed font-light font-sans tracking-wide"
         >
           Most apps demand your attention. Entiremind respects it. We believe
           that the most powerful tools are the ones that get out of your way.
@@ -158,18 +158,18 @@ interface ValueCardProps {
 function ValueCard({ value }: ValueCardProps) {
   const Icon = value.icon;
   return (
-    <div className="group relative p-10 rounded-[2rem] bg-white/30 border border-teal-900/5 hover:bg-white/50 transition-all duration-500 max-w-md">
+    <div className="group relative p-10 rounded-sm bg-surface border border-rule hover:bg-surface transition-all duration-500 max-w-md">
       {/* Geometric corner accents */}
-      <div className="absolute top-4 left-4 w-8 h-8 border-l border-t border-em-purple-300/30" />
-      <div className="absolute bottom-4 right-4 w-8 h-8 border-r border-b border-em-purple-300/30" />
+      <div className="absolute top-4 left-4 w-8 h-8 border-l border-t border-rule" />
+      <div className="absolute bottom-4 right-4 w-8 h-8 border-r border-b border-rule" />
 
-      <div className="w-14 h-14 rounded-full border border-teal-900/10 flex items-center justify-center mb-8 text-teal-900 group-hover:border-em-purple-300/40 transition-colors duration-500">
+      <div className="w-14 h-14 rounded-full border border-rule flex items-center justify-center mb-8 text-ink group-hover:border-rule transition-colors duration-500">
         <Icon className="w-7 h-7" />
       </div>
-      <h3 className="font-serif text-3xl text-navy mb-4 font-medium tracking-tight">
+      <h3 className="font-serif text-3xl text-ink mb-4 tracking-tight">
         {value.title}
       </h3>
-      <p className="text-teal-900/70 leading-relaxed font-sans font-light tracking-wide">
+      <p className="text-muted leading-relaxed font-sans font-light tracking-wide">
         {value.description}
       </p>
     </div>

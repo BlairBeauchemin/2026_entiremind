@@ -24,21 +24,21 @@ export function PersonaCard({ profile, name }: PersonaCardProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 p-8 md:p-10"
+      className="bg-surface rounded-sm border border-rule p-8 md:p-10"
     >
       {/* Micro label */}
       <div className="flex items-center gap-2 mb-5">
-        <span className="w-2 h-2 rounded-full bg-em-yellow-400 animate-pulse-slow" />
-        <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50">
+        <span className="w-2 h-2 rounded-full bg-cobalt animate-pulse-slow" />
+        <span className="text-[10px] font-medium uppercase tracking-widest text-muted">
           Your Archetype
         </span>
       </div>
 
       {/* Archetype */}
-      <h2 className="font-serif text-2xl md:text-3xl text-navy font-medium">
+      <h2 className="font-serif text-2xl md:text-3xl text-ink">
         {content.archetype.name}
       </h2>
-      <p className="mt-3 text-base md:text-lg text-navy/80 leading-relaxed">
+      <p className="mt-3 text-base md:text-lg text-ink leading-relaxed">
         {content.archetype.paragraph}
       </p>
       <div className="mt-4">
@@ -50,14 +50,14 @@ export function PersonaCard({ profile, name }: PersonaCardProps) {
 
       {/* Inner-critic pattern */}
       {content.innerCritic && (
-        <div className="mt-7 rounded-2xl bg-em-purple-300/10 p-5">
-          <div className="text-[10px] font-medium uppercase tracking-widest text-em-purple-400">
+        <div className="mt-7 rounded-sm bg-cobalt-wash p-5">
+          <div className="text-[10px] font-medium uppercase tracking-widest text-cobalt">
             What we listen for
           </div>
-          <div className="mt-1.5 font-serif text-lg text-navy">
+          <div className="mt-1.5 font-serif text-lg text-ink">
             {content.innerCritic.name}
           </div>
-          <p className="mt-1 text-sm text-navy/70 leading-relaxed">
+          <p className="mt-1 text-sm text-muted leading-relaxed">
             {content.innerCritic.oneLiner}
           </p>
         </div>
@@ -66,14 +66,14 @@ export function PersonaCard({ profile, name }: PersonaCardProps) {
       {/* Values */}
       {profile.core_values.length > 0 && (
         <div className="mt-7">
-          <div className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50 mb-2.5">
+          <div className="text-[10px] font-medium uppercase tracking-widest text-muted mb-2.5">
             What guides you
           </div>
           <div className="flex flex-wrap gap-2">
             {profile.core_values.map((value) => (
               <span
                 key={value}
-                className="text-sm px-3 py-1.5 rounded-full bg-em-yellow-400/20 text-navy border border-em-yellow-400/40"
+                className="text-sm px-3 py-1.5 rounded-full bg-cobalt-wash text-ink border border-rule"
               >
                 {valueLabel(value)}
               </span>
@@ -86,7 +86,7 @@ export function PersonaCard({ profile, name }: PersonaCardProps) {
       <div className="flex justify-end mt-7">
         <Link
           href="/onboarding/archetype"
-          className="text-[12px] text-teal-900/40 hover:text-teal-900 transition-colors"
+          className="text-xs text-muted hover:text-cobalt transition-colors"
         >
           Retake
         </Link>

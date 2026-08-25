@@ -71,24 +71,27 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
       {/* Mobile backdrop */}
       {open && (
         <div
-          className="fixed inset-0 bg-navy/20 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-cobalt-wash z-40 lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-full w-64 z-50 flex flex-col bg-white/30 backdrop-blur-xl border-r border-white/60 transition-transform duration-300 ease-out lg:translate-x-0 ${
+        className={`fixed top-0 left-0 h-full w-64 z-50 flex flex-col bg-surface border-r border-rule transition-transform duration-300 ease-out lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Logo */}
         <div className="flex items-center justify-between px-7 pt-8 pb-6">
-          <Link href="/" className="font-serif text-2xl font-medium tracking-[2px] text-navy">
+          <Link
+            href="/"
+            className="font-serif text-2xl tracking-[2px] text-ink"
+          >
             Entiremind
           </Link>
           <button
             onClick={onClose}
-            className="lg:hidden text-teal-900/40 hover:text-teal-900 transition-colors"
+            className="lg:hidden text-muted hover:text-cobalt transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -106,8 +109,8 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
                     onClick={onClose}
                     className={`flex items-center gap-3 py-2.5 px-4 rounded-full transition-colors ${
                       isActive
-                        ? "bg-white/60 text-navy font-medium"
-                        : "text-teal-900/60 hover:text-teal-900 hover:bg-white/30"
+                        ? "bg-surface text-ink font-medium"
+                        : "text-muted hover:text-cobalt hover:bg-surface"
                     }`}
                   >
                     <item.icon
@@ -123,16 +126,16 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
         </nav>
 
         {/* User profile */}
-        <div className="px-6 py-6 border-t border-white/40">
+        <div className="px-6 py-6 border-t border-rule">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-navy/10 flex items-center justify-center text-xs font-medium text-navy">
+            <div className="w-9 h-9 rounded-full bg-cobalt-wash flex items-center justify-center text-xs font-medium text-ink">
               {initials}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-navy truncate">
+              <p className="text-sm font-medium text-ink truncate">
                 {displayName}
               </p>
-              <p className="text-[11px] text-teal-900/50">
+              <p className="text-[11px] text-muted">
                 {user?.status === "paused"
                   ? "Paused"
                   : getPlanLabel(subscription?.plan)}
@@ -141,7 +144,7 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
             <form action={signOut}>
               <button
                 type="submit"
-                className="p-2 text-teal-900/40 hover:text-teal-900 hover:bg-white/30 rounded-full transition-colors"
+                className="p-2 text-muted hover:text-cobalt hover:bg-surface rounded-full transition-colors"
                 title="Sign out"
               >
                 <LogOut className="w-4 h-4" />

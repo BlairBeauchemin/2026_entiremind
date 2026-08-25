@@ -53,10 +53,10 @@ export function NameStep({ onNext, onBack, onNameChange }: NameStepProps) {
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
+        <h1 className="font-serif text-2xl md:text-3xl text-ink">
           What should we call you?
         </h1>
-        <p className="text-teal-900/60 text-sm">
+        <p className="text-muted text-sm">
           This is how we&apos;ll greet you in messages.
         </p>
       </div>
@@ -65,7 +65,7 @@ export function NameStep({ onNext, onBack, onNameChange }: NameStepProps) {
         <div className="space-y-2">
           <Label
             htmlFor="name"
-            className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
+            className="text-[10px] font-medium uppercase tracking-widest text-muted"
           >
             Your Name
           </Label>
@@ -75,7 +75,7 @@ export function NameStep({ onNext, onBack, onNameChange }: NameStepProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter your name"
-            className="h-12 bg-white/60 border-white/60 rounded-xl text-navy placeholder:text-teal-900/30"
+            className="h-12 bg-surface border-rule rounded-sm text-ink placeholder:text-muted"
             autoFocus
           />
         </div>
@@ -88,14 +88,14 @@ export function NameStep({ onNext, onBack, onNameChange }: NameStepProps) {
             variant="outline"
             aria-label="Go back"
             onClick={onBack}
-            className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+            className="h-12 px-4 border-rule text-muted hover:bg-surface rounded-sm"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <Button
             type="submit"
             disabled={isLoading}
-            className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium"
+            className="flex-1 h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

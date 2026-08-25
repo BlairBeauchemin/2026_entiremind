@@ -25,13 +25,18 @@ const PLATFORM_LABELS: Record<string, string> = {
  * Per-channel publish mode. Meta Ads is locked to require_approval — paid
  * ads always pass founder review (also enforced server-side).
  */
-export function ChannelSettings({ channels: initialChannels }: ChannelSettingsProps) {
+export function ChannelSettings({
+  channels: initialChannels,
+}: ChannelSettingsProps) {
   const router = useRouter();
   const [channels, setChannels] = useState(initialChannels);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function setMode(id: string, publishMode: "require_approval" | "auto_publish") {
+  async function setMode(
+    id: string,
+    publishMode: "require_approval" | "auto_publish",
+  ) {
     setPendingId(id);
     setError(null);
     try {
@@ -59,7 +64,7 @@ export function ChannelSettings({ channels: initialChannels }: ChannelSettingsPr
   return (
     <div className="space-y-3">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
           {error}
         </div>
       )}
@@ -69,17 +74,17 @@ export function ChannelSettings({ channels: initialChannels }: ChannelSettingsPr
           return (
             <div
               key={channel.id}
-              className="bg-white/60 border border-em-purple-300/40 rounded-2xl p-4 space-y-2"
+              className="bg-surface border border-rule rounded-sm p-4 space-y-2"
             >
               <div className="flex items-center justify-between">
-                <div className="text-sm font-medium text-navy">
+                <div className="text-sm font-medium text-ink">
                   {PLATFORM_LABELS[channel.platform] ?? channel.platform}
                 </div>
                 <span
                   className={`text-[11px] uppercase tracking-wider rounded-full px-2 py-0.5 ${
                     channel.connected
-                      ? "bg-em-yellow-200/60 text-navy"
-                      : "bg-teal-900/10 text-teal-900/60"
+                      ? "bg-cobalt-wash text-ink"
+                      : "bg-cobalt-wash text-muted"
                   }`}
                 >
                   {channel.connected ? "Connected" : "Not connected"}
@@ -87,19 +92,23 @@ export function ChannelSettings({ channels: initialChannels }: ChannelSettingsPr
               </div>
 
               {isAds ? (
-                <p className="text-xs text-teal-900/50">
-                  Always requires approval — paid ads never launch without your review.
+                <p className="text-xs text-muted">
+                  Always requires approval — paid ads never launch without your
+                  review.
                 </p>
               ) : (
-                <label className="flex items-center gap-2 text-xs text-teal-900/60">
+                <label className="flex items-center gap-2 text-xs text-muted">
                   Publish mode
                   <select
                     value={channel.publishMode}
                     onChange={(e) =>
-                      setMode(channel.id, e.target.value as "require_approval" | "auto_publish")
+                      setMode(
+                        channel.id,
+                        e.target.value as "require_approval" | "auto_publish",
+                      )
                     }
                     disabled={pendingId === channel.id}
-                    className="rounded-xl border border-em-purple-300/40 bg-white/80 px-2 py-1 text-xs text-navy focus:outline-none focus:ring-2 focus:ring-em-purple-400"
+                    className="rounded-sm border border-rule bg-surface px-2 py-1 text-xs text-ink focus:outline-none focus:ring-2 focus:ring-cobalt"
                   >
                     <option value="require_approval">Require approval</option>
                     <option value="auto_publish">Auto-publish</option>

@@ -42,6 +42,12 @@ typography:
     fontWeight: 500
     lineHeight: 1.3
     letterSpacing: "0.18em"
+  device:
+    fontFamily: "Karla, ui-sans-serif, sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 400
+    lineHeight: 1.45
+    letterSpacing: "normal"
 rounded:
   none: "0px"
   sm: "2px"
@@ -101,11 +107,16 @@ components:
 
 # Entiremind Design System
 
-> **This is a SEED.** The project is pre-implementation for this world — no surface
-> has been built in it yet. Colour, typography and the named rules below are
-> **decided and binding**. Component-level values are directional starting points,
-> not observed truth. Re-run `/impeccable document` in scan mode once the first
-> surface ships, and let the built world correct this file.
+> **This was a SEED; the world has now shipped.** Every surface was migrated onto
+> this palette and type system in one pass — `src/app/globals.css` holds the tokens,
+> and no retired name survives anywhere in `src/`. Colour, typography and the named
+> rules below are **decided and binding**.
+>
+> Component-level values below are still the seed's directional starting points
+> rather than observed truth. **Next step: run `/impeccable document` in scan mode**
+> and let the built world correct them. One known mismatch to settle there: several
+> landing section openers render at 48–60px, above the 36px `heading` step — either
+> the ramp gains a step or those headings come down.
 
 ## Overview
 
@@ -172,9 +183,15 @@ is needed, it has to displace one of these rather than join them.
 ### Retired
 
 `teal #204147`, `navy #2E2A58`, `purple #cbbbe3`, `yellow #f9d97a`, `cream #fdfbf7`.
-These appear in `src/app/globals.css` and were documented inconsistently in
-`CLAUDE.md` for months — teal was declared primary while the code used navy. All five
-are out. **This file is the only palette authority.**
+These were documented inconsistently in `CLAUDE.md` for months — teal was declared
+primary while the code used navy. All five are **gone from the codebase** as of the
+big-bang migration: no aliases were left behind, so a retired name is now a build-time
+nothing rather than a silent fallback. **This file is the only palette authority.**
+
+Retired alongside them, for the same printed-object reason: full-page blurred colour
+orbs, `backdrop-blur` glass panels, drop shadows, and background gradients. Paper does
+not glow. The one permitted shadow is a single soft contact shadow under the phone
+mockup, which is an object sitting on the page rather than a raised panel.
 
 ### Open decision
 
@@ -190,9 +207,19 @@ do not invent them earlier.
 meaning; sans carries mechanics. The two never blur — a button never uses the serif,
 a headline never uses the sans.
 
-Prata is an independent choice in the same *class* as the reference brand's face
-(a high-contrast serif), and is deliberately **not** an attempt to match it. Copying a
-competitor's exact typeface produces a knockoff, not a peer.
+Prata is an independent choice in the same *class* as the reference brand's face, and
+is deliberately **not** an attempt to match it. Copying a competitor's exact typeface
+produces a knockoff, not a peer.
+
+That reference face is now confirmed rather than guessed. Intelligent Change ships
+**Canela** (Commercial Type) for display, **Canela Text** for running copy, and
+**Euclid Circular A** (Swiss Typefaces) for the sans — self-hosted woff2, both
+commercial licences. The earlier teardown's "reads as Canela or Tiempos Headline" was
+half right. What that settles is the *strategy*, which is the part worth learning
+from: a warm literary serif carrying voice, a geometric grotesque carrying mechanics.
+Prata + Karla runs the same structure in a different accent — Prata has far higher
+stroke contrast than Canela's near-sans modulation, and Karla is humanist where Euclid
+is geometric. Same idea, different face, no licence to buy.
 
 ### Hierarchy
 
@@ -203,6 +230,7 @@ competitor's exact typeface produces a knockoff, not a peer.
 | Body | Karla 400, 1.0625rem/1.6 | Max ~68ch measure. |
 | Label / eyebrow | Karla 500, 0.6875rem, `0.2em` tracking, uppercase | Section kickers, buttons, controls. |
 | Attribution | Karla 500, 0.625rem, `0.18em` tracking, uppercase | Quote sources, captions under emblems. |
+| Device | Karla 400, 0.9375rem/1.45 | iOS message facsimile only — see the rule below. Never product UI. |
 
 ### Named Rules
 
@@ -215,6 +243,14 @@ typographic move in the system.
 letter-spacing. Untracked caps read as shouting; tracked caps read as engraved.
 
 **The display face never sets a paragraph.** Prata above ~1.5rem only.
+
+**The phone mockup renders iOS, not us.** `src/components/landing/phone-mockup.tsx`
+is a facsimile of the phone's own Messages app, which is the entire product surface.
+Its bubble radius and its 15px/10px type are Apple's values, and the `device` step
+exists so they sit on a documented ramp instead of reading as drift. The messages
+inside it are set in the **sans**: a text message carries no typography at all, and
+setting the mockup in Prata would advertise something the product cannot do. Nothing
+else may use `device`.
 
 ## Layout
 

@@ -20,14 +20,19 @@ interface ContentEditDialogProps {
 }
 
 const fieldClass =
-  "w-full rounded-xl border border-em-purple-300/40 bg-white/80 px-3 py-2 text-sm text-navy focus:outline-none focus:ring-2 focus:ring-em-purple-400";
+  "w-full rounded-sm border border-rule bg-surface px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-cobalt";
 
 /**
  * Every creative field is editable here so agentic output is always
  * manually tweakable before approval. "Regenerate image" re-runs only the
  * image step from the (possibly edited) image prompt.
  */
-export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEditDialogProps) {
+export function ContentEditDialog({
+  piece,
+  open,
+  onClose,
+  onSaved,
+}: ContentEditDialogProps) {
   const [headline, setHeadline] = useState(piece.headline ?? "");
   const [bodyCopy, setBodyCopy] = useState(piece.bodyCopy ?? "");
   const [caption, setCaption] = useState(piece.caption ?? "");
@@ -39,7 +44,9 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
   const [budget, setBudget] = useState(
     piece.dailyBudgetCents != null ? String(piece.dailyBudgetCents / 100) : "",
   );
-  const [imageUrl, setImageUrl] = useState(latestReadyImage(piece)?.publicUrl ?? null);
+  const [imageUrl, setImageUrl] = useState(
+    latestReadyImage(piece)?.publicUrl ?? null,
+  );
   const [saving, setSaving] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +70,9 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
             .split(",")
             .map((h) => h.trim().replace(/^#/, ""))
             .filter(Boolean),
-          daily_budget_cents: budget ? Math.round(parseFloat(budget) * 100) : null,
+          daily_budget_cents: budget
+            ? Math.round(parseFloat(budget) * 100)
+            : null,
         }),
       });
       if (!res.ok) {
@@ -90,9 +99,12 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image_prompt: imagePrompt || null }),
       });
-      const res = await fetch(`/api/founder/marketing/content/${piece.id}/regenerate`, {
-        method: "POST",
-      });
+      const res = await fetch(
+        `/api/founder/marketing/content/${piece.id}/regenerate`,
+        {
+          method: "POST",
+        },
+      );
       const body = await res.json().catch(() => ({}));
       if (!res.ok) {
         setError(body.error || `Regenerate failed (${res.status})`);
@@ -111,12 +123,14 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-serif text-navy">Edit content</DialogTitle>
+          <DialogTitle className="font-serif text-ink">
+            Edit content
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
               {error}
             </div>
           )}
@@ -126,17 +140,21 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
             <img
               src={imageUrl}
               alt="Current creative"
-              className="w-full max-h-64 object-contain rounded-xl border border-em-purple-300/40"
+              className="w-full max-h-64 object-contain rounded-sm border border-rule"
             />
           )}
 
-          <label className="block text-sm text-teal-900/60">
+          <label className="block text-sm text-muted">
             Headline / hook
-            <input value={headline} onChange={(e) => setHeadline(e.target.value)} className={fieldClass} />
+            <input
+              value={headline}
+              onChange={(e) => setHeadline(e.target.value)}
+              className={fieldClass}
+            />
           </label>
 
           {piece.target === "ad" && (
-            <label className="block text-sm text-teal-900/60">
+            <label className="block text-sm text-muted">
               Primary text (body copy)
               <textarea
                 value={bodyCopy}
@@ -147,25 +165,39 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
             </label>
           )}
 
-          <label className="block text-sm text-teal-900/60">
+          <label className="block text-sm text-muted">
             Caption
-            <textarea value={caption} onChange={(e) => setCaption(e.target.value)} rows={4} className={fieldClass} />
+            <textarea
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              rows={4}
+              className={fieldClass}
+            />
           </label>
 
           {(piece.script || piece.productionMode === "founder_filmed") && (
-            <label className="block text-sm text-teal-900/60">
+            <label className="block text-sm text-muted">
               Script
-              <textarea value={script} onChange={(e) => setScript(e.target.value)} rows={6} className={fieldClass} />
+              <textarea
+                value={script}
+                onChange={(e) => setScript(e.target.value)}
+                rows={6}
+                className={fieldClass}
+              />
             </label>
           )}
 
-          <label className="block text-sm text-teal-900/60">
+          <label className="block text-sm text-muted">
             Hashtags (comma-separated)
-            <input value={hashtags} onChange={(e) => setHashtags(e.target.value)} className={fieldClass} />
+            <input
+              value={hashtags}
+              onChange={(e) => setHashtags(e.target.value)}
+              className={fieldClass}
+            />
           </label>
 
           <div className="space-y-1">
-            <label className="block text-sm text-teal-900/60">
+            <label className="block text-sm text-muted">
               Image prompt
               <textarea
                 value={imagePrompt}
@@ -180,7 +212,7 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
               size="sm"
               onClick={regenerateImage}
               disabled={regenerating || !imagePrompt}
-              className="border-em-purple-300/60 text-navy rounded-xl"
+              className="border-rule text-ink rounded-sm"
             >
               {regenerating ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-1" />
@@ -193,11 +225,15 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
 
           {piece.target === "ad" && (
             <div className="grid grid-cols-2 gap-3">
-              <label className="block text-sm text-teal-900/60">
+              <label className="block text-sm text-muted">
                 CTA
-                <input value={cta} onChange={(e) => setCta(e.target.value)} className={fieldClass} />
+                <input
+                  value={cta}
+                  onChange={(e) => setCta(e.target.value)}
+                  className={fieldClass}
+                />
               </label>
-              <label className="block text-sm text-teal-900/60">
+              <label className="block text-sm text-muted">
                 Daily budget ($)
                 <input
                   value={budget}
@@ -211,9 +247,13 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
             </div>
           )}
 
-          <label className="block text-sm text-teal-900/60">
+          <label className="block text-sm text-muted">
             Link URL
-            <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} className={fieldClass} />
+            <input
+              value={linkUrl}
+              onChange={(e) => setLinkUrl(e.target.value)}
+              className={fieldClass}
+            />
           </label>
 
           <div className="flex gap-2 pt-2">
@@ -221,11 +261,20 @@ export function ContentEditDialog({ piece, open, onClose, onSaved }: ContentEdit
               type="button"
               onClick={save}
               disabled={saving}
-              className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+              className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
             >
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save changes"}
+              {saving ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Save changes"
+              )}
             </Button>
-            <Button type="button" variant="outline" onClick={onClose} className="rounded-xl">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="rounded-sm"
+            >
               Cancel
             </Button>
           </div>

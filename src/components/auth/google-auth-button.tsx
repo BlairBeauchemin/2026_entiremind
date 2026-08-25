@@ -42,14 +42,14 @@ export function GoogleAuthButton() {
         variant="outline"
         onClick={handleGoogleSignIn}
         disabled={isLoading}
-        className="w-full h-12 bg-white/60 hover:bg-white/80 border-white/60 rounded-xl font-medium transition-colors flex items-center justify-center gap-3"
+        className="w-full h-12 bg-surface hover:border-cobalt border-rule rounded-sm font-medium transition-colors flex items-center justify-center gap-3"
       >
         {isLoading ? (
           <Loader2 className="w-5 h-5 animate-spin" />
         ) : (
           <>
             <GoogleIcon className="w-5 h-5" />
-            <span className="text-teal-900">Continue with Google</span>
+            <span className="text-ink">Continue with Google</span>
           </>
         )}
       </Button>

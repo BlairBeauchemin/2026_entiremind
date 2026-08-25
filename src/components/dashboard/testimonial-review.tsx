@@ -33,7 +33,7 @@ const STATUS_STYLES: Record<TestimonialItem["status"], string> = {
   requested: "bg-yellow-100 text-yellow-700",
   received: "bg-blue-100 text-blue-700",
   approved: "bg-green-100 text-green-700",
-  dismissed: "bg-gray-100 text-gray-500",
+  dismissed: "bg-cobalt-wash text-muted",
 };
 
 export function TestimonialReview({
@@ -94,7 +94,7 @@ export function TestimonialReview({
   return (
     <div className="space-y-3">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
           {error}
         </div>
       )}
@@ -103,14 +103,14 @@ export function TestimonialReview({
           key={item.id}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/60 border border-em-purple-300/40 rounded-2xl p-5 space-y-3"
+          className="bg-surface border border-rule rounded-sm p-5 space-y-3"
         >
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-sm font-medium text-navy">
+              <div className="text-sm font-medium text-ink">
                 {item.userName ?? item.userEmail}
               </div>
-              <div className="text-[11px] uppercase tracking-widest text-teal-900/40">
+              <div className="text-[11px] uppercase tracking-widest text-muted">
                 Asked {formatDate(item.requestedAt)}
                 {item.receivedAt
                   ? ` · replied ${formatDate(item.receivedAt)}`
@@ -125,18 +125,18 @@ export function TestimonialReview({
           </div>
 
           {item.body ? (
-            <blockquote className="font-serif text-navy text-lg italic border-l-2 border-em-purple-300 pl-4">
+            <blockquote className="font-serif text-ink text-lg italic border-l-2 border-rule pl-4">
               &ldquo;{item.body}&rdquo;
             </blockquote>
           ) : (
-            <div className="text-sm text-teal-900/50 italic">
+            <div className="text-sm text-muted italic">
               Waiting for a reply…
             </div>
           )}
 
           {item.status === "received" && (
             <div className="space-y-3 pt-1">
-              <label className="flex items-start gap-2 text-sm text-teal-900/70 cursor-pointer">
+              <label className="flex items-start gap-2 text-sm text-muted cursor-pointer">
                 <input
                   type="checkbox"
                   checked={consentChecked[item.id] ?? false}
@@ -149,8 +149,8 @@ export function TestimonialReview({
                   className="mt-0.5"
                 />
                 <span>
-                  The reply clearly gives permission to share these words
-                  (first name only).
+                  The reply clearly gives permission to share these words (first
+                  name only).
                 </span>
               </label>
               <div className="flex gap-2">
@@ -160,7 +160,7 @@ export function TestimonialReview({
                   disabled={
                     pendingId === item.id || !(consentChecked[item.id] ?? false)
                   }
-                  className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+                  className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
                 >
                   {pendingId === item.id ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -175,7 +175,7 @@ export function TestimonialReview({
                   variant="outline"
                   onClick={() => handleAction(item.id, "dismiss")}
                   disabled={pendingId === item.id}
-                  className="border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+                  className="border-rule text-muted hover:bg-surface rounded-sm"
                 >
                   <X className="w-4 h-4 mr-1" /> Dismiss
                 </Button>

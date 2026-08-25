@@ -13,14 +13,22 @@ interface ContentReviewQueueProps {
   pieces: ContentPieceView[];
 }
 
-function Badge({ children, tone }: { children: React.ReactNode; tone?: "purple" | "yellow" | "gray" }) {
+function Badge({
+  children,
+  tone,
+}: {
+  children: React.ReactNode;
+  tone?: "purple" | "yellow" | "gray";
+}) {
   const tones = {
-    purple: "bg-em-purple-300/30 text-navy",
-    yellow: "bg-em-yellow-200/60 text-navy",
-    gray: "bg-teal-900/10 text-teal-900/70",
+    purple: "bg-cobalt-wash text-ink",
+    yellow: "bg-cobalt-wash text-ink",
+    gray: "bg-cobalt-wash text-muted",
   };
   return (
-    <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] uppercase tracking-wider ${tones[tone ?? "gray"]}`}>
+    <span
+      className={`inline-block rounded-full px-2 py-0.5 text-[11px] uppercase tracking-wider ${tones[tone ?? "gray"]}`}
+    >
       {children}
     </span>
   );
@@ -31,7 +39,9 @@ function Badge({ children, tone }: { children: React.ReactNode; tone?: "purple" 
  * reject / edit. Nothing publishes or spends money without this step
  * (organic auto-publish channels skip the queue entirely by design).
  */
-export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueueProps) {
+export function ContentReviewQueue({
+  pieces: initialPieces,
+}: ContentReviewQueueProps) {
   const router = useRouter();
   const [pieces, setPieces] = useState(initialPieces);
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -48,7 +58,9 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
         body: JSON.stringify({
           action,
           // Approve schedules for immediate pickup by the publish cron
-          ...(action === "approve" ? { scheduledFor: new Date().toISOString() } : {}),
+          ...(action === "approve"
+            ? { scheduledFor: new Date().toISOString() }
+            : {}),
         }),
       });
       if (!res.ok) {
@@ -68,7 +80,8 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
   if (pieces.length === 0) {
     return (
       <div className="text-sm text-muted-foreground italic">
-        Nothing waiting for review. Generated content lands here before it can publish.
+        Nothing waiting for review. Generated content lands here before it can
+        publish.
       </div>
     );
   }
@@ -76,7 +89,7 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
   return (
     <div className="space-y-3">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
           {error}
         </div>
       )}
@@ -87,7 +100,7 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
             key={piece.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/60 border border-em-purple-300/40 rounded-2xl p-5 space-y-3"
+            className="bg-surface border border-rule rounded-sm p-5 space-y-3"
           >
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone={piece.target === "ad" ? "yellow" : "purple"}>
@@ -95,9 +108,15 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
               </Badge>
               <Badge>{piece.platform}</Badge>
               <Badge>{piece.format}</Badge>
-              {piece.productionMode === "founder_filmed" && <Badge tone="purple">Founder filmed</Badge>}
-              {piece.target === "ad" && <Badge tone="gray">{formatBudget(piece.dailyBudgetCents)}</Badge>}
-              <span className="ml-auto text-[11px] uppercase tracking-widest text-teal-900/40">
+              {piece.productionMode === "founder_filmed" && (
+                <Badge tone="purple">Founder filmed</Badge>
+              )}
+              {piece.target === "ad" && (
+                <Badge tone="gray">
+                  {formatBudget(piece.dailyBudgetCents)}
+                </Badge>
+              )}
+              <span className="ml-auto text-[11px] uppercase tracking-widest text-muted">
                 {formatDateTime(piece.createdAt)}
               </span>
             </div>
@@ -108,10 +127,10 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
                 <img
                   src={image.publicUrl!}
                   alt={piece.headline ?? "Generated creative"}
-                  className="w-full rounded-xl border border-em-purple-300/40 object-cover"
+                  className="w-full rounded-sm border border-rule object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center rounded-xl border border-dashed border-em-purple-300/60 text-xs text-teal-900/50 p-4 text-center">
+                <div className="flex items-center justify-center rounded-sm border border-dashed border-rule text-xs text-muted p-4 text-center">
                   {piece.media.some((m) => m.kind === "video")
                     ? "Video pending — Veo not wired yet"
                     : "No media yet"}
@@ -119,24 +138,32 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
               )}
 
               <div className="space-y-2 text-sm">
-                {piece.headline && <div className="font-medium text-navy">{piece.headline}</div>}
-                {piece.bodyCopy && <p className="text-teal-900/80">{piece.bodyCopy}</p>}
+                {piece.headline && (
+                  <div className="font-medium text-ink">{piece.headline}</div>
+                )}
+                {piece.bodyCopy && <p className="text-ink">{piece.bodyCopy}</p>}
                 {piece.caption && (
-                  <p className="text-teal-900/70 whitespace-pre-line">{piece.caption}</p>
+                  <p className="text-muted whitespace-pre-line">
+                    {piece.caption}
+                  </p>
                 )}
                 {piece.script && (
-                  <details className="text-teal-900/70">
-                    <summary className="cursor-pointer text-em-purple-400">Script</summary>
+                  <details className="text-muted">
+                    <summary className="cursor-pointer text-cobalt">
+                      Script
+                    </summary>
                     <p className="whitespace-pre-line mt-1">{piece.script}</p>
                   </details>
                 )}
                 {piece.hashtags.length > 0 && (
-                  <div className="text-em-purple-400 text-xs">
+                  <div className="text-cobalt text-xs">
                     {piece.hashtags.map((h) => `#${h}`).join(" ")}
                   </div>
                 )}
                 {piece.angle && (
-                  <div className="text-xs text-teal-900/50 italic">Testing: {piece.angle}</div>
+                  <div className="text-xs text-muted italic">
+                    Testing: {piece.angle}
+                  </div>
                 )}
               </div>
             </div>
@@ -146,7 +173,7 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
                 type="button"
                 onClick={() => review(piece.id, "approve")}
                 disabled={pendingId === piece.id}
-                className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+                className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
               >
                 {pendingId === piece.id ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -161,7 +188,7 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
                 variant="outline"
                 onClick={() => setEditing(piece)}
                 disabled={pendingId === piece.id}
-                className="border-em-purple-300/60 text-navy rounded-xl"
+                className="border-rule text-ink rounded-sm"
               >
                 <Pencil className="w-4 h-4 mr-1" /> Edit
               </Button>
@@ -170,7 +197,7 @@ export function ContentReviewQueue({ pieces: initialPieces }: ContentReviewQueue
                 variant="outline"
                 onClick={() => review(piece.id, "reject")}
                 disabled={pendingId === piece.id}
-                className="border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+                className="border-rule text-muted hover:bg-surface rounded-sm"
               >
                 <X className="w-4 h-4 mr-1" /> Reject
               </Button>

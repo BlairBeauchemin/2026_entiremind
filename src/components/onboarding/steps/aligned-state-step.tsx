@@ -43,14 +43,14 @@ export function AlignedStateStep({
     >
       <div className="text-center space-y-2">
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-full bg-em-yellow-400/20 flex items-center justify-center">
-            <Sparkles className="w-6 h-6 text-em-yellow-400" />
+          <div className="w-12 h-12 rounded-full bg-cobalt-wash flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-cobalt" />
           </div>
         </div>
-        <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
+        <h1 className="font-serif text-2xl md:text-3xl text-ink">
           Last one: when do you feel most like yourself?
         </h1>
-        <p className="text-teal-900/60 text-sm">
+        <p className="text-muted text-sm">
           The moments where you&apos;re not performing. Where you&apos;re just
           here.
         </p>
@@ -60,7 +60,7 @@ export function AlignedStateStep({
         <div className="space-y-2">
           <Label
             htmlFor="aligned-state"
-            className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
+            className="text-[10px] font-medium uppercase tracking-widest text-muted"
           >
             Most Aligned
           </Label>
@@ -70,7 +70,7 @@ export function AlignedStateStep({
             onChange={(e) => onChange(e.target.value)}
             placeholder="I feel most like myself when..."
             rows={4}
-            className="w-full px-4 py-3 bg-white/60 border border-white/60 rounded-xl text-navy placeholder:text-teal-900/30 resize-none focus:outline-none focus:ring-2 focus:ring-em-purple-300/30"
+            className="w-full px-4 py-3 bg-surface border border-rule rounded-sm text-ink placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-cobalt"
             autoFocus
           />
         </div>
@@ -81,14 +81,14 @@ export function AlignedStateStep({
             variant="outline"
             aria-label="Go back"
             onClick={onBack}
-            className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+            className="h-12 px-4 border-rule text-muted hover:bg-surface rounded-sm"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <Button
             type="submit"
             disabled={!value.trim()}
-            className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium disabled:opacity-40"
+            className="flex-1 h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium disabled:opacity-40"
           >
             Continue
           </Button>
@@ -97,7 +97,7 @@ export function AlignedStateStep({
         <button
           type="button"
           onClick={onSkip}
-          className="w-full text-center text-sm text-teal-900/40 hover:text-teal-900/60 transition-colors"
+          className="w-full text-center text-sm text-muted hover:text-cobalt transition-colors"
         >
           Skip for now
         </button>

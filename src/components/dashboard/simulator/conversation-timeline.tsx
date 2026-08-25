@@ -15,22 +15,22 @@ function formatSimDate(iso: string): string {
 function DebugDrawer({ day }: { day: SimDayView }) {
   const d = day.debug;
   return (
-    <div className="mt-3 space-y-3 rounded-xl bg-navy/[0.03] border border-navy/10 p-4 text-[13px] leading-relaxed">
+    <div className="mt-3 space-y-3 rounded-sm bg-surface border border-rule p-4 text-sm leading-relaxed">
       <div>
-        <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+        <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
           System prompt
         </div>
-        <div className="text-navy">
+        <div className="text-ink">
           {d.system_prompt_name ?? "Built-in default"}
         </div>
       </div>
 
       {d.user_prompt && (
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
             Exact user prompt sent to the model
           </div>
-          <pre className="whitespace-pre-wrap font-mono text-[11px] text-teal-900/80 bg-white/50 rounded-lg p-3 max-h-64 overflow-y-auto">
+          <pre className="whitespace-pre-wrap font-mono text-[11px] text-ink bg-surface rounded-sm p-3 max-h-64 overflow-y-auto">
             {d.user_prompt}
           </pre>
         </div>
@@ -38,10 +38,10 @@ function DebugDrawer({ day }: { day: SimDayView }) {
 
       {d.selection != null && (
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
             Content-type selection
           </div>
-          <pre className="whitespace-pre-wrap font-mono text-[11px] text-teal-900/80 bg-white/50 rounded-lg p-3 max-h-40 overflow-y-auto">
+          <pre className="whitespace-pre-wrap font-mono text-[11px] text-ink bg-surface rounded-sm p-3 max-h-40 overflow-y-auto">
             {JSON.stringify(d.selection, null, 2)}
           </pre>
         </div>
@@ -49,10 +49,10 @@ function DebugDrawer({ day }: { day: SimDayView }) {
 
       {d.proposal && (
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
             Persona decision
           </div>
-          <div className="text-teal-900/80">
+          <div className="text-ink">
             {d.proposal.action === "reply"
               ? `Replied after ~${d.proposal.delayMinutes} min`
               : "Stayed silent"}
@@ -60,7 +60,7 @@ function DebugDrawer({ day }: { day: SimDayView }) {
             {d.founder_edited ? " (reply edited by you)" : ""}
           </div>
           {d.proposal.raw && (
-            <pre className="mt-1 whitespace-pre-wrap font-mono text-[11px] text-red-800/80 bg-red-50 rounded-lg p-3 max-h-32 overflow-y-auto">
+            <pre className="mt-1 whitespace-pre-wrap font-mono text-[11px] text-red-800/80 bg-red-50 rounded-sm p-3 max-h-32 overflow-y-auto">
               Raw model output (unparseable): {d.proposal.raw}
             </pre>
           )}
@@ -69,10 +69,10 @@ function DebugDrawer({ day }: { day: SimDayView }) {
 
       {d.enrichment != null && (
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
             Enrichment
           </div>
-          <pre className="whitespace-pre-wrap font-mono text-[11px] text-teal-900/80 bg-white/50 rounded-lg p-3 max-h-48 overflow-y-auto">
+          <pre className="whitespace-pre-wrap font-mono text-[11px] text-ink bg-surface rounded-sm p-3 max-h-48 overflow-y-auto">
             {JSON.stringify(d.enrichment, null, 2)}
           </pre>
         </div>
@@ -80,20 +80,20 @@ function DebugDrawer({ day }: { day: SimDayView }) {
 
       {d.would_be_ack && (
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
             Ack that would have been sent (
             {d.would_be_ack.kind === "ai_mirror" ? "AI mirror" : "soft ack"})
           </div>
-          <div className="text-navy italic">“{d.would_be_ack.text}”</div>
+          <div className="text-ink italic">“{d.would_be_ack.text}”</div>
         </div>
       )}
 
       {d.compacted_memory != null && (
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
             End-of-week memory compaction
           </div>
-          <pre className="whitespace-pre-wrap font-mono text-[11px] text-teal-900/80 bg-white/50 rounded-lg p-3 max-h-48 overflow-y-auto">
+          <pre className="whitespace-pre-wrap font-mono text-[11px] text-ink bg-surface rounded-sm p-3 max-h-48 overflow-y-auto">
             {JSON.stringify(d.compacted_memory, null, 2)}
           </pre>
         </div>
@@ -112,7 +112,7 @@ export function ConversationTimeline({ days }: { days: SimDayView[] }) {
 
   if (days.length === 0) {
     return (
-      <div className="text-sm text-teal-900/50 italic">
+      <div className="text-sm text-muted italic">
         No days simulated yet. Step one day or run the full week.
       </div>
     );
@@ -126,21 +126,19 @@ export function ConversationTimeline({ days }: { days: SimDayView[] }) {
         return (
           <article
             key={day.id}
-            className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-3xl p-5"
+            className="bg-surface border border-rule rounded-sm p-5"
           >
             <div className="flex items-center justify-between gap-3 mb-3">
-              <div className="text-[11px] uppercase tracking-widest text-teal-900/40">
+              <div className="text-[11px] uppercase tracking-widest text-muted">
                 Day {day.day_number} · {formatSimDate(day.sim_date)}
                 {day.status === "pending_review" && (
-                  <span className="ml-2 text-em-purple-400">
-                    awaiting review
-                  </span>
+                  <span className="ml-2 text-cobalt">awaiting review</span>
                 )}
               </div>
               <button
                 type="button"
                 onClick={() => setOpenDay(isOpen ? null : day.day_number)}
-                className="flex items-center gap-1 text-xs text-teal-900/50 hover:text-teal-900 transition-colors"
+                className="flex items-center gap-1 text-xs text-muted hover:text-cobalt transition-colors"
               >
                 why?
                 {isOpen ? (
@@ -152,17 +150,17 @@ export function ConversationTimeline({ days }: { days: SimDayView[] }) {
             </div>
 
             {/* Outbound */}
-            <div className="border-l-2 border-em-purple-300 pl-4">
+            <div className="border-l-2 border-rule pl-4">
               <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="text-[10px] uppercase tracking-widest text-teal-900/40">
+                <span className="text-[10px] uppercase tracking-widest text-muted">
                   Entiremind
                 </span>
                 {day.debug.content_type && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-em-purple-300/30 text-navy">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-cobalt-wash text-ink">
                     {day.debug.content_type}
                   </span>
                 )}
-                <span className="text-[10px] text-teal-900/40">
+                <span className="text-[10px] text-muted">
                   {day.outbound_text?.length ?? 0} chars
                 </span>
                 {day.debug.fallback && (
@@ -177,7 +175,7 @@ export function ConversationTimeline({ days }: { days: SimDayView[] }) {
                   </span>
                 )}
               </div>
-              <p className="text-[15px] text-navy font-medium">
+              <p className="text-base text-ink font-medium">
                 {day.outbound_text}
               </p>
             </div>
@@ -185,26 +183,24 @@ export function ConversationTimeline({ days }: { days: SimDayView[] }) {
             {/* Inbound / silence */}
             <div className="mt-3 pl-4">
               {day.status === "pending_review" ? (
-                <p className="text-sm text-teal-900/50 italic">
+                <p className="text-sm text-muted italic">
                   Persona reaction pending your review below.
                 </p>
               ) : day.persona_action === "reply" && day.inbound_text ? (
-                <div className="border-l-2 border-teal-900/20 pl-4">
-                  <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+                <div className="border-l-2 border-rule pl-4">
+                  <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
                     {"They replied"}
                     {day.debug.founder_edited ? " (edited by you)" : ""}
                   </div>
-                  <p className="text-[15px] text-teal-900/90">
-                    {day.inbound_text}
-                  </p>
+                  <p className="text-base text-ink">{day.inbound_text}</p>
                 </div>
               ) : (
-                <p className="text-sm text-teal-900/40 italic">— silence —</p>
+                <p className="text-sm text-muted italic">— silence —</p>
               )}
             </div>
 
             {engagement && (
-              <div className="mt-3 text-[11px] text-teal-900/40">
+              <div className="mt-3 text-[11px] text-muted">
                 Engagement going into this day: {engagement.score}
                 {engagement.consecutive_silences > 0
                   ? ` · ${engagement.consecutive_silences} consecutive silences`

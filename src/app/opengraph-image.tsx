@@ -1,16 +1,22 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/config/site";
+import { loadDisplayFont, OG_COLORS } from "@/lib/og/font";
 
 /**
  * Site-default OG card (pages without their own opengraph-image, e.g. / and
- * /quiz). Same visual system as the archetype cards: dark teal ground, soft
- * purple accent, warm yellow headline.
+ * /quiz).
+ *
+ * A cobalt ground with linen lettering. Gold appears once, as a hairline —
+ * this is the "gold lives on cobalt" rule doing its job. It is never the
+ * headline: gold is ornament at every size, on every ground.
  */
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function OpengraphImage() {
+  const display = await loadDisplayFont();
+
   return new ImageResponse(
     <div
       style={{
@@ -20,53 +26,76 @@ export default async function OpengraphImage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(160deg, #204147 0%, #2E2A58 100%)",
+        backgroundColor: OG_COLORS.cobalt,
         padding: 80,
       }}
     >
       <div
         style={{
-          fontSize: 26,
+          fontSize: 22,
           letterSpacing: 8,
           textTransform: "uppercase",
-          color: "#cbbbe3",
-          marginBottom: 28,
+          color: OG_COLORS.cobaltWash,
+          marginBottom: 40,
         }}
       >
         Lightly magical, by text
       </div>
+
       <div
         style={{
-          fontSize: 96,
-          fontWeight: 600,
-          color: "#f9d97a",
-          marginBottom: 24,
+          fontFamily: display ? "Prata" : "serif",
+          fontSize: 104,
+          color: OG_COLORS.linen,
           textAlign: "center",
+          lineHeight: 1.05,
         }}
       >
         {siteConfig.name}
       </div>
+
+      {/* The one ornament. */}
       <div
         style={{
-          fontSize: 38,
-          color: "#ffffff",
-          opacity: 0.92,
+          width: 96,
+          height: 1,
+          backgroundColor: OG_COLORS.leaf,
+          marginTop: 36,
+          marginBottom: 36,
+        }}
+      />
+
+      <div
+        style={{
+          fontSize: 36,
+          color: OG_COLORS.linen,
+          opacity: 0.85,
           textAlign: "center",
-          maxWidth: 900,
-          marginBottom: 48,
+          maxWidth: 860,
+          lineHeight: 1.35,
         }}
       >
         {siteConfig.tagline}
       </div>
+
       <div
         style={{
-          fontSize: 28,
-          color: "#cbbbe3",
+          position: "absolute",
+          bottom: 56,
+          fontSize: 20,
+          letterSpacing: 4,
+          textTransform: "uppercase",
+          color: OG_COLORS.cobaltWash,
         }}
       >
         entiremind.com
       </div>
     </div>,
-    size,
+    {
+      ...size,
+      fonts: display
+        ? [{ name: "Prata", data: display, style: "normal", weight: 400 }]
+        : undefined,
+    },
   );
 }

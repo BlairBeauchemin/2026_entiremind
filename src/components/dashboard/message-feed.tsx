@@ -14,7 +14,7 @@ import { MessageCard, type PairedMessage } from "./message-card";
 function pairMessages(messages: Message[]): PairedMessage[] {
   // Sort by createdAt ascending (oldest first)
   const sorted = [...messages].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   );
 
   const paired: PairedMessage[] = [];
@@ -62,9 +62,7 @@ export function MessageFeed({ messages }: MessageFeedProps) {
 
   return (
     <section aria-label="Message history" className="space-y-6">
-      <h2 className="font-serif text-2xl md:text-3xl text-navy font-medium">
-        Your Journey
-      </h2>
+      <h2 className="font-serif text-2xl md:text-3xl text-ink">Your Journey</h2>
 
       <div className="space-y-6" role="feed" aria-label="Message cards">
         {paired.map((item, index) => (
@@ -86,12 +84,12 @@ export function MessageFeed({ messages }: MessageFeedProps) {
         role="separator"
         aria-label="Beginning of your journey"
       >
-        <div className="h-px flex-1 bg-teal-900/10" aria-hidden="true" />
-        <span className="flex items-center gap-2 text-sm text-teal-900/30 font-medium uppercase tracking-widest">
+        <div className="h-px flex-1 bg-cobalt-wash" aria-hidden="true" />
+        <span className="flex items-center gap-2 text-sm text-muted font-medium uppercase tracking-widest">
           <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
           Beginning of your journey
         </span>
-        <div className="h-px flex-1 bg-teal-900/10" aria-hidden="true" />
+        <div className="h-px flex-1 bg-cobalt-wash" aria-hidden="true" />
       </motion.div>
     </section>
   );

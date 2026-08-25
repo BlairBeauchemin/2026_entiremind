@@ -47,7 +47,7 @@ function getStatusDisplay(status: Subscription["status"]): {
     case "paused":
       return {
         label: "Paused",
-        className: "bg-teal-900/10 text-teal-900/50",
+        className: "bg-cobalt-wash text-muted",
       };
     case "cancelled":
       return {
@@ -57,7 +57,7 @@ function getStatusDisplay(status: Subscription["status"]): {
     default:
       return {
         label: status,
-        className: "bg-teal-900/10 text-teal-900/50",
+        className: "bg-cobalt-wash text-muted",
       };
   }
 }
@@ -73,7 +73,8 @@ export function SettingsSubscription({
   const [showPlanOptions, setShowPlanOptions] = useState(false);
 
   const isFreePlan = subscription.plan === "free";
-  const isPaidPlan = subscription.plan === "monthly" || subscription.plan === "yearly";
+  const isPaidPlan =
+    subscription.plan === "monthly" || subscription.plan === "yearly";
   const statusDisplay = getStatusDisplay(subscription.status);
 
   // Free-plan users are either in their trial window or past it.
@@ -142,15 +143,15 @@ export function SettingsSubscription({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-      className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 p-8 md:p-10"
+      className="bg-surface rounded-sm border border-rule p-8 md:p-10"
     >
-      <h2 className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50 mb-6">
+      <h2 className="text-[10px] font-medium uppercase tracking-widest text-muted mb-6">
         Subscription
       </h2>
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="font-serif text-navy text-lg">
+          <span className="font-serif text-ink text-lg">
             {getPlanDisplayName(subscription.plan)}
           </span>
           <span
@@ -176,7 +177,7 @@ export function SettingsSubscription({
           <button
             onClick={() => setShowPlanOptions(true)}
             disabled={loading}
-            className="px-5 py-2 bg-navy text-white text-sm font-medium rounded-full hover:bg-navy/90 transition-colors disabled:opacity-50"
+            className="px-5 py-2 bg-cobalt text-linen text-sm font-medium rounded-full hover:bg-cobalt-deep transition-colors disabled:opacity-50"
           >
             Upgrade
           </button>
@@ -187,7 +188,7 @@ export function SettingsSubscription({
           <button
             onClick={handleManageSubscription}
             disabled={loading}
-            className="px-5 py-2 bg-white/60 text-navy text-sm font-medium rounded-full hover:bg-white/80 border border-navy/20 transition-colors disabled:opacity-50"
+            className="px-5 py-2 bg-surface text-ink text-sm font-medium rounded-full hover:border-cobalt border border-cobalt transition-colors disabled:opacity-50"
           >
             {loading ? "Loading..." : "Manage Subscription"}
           </button>
@@ -200,20 +201,20 @@ export function SettingsSubscription({
           <button
             onClick={() => handleUpgrade("monthly")}
             disabled={loading}
-            className="p-4 rounded-xl border border-navy/20 bg-white/60 hover:bg-white/80 transition-colors text-left disabled:opacity-50"
+            className="p-4 rounded-sm border border-cobalt bg-surface hover:border-cobalt transition-colors text-left disabled:opacity-50"
           >
-            <div className="font-serif text-navy text-lg">Monthly</div>
-            <div className="text-sm text-teal-900/60 mt-1">
+            <div className="font-serif text-ink text-lg">Monthly</div>
+            <div className="text-sm text-muted mt-1">
               Billed monthly, cancel anytime
             </div>
           </button>
           <button
             onClick={() => handleUpgrade("yearly")}
             disabled={loading}
-            className="p-4 rounded-xl border border-navy/20 bg-white/60 hover:bg-white/80 transition-colors text-left disabled:opacity-50"
+            className="p-4 rounded-sm border border-cobalt bg-surface hover:border-cobalt transition-colors text-left disabled:opacity-50"
           >
-            <div className="font-serif text-navy text-lg">Yearly</div>
-            <div className="text-sm text-teal-900/60 mt-1">
+            <div className="font-serif text-ink text-lg">Yearly</div>
+            <div className="text-sm text-muted mt-1">
               Save with annual billing
             </div>
           </button>
@@ -229,19 +230,22 @@ export function SettingsSubscription({
       )}
 
       {/* Cancellation pending */}
-      {isPaidPlan && subscription.cancelAtPeriodEnd && subscription.currentPeriodEnd && (
-        <p className="text-sm text-teal-900/60 mt-4">
-          Your subscription will end on {formatDate(subscription.currentPeriodEnd)}.
-          You can reactivate anytime before then.
-        </p>
-      )}
+      {isPaidPlan &&
+        subscription.cancelAtPeriodEnd &&
+        subscription.currentPeriodEnd && (
+          <p className="text-sm text-muted mt-4">
+            Your subscription will end on{" "}
+            {formatDate(subscription.currentPeriodEnd)}. You can reactivate
+            anytime before then.
+          </p>
+        )}
 
       {/* Renewal date for active paid plans */}
       {isPaidPlan &&
         !subscription.cancelAtPeriodEnd &&
         subscription.currentPeriodEnd &&
         subscription.status === "active" && (
-          <p className="text-sm text-teal-900/50 mt-4">
+          <p className="text-sm text-muted mt-4">
             Renews on {formatDate(subscription.currentPeriodEnd)}
           </p>
         )}

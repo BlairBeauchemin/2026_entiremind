@@ -9,28 +9,24 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="bg-cream text-teal-900 font-sans min-h-screen relative overflow-x-hidden selection:bg-em-purple-300/30 selection:text-teal-900">
+    <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
       {/* Background Grain Texture */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-grain mix-blend-multiply" />
 
       {/* Ambient Background Gradients */}
-      <div className="fixed top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-em-purple-300/15 rounded-full blur-[120px] pointer-events-none z-0" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-em-yellow-400/10 rounded-full blur-[100px] pointer-events-none z-0" />
 
       <Navigation />
 
       <main className="relative z-10 py-24 px-6">
         <div className="max-w-3xl mx-auto">
-          <h1 className="font-serif text-4xl md:text-5xl text-navy font-medium mb-4">
+          <h1 className="font-serif text-4xl md:text-5xl text-ink mb-4">
             Terms of Service
           </h1>
-          <p className="text-teal-900/60 mb-12">
-            Last updated: February 10, 2026
-          </p>
+          <p className="text-muted mb-12">Last updated: February 10, 2026</p>
 
-          <div className="prose prose-teal max-w-none space-y-8 text-teal-900/80">
+          <div className="prose prose-teal max-w-none space-y-8 text-ink">
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Acceptance of Terms
               </h2>
               <p className="leading-relaxed">
@@ -42,7 +38,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Description of Service
               </h2>
               <p className="leading-relaxed">
@@ -55,7 +51,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 User Accounts
               </h2>
               <p className="leading-relaxed mb-4">
@@ -73,8 +69,8 @@ export default function TermsPage() {
               </ul>
             </section>
 
-            <section className="bg-white/40 backdrop-blur-sm rounded-2xl p-6 border border-white/60">
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+            <section className="bg-surface rounded-sm p-6 border border-rule">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 SMS Messaging Terms
               </h2>
               <p className="leading-relaxed mb-4">
@@ -114,7 +110,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Subscription and Payment
               </h2>
               <p className="leading-relaxed mb-4">
@@ -139,7 +135,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Refund Policy
               </h2>
               <p className="leading-relaxed">
@@ -151,7 +147,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 User Conduct
               </h2>
               <p className="leading-relaxed mb-4">
@@ -174,7 +170,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Intellectual Property
               </h2>
               <p className="leading-relaxed">
@@ -188,7 +184,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Your Content
               </h2>
               <p className="leading-relaxed">
@@ -201,9 +197,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
-                Disclaimers
-              </h2>
+              <h2 className="font-serif text-2xl text-ink mb-4">Disclaimers</h2>
               <p className="leading-relaxed mb-4">
                 <strong>No Medical or Professional Advice:</strong> Entiremind
                 is not a substitute for professional medical, psychological, or
@@ -219,7 +213,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Limitation of Liability
               </h2>
               <p className="leading-relaxed">
@@ -232,7 +226,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Indemnification
               </h2>
               <p className="leading-relaxed">
@@ -243,7 +237,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Electronic Communications
               </h2>
               <p className="leading-relaxed">
@@ -256,9 +250,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
-                Termination
-              </h2>
+              <h2 className="font-serif text-2xl text-ink mb-4">Termination</h2>
               <p className="leading-relaxed">
                 We reserve the right to suspend or terminate your access to the
                 service at any time, with or without cause, with or without
@@ -268,7 +260,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Changes to Terms
               </h2>
               <p className="leading-relaxed">
@@ -280,14 +272,14 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Arbitration and Class Action Waiver
               </h2>
               <p className="leading-relaxed mb-4">
                 Any dispute arising from or relating to these Terms or your use
                 of the service shall be resolved through binding arbitration in
-                the State of California, rather than in court, except that
-                you may assert claims in small claims court if eligible.
+                the State of California, rather than in court, except that you
+                may assert claims in small claims court if eligible.
               </p>
               <p className="leading-relaxed">
                 You agree that any arbitration will be conducted on an
@@ -298,7 +290,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Governing Law
               </h2>
               <p className="leading-relaxed">
@@ -309,9 +301,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
-                Data Rights
-              </h2>
+              <h2 className="font-serif text-2xl text-ink mb-4">Data Rights</h2>
               <p className="leading-relaxed mb-4">
                 You may request access to, correction of, or deletion of your
                 personal information by contacting us at support@entiremind.com.
@@ -329,7 +319,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Contact Information
               </h2>
               <p className="leading-relaxed mb-4">

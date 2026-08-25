@@ -41,10 +41,10 @@ export function Pricing() {
     <>
       <section id="section-pricing" className="py-32 relative overflow-hidden">
         <div className="max-w-3xl mx-auto px-6 text-center space-y-8">
-          <h2 className="font-serif text-5xl md:text-6xl text-navy font-medium">
+          <h2 className="font-serif text-5xl md:text-6xl text-ink">
             Membership
           </h2>
-          <p className="text-xl text-teal-900 leading-relaxed font-light font-sans">
+          <p className="text-xl text-ink leading-relaxed font-light font-sans">
             One simple practice, one simple price. Every membership begins with
             a 10-day free trial — no card needed to join the waitlist.
           </p>
@@ -52,27 +52,20 @@ export function Pricing() {
 
         <div className="max-w-4xl mx-auto px-6 mt-20 grid md:grid-cols-2 gap-10">
           {/* Monthly */}
-          <div className="p-10 rounded-[2rem] bg-white/40 border border-white/60 backdrop-blur-sm hover:bg-white/60 transition-all duration-500 flex flex-col">
-            <h3 className="font-serif text-3xl text-navy mb-2 font-medium">
-              Monthly
-            </h3>
-            <p className="text-teal-900/70 font-sans font-light mb-6">
+          <div className="p-10 rounded-sm bg-surface border border-rule hover:border-cobalt transition-all duration-500 flex flex-col">
+            <h3 className="font-serif text-3xl text-ink mb-2">Monthly</h3>
+            <p className="text-muted font-sans font-light mb-6">
               Billed monthly, cancel anytime.
             </p>
             <div className="mb-8">
-              <span className="font-serif text-5xl text-navy font-medium">
-                $12.99
-              </span>
-              <span className="text-teal-900/60 font-sans font-light">
-                {" "}
-                / month
-              </span>
+              <span className="font-serif text-5xl text-ink">$12.99</span>
+              <span className="text-muted font-sans font-light"> / month</span>
             </div>
             <ul className="space-y-3 mb-10 flex-1">
               {includedFeatures.map((feature) => (
                 <li key={feature} className="flex gap-3 items-start">
-                  <Check className="w-4 h-4 text-teal-900 flex-shrink-0 mt-1" />
-                  <span className="text-teal-900/70 font-sans font-light text-sm leading-relaxed">
+                  <Check className="w-4 h-4 text-ink flex-shrink-0 mt-1" />
+                  <span className="text-muted font-sans font-light text-sm leading-relaxed">
                     {feature}
                   </span>
                 </li>
@@ -80,37 +73,30 @@ export function Pricing() {
             </ul>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="w-full border border-navy/20 text-navy px-10 py-4 rounded-full text-lg font-medium hover:bg-navy hover:text-cream transition-all duration-300 font-sans"
+              className="w-full border border-cobalt text-ink px-10 py-4 rounded-sm text-lg font-medium hover:bg-cobalt hover:text-linen transition-all duration-300 font-sans"
             >
               Join the Waitlist
             </button>
           </div>
 
           {/* Yearly */}
-          <div className="relative p-10 rounded-[2rem] bg-white/60 border border-em-purple-300/60 backdrop-blur-sm hover:bg-white/80 transition-all duration-500 flex flex-col">
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-em-purple-300/40 border border-em-purple-300/60 text-teal-900 text-[11px] font-medium tracking-widest uppercase">
+          <div className="relative p-10 rounded-sm bg-surface border border-rule hover:border-cobalt transition-all duration-500 flex flex-col">
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-cobalt-wash border border-rule text-ink text-[11px] font-medium tracking-widest uppercase">
               Two Months Free
             </div>
-            <h3 className="font-serif text-3xl text-navy mb-2 font-medium">
-              Yearly
-            </h3>
-            <p className="text-teal-900/70 font-sans font-light mb-6">
+            <h3 className="font-serif text-3xl text-ink mb-2">Yearly</h3>
+            <p className="text-muted font-sans font-light mb-6">
               A full year of the practice.
             </p>
             <div className="mb-8">
-              <span className="font-serif text-5xl text-navy font-medium">
-                $99
-              </span>
-              <span className="text-teal-900/60 font-sans font-light">
-                {" "}
-                / year
-              </span>
+              <span className="font-serif text-5xl text-ink">$99</span>
+              <span className="text-muted font-sans font-light"> / year</span>
             </div>
             <ul className="space-y-3 mb-10 flex-1">
               {includedFeatures.map((feature) => (
                 <li key={feature} className="flex gap-3 items-start">
-                  <Check className="w-4 h-4 text-teal-900 flex-shrink-0 mt-1" />
-                  <span className="text-teal-900/70 font-sans font-light text-sm leading-relaxed">
+                  <Check className="w-4 h-4 text-ink flex-shrink-0 mt-1" />
+                  <span className="text-muted font-sans font-light text-sm leading-relaxed">
                     {feature}
                   </span>
                 </li>
@@ -118,7 +104,7 @@ export function Pricing() {
             </ul>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="w-full bg-navy text-cream px-10 py-4 rounded-full text-lg font-medium hover:bg-navy/90 hover:shadow-lg hover:shadow-navy/10 transition-all duration-300 font-sans"
+              className="w-full bg-cobalt text-linen px-10 py-4 rounded-sm text-lg font-medium hover:bg-cobalt-deep transition-all duration-300 font-sans"
             >
               Join the Waitlist
             </button>
@@ -127,19 +113,19 @@ export function Pricing() {
 
         {/* FAQ */}
         <div className="max-w-3xl mx-auto px-6 mt-24">
-          <h3 className="font-serif text-3xl text-navy font-medium text-center mb-12">
+          <h3 className="font-serif text-3xl text-ink text-center mb-12">
             Questions, answered
           </h3>
           <div className="space-y-8">
             {faqs.map((faq) => (
               <div
                 key={faq.question}
-                className="p-8 rounded-[2rem] bg-white/40 border border-white/60 backdrop-blur-sm"
+                className="p-8 rounded-sm bg-surface border border-rule"
               >
-                <h4 className="font-serif text-2xl text-navy mb-3 font-medium">
+                <h4 className="font-serif text-2xl text-ink mb-3">
                   {faq.question}
                 </h4>
-                <p className="text-teal-900/70 font-sans font-light leading-relaxed">
+                <p className="text-muted font-sans font-light leading-relaxed">
                   {faq.answer}
                 </p>
               </div>

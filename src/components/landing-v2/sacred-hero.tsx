@@ -32,17 +32,17 @@ export function SacredHero() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="relative z-10 space-y-10 text-center lg:text-left"
           >
-            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/50 border border-teal-900/10 text-teal-900 text-[11px] font-medium tracking-widest uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-900 animate-pulse" />
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-surface border border-rule text-ink text-[11px] font-medium tracking-widest uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-cobalt animate-pulse" />
               Now accepting early signals
             </div>
 
-            <h1 className="font-serif text-6xl lg:text-8xl leading-[0.95] text-navy font-medium tracking-tight">
+            <h1 className="font-serif text-display text-ink text-balance">
               Manifestation at the <br />
               <span className="font-medium">speed of thought.</span>
             </h1>
 
-            <p className="text-lg lg:text-xl text-teal-900 max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans tracking-wide">
+            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans tracking-wide">
               A lightly magical SMS companion that aligns your intentions with
               reality. No apps to open, no dashboards to manage—just signals to
               send.
@@ -51,20 +51,20 @@ export function SacredHero() {
             <div className="pt-4">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-navy text-cream px-10 py-4 rounded-full text-lg font-medium hover:bg-navy/90 hover:shadow-lg hover:shadow-navy/10 transition-all duration-300 font-sans"
+                className="bg-cobalt text-linen px-10 py-4 rounded-sm text-lg font-medium hover:bg-cobalt-deep transition-all duration-300 font-sans"
               >
                 Reserve My Spot
               </button>
             </div>
 
-            <div className="pt-2 flex items-center justify-center lg:justify-start gap-4 text-sm text-teal-900/70 font-sans font-light">
+            <div className="pt-2 flex items-center justify-center lg:justify-start gap-4 text-sm text-muted font-sans font-light">
               <div className="flex -space-x-3 opacity-80">
                 {[1, 2, 3].map((i) => (
                   <img
                     key={i}
                     src={`https://i.pravatar.cc/150?u=${i}`}
                     alt=""
-                    className="w-8 h-8 rounded-full border-2 border-cream grayscale"
+                    className="w-8 h-8 rounded-full border-2 border-linen grayscale"
                   />
                 ))}
               </div>
@@ -85,8 +85,6 @@ export function SacredHero() {
             </div>
 
             {/* Ambient glow effects */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-em-purple-300/10 rounded-full blur-[80px] pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-em-yellow-400/5 rounded-full blur-[60px] pointer-events-none" />
 
             {/* Phone mockup */}
             <div className="relative z-10">

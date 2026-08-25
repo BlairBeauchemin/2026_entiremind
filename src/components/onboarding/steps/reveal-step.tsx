@@ -87,11 +87,11 @@ export function RevealStep({
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 rounded-full bg-em-purple-300/20 flex items-center justify-center"
+          className="w-12 h-12 rounded-full bg-cobalt-wash flex items-center justify-center"
         >
-          <Sparkles className="w-6 h-6 text-em-purple-400" />
+          <Sparkles className="w-6 h-6 text-cobalt" />
         </motion.div>
-        <p className="text-teal-900/60 text-sm">Reading your answers…</p>
+        <p className="text-muted text-sm">Reading your answers…</p>
       </motion.button>
     );
   }
@@ -105,13 +105,13 @@ export function RevealStep({
     >
       {/* Archetype */}
       <section className="text-center space-y-3">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted">
           You are
         </p>
-        <h1 className="font-serif text-3xl text-navy font-medium">
+        <h1 className="font-serif text-3xl text-ink">
           {content.archetype.name}
         </h1>
-        <p className="text-teal-900/70 text-sm leading-relaxed text-left">
+        <p className="text-muted text-sm leading-relaxed text-left">
           {content.archetype.paragraph}
         </p>
         <div className="pt-1">
@@ -124,17 +124,17 @@ export function RevealStep({
 
       {/* Inner critic */}
       {content.innerCritic && (
-        <section className="space-y-2 rounded-2xl bg-white/40 border border-white/60 p-5">
-          <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+        <section className="space-y-2 rounded-sm bg-surface border border-rule p-5">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-muted">
             Your inner critic&apos;s favorite trick
           </p>
-          <h2 className="font-serif text-xl text-navy font-medium">
+          <h2 className="font-serif text-xl text-ink">
             {content.innerCritic.name}
           </h2>
-          <p className="text-teal-900/70 text-sm leading-relaxed">
+          <p className="text-muted text-sm leading-relaxed">
             {content.innerCritic.oneLiner}
           </p>
-          <p className="text-teal-900/70 text-sm leading-relaxed">
+          <p className="text-muted text-sm leading-relaxed">
             {content.innerCritic.howWeRespond}
           </p>
         </section>
@@ -143,7 +143,7 @@ export function RevealStep({
       {/* How it works */}
       <section className="space-y-3">
         {content.howItWorks.map((line) => (
-          <p key={line} className="text-teal-900/70 text-sm leading-relaxed">
+          <p key={line} className="text-muted text-sm leading-relaxed">
             {line}
           </p>
         ))}
@@ -155,7 +155,7 @@ export function RevealStep({
         type="button"
         onClick={handleComplete}
         disabled={submitting}
-        className="w-full h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium"
+        className="w-full h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium"
       >
         {submitting ? (
           <Loader2 className="w-4 h-4 animate-spin" />

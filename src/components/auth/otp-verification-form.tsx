@@ -13,7 +13,10 @@ interface OtpVerificationFormProps {
   onBack: () => void;
 }
 
-export function OtpVerificationForm({ phone, onBack }: OtpVerificationFormProps) {
+export function OtpVerificationForm({
+  phone,
+  onBack,
+}: OtpVerificationFormProps) {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -28,7 +31,10 @@ export function OtpVerificationForm({ phone, onBack }: OtpVerificationFormProps)
 
   useEffect(() => {
     if (resendCountdown > 0) {
-      const timer = setTimeout(() => setResendCountdown(resendCountdown - 1), 1000);
+      const timer = setTimeout(
+        () => setResendCountdown(resendCountdown - 1),
+        1000,
+      );
       return () => clearTimeout(timer);
     }
   }, [resendCountdown]);
@@ -46,7 +52,10 @@ export function OtpVerificationForm({ phone, onBack }: OtpVerificationFormProps)
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -54,7 +63,10 @@ export function OtpVerificationForm({ phone, onBack }: OtpVerificationFormProps)
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
     const newOtp = [...otp];
     pastedData.split("").forEach((char, i) => {
       if (i < 6) newOtp[i] = char;
@@ -144,17 +156,15 @@ export function OtpVerificationForm({ phone, onBack }: OtpVerificationFormProps)
       <button
         type="button"
         onClick={onBack}
-        className="flex items-center gap-2 text-sm text-teal-900/60 hover:text-teal-900 transition-colors"
+        className="flex items-center gap-2 text-sm text-muted hover:text-cobalt transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Change phone number
       </button>
 
       <div className="space-y-1">
-        <p className="text-sm text-teal-900/70">
-          We sent a verification code to
-        </p>
-        <p className="font-medium text-navy">{formatPhone(phone)}</p>
+        <p className="text-sm text-muted">We sent a verification code to</p>
+        <p className="font-medium text-ink">{formatPhone(phone)}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -172,7 +182,7 @@ export function OtpVerificationForm({ phone, onBack }: OtpVerificationFormProps)
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
-              className="w-12 h-14 text-center text-xl font-medium bg-white/60 border-white/60 rounded-xl focus:border-em-purple-300 focus:ring-em-purple-300/20"
+              className="w-12 h-14 text-center text-xl font-medium bg-surface border-rule rounded-sm focus:border-cobalt focus:ring-cobalt"
               disabled={isLoading}
             />
           ))}
@@ -191,7 +201,7 @@ export function OtpVerificationForm({ phone, onBack }: OtpVerificationFormProps)
         <Button
           type="submit"
           disabled={isLoading || otp.some((d) => !d)}
-          className="w-full h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium transition-colors"
+          className="w-full h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium transition-colors"
         >
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -206,7 +216,7 @@ export function OtpVerificationForm({ phone, onBack }: OtpVerificationFormProps)
           type="button"
           onClick={handleResend}
           disabled={resendCountdown > 0 || isResending}
-          className="text-sm text-teal-900/60 hover:text-teal-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-sm text-muted hover:text-cobalt transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isResending ? (
             <span className="flex items-center gap-2 justify-center">

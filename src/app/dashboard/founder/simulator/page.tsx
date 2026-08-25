@@ -70,15 +70,15 @@ export default async function SimulatorPage() {
     <div className="space-y-8">
       <div>
         <div className="flex items-center justify-between gap-4">
-          <h1 className="font-serif text-3xl text-navy">Messaging Simulator</h1>
+          <h1 className="font-serif text-3xl text-ink">Messaging Simulator</h1>
           <Link
             href="/dashboard/founder"
-            className="text-sm text-teal-900/60 hover:text-teal-900 transition-colors"
+            className="text-sm text-muted hover:text-cobalt transition-colors"
           >
             ← Founder dashboard
           </Link>
         </div>
-        <p className="text-sm text-teal-900/60 mt-2 max-w-xl">
+        <p className="text-sm text-muted mt-2 max-w-xl">
           Create test personas, replay a week of the real messaging loop, and
           refine the system prompt — nothing here sends SMS.
         </p>

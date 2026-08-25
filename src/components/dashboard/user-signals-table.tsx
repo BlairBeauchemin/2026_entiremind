@@ -81,17 +81,18 @@ export function UserSignalsTable({
 
   if (signals.length === 0) {
     return (
-      <div className="rounded-2xl border border-teal-900/10 bg-white/60 p-8 text-center">
-        <p className="text-teal-900/50">No user signals yet.</p>
-        <p className="text-sm text-teal-900/40 mt-2">
-          Signal data will appear here once users receive messages and start responding.
+      <div className="rounded-sm border border-rule bg-surface p-8 text-center">
+        <p className="text-muted">No user signals yet.</p>
+        <p className="text-sm text-muted mt-2">
+          Signal data will appear here once users receive messages and start
+          responding.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-teal-900/10 bg-white/60 overflow-hidden">
+    <div className="rounded-sm border border-rule bg-surface overflow-hidden">
       {askError && (
         <div className="text-sm text-red-600 bg-red-50 border-b border-red-200 p-2 px-4">
           {askError}
@@ -100,32 +101,32 @@ export function UserSignalsTable({
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-teal-900/10 bg-teal-900/5">
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+            <tr className="border-b border-rule bg-surface">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 User
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Engagement
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Messages
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Replies
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Reply Rate
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Avg Reply Time
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Silences
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Last Reply
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Testimonial
               </th>
             </tr>
@@ -137,14 +138,14 @@ export function UserSignalsTable({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.02, duration: 0.2 }}
-                className="border-b border-teal-900/5 hover:bg-teal-900/5 transition-colors"
+                className="border-b border-rule hover:bg-cobalt-wash transition-colors"
               >
                 <td className="px-4 py-3">
                   <div>
-                    <span className="text-sm font-medium text-navy block">
+                    <span className="text-sm font-medium text-ink block">
                       {signal.userName || "Unknown"}
                     </span>
-                    <span className="text-xs text-teal-900/50">
+                    <span className="text-xs text-muted">
                       {signal.userEmail}
                     </span>
                   </div>
@@ -152,7 +153,7 @@ export function UserSignalsTable({
                 <td className="px-4 py-3">
                   <span
                     className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getEngagementColor(
-                      signal.engagementScore
+                      signal.engagementScore,
                     )}`}
                   >
                     {getEngagementIcon(signal.engagementScore)}
@@ -160,22 +161,24 @@ export function UserSignalsTable({
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-sm text-navy">
+                  <span className="text-sm text-ink">
                     {signal.totalMessagesSent}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-sm text-navy">{signal.totalReplies}</span>
+                  <span className="text-sm text-ink">
+                    {signal.totalReplies}
+                  </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-sm text-navy">
+                  <span className="text-sm text-ink">
                     {signal.replyRate !== null
                       ? `${signal.replyRate.toFixed(0)}%`
                       : "-"}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-sm text-navy">
+                  <span className="text-sm text-ink">
                     {signal.avgReplyTimeMinutes !== null
                       ? `${signal.avgReplyTimeMinutes} min`
                       : "-"}
@@ -186,27 +189,27 @@ export function UserSignalsTable({
                     className={`text-sm ${
                       signal.consecutiveSilences >= 3
                         ? "text-red-600 font-medium"
-                        : "text-navy"
+                        : "text-ink"
                     }`}
                   >
                     {signal.consecutiveSilences}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-sm text-teal-900/60 whitespace-nowrap">
+                  <span className="text-sm text-muted whitespace-nowrap">
                     {formatTime(signal.lastReplyAt)}
                   </span>
                 </td>
                 <td className="px-4 py-3">
                   {askedIds.has(signal.userId) ? (
-                    <span className="text-xs text-teal-900/40 whitespace-nowrap">
+                    <span className="text-xs text-muted whitespace-nowrap">
                       Asked
                     </span>
                   ) : (
                     <button
                       onClick={() => requestTestimonial(signal.userId)}
                       disabled={pendingId === signal.userId}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-navy border border-teal-900/20 px-2.5 py-1 rounded-full hover:bg-teal-900 hover:text-cream transition-colors disabled:opacity-50 whitespace-nowrap"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-ink border border-rule px-2.5 py-1 rounded-full hover:bg-cobalt hover:text-linen transition-colors disabled:opacity-50 whitespace-nowrap"
                       title="Send a testimonial request SMS to this user"
                     >
                       {pendingId === signal.userId ? (

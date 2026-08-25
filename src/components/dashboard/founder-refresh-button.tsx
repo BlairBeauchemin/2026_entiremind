@@ -19,7 +19,7 @@ export function FounderRefreshButton() {
     <button
       onClick={handleRefresh}
       disabled={refreshing}
-      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-teal-900/60 hover:text-teal-900 hover:bg-teal-900/5 transition-colors disabled:opacity-50"
+      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-sm text-muted hover:text-cobalt hover:bg-cobalt-wash transition-colors disabled:opacity-50"
     >
       <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
       {refreshing ? "Refreshing…" : "Refresh"}

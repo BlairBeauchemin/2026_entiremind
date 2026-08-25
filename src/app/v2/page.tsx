@@ -11,7 +11,7 @@ export const metadata = stagingMetadata;
 
 export default function LandingV2() {
   return (
-    <div className="bg-gradient-to-b from-cream to-em-purple-100/30 text-teal-900 font-sans min-h-screen relative overflow-x-hidden selection:bg-em-purple-300/30 selection:text-teal-900">
+    <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
       {/* Background Grain Texture */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-30 bg-grain mix-blend-multiply" />
 

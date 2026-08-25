@@ -64,7 +64,7 @@ export function CampaignList({ brandId, campaigns }: CampaignListProps) {
           type="button"
           onClick={() => run("plan")}
           disabled={running !== null}
-          className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+          className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
         >
           {running === "plan" ? (
             <Loader2 className="w-4 h-4 animate-spin mr-1" />
@@ -78,7 +78,7 @@ export function CampaignList({ brandId, campaigns }: CampaignListProps) {
           variant="outline"
           onClick={() => run("research")}
           disabled={running !== null}
-          className="border-em-purple-300/60 text-navy rounded-xl"
+          className="border-rule text-ink rounded-sm"
         >
           {running === "research" ? (
             <Loader2 className="w-4 h-4 animate-spin mr-1" />
@@ -90,25 +90,26 @@ export function CampaignList({ brandId, campaigns }: CampaignListProps) {
       </div>
 
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
           {error}
         </div>
       )}
       {notice && (
-        <div className="text-sm text-navy bg-em-purple-300/20 border border-em-purple-300/40 rounded-md p-2">
+        <div className="text-sm text-ink bg-cobalt-wash border border-rule rounded-sm p-2">
           {notice}
         </div>
       )}
 
       {campaigns.length === 0 ? (
         <div className="text-sm text-muted-foreground italic">
-          No campaigns yet. &quot;Plan content now&quot; creates one from the latest trend research.
+          No campaigns yet. &quot;Plan content now&quot; creates one from the
+          latest trend research.
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-[11px] uppercase tracking-widest text-teal-900/40 border-b border-em-purple-300/30">
+              <tr className="text-left text-[11px] uppercase tracking-widest text-muted border-b border-rule">
                 <th className="py-2 pr-4">Campaign</th>
                 <th className="py-2 pr-4">Type</th>
                 <th className="py-2 pr-4">Status</th>
@@ -118,15 +119,19 @@ export function CampaignList({ brandId, campaigns }: CampaignListProps) {
             </thead>
             <tbody>
               {campaigns.map((c) => (
-                <tr key={c.id} className="border-b border-em-purple-300/20">
+                <tr key={c.id} className="border-b border-rule">
                   <td className="py-2 pr-4">
-                    <div className="text-navy font-medium">{c.name}</div>
-                    {c.objective && <div className="text-xs text-teal-900/50">{c.objective}</div>}
+                    <div className="text-ink font-medium">{c.name}</div>
+                    {c.objective && (
+                      <div className="text-xs text-muted">{c.objective}</div>
+                    )}
                   </td>
-                  <td className="py-2 pr-4 text-teal-900/70">{c.campaignType}</td>
-                  <td className="py-2 pr-4 text-teal-900/70">{c.status}</td>
-                  <td className="py-2 pr-4 text-teal-900/70">{c.pieceCount}</td>
-                  <td className="py-2 text-teal-900/50">{formatDateTime(c.createdAt)}</td>
+                  <td className="py-2 pr-4 text-muted">{c.campaignType}</td>
+                  <td className="py-2 pr-4 text-muted">{c.status}</td>
+                  <td className="py-2 pr-4 text-muted">{c.pieceCount}</td>
+                  <td className="py-2 text-muted">
+                    {formatDateTime(c.createdAt)}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -44,19 +44,19 @@ export function SettingsProfile({ user }: SettingsProfileProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 p-8 md:p-10"
+      className="bg-surface rounded-sm border border-rule p-8 md:p-10"
     >
-      <h2 className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50 mb-6">
+      <h2 className="text-[10px] font-medium uppercase tracking-widest text-muted mb-6">
         Profile
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {fields.map((field) => (
           <div key={field.label}>
-            <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40 block mb-1">
+            <span className="text-[10px] font-medium uppercase tracking-widest text-muted block mb-1">
               {field.label}
             </span>
-            <span className="font-serif text-navy">{field.value}</span>
+            <span className="font-serif text-ink">{field.value}</span>
           </div>
         ))}
       </div>

@@ -49,14 +49,14 @@ export function ContentScheduleTable({ pieces }: ContentScheduleTableProps) {
   return (
     <div className="space-y-3">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
           {error}
         </div>
       )}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-[11px] uppercase tracking-widest text-teal-900/40 border-b border-em-purple-300/30">
+            <tr className="text-left text-[11px] uppercase tracking-widest text-muted border-b border-rule">
               <th className="py-2 pr-4">Piece</th>
               <th className="py-2 pr-4">Where</th>
               <th className="py-2 pr-4">Status</th>
@@ -67,28 +67,38 @@ export function ContentScheduleTable({ pieces }: ContentScheduleTableProps) {
           </thead>
           <tbody>
             {pieces.map((piece) => (
-              <tr key={piece.id} className="border-b border-em-purple-300/20 align-top">
+              <tr key={piece.id} className="border-b border-rule align-top">
                 <td className="py-2 pr-4 max-w-[280px]">
-                  <div className="text-navy font-medium truncate">
-                    {piece.headline ?? piece.caption?.slice(0, 60) ?? "Untitled"}
+                  <div className="text-ink font-medium truncate">
+                    {piece.headline ??
+                      piece.caption?.slice(0, 60) ??
+                      "Untitled"}
                   </div>
                   {piece.lastError && (
-                    <div className="text-xs text-red-600">{piece.lastError}</div>
+                    <div className="text-xs text-red-600">
+                      {piece.lastError}
+                    </div>
                   )}
                   {piece.externalPostId && (
-                    <div className="text-xs text-teal-900/50 truncate">
+                    <div className="text-xs text-muted truncate">
                       {piece.externalPostId}
-                      {piece.externalPostId.startsWith("stub_") ? " (placeholder)" : ""}
+                      {piece.externalPostId.startsWith("stub_")
+                        ? " (placeholder)"
+                        : ""}
                     </div>
                   )}
                 </td>
-                <td className="py-2 pr-4 text-teal-900/70">
+                <td className="py-2 pr-4 text-muted">
                   {piece.target === "ad" ? "Ad · " : ""}
                   {piece.platform} {piece.format}
                 </td>
-                <td className="py-2 pr-4 text-teal-900/70">{piece.status}</td>
-                <td className="py-2 pr-4 text-teal-900/50">{formatDateTime(piece.scheduledFor)}</td>
-                <td className="py-2 pr-4 text-teal-900/50">{formatDateTime(piece.publishedAt)}</td>
+                <td className="py-2 pr-4 text-muted">{piece.status}</td>
+                <td className="py-2 pr-4 text-muted">
+                  {formatDateTime(piece.scheduledFor)}
+                </td>
+                <td className="py-2 pr-4 text-muted">
+                  {formatDateTime(piece.publishedAt)}
+                </td>
                 <td className="py-2">
                   {PUBLISH_NOW_STATUSES.includes(piece.status) && (
                     <Button
@@ -97,7 +107,7 @@ export function ContentScheduleTable({ pieces }: ContentScheduleTableProps) {
                       variant="outline"
                       onClick={() => publishNow(piece.id)}
                       disabled={pendingId === piece.id}
-                      className="border-em-purple-300/60 text-navy rounded-xl"
+                      className="border-rule text-ink rounded-sm"
                     >
                       {pendingId === piece.id ? (
                         <Loader2 className="w-4 h-4 animate-spin" />

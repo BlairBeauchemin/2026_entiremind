@@ -2,7 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Check, Send, Sparkles, ChevronsUpDown, User } from "lucide-react";
+import {
+  Loader2,
+  Check,
+  Send,
+  Sparkles,
+  ChevronsUpDown,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -170,9 +177,9 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 p-6 md:p-8"
+      className="bg-surface rounded-sm border border-rule p-6 md:p-8"
     >
-      <h3 className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50 mb-4">
+      <h3 className="text-[10px] font-medium uppercase tracking-widest text-muted mb-4">
         Schedule New Message
       </h3>
 
@@ -180,7 +187,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
         {/* User Selection Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+            <Label className="text-[10px] font-medium uppercase tracking-widest text-muted">
               Select User
             </Label>
             <Popover open={open} onOpenChange={setOpen}>
@@ -189,15 +196,17 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className="w-full h-11 justify-between bg-white/60 border-white/60 rounded-xl font-normal"
+                  className="w-full h-11 justify-between bg-surface border-rule rounded-sm font-normal"
                 >
                   {selectedUser ? (
                     <span className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-teal-900/40" />
+                      <User className="w-4 h-4 text-muted" />
                       {getDisplayName(selectedUser)}
                     </span>
                   ) : (
-                    <span className="text-muted-foreground">Search users...</span>
+                    <span className="text-muted-foreground">
+                      Search users...
+                    </span>
                   )}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -235,7 +244,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
           <div className="space-y-1.5">
             <Label
               htmlFor="toPhone"
-              className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
+              className="text-[10px] font-medium uppercase tracking-widest text-muted"
             >
               Phone Number
             </Label>
@@ -252,7 +261,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
                   setSelectedUser(null);
                 }
               }}
-              className="h-11 bg-white/60 border-white/60 rounded-xl font-mono"
+              className="h-11 bg-surface border-rule rounded-sm font-mono"
             />
           </div>
         </div>
@@ -262,7 +271,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
           <div className="space-y-1.5">
             <Label
               htmlFor="date"
-              className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
+              className="text-[10px] font-medium uppercase tracking-widest text-muted"
             >
               Date
             </Label>
@@ -271,13 +280,13 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
               name="date"
               type="date"
               defaultValue={defaultDate}
-              className="h-11 bg-white/60 border-white/60 rounded-xl"
+              className="h-11 bg-surface border-rule rounded-sm"
             />
           </div>
           <div className="space-y-1.5">
             <Label
               htmlFor="time"
-              className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
+              className="text-[10px] font-medium uppercase tracking-widest text-muted"
             >
               Time
             </Label>
@@ -286,7 +295,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
               name="time"
               type="time"
               defaultValue={defaultTime}
-              className="h-11 bg-white/60 border-white/60 rounded-xl"
+              className="h-11 bg-surface border-rule rounded-sm"
             />
           </div>
         </div>
@@ -294,7 +303,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
         <div className="space-y-1.5">
           <Label
             htmlFor="text"
-            className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
+            className="text-[10px] font-medium uppercase tracking-widest text-muted"
           >
             Message
           </Label>
@@ -305,20 +314,20 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
               rows={3}
               ref={textareaRef}
               placeholder="Enter your message..."
-              className="flex-1 px-4 py-3 bg-white/60 border border-white/60 rounded-xl text-navy resize-none focus:outline-none focus:ring-2 focus:ring-em-purple-300/20"
+              className="flex-1 px-4 py-3 bg-surface border border-rule rounded-sm text-ink resize-none focus:outline-none focus:ring-2 focus:ring-cobalt"
             />
             <Button
               type="button"
               variant="outline"
               onClick={handleGenerateAI}
               disabled={isGenerating}
-              className="h-auto px-3 bg-white/60 border-white/60 rounded-xl hover:bg-em-purple-100/50 self-start"
+              className="h-auto px-3 bg-surface border-rule rounded-sm hover:bg-cobalt-wash self-start"
               title="Generate AI message"
             >
               {isGenerating ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <Sparkles className="w-4 h-4 text-em-purple-500" />
+                <Sparkles className="w-4 h-4 text-cobalt" />
               )}
             </Button>
           </div>
@@ -330,7 +339,7 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
           <Button
             type="submit"
             disabled={isLoading}
-            className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+            className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -353,8 +362,9 @@ export function ScheduleMessageForm({ onScheduled }: ScheduleMessageFormProps) {
         </div>
       </form>
 
-      <p className="text-xs text-teal-900/40 mt-4">
-        Note: Scheduled messages are sent at 7:40 AM Pacific, followed by AI daily send at 7:45 AM.
+      <p className="text-xs text-muted mt-4">
+        Note: Scheduled messages are sent at 7:40 AM Pacific, followed by AI
+        daily send at 7:45 AM.
       </p>
     </motion.div>
   );

@@ -30,7 +30,7 @@ interface TechniquePlaybookProps {
 const STATUS_BADGE: Record<string, string> = {
   active: "bg-emerald-100 text-emerald-800",
   draft: "bg-amber-100 text-amber-800",
-  retired: "bg-gray-100 text-gray-500",
+  retired: "bg-cobalt-wash text-muted",
 };
 
 const STATUS_ORDER: Record<string, number> = {
@@ -148,7 +148,7 @@ export function TechniquePlaybook({
   return (
     <div className="space-y-3">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
           {error}
         </div>
       )}
@@ -158,7 +158,7 @@ export function TechniquePlaybook({
           type="button"
           variant="outline"
           onClick={() => setCreating((c) => !c)}
-          className="border-em-purple-300/50 text-navy rounded-xl"
+          className="border-rule text-ink rounded-sm"
         >
           <Plus className="w-4 h-4 mr-1" /> New technique
         </Button>
@@ -177,12 +177,12 @@ export function TechniquePlaybook({
       {sorted.map((item) => (
         <div
           key={item.id}
-          className="bg-white/60 border border-em-purple-300/40 rounded-2xl p-5"
+          className="bg-surface border border-rule rounded-sm p-5"
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-navy">
+                <span className="text-sm font-medium text-ink">
                   {item.name}
                 </span>
                 <span
@@ -191,15 +191,15 @@ export function TechniquePlaybook({
                   {item.status}
                 </span>
                 {item.gentle && (
-                  <span className="text-[10px] uppercase tracking-widest text-teal-900/40">
+                  <span className="text-[10px] uppercase tracking-widest text-muted">
                     gentle
                   </span>
                 )}
               </div>
-              <div className="text-sm text-teal-900/60 italic mt-1">
+              <div className="text-sm text-muted italic mt-1">
                 {item.principle}
               </div>
-              <div className="text-[11px] uppercase tracking-widest text-teal-900/40 mt-2">
+              <div className="text-[11px] uppercase tracking-widest text-muted mt-2">
                 {item.sends} sends
                 {item.replyRate !== null
                   ? ` · ${Math.round(item.replyRate * 100)}% reply`
@@ -214,7 +214,7 @@ export function TechniquePlaybook({
               onClick={() =>
                 setExpandedId((id) => (id === item.id ? null : item.id))
               }
-              className="text-teal-900/50 hover:text-navy shrink-0"
+              className="text-muted hover:text-cobalt shrink-0"
               aria-label="Edit technique"
             >
               <ChevronDown
@@ -224,7 +224,7 @@ export function TechniquePlaybook({
           </div>
 
           {expandedId === item.id && (
-            <div className="mt-4 pt-4 border-t border-em-purple-300/30">
+            <div className="mt-4 pt-4 border-t border-rule">
               <TechniqueEditor
                 initial={item}
                 isNew={false}
@@ -239,7 +239,7 @@ export function TechniquePlaybook({
                         variant="outline"
                         onClick={() => handleStatus(item.id, "activate")}
                         disabled={pendingId === item.id}
-                        className="border-emerald-300 text-emerald-700 rounded-xl"
+                        className="border-emerald-300 text-emerald-700 rounded-sm"
                       >
                         Activate
                       </Button>
@@ -250,7 +250,7 @@ export function TechniquePlaybook({
                         variant="outline"
                         onClick={() => handleStatus(item.id, "retire")}
                         disabled={pendingId === item.id}
-                        className="border-teal-900/20 text-teal-900/60 rounded-xl"
+                        className="border-rule text-muted rounded-sm"
                       >
                         Retire
                       </Button>
@@ -291,9 +291,9 @@ function TechniqueEditor({
   }
 
   const inputCls =
-    "w-full text-sm border border-em-purple-300/40 rounded-lg px-3 py-2 bg-white/70";
+    "w-full text-sm border border-rule rounded-sm px-3 py-2 bg-surface";
   const labelCls =
-    "text-[10px] uppercase tracking-widest text-teal-900/40 mb-1 block";
+    "text-[10px] uppercase tracking-widest text-muted mb-1 block";
 
   return (
     <div className="space-y-3">
@@ -382,7 +382,7 @@ function TechniqueEditor({
           />
         </div>
       </div>
-      <label className="flex items-center gap-2 text-sm text-navy">
+      <label className="flex items-center gap-2 text-sm text-ink">
         <input
           type="checkbox"
           checked={draft.gentle}
@@ -396,7 +396,7 @@ function TechniqueEditor({
           type="button"
           onClick={() => onSave(draft)}
           disabled={pending}
-          className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+          className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
         >
           {pending ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -412,7 +412,7 @@ function TechniqueEditor({
           variant="outline"
           onClick={onCancel}
           disabled={pending}
-          className="border-teal-900/20 text-teal-900/60 rounded-xl"
+          className="border-rule text-muted rounded-sm"
         >
           Cancel
         </Button>

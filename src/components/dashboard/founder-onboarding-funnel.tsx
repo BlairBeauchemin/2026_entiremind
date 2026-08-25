@@ -59,19 +59,19 @@ export function FounderOnboardingFunnel({ counts }: Props) {
         return (
           <li
             key={step}
-            className="flex items-center gap-3 bg-white/60 border border-white/60 rounded-xl px-4 py-2.5"
+            className="flex items-center gap-3 bg-surface border border-rule rounded-sm px-4 py-2.5"
           >
-            <div className="w-28 shrink-0 text-sm text-navy">{label}</div>
-            <div className="flex-1 h-3 rounded-full bg-white/70 overflow-hidden">
+            <div className="w-28 shrink-0 text-sm text-ink">{label}</div>
+            <div className="flex-1 h-3 rounded-full bg-surface overflow-hidden">
               <div
-                className="h-full rounded-full bg-em-purple-300/70"
+                className="h-full rounded-full bg-cobalt-wash"
                 style={{ width: `${Math.min(pct, 100)}%` }}
               />
             </div>
-            <div className="w-10 shrink-0 text-right text-sm text-navy tabular-nums">
+            <div className="w-10 shrink-0 text-right text-sm text-ink tabular-nums">
               {count}
             </div>
-            <div className="w-12 shrink-0 text-right text-xs text-teal-900/50 tabular-nums">
+            <div className="w-12 shrink-0 text-right text-xs text-muted tabular-nums">
               {pct}%
             </div>
           </li>

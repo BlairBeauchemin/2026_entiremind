@@ -38,7 +38,7 @@ export function SacredLoop() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="font-serif text-5xl md:text-6xl text-navy font-medium tracking-tight mb-6"
+            className="font-serif text-5xl md:text-6xl text-ink tracking-tight mb-6"
           >
             The Feedback Loop
           </motion.h2>
@@ -47,7 +47,7 @@ export function SacredLoop() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-xl text-teal-900 leading-relaxed font-light font-sans tracking-wide"
+            className="text-xl text-ink leading-relaxed font-light font-sans tracking-wide"
           >
             A continuous cycle of action, signal, and adjustment designed to
             compound your growth.
@@ -72,21 +72,27 @@ export function SacredLoop() {
                 transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
                 className="relative"
               >
-                <div className="relative p-8 rounded-2xl bg-white/40 border border-teal-900/5 backdrop-blur-sm hover:bg-white/60 transition-all duration-500 group">
+                <div className="relative p-8 rounded-sm bg-surface border border-rule hover:border-cobalt transition-all duration-500 group">
                   {/* Geometric accent */}
                   <div className="absolute top-3 right-3 w-6 h-6 opacity-20 group-hover:opacity-40 transition-opacity">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-em-purple-300">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1"
+                      className="text-cobalt"
+                    >
                       <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" />
                     </svg>
                   </div>
 
-                  <div className="text-5xl font-serif text-em-purple-300/40 mb-6 font-light">
+                  <div className="text-5xl font-serif text-muted mb-6">
                     {step.number}
                   </div>
-                  <h3 className="text-2xl font-serif text-navy mb-3 font-medium tracking-tight">
+                  <h3 className="text-2xl font-serif text-ink mb-3 tracking-tight">
                     {step.title}
                   </h3>
-                  <p className="text-sm text-teal-900/70 font-sans font-light leading-relaxed tracking-wide">
+                  <p className="text-sm text-muted font-sans font-light leading-relaxed tracking-wide">
                     {step.description}
                   </p>
                 </div>
@@ -105,7 +111,7 @@ export function SacredLoop() {
         >
           <a
             href="#section-hero"
-            className="inline-flex items-center gap-2 text-teal-900 border border-teal-900/20 px-6 py-2.5 rounded-full hover:bg-teal-900 hover:text-cream font-sans text-sm transition-all duration-300"
+            className="inline-flex items-center gap-2 text-ink border border-rule px-6 py-2.5 rounded-sm hover:bg-cobalt hover:text-linen font-sans text-sm transition-all duration-300"
           >
             Start your loop
             <svg
@@ -158,7 +164,7 @@ function CircularDiagram() {
         cy={center}
         r={radius}
         fill="none"
-        stroke="#cbbbe3"
+        stroke="var(--color-rule)"
         strokeWidth="1"
       />
 
@@ -168,7 +174,7 @@ function CircularDiagram() {
         cy={center}
         r={radius * 0.5}
         fill="none"
-        stroke="#204147"
+        stroke="var(--color-cobalt)"
         strokeWidth="0.5"
         opacity="0.5"
       />
@@ -182,7 +188,7 @@ function CircularDiagram() {
             y1={point.y}
             x2={points[(i + 1) % 4].x}
             y2={points[(i + 1) % 4].y}
-            stroke="#cbbbe3"
+            stroke="var(--color-rule)"
             strokeWidth="0.5"
             opacity="0.5"
           />
@@ -192,17 +198,29 @@ function CircularDiagram() {
             y1={point.y}
             x2={center}
             y2={center}
-            stroke="#204147"
+            stroke="var(--color-cobalt)"
             strokeWidth="0.5"
             opacity="0.3"
           />
           {/* Node */}
-          <circle cx={point.x} cy={point.y} r={4} fill="#cbbbe3" opacity="0.6" />
+          <circle
+            cx={point.x}
+            cy={point.y}
+            r={4}
+            fill="var(--color-rule)"
+            opacity="0.6"
+          />
         </g>
       ))}
 
       {/* Center point */}
-      <circle cx={center} cy={center} r={6} fill="#f9d97a" opacity="0.8" />
+      <circle
+        cx={center}
+        cy={center}
+        r={6}
+        fill="var(--color-cobalt)"
+        opacity="0.8"
+      />
     </motion.svg>
   );
 }
