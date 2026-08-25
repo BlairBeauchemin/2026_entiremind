@@ -26,7 +26,8 @@ Legend: 🍒 = cherry-pick candidate exists · 🆕 = net-new · ⚠️ = has a 
   `src/lib/ai/enrich.ts`).
 
 **Absent or inert (the opportunity):**
-- **Anchoring** — no prices shown anywhere; monthly vs. yearly has no dollar figures
+- **Anchoring** — the landing pricing section now shows $12.99/mo against $99/yr with a
+  "two months free" badge, but the in-dashboard upgrade path still has no dollar figures
   (`src/components/dashboard/settings-subscription.tsx`).
 - **Goal-gradient** — onboarding is a flat 15-dot bar, no head-start, no "almost there"
   (`src/components/onboarding/onboarding-progress.tsx`).

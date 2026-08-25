@@ -1,5 +1,13 @@
 # Waitlist Modal Implementation Plan
 
+> **Historical record — do not copy the code listings.** This plan shipped in
+> February 2026 and its JSX below is written in the retired palette
+> (`bg-cream`, `text-teal-900`, `bg-navy`, `em-purple-*`, `rounded-xl`). Those
+> class names no longer resolve to anything after the August 2026 DESIGN.md
+> migration. The structure, state machine and analytics wiring are still
+> accurate; every colour, radius and font value must come from `DESIGN.md`. Kept
+> unrewritten on purpose — it records what was actually built at the time.
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Replace inline lead capture forms with a two-step modal flow for pre-launch waitlist capture with conversion tracking.

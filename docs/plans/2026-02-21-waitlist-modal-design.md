@@ -1,5 +1,12 @@
 # Waitlist Modal Design
 
+> **Historical record — palette superseded August 2026.** The flow, copy and
+> conversion logic below are still current. The colour names ("primary navy
+> button") are not: navy, cream, teal, purple and yellow were all retired in the
+> DESIGN.md migration. Read this for the *what*, and take every visual value from
+> `DESIGN.md`. This document is deliberately not rewritten — it records what was
+> approved on the date below.
+
 **Date:** 2026-02-21
 **Status:** Approved
 **Purpose:** Convert landing page inline forms to a modal-based waitlist capture flow for pre-launch paid traffic campaigns.

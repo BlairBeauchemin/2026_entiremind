@@ -161,7 +161,7 @@ RLS mirrors `onboarding_responses`: users read/write own `user_profiles` row; ad
 2. Tap steps auto-advance ~250ms after selection (single-select); multi-select and values use an explicit continue button. Framer Motion transitions match existing steps.
 3. Reveal transition is 1.5–2s, skippable by tap. No fake percentage bars.
 4. Profile-save failure path per PRD: onboarding still completes; profile insert retried once, then logged — daily send tolerates a missing profile.
-5. Keep the lightly magical aesthetic: one question per screen, generous whitespace, theme colors (teal/purple/yellow accents on selected states).
+5. Keep the lightly magical aesthetic: one question per screen, generous whitespace, and cobalt for selected states. (This line originally said "teal/purple/yellow accents" — that palette was retired in August 2026. `DESIGN.md` is the only palette authority.)
 
 **Done when:**
 - New signup completes the full 15-screen flow in under 4 minutes

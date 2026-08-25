@@ -208,9 +208,14 @@ the Phase 2 paid-traffic plan).
 
 ### C2. OG images
 - `opengraph-image.tsx` per slug via `next/og` `ImageResponse`: archetype
-  name over the theme palette (dark teal #204147 / soft purple #cbbbe3 /
-  warm yellow #f9d97a). This is what actually gets shared — design effort
-  goes here, not the page.
+  name over the brand palette. This is what actually gets shared — design
+  effort goes here, not the page.
+- **Superseded August 2026.** This originally specified dark teal #204147 /
+  soft purple #cbbbe3 / warm yellow #f9d97a, all retired. As built, the card
+  is a cobalt ground with a Prata wordmark and one gold hairline. It stays
+  cobalt rather than taking an archetype colour: the four archetype accents
+  are still an open decision in `DESIGN.md`, and picking one here would
+  settle the palette by accident. See `DESIGN.md`.
 
 ### C3. Share affordances
 - `reveal-step.tsx`: "Share your archetype" button — native share sheet

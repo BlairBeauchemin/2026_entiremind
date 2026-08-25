@@ -138,9 +138,13 @@ steak so the $40 salmon feels reasonable.*
 **Rule:** Never show a price — or any number — in isolation. Control what the user sees
 first: a per-day breakdown, a savings percentage, or an honest reference point.
 
-- **Where it lives — and the gap:** **no prices appear anywhere in the product today** —
-  monthly vs. yearly is shown with no dollar figures at all. This is the single biggest
-  anchoring miss.
+- **Where it lives:** the landing pricing section (`src/components/landing/pricing.tsx`)
+  shows $12.99/month against $99/year with a "two months free" badge — the yearly number
+  is anchored to the monthly one rather than standing alone.
+- **The remaining gap:** the in-dashboard upgrade path
+  (`src/components/dashboard/settings-subscription.tsx`) still offers monthly vs. yearly
+  with **no dollar figures at all**. A user who upgrades from inside the product never
+  sees the anchor the landing page builds.
 - **Do:** "$X/year — about a coffee a month," yearly shown against monthly with the real
   savings %, value recap before the number.
 - **Don't:** a lone "$50/mo"; a fake crossed-out "original" price we never charged.

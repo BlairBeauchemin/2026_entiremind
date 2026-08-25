@@ -82,8 +82,8 @@ review; an internal technique playbook.
   carries no typography, no color, and no layout — the brand must survive being plain
   text.
 - Pricing is live in the product: **$12.99/month, $99/year**, with a 10-day free
-  trial. (Note: `docs/design-philosophy.md` states no prices appear anywhere in the
-  product; that statement is stale as of the current `pricing.tsx`.)
+  trial. Shown on the landing page; the in-dashboard upgrade path still carries no
+  dollar figures.
 - Phone numbers are unique per account — required for SMS routing.
 - Nothing is auto-sent to users on the marketing side, and paid ads always require
   founder review.
