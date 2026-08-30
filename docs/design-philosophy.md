@@ -11,6 +11,21 @@ This document is required reading before any change to a user-facing surface
 (onboarding, SMS, dashboard, paywall, landing). It codifies six persuasion principles
 drawn from established behavioral science, translated into Entiremind rules.
 
+## How to read this, and which parts can rot
+
+Every principle below mixes two kinds of statement, and they age differently:
+
+- **The psychology, the Entiremind rule, and the do/don't lines are evergreen.** They
+  are decisions and citations, not observations. Treat them as binding.
+- **The "Where it lives" and "the gap" bullets are a snapshot of the code** on the date
+  below. They go stale silently — the code moves, the bullet doesn't — and a stale one
+  is worse than none, because it reads with the same authority as the rule above it.
+
+**Last verified against the codebase: 30 August 2026**, file by file. If you are
+reading this well after that date, re-check any "Where it lives" bullet before acting
+on it, and correct it in place when it has drifted. The visual system is governed
+separately by `DESIGN.md`, which is the only palette and typography authority.
+
 ---
 
 ## The guardrail (read this first)
@@ -67,9 +82,13 @@ framing. You get to choose where the starting line is.*
 **Rule:** Reframe already-done work as step one. Show momentum, and "almost there" near
 the finish. Never render progress as 0% or a flat, uncountable bar.
 
-- **Where it lives — and the gap:** onboarding progress is currently a flat row of 15
-  undifferentiated dots with no head-start and no "almost done" cue. This is the clearest
-  miss in the product.
+- **Where it lives:** `onboarding-progress.tsx` renders one dot per step — 15 for
+  onboarding, 11 for the public quiz — filling completed dots in cobalt and scaling the
+  current one. So position *is* legible.
+- **The remaining gap:** the row still starts empty and ends without a cue. There is no
+  head-start (the user has already given you a name and a phone number before the dots
+  appear, and none of that counts toward the bar) and no "almost done" near the finish.
+  This is the clearest goal-gradient miss in the product.
 - **Do:** "You've already told us who you are — 2 steps left." A gentle "you've reflected
   12 times" on the dashboard (calm, not a streak — see CLAUDE.md).
 - **Don't:** streaks, "don't break your chain," counters that punish a missed day.
@@ -102,9 +121,13 @@ finish a lesson before it ever asks you to sign up.*
 **Rule:** Let users build something and see their own words reflected back *before* we
 ask them to commit. The more they invest, the more leaving feels like a loss.
 
-- **Where it lives:** the 15-step archetype quiz is the flagship — users build their
-  intention, vision, and values and receive a persona they own. CTAs say "Continue,"
-  not "Sign up."
+- **Where it lives:** the archetype flow is the flagship — users build their intention,
+  vision, and values and receive a persona they own. CTAs say "Continue," not "Sign up."
+  Note there are **two** flows, and they differ: authed onboarding
+  (`onboarding-flow.tsx`) runs 15 steps and collects intention, vision and aligned-state
+  as free text; the public quiz (`public-quiz-flow.tsx`) runs 11 and is tap-only, ending
+  partial reveal → gate → full reveal. A change to "the quiz" usually needs to land in
+  both.
 - **The gap:** vision and aligned-state answers are collected but never echoed back until
   the very end. There's a lot of unused endowment mid-flow.
 - **Do:** reflect the user's own phrasing back within the flow; give them a persona/result
@@ -138,9 +161,13 @@ steak so the $40 salmon feels reasonable.*
 **Rule:** Never show a price — or any number — in isolation. Control what the user sees
 first: a per-day breakdown, a savings percentage, or an honest reference point.
 
-- **Where it lives — and the gap:** **no prices appear anywhere in the product today** —
-  monthly vs. yearly is shown with no dollar figures at all. This is the single biggest
-  anchoring miss.
+- **Where it lives:** the landing pricing section (`src/components/landing/pricing.tsx`)
+  shows $12.99/month against $99/year with a "two months free" badge — the yearly number
+  is anchored to the monthly one rather than standing alone.
+- **The remaining gap:** the in-dashboard upgrade path
+  (`src/components/dashboard/settings-subscription.tsx`) still offers monthly vs. yearly
+  with **no dollar figures at all**. A user who upgrades from inside the product never
+  sees the anchor the landing page builds.
 - **Do:** "$X/year — about a coffee a month," yearly shown against monthly with the real
   savings %, value recap before the number.
 - **Don't:** a lone "$50/mo"; a fake crossed-out "original" price we never charged.

@@ -1,7 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader2, Plus, Trash2, Play, FastForward, RotateCcw } from "lucide-react";
+import {
+  Loader2,
+  Plus,
+  Trash2,
+  Play,
+  FastForward,
+  RotateCcw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PersonaForm } from "./persona-form";
 import { PromptManager } from "./prompt-manager";
@@ -24,7 +31,10 @@ async function jsonFetch<T>(
     });
     const body = await res.json().catch(() => ({}));
     if (!res.ok) {
-      return { ok: false, error: body.error || `Request failed (${res.status})` };
+      return {
+        ok: false,
+        error: body.error || `Request failed (${res.status})`,
+      };
     }
     return { ok: true, data: body as T };
   } catch (err) {
@@ -218,9 +228,7 @@ export function SimulatorClient({
 
   async function handleDeletePersona(userId: string) {
     if (
-      !window.confirm(
-        "Delete this test persona and all of its simulated data?",
-      )
+      !window.confirm("Delete this test persona and all of its simulated data?")
     )
       return;
     setBusy("delete");
@@ -254,27 +262,27 @@ export function SimulatorClient({
   return (
     <div className="space-y-8">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-3">
           {error}
         </div>
       )}
 
       {/* Persona rail */}
-      <section className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-3xl p-6 space-y-4">
+      <section className="bg-surface border border-rule rounded-sm p-6 space-y-4">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="font-serif text-xl text-navy">Test personas</h2>
+          <h2 className="font-serif text-xl text-ink">Test personas</h2>
           <Button
             type="button"
             size="sm"
             onClick={() => setFormOpen(true)}
-            className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+            className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
           >
             <Plus className="w-4 h-4 mr-1" /> New persona
           </Button>
         </div>
 
         {personas.length === 0 ? (
-          <p className="text-sm text-teal-900/50 italic">
+          <p className="text-sm text-muted italic">
             No test personas yet. Create one to start simulating.
           </p>
         ) : (
@@ -285,10 +293,10 @@ export function SimulatorClient({
               return (
                 <div
                   key={p.id}
-                  className={`flex items-center justify-between gap-3 rounded-2xl border p-3 cursor-pointer transition-colors ${
+                  className={`flex items-center justify-between gap-3 rounded-sm border p-3 cursor-pointer transition-colors ${
                     isSelected
-                      ? "border-em-purple-300 bg-em-purple-300/10"
-                      : "border-teal-900/10 bg-white/40 hover:border-teal-900/30"
+                      ? "border-rule bg-cobalt-wash"
+                      : "border-rule bg-surface hover:border-rule"
                   }`}
                   onClick={() => {
                     setSelectedPersonaId(p.id);
@@ -296,10 +304,10 @@ export function SimulatorClient({
                   }}
                 >
                   <div className="min-w-0">
-                    <div className="text-sm font-medium text-navy">
+                    <div className="text-sm font-medium text-ink">
                       {p.name ?? "Unnamed"}
                     </div>
-                    <div className="text-[11px] text-teal-900/50">
+                    <div className="text-[11px] text-muted">
                       {r
                         ? `Day ${r.current_day}/${r.total_days} · ${r.status.replace("_", " ")} · ${r.reply_style}`
                         : "no run"}
@@ -315,7 +323,7 @@ export function SimulatorClient({
                       void handleDeletePersona(p.id);
                     }}
                     disabled={busy !== null}
-                    className="p-2 text-teal-900/30 hover:text-red-600 transition-colors"
+                    className="p-2 text-muted hover:text-red-600 transition-colors"
                     title="Delete persona"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -329,14 +337,14 @@ export function SimulatorClient({
 
       {/* Selected run */}
       {run && (
-        <section className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-3xl p-6 space-y-5">
+        <section className="bg-surface border border-rule rounded-sm p-6 space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-serif text-xl text-navy">
+              <h2 className="font-serif text-xl text-ink">
                 {selectedPersona?.name ?? "Persona"} — week{" "}
                 {run.status === "archived" ? "(archived)" : ""}
               </h2>
-              <div className="text-[11px] text-teal-900/50 mt-1">
+              <div className="text-[11px] text-muted mt-1">
                 Day {run.current_day} of {run.total_days} ·{" "}
                 {run.status.replace("_", " ")} · prompt:{" "}
                 {promptNameById(run.pinned_prompt_id)}
@@ -364,7 +372,7 @@ export function SimulatorClient({
                   run.status === "awaiting_review" ||
                   run.status === "archived"
                 }
-                className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+                className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
               >
                 {busy === "step" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -384,7 +392,7 @@ export function SimulatorClient({
                   run.status === "archived"
                 }
                 variant="outline"
-                className="border-teal-900/20 text-teal-900/70 rounded-xl"
+                className="border-rule text-muted rounded-sm"
               >
                 {busy === "week" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -400,7 +408,7 @@ export function SimulatorClient({
                 onClick={handleReset}
                 disabled={busy !== null || run.status === "archived"}
                 variant="outline"
-                className="border-teal-900/20 text-teal-900/70 rounded-xl"
+                className="border-rule text-muted rounded-sm"
               >
                 {busy === "reset" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -414,7 +422,7 @@ export function SimulatorClient({
           </div>
 
           {busy === "week" && (
-            <div className="text-sm text-teal-900/60 bg-white/50 rounded-xl p-3">
+            <div className="text-sm text-muted bg-surface rounded-sm p-3">
               Simulating the remaining days — each day is one generation, one
               persona reaction, and enrichment. This takes ~30 seconds.
             </div>
@@ -422,17 +430,16 @@ export function SimulatorClient({
 
           {/* Pending day review */}
           {pendingDay && run.status === "awaiting_review" && (
-            <div className="rounded-2xl border border-em-purple-300 bg-em-purple-300/10 p-5 space-y-3">
-              <div className="text-[11px] uppercase tracking-widest text-em-purple-400">
-                Day {pendingDay.day_number} — review the persona&apos;s
-                reaction
+            <div className="rounded-sm border border-rule bg-cobalt-wash p-5 space-y-3">
+              <div className="text-[11px] uppercase tracking-widest text-cobalt">
+                Day {pendingDay.day_number} — review the persona&apos;s reaction
               </div>
-              <div className="text-sm text-navy">
+              <div className="text-sm text-ink">
                 <span className="font-medium">Message sent:</span>{" "}
                 {pendingDay.outbound_text}
               </div>
               {pendingDay.debug.proposal?.reasoning && (
-                <div className="text-[12px] text-teal-900/60 italic">
+                <div className="text-xs text-muted italic">
                   Persona model: {pendingDay.debug.proposal.reasoning}
                 </div>
               )}
@@ -440,10 +447,10 @@ export function SimulatorClient({
                 <button
                   type="button"
                   onClick={() => setReviewAction("reply")}
-                  className={`text-[13px] px-3 py-1.5 rounded-full border transition-colors ${
+                  className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${
                     reviewAction === "reply"
-                      ? "bg-navy text-white border-navy"
-                      : "bg-white/50 text-teal-900/70 border-teal-900/15"
+                      ? "bg-cobalt text-linen border-cobalt"
+                      : "bg-surface text-muted border-rule"
                   }`}
                 >
                   They reply
@@ -451,10 +458,10 @@ export function SimulatorClient({
                 <button
                   type="button"
                   onClick={() => setReviewAction("silence")}
-                  className={`text-[13px] px-3 py-1.5 rounded-full border transition-colors ${
+                  className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${
                     reviewAction === "silence"
-                      ? "bg-navy text-white border-navy"
-                      : "bg-white/50 text-teal-900/70 border-teal-900/15"
+                      ? "bg-cobalt text-linen border-cobalt"
+                      : "bg-surface text-muted border-rule"
                   }`}
                 >
                   They stay silent
@@ -462,7 +469,7 @@ export function SimulatorClient({
               </div>
               {reviewAction === "reply" && (
                 <textarea
-                  className="w-full rounded-xl border border-teal-900/15 bg-white/60 px-3 py-2 text-sm text-navy min-h-[80px] focus:outline-none focus:ring-2 focus:ring-em-purple-300"
+                  className="w-full rounded-sm border border-rule bg-surface px-3 py-2 text-sm text-ink min-h-[80px] focus:outline-none focus:ring-2 focus:ring-cobalt"
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
                   placeholder="What they text back — edit freely"
@@ -475,7 +482,7 @@ export function SimulatorClient({
                   busy !== null ||
                   (reviewAction === "reply" && !reviewText.trim())
                 }
-                className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+                className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
               >
                 {busy === "commit" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -490,25 +497,25 @@ export function SimulatorClient({
 
           {/* End-of-week memory */}
           {run.status === "completed" && detail?.memory && (
-            <div className="rounded-2xl border border-teal-900/10 bg-white/40 p-5">
-              <div className="text-[11px] uppercase tracking-widest text-teal-900/40 mb-2">
+            <div className="rounded-sm border border-rule bg-surface p-5">
+              <div className="text-[11px] uppercase tracking-widest text-muted mb-2">
                 What the system remembers after this week
               </div>
-              <pre className="whitespace-pre-wrap font-mono text-[11px] text-teal-900/80 bg-white/50 rounded-lg p-3 max-h-64 overflow-y-auto">
+              <pre className="whitespace-pre-wrap font-mono text-[11px] text-ink bg-surface rounded-sm p-3 max-h-64 overflow-y-auto">
                 {JSON.stringify(detail.memory.summary, null, 2)}
               </pre>
             </div>
           )}
 
           {/* New run for A/B */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-teal-900/10">
-            <span className="text-[11px] uppercase tracking-widest text-teal-900/50">
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-rule">
+            <span className="text-[11px] uppercase tracking-widest text-muted">
               New run (A/B):
             </span>
             <select
               value={newRunPromptId}
               onChange={(e) => setNewRunPromptId(e.target.value)}
-              className="rounded-xl border border-teal-900/15 bg-white/60 px-3 py-1.5 text-sm text-navy focus:outline-none"
+              className="rounded-sm border border-rule bg-surface px-3 py-1.5 text-sm text-ink focus:outline-none"
             >
               <option value="">Active / built-in prompt</option>
               {prompts.map((p) => (
@@ -523,7 +530,7 @@ export function SimulatorClient({
               variant="outline"
               onClick={handleNewRun}
               disabled={busy !== null}
-              className="border-teal-900/20 text-teal-900/70 rounded-xl"
+              className="border-rule text-muted rounded-sm"
             >
               {busy === "new-run" ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -531,7 +538,7 @@ export function SimulatorClient({
                 "Archive week & start fresh"
               )}
             </Button>
-            <span className="text-[11px] text-teal-900/40">
+            <span className="text-[11px] text-muted">
               Same persona, clean slate — compare how a different prompt lands.
             </span>
           </div>
@@ -543,7 +550,7 @@ export function SimulatorClient({
         selectedPersona.runs.filter((r) => r.status === "archived").length >
           0 && (
           <section className="space-y-2">
-            <div className="text-[11px] uppercase tracking-widest text-teal-900/50 px-1">
+            <div className="text-[11px] uppercase tracking-widest text-muted px-1">
               Past weeks for {selectedPersona.name ?? "this persona"}
             </div>
             <div className="flex flex-wrap gap-2">
@@ -554,10 +561,10 @@ export function SimulatorClient({
                     key={r.id}
                     type="button"
                     onClick={() => setRunIdOverride(r.id)}
-                    className={`text-[13px] px-3 py-1.5 rounded-full border transition-colors ${
+                    className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${
                       selectedRunId === r.id
-                        ? "bg-navy text-white border-navy"
-                        : "bg-white/50 text-teal-900/70 border-teal-900/15 hover:border-teal-900/40"
+                        ? "bg-cobalt text-linen border-cobalt"
+                        : "bg-surface text-muted border-rule hover:border-rule"
                     }`}
                   >
                     {new Date(r.created_at).toLocaleDateString("en-US", {
@@ -571,7 +578,7 @@ export function SimulatorClient({
                 <button
                   type="button"
                   onClick={() => setRunIdOverride(null)}
-                  className="text-[13px] px-3 py-1.5 rounded-full border bg-white/50 text-teal-900/70 border-teal-900/15 hover:border-teal-900/40"
+                  className="text-sm px-3 py-1.5 rounded-full border bg-surface text-muted border-rule hover:border-rule"
                 >
                   ← Back to current week
                 </button>

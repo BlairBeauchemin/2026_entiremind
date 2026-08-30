@@ -1,154 +1,177 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * Entiremind design tokens.
+ *
+ * DESIGN.md is the only palette authority. The world is "daylight": warm linen
+ * paper, near-black ink, one saturated cobalt, and gold used the way a printer
+ * uses foil. It has to survive being printed, so there are no gradients, no
+ * glow, and no drop shadows anywhere in this file.
+ *
+ * There is deliberately no dark mode.
+ */
 
 @theme inline {
+  /* ---- Brand palette -------------------------------------------------- */
+
+  /* Cobalt is the company. Every structural surface. */
+  --color-cobalt: #2a3a9c;
+  --color-cobalt-deep: #233285; /* hover / pressed only */
+  --color-cobalt-wash: #e7e9f4; /* tint backgrounds and badges, never text */
+
+  /* Paper. Depth is a change of ground, not a shadow. */
+  --color-linen: #f2efe9; /* default ground */
+  --color-surface: #f8f5ee; /* the raised card sitting on it */
+
+  /* Ink. */
+  --color-ink: #14120f; /* body and headings — 16.29:1 on linen */
+  --color-muted: #5b5346; /* secondary text and captions — 6.60:1 on linen */
+  --color-rule: #d8cfbe; /* borders and hairlines only */
+
+  /* Gold is ORNAMENT ONLY — never text, never a button, never a fill behind
+   * text. It measures 2.09:1 on linen, which fails even the 3.0:1 floor for
+   * non-text graphics, so it lives on cobalt (4.01:1) and on night, and
+   * nowhere else. */
+  --color-leaf: #c9a24b;
+
+  /* ---- Night --------------------------------------------------------------
+   * The Space (/space) ONLY. This is not a dark mode and there is no theme
+   * switch: it is one immersive surface, the way a full-bleed cobalt band is
+   * one surface. Nothing outside /space may use these.
+   *
+   * Note what is NOT available here: cobalt measures 2.05:1 on night and
+   * disappears. On this ground the company is carried by linen and gold
+   * instead — a paper button on a night sky, and gold for the stars. */
+  --color-night: #070a16; /* the sky at its darkest */
+  --color-night-mid: #0a1428; /* the sky mid-way up */
+  --color-night-horizon: #14243f; /* the glow just above the horizon */
+  --color-night-raised: #101728; /* the drawer sitting on the sky */
+
+  /* ---- Semantic layer (shadcn primitives in src/components/ui) --------- */
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-serif: "Cormorant Garamond", serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Custom colors for the landing page */
-  --color-navy: #2E2A58;
-  --color-cream: #fdfbf7;
-  --color-teal-900: #204147;
-  --color-teal-800: #2a525a;
-  --color-teal-700: #3b6b75;
-  --color-teal-100: #eef4f5;
-  --color-em-purple-300: #cbbbe3;
-  --color-em-purple-100: #f3effa;
-  --color-em-yellow-400: #f9d97a;
-  --color-em-yellow-100: #fef9e6;
+  /* ---- Typography ------------------------------------------------------
+   * Serif carries meaning, sans carries mechanics. The two never blur:
+   * a button never uses the serif, a headline never uses the sans. */
+
+  --font-sans: var(--font-karla), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-prata), Georgia, "Times New Roman", serif;
+
+  /* Display and heading are Prata. The display face never sets a paragraph. */
+  --text-display: clamp(2.25rem, 1.4rem + 4vw, 4rem);
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.01em;
+
+  --text-heading: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  --text-heading--line-height: 1.18;
+
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.6;
+
+  /* Uppercase always gets tracking — untracked caps read as shouting,
+   * tracked caps read as engraved. Both steps below carry their own. */
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0.2em;
+
+  --text-attribution: 0.625rem;
+  --text-attribution--line-height: 1.3;
+  --text-attribution--letter-spacing: 0.18em;
+
+  /* Exists only to render the iOS message facsimile in phone-mockup at its
+   * true size. It is device chrome, not Entiremind type — do not use it for
+   * product UI. */
+  --text-device: 0.9375rem;
+  --text-device--line-height: 1.45;
+  --text-device--letter-spacing: normal;
+
+  /* ---- Shape -----------------------------------------------------------
+   * Near-square. 2px is enough to avoid looking accidental, not enough to
+   * read as a web app. The larger steps are clamped to 4px on purpose: the
+   * system should not be able to produce a bubbly corner. `rounded-full`
+   * stays true round for dots, avatars and badges. */
+  --radius-xs: 2px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 4px;
+  --radius-4xl: 4px;
+
+  /* ---- Rhythm ---------------------------------------------------------- */
+  --spacing-section: clamp(56px, 9vw, 112px);
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 2px;
 
-  --background: #fdfbf7;
-  --foreground: #204147;
+  --background: var(--color-linen);
+  --foreground: var(--color-ink);
 
-  --card: #ffffff;
-  --card-foreground: #204147;
+  --card: var(--color-surface);
+  --card-foreground: var(--color-ink);
 
-  --popover: #ffffff;
-  --popover-foreground: #204147;
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-ink);
 
-  /* Primary: Navy */
-  --primary: #2E2A58;
-  --primary-foreground: #fdfbf7;
+  --primary: var(--color-cobalt);
+  --primary-foreground: var(--color-linen);
 
-  /* Secondary: Soft purple */
-  --secondary: #cbbbe3;
-  --secondary-foreground: #2E2A58;
+  --secondary: var(--color-cobalt-wash);
+  --secondary-foreground: var(--color-cobalt-deep);
 
-  /* Muted */
-  --muted: #f3f4f6;
-  --muted-foreground: #4b5563;
+  --muted-foreground: var(--color-muted);
 
-  /* Accent: Warm yellow */
-  --accent: #f9d97a;
-  --accent-foreground: #2E2A58;
+  --accent: var(--color-cobalt-wash);
+  --accent-foreground: var(--color-cobalt-deep);
 
-  --destructive: #ef4444;
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --ring: #2E2A58;
+  /* Deep enough to clear 4.5:1 on linen — error text has to be readable,
+   * and it is never the only signal. */
+  --destructive: #9a2b25;
 
-  /* Chart colors */
-  --chart-1: #2E2A58;
-  --chart-2: #cbbbe3;
-  --chart-3: #f9d97a;
-  --chart-4: #6b7280;
-  --chart-5: #a78bfa;
+  --border: var(--color-rule);
+  --input: var(--color-rule);
+  --ring: var(--color-cobalt);
 
-  --sidebar: #fdfbf7;
-  --sidebar-foreground: #204147;
-  --sidebar-primary: #2E2A58;
-  --sidebar-primary-foreground: #fdfbf7;
-  --sidebar-accent: #f3f4f6;
-  --sidebar-accent-foreground: #204147;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #2E2A58;
-}
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-ink);
+  --sidebar-primary: var(--color-cobalt);
+  --sidebar-primary-foreground: var(--color-linen);
+  --sidebar-accent: var(--color-cobalt-wash);
+  --sidebar-accent-foreground: var(--color-cobalt-deep);
+  --sidebar-border: var(--color-rule);
+  --sidebar-ring: var(--color-cobalt);
 
-.dark {
-  --background: #1f2937;
-  --foreground: #f3f4f6;
-
-  --card: #374151;
-  --card-foreground: #f3f4f6;
-
-  --popover: #374151;
-  --popover-foreground: #f3f4f6;
-
-  --primary: #a78bfa;
-  --primary-foreground: #1f2937;
-
-  --secondary: #6b7280;
-  --secondary-foreground: #f3f4f6;
-
-  --muted: #374151;
-  --muted-foreground: #9ca3af;
-
-  --accent: #fde047;
-  --accent-foreground: #1f2937;
-
-  --destructive: #ef4444;
-  --border: #4b5563;
-  --input: #4b5563;
-  --ring: #a78bfa;
-
-  --chart-1: #a78bfa;
-  --chart-2: #bca3e5;
-  --chart-3: #fde047;
-  --chart-4: #9ca3af;
-  --chart-5: #c4b5fd;
-
-  --sidebar: #1f2937;
-  --sidebar-foreground: #f3f4f6;
-  --sidebar-primary: #a78bfa;
-  --sidebar-primary-foreground: #1f2937;
-  --sidebar-accent: #374151;
-  --sidebar-accent-foreground: #f3f4f6;
-  --sidebar-border: #4b5563;
-  --sidebar-ring: #a78bfa;
+  /* A legibility scrim, not a drop shadow: the affirmation at /space sits over
+   * moving stars and needs the sky darkened directly behind the letterforms. */
+  --night-scrim: rgba(7, 10, 22, 0.85);
 }
 
 @layer base {
@@ -157,121 +180,182 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-size: var(--text-body);
+    line-height: 1.6;
+  }
+  /* Prata has a single weight. Asking the browser for bold produces a
+   * synthesised smear, so headings stay at 400 and earn hierarchy by size. */
+  :is(h1, h2, h3, h4, h5, h6) {
+    font-weight: 400;
   }
 }
 
-/* Custom scrollbar */
+/* ---- Browser surfaces --------------------------------------------------
+ * The parts we did not draw still carry the design. */
+
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #fdfbf7;
+  background: var(--color-linen);
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbbbe3;
-  border-radius: 4px;
+  background: var(--color-rule);
+  border: 3px solid var(--color-linen);
+  border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #204147;
+  background: var(--color-muted);
 }
 
-/* Smooth scrolling */
+::selection {
+  background-color: var(--color-cobalt-wash);
+  color: var(--color-cobalt-deep);
+}
+
 html {
   scroll-behavior: smooth;
+  -webkit-tap-highlight-color: color-mix(
+    in srgb,
+    var(--color-cobalt) 12%,
+    transparent
+  );
 }
 
-/* Glass panel effect */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+/* Cobalt caret, cobalt underlines, and figures that line up in a column. */
+body {
+  caret-color: var(--color-cobalt);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: from-font;
 }
 
-/* Autofill styling */
+table,
+[data-tabular] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Autofill keeps the surface fill instead of the browser's pale blue. */
 .input-autofill-fix:-webkit-autofill,
 .input-autofill-fix:-webkit-autofill:hover,
 .input-autofill-fix:-webkit-autofill:focus,
 .input-autofill-fix:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+  -webkit-box-shadow: 0 0 0 30px var(--color-surface) inset !important;
+  -webkit-text-fill-color: var(--color-ink) !important;
+  caret-color: var(--color-cobalt);
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Custom animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+/* ---- Paper -------------------------------------------------------------
+ * A faint tooth over the linen. This is the one texture in the system and it
+ * is what keeps a flat, shadowless page from reading as a blank div. */
+.bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
-@keyframes float-delayed {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+/* A hairline that fades out at both ends — used to separate sections without
+ * drawing a full box around them. */
+.rule-fade {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-rule) 15%,
+    var(--color-rule) 85%,
+    transparent
+  );
+}
+
+/* ---- Motion ------------------------------------------------------------
+ * Exponential ease-out from an already-visible default. Nothing bounces. */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
 }
 
 @keyframes fade-in {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fade-in-up {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse-slow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 9s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
 .animate-float-delayed {
-  animation: float-delayed 6s ease-in-out 3s infinite;
+  animation: float 9s cubic-bezier(0.22, 1, 0.36, 1) 3s infinite;
 }
 
 .animate-fade-in {
-  animation: fade-in 0.8s ease-out forwards;
+  animation: fade-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-fade-in-up {
-  animation: fade-in-up 1s ease-out forwards;
+  animation: fade-in-up 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-pulse-slow {
   animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Font utilities */
-.font-serif {
-  font-family: "Cormorant Garamond", serif;
-}
+/* ---- Line art ----------------------------------------------------------
+ * Even-weight strokes, no fills, no shading. Ink on linen, gold on cobalt —
+ * a gold stroke on paper measures 2.09:1 and simply disappears. */
 
-/* Background grain texture */
-.bg-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-}
-
-/* Selection styling */
-::selection {
-  background-color: rgba(203, 187, 227, 0.3);
-  color: #204147;
-}
-
-/* Sacred geometry utilities (V2 landing page) */
 .geometry-line {
-  stroke: var(--color-em-purple-300);
+  stroke: var(--color-rule);
   stroke-width: 0.5;
   fill: none;
-  opacity: 0.6;
+  opacity: 0.9;
 }
 
-.geometry-line-teal {
-  stroke: var(--color-teal-900);
+.geometry-line-ink {
+  stroke: var(--color-ink);
   stroke-width: 0.5;
   fill: none;
-  opacity: 0.3;
+  opacity: 0.28;
+}
+
+/* Only valid inside a cobalt ground. */
+.geometry-line-leaf {
+  stroke: var(--color-leaf);
+  stroke-width: 0.5;
+  fill: none;
+  opacity: 0.85;
 }
 
 .geometry-rotate {
@@ -283,23 +367,35 @@ html {
 }
 
 @keyframes slow-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes slow-rotate-reverse {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
 @keyframes draw-line {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .geometry-draw {
   stroke-dasharray: 1000;
-  animation: draw-line 3s ease-out forwards;
+  animation: draw-line 3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .geometry-pulse {
@@ -307,12 +403,13 @@ html {
 }
 
 @keyframes geometry-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
-
-.geometry-glow {
-  filter: drop-shadow(0 0 8px rgba(249, 217, 122, 0.4));
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 /* Star twinkle (The Space entry card preview). The live sky at /space draws its
@@ -332,13 +429,22 @@ html {
   animation: star-twinkle 4s ease-in-out infinite;
 }
 
-/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .geometry-rotate,
   .geometry-rotate-reverse,
   .geometry-draw,
   .geometry-pulse,
+  .animate-float,
+  .animate-float-delayed,
+  .animate-pulse-slow,
   .star-twinkle {
     animation: none;
+  }
+  .animate-fade-in,
+  .animate-fade-in-up {
+    animation-duration: 0.01ms;
   }
 }

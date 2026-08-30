@@ -172,27 +172,27 @@ export function AffirmationDrawer({
                   animate={{ y: 0 }}
                   exit={{ y: "100%" }}
                   transition={{ type: "spring", damping: 32, stiffness: 320 }}
-                  className="fixed inset-x-0 bottom-0 z-50 max-h-[88dvh] overflow-y-auto rounded-t-3xl border-t border-white/15 bg-[#14313a] text-cream shadow-[0_-20px_60px_rgba(0,0,0,0.45)]"
+                  className="fixed inset-x-0 bottom-0 z-50 max-h-[88dvh] overflow-y-auto rounded-t-sm border-t border-linen/20 bg-night-raised text-linen"
                   style={{
                     paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))",
                   }}
                 >
                   <div className="mx-auto w-full max-w-lg px-6 pt-4">
                     {/* Grab handle — reads as "this is a sheet" before any copy does. */}
-                    <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-white/25" />
+                    <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-linen/30" />
 
                     <div className="mb-1 flex items-start justify-between gap-4">
                       <div>
-                        <DialogPrimitive.Title className="font-serif text-2xl text-cream">
+                        <DialogPrimitive.Title className="font-serif text-2xl text-linen">
                           Your affirmations
                         </DialogPrimitive.Title>
-                        <DialogPrimitive.Description className="mt-1 text-sm text-cream/60">
+                        <DialogPrimitive.Description className="mt-1 text-sm text-linen/60">
                           Present tense, in your own words. These are what
                           you&apos;ll sit with.
                         </DialogPrimitive.Description>
                       </div>
                       <DialogPrimitive.Close
-                        className="-mr-2 -mt-1 rounded-full p-2 text-cream/60 transition hover:bg-white/10 hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400"
+                        className="-mr-2 -mt-1 rounded-full p-2 text-linen/60 transition hover:bg-linen/10 hover:text-linen focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf"
                         aria-label="Close"
                       >
                         <X className="h-5 w-5" />
@@ -220,7 +220,7 @@ export function AffirmationDrawer({
                     </ul>
 
                     {affirmations.length === 0 && (
-                      <p className="mt-6 rounded-2xl border border-dashed border-white/20 px-4 py-6 text-center text-sm text-cream/60">
+                      <p className="mt-6 rounded-sm border border-dashed border-linen/25 px-4 py-6 text-center text-sm text-linen/60">
                         Nothing here yet. Write one below, or let us draft a few
                         from what you&apos;re working toward.
                       </p>
@@ -243,12 +243,12 @@ export function AffirmationDrawer({
                           atCapacity ? "Archive one to make room" : "I am…"
                         }
                         aria-label="New affirmation"
-                        className="min-w-0 flex-1 rounded-full border border-white/20 bg-white/5 px-4 py-3 text-base text-cream placeholder:text-cream/40 focus-visible:border-em-yellow-400/60 focus-visible:outline-none disabled:opacity-50"
+                        className="min-w-0 flex-1 rounded-full border border-linen/25 bg-linen/5 px-4 py-3 text-base text-linen placeholder:text-linen/40 focus-visible:border-leaf/60 focus-visible:outline-none disabled:opacity-50"
                       />
                       <button
                         type="submit"
                         disabled={busy || atCapacity || draftText.trim() === ""}
-                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-em-yellow-400 text-teal-900 transition hover:bg-em-yellow-400/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400 disabled:opacity-40"
+                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linen text-ink transition hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf disabled:opacity-40"
                         aria-label="Add affirmation"
                       >
                         <Plus className="h-5 w-5" />
@@ -260,7 +260,7 @@ export function AffirmationDrawer({
                       type="button"
                       onClick={handleDraft}
                       disabled={busy || atCapacity}
-                      className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-3 text-sm text-cream/80 transition hover:border-white/40 hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400 disabled:opacity-40"
+                      className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-linen/25 px-4 py-3 text-sm text-linen/80 transition hover:border-linen/50 hover:text-linen focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf disabled:opacity-40"
                     >
                       {drafting ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -271,8 +271,8 @@ export function AffirmationDrawer({
                     </button>
 
                     {suggestions.length > 0 && (
-                      <div className="mt-5 rounded-2xl border border-white/15 bg-white/5 p-4">
-                        <p className="mb-3 text-xs uppercase tracking-widest text-cream/50">
+                      <div className="mt-5 rounded-sm border border-linen/15 bg-linen/5 p-4">
+                        <p className="mb-3 text-xs uppercase tracking-widest text-linen/50">
                           Keep the ones that land
                         </p>
                         <ul className="space-y-2">
@@ -281,7 +281,7 @@ export function AffirmationDrawer({
                               key={suggestion}
                               className="flex items-start gap-3"
                             >
-                              <p className="flex-1 text-[0.95rem] leading-relaxed text-cream/90">
+                              <p className="flex-1 text-[0.95rem] leading-relaxed text-linen/90">
                                 {suggestion}
                               </p>
                               <button
@@ -290,7 +290,7 @@ export function AffirmationDrawer({
                                   handleAdd(suggestion, "ai_draft")
                                 }
                                 disabled={busy || atCapacity}
-                                className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-em-yellow-400/90 text-teal-900 transition hover:bg-em-yellow-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400 disabled:opacity-40"
+                                className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface text-ink transition hover:bg-linen focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf disabled:opacity-40"
                                 aria-label={`Keep: ${suggestion}`}
                               >
                                 <Check className="h-4 w-4" />
@@ -302,7 +302,7 @@ export function AffirmationDrawer({
                                     prev.filter((s) => s !== suggestion),
                                   )
                                 }
-                                className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-cream/40 transition hover:bg-white/10 hover:text-cream/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400"
+                                className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-linen/40 transition hover:bg-linen/10 hover:text-linen/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf"
                                 aria-label={`Discard: ${suggestion}`}
                               >
                                 <X className="h-4 w-4" />
@@ -316,7 +316,7 @@ export function AffirmationDrawer({
                     {error && (
                       <p
                         role="alert"
-                        className="mt-4 text-sm text-em-yellow-400"
+                        className="mt-4 text-sm text-leaf"
                       >
                         {error}
                       </p>
@@ -384,7 +384,7 @@ function AffirmationRow({
   };
 
   return (
-    <li className="flex items-start gap-1 rounded-2xl border border-white/10 bg-white/5 py-1 pl-3 pr-1 focus-within:border-white/25">
+    <li className="flex items-start gap-1 rounded-sm border border-linen/15 bg-linen/5 py-1 pl-3 pr-1 focus-within:border-linen/25">
       {/*
         A textarea, not an input: a single-line input silently clips the tail of
         a longer affirmation, and a list of your own words that you cannot read
@@ -411,7 +411,7 @@ function AffirmationRow({
         maxLength={MAX_AFFIRMATION_LENGTH}
         disabled={disabled || saving}
         aria-label={`Edit affirmation: ${affirmation.text}`}
-        className="min-w-0 flex-1 resize-none bg-transparent py-2 text-[0.95rem] leading-relaxed text-cream outline-none [field-sizing:content] disabled:opacity-60"
+        className="min-w-0 flex-1 resize-none bg-transparent py-2 text-[0.95rem] leading-relaxed text-linen outline-none [field-sizing:content] disabled:opacity-60"
       />
 
       <div className="flex shrink-0 items-center pt-0.5">
@@ -459,7 +459,7 @@ function IconButton({
       disabled={disabled}
       aria-label={label}
       // 40px hit target: these sit three-in-a-row under a thumb.
-      className="flex h-10 w-10 items-center justify-center rounded-full text-cream/50 transition hover:bg-white/10 hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400 disabled:pointer-events-none disabled:opacity-25"
+      className="flex h-10 w-10 items-center justify-center rounded-full text-linen/50 transition hover:bg-linen/10 hover:text-linen focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf disabled:pointer-events-none disabled:opacity-25"
     >
       {children}
     </button>

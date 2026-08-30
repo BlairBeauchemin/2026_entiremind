@@ -38,9 +38,9 @@ function truncatePhone(phone: string): string {
 export function FounderMessageTable({ messages }: FounderMessageTableProps) {
   if (messages.length === 0) {
     return (
-      <div className="rounded-2xl border border-teal-900/10 bg-white/60 p-8 text-center">
-        <p className="text-teal-900/50">No messages yet.</p>
-        <p className="text-sm text-teal-900/40 mt-2">
+      <div className="rounded-sm border border-rule bg-surface p-8 text-center">
+        <p className="text-muted">No messages yet.</p>
+        <p className="text-sm text-muted mt-2">
           Messages will appear here once users start interacting via SMS.
         </p>
       </div>
@@ -48,27 +48,27 @@ export function FounderMessageTable({ messages }: FounderMessageTableProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-teal-900/10 bg-white/60 overflow-hidden">
+    <div className="rounded-sm border border-rule bg-surface overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-teal-900/10 bg-teal-900/5">
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+            <tr className="border-b border-rule bg-surface">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Direction
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 User
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Phone
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3 min-w-[300px]">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3 min-w-[300px]">
                 Message
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Status
               </th>
-              <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                 Time
               </th>
             </tr>
@@ -80,7 +80,7 @@ export function FounderMessageTable({ messages }: FounderMessageTableProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.02, duration: 0.2 }}
-                className="border-b border-teal-900/5 hover:bg-teal-900/5 transition-colors"
+                className="border-b border-rule hover:bg-cobalt-wash transition-colors"
               >
                 <td className="px-4 py-3">
                   <span
@@ -99,17 +99,17 @@ export function FounderMessageTable({ messages }: FounderMessageTableProps) {
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-sm font-medium text-navy">
+                  <span className="text-sm font-medium text-ink">
                     {msg.userName}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-sm text-teal-900/60 font-mono">
+                  <span className="text-sm text-muted font-mono">
                     {truncatePhone(msg.userPhone)}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <p className="text-sm text-navy line-clamp-2">{msg.text}</p>
+                  <p className="text-sm text-ink line-clamp-2">{msg.text}</p>
                 </td>
                 <td className="px-4 py-3">
                   <span
@@ -120,14 +120,14 @@ export function FounderMessageTable({ messages }: FounderMessageTableProps) {
                           ? "bg-red-100 text-red-700"
                           : msg.status === "sent"
                             ? "bg-blue-100 text-blue-700"
-                            : "bg-gray-100 text-gray-600"
+                            : "bg-cobalt-wash text-muted"
                     }`}
                   >
                     {msg.status}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-sm text-teal-900/60 whitespace-nowrap">
+                  <span className="text-sm text-muted whitespace-nowrap">
                     {formatTime(msg.createdAt)}
                   </span>
                 </td>
@@ -138,10 +138,8 @@ export function FounderMessageTable({ messages }: FounderMessageTableProps) {
       </div>
 
       {messages.length >= 100 && (
-        <div className="px-4 py-3 border-t border-teal-900/10 bg-teal-900/5 text-center">
-          <p className="text-xs text-teal-900/50">
-            Showing latest 100 messages
-          </p>
+        <div className="px-4 py-3 border-t border-rule bg-surface text-center">
+          <p className="text-xs text-muted">Showing latest 100 messages</p>
         </div>
       )}
     </div>

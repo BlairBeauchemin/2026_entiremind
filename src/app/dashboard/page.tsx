@@ -154,7 +154,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-10">
       {/* Greeting */}
-      <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
+      <h1 className="font-serif text-3xl md:text-4xl text-ink">
         {getGreeting()}, {firstName}
       </h1>
 

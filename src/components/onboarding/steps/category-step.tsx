@@ -46,12 +46,10 @@ export function CategoryStep({
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
+        <h1 className="font-serif text-2xl md:text-3xl text-ink">
           What part of life is calling you right now?
         </h1>
-        <p className="text-teal-900/60 text-sm">
-          Tap the one that pulls hardest.
-        </p>
+        <p className="text-muted text-sm">Tap the one that pulls hardest.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -63,10 +61,10 @@ export function CategoryStep({
               type="button"
               aria-pressed={isSelected}
               onClick={() => handleSelect(option.id)}
-              className={`text-center px-3 py-4 rounded-xl border text-sm font-medium transition-colors ${
+              className={`text-center px-3 py-4 rounded-sm border text-sm font-medium transition-colors ${
                 isSelected
-                  ? "bg-em-purple-300/30 border-em-purple-400 text-navy"
-                  : "bg-white/60 border-white/60 text-teal-900/80 hover:bg-white/80"
+                  ? "bg-cobalt-wash border-cobalt text-ink"
+                  : "bg-surface border-rule text-ink hover:border-cobalt"
               }`}
             >
               {option.label}
@@ -81,7 +79,7 @@ export function CategoryStep({
           variant="outline"
           aria-label="Go back"
           onClick={onBack}
-          className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+          className="h-12 px-4 border-rule text-muted hover:bg-surface rounded-sm"
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>

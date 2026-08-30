@@ -24,12 +24,12 @@ export function BrandSelector({ brands, selectedId }: BrandSelectorProps) {
   }
 
   return (
-    <label className="flex items-center gap-2 text-sm text-teal-900/60">
+    <label className="flex items-center gap-2 text-sm text-muted">
       Brand
       <select
         value={selectedId}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-xl border border-em-purple-300/40 bg-white/60 px-3 py-2 text-sm text-navy focus:outline-none focus:ring-2 focus:ring-em-purple-400"
+        className="rounded-sm border border-rule bg-surface px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-cobalt"
         aria-label="Select brand"
       >
         {brands.map((brand) => (

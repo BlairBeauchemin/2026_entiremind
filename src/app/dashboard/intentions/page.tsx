@@ -43,7 +43,11 @@ export default async function IntentionsPage() {
         id: m.id,
         userId: m.user_id,
         direction: m.direction as "inbound" | "outbound",
-        type: (m.type || "reflection") as "reflection" | "check-in" | "prompt" | "reply",
+        type: (m.type || "reflection") as
+          | "reflection"
+          | "check-in"
+          | "prompt"
+          | "reply",
         body: m.text, // Database column is 'text', frontend type uses 'body'
         createdAt: m.created_at,
       }));
@@ -52,7 +56,7 @@ export default async function IntentionsPage() {
 
   return (
     <div className="space-y-10">
-      <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
+      <h1 className="font-serif text-3xl md:text-4xl text-ink">
         Your Intentions
       </h1>
 

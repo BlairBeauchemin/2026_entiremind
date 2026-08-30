@@ -69,8 +69,8 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
 
   if (!user) {
     return (
-      <div className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 p-8 md:p-10">
-        <p className="text-teal-900/50">Loading profile...</p>
+      <div className="bg-surface rounded-sm border border-rule p-8 md:p-10">
+        <p className="text-muted">Loading profile...</p>
       </div>
     );
   }
@@ -80,16 +80,16 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 p-8 md:p-10"
+      className="bg-surface rounded-sm border border-rule p-8 md:p-10"
     >
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50">
+        <h2 className="text-[10px] font-medium uppercase tracking-widest text-muted">
           Profile
         </h2>
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-1.5 text-xs text-teal-900/50 hover:text-teal-900 transition-colors"
+            className="flex items-center gap-1.5 text-xs text-muted hover:text-cobalt transition-colors"
           >
             <Pencil className="w-3.5 h-3.5" />
             Edit
@@ -101,7 +101,10 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+              <Label
+                htmlFor="name"
+                className="text-[10px] font-medium uppercase tracking-widest text-muted"
+              >
                 Name
               </Label>
               <Input
@@ -109,12 +112,15 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
                 name="name"
                 defaultValue={user.name || ""}
                 placeholder="Your name"
-                className="h-11 bg-white/60 border-white/60 rounded-xl"
+                className="h-11 bg-surface border-rule rounded-sm"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+              <Label
+                htmlFor="email"
+                className="text-[10px] font-medium uppercase tracking-widest text-muted"
+              >
                 Email
               </Label>
               <Input
@@ -123,28 +129,33 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
                 type="email"
                 defaultValue={user.email || ""}
                 placeholder="you@example.com"
-                className="h-11 bg-white/60 border-white/60 rounded-xl"
+                className="h-11 bg-surface border-rule rounded-sm"
               />
             </div>
 
             {user.phone && (
               <div className="space-y-1.5">
-                <Label className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+                <Label className="text-[10px] font-medium uppercase tracking-widest text-muted">
                   Phone
                 </Label>
-                <p className="font-serif text-navy py-2.5">{formatPhone(user.phone)}</p>
+                <p className="font-serif text-ink py-2.5">
+                  {formatPhone(user.phone)}
+                </p>
               </div>
             )}
 
             <div className="space-y-1.5">
-              <Label htmlFor="timezone" className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+              <Label
+                htmlFor="timezone"
+                className="text-[10px] font-medium uppercase tracking-widest text-muted"
+              >
                 Timezone
               </Label>
               <select
                 id="timezone"
                 name="timezone"
                 defaultValue={user.timezone}
-                className="w-full h-11 px-4 bg-white/60 border border-white/60 rounded-xl text-navy appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-em-purple-300/20"
+                className="w-full h-11 px-4 bg-surface border border-rule rounded-sm text-ink appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-cobalt"
               >
                 {TIMEZONES.map((tz) => (
                   <option key={tz.value} value={tz.value}>
@@ -155,20 +166,26 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
             </div>
 
             <div className="space-y-1.5 sm:col-span-2">
-              <Label htmlFor="preferredSendHour" className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+              <Label
+                htmlFor="preferredSendHour"
+                className="text-[10px] font-medium uppercase tracking-widest text-muted"
+              >
                 Preferred Send Hour
               </Label>
               <select
                 id="preferredSendHour"
                 name="preferredSendHour"
                 defaultValue={String(user.preferred_send_hour ?? 7)}
-                className="w-full h-11 px-4 bg-white/60 border border-white/60 rounded-xl text-navy appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-em-purple-300/20"
+                className="w-full h-11 px-4 bg-surface border border-rule rounded-sm text-ink appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-cobalt"
               >
                 {Array.from({ length: 24 }).map((_, hour) => {
-                  const label = new Date(2000, 0, 1, hour).toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    hour12: true,
-                  });
+                  const label = new Date(2000, 0, 1, hour).toLocaleTimeString(
+                    "en-US",
+                    {
+                      hour: "numeric",
+                      hour12: true,
+                    },
+                  );
                   return (
                     <option key={hour} value={hour}>
                       {label}
@@ -176,21 +193,20 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
                   );
                 })}
               </select>
-              <p className="text-[11px] text-teal-900/50 italic mt-1">
-                We&apos;ll send around your preferred hour soon. For now all messages go out at 7:45 AM Pacific.
+              <p className="text-[11px] text-muted italic mt-1">
+                We&apos;ll send around your preferred hour soon. For now all
+                messages go out at 7:45 AM Pacific.
               </p>
             </div>
           </div>
 
-          {error && (
-            <p className="text-sm text-red-600">{error}</p>
-          )}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
           <div className="flex gap-3 pt-2">
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+              className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
             >
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -202,7 +218,7 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
               type="button"
               variant="outline"
               onClick={() => setIsEditing(false)}
-              className="border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+              className="border-rule text-muted hover:bg-surface rounded-sm"
             >
               Cancel
             </Button>
@@ -211,38 +227,47 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40 block mb-1">
+            <span className="text-[10px] font-medium uppercase tracking-widest text-muted block mb-1">
               Name
             </span>
-            <span className="font-serif text-navy">{user.name || "Not set"}</span>
+            <span className="font-serif text-ink">
+              {user.name || "Not set"}
+            </span>
           </div>
           <div>
-            <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40 block mb-1">
+            <span className="text-[10px] font-medium uppercase tracking-widest text-muted block mb-1">
               Email
             </span>
-            <span className="font-serif text-navy">{user.email || "Not set"}</span>
+            <span className="font-serif text-ink">
+              {user.email || "Not set"}
+            </span>
           </div>
           {user.phone && (
             <div>
-              <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40 block mb-1">
+              <span className="text-[10px] font-medium uppercase tracking-widest text-muted block mb-1">
                 Phone
               </span>
-              <span className="font-serif text-navy">{formatPhone(user.phone)}</span>
+              <span className="font-serif text-ink">
+                {formatPhone(user.phone)}
+              </span>
             </div>
           )}
           <div>
-            <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40 block mb-1">
+            <span className="text-[10px] font-medium uppercase tracking-widest text-muted block mb-1">
               Timezone
             </span>
-            <span className="font-serif text-navy">
-              {TIMEZONES.find((tz) => tz.value === user.timezone)?.label || user.timezone}
+            <span className="font-serif text-ink">
+              {TIMEZONES.find((tz) => tz.value === user.timezone)?.label ||
+                user.timezone}
             </span>
           </div>
           <div>
-            <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40 block mb-1">
+            <span className="text-[10px] font-medium uppercase tracking-widest text-muted block mb-1">
               Member Since
             </span>
-            <span className="font-serif text-navy">{formatDate(user.created_at)}</span>
+            <span className="font-serif text-ink">
+              {formatDate(user.created_at)}
+            </span>
           </div>
         </div>
       )}

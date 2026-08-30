@@ -50,31 +50,31 @@ export function MessageCard({ prompt, reply, index }: MessageCardProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.4, ease: "easeOut" }}
-      className="bg-white/60 backdrop-blur-sm rounded-2xl border-l-4 border-em-purple-300 p-5 md:p-6 shadow-sm"
+      className="bg-surface rounded-sm border border-rule p-5 md:p-6"
       aria-label={`Message from ${formatDateLabel(prompt.createdAt)}`}
     >
       {/* Date header */}
       <time
         dateTime={formatIsoDate(prompt.createdAt)}
-        className="text-sm font-medium uppercase tracking-wider text-teal-900/40"
+        className="text-sm font-medium uppercase tracking-wider text-muted"
       >
         {formatDateLabel(prompt.createdAt)}
       </time>
 
-      {/* Prompt (bold) */}
-      <p className="mt-4 text-lg md:text-xl font-semibold text-navy leading-relaxed">
+      {/* The prompt carries the meaning, so it takes the serif; the reply
+          below is the user's own voice in the sans. That reads as a
+          difference in kind rather than a difference in weight. */}
+      <p className="mt-4 font-serif text-lg md:text-xl text-ink leading-relaxed">
         {prompt.body}
       </p>
 
       {/* Reply (if exists) */}
       {reply && (
-        <p className="mt-4 text-lg text-teal-900 leading-relaxed">
-          {reply.body}
-        </p>
+        <p className="mt-4 text-lg text-ink leading-relaxed">{reply.body}</p>
       )}
 
       {/* Metadata footer */}
-      <div className="mt-4 flex items-center gap-2 text-sm text-teal-900/50">
+      <div className="mt-4 flex items-center gap-2 text-sm text-muted">
         <span>Via Text Message</span>
         <span aria-hidden="true">•</span>
         <span>{formatTime(prompt.createdAt)}</span>

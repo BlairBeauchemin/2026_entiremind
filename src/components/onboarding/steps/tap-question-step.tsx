@@ -89,10 +89,8 @@ export function TapQuestionStep({
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
-          {title}
-        </h1>
-        {subtitle && <p className="text-teal-900/60 text-sm">{subtitle}</p>}
+        <h1 className="font-serif text-2xl md:text-3xl text-ink">{title}</h1>
+        {subtitle && <p className="text-muted text-sm">{subtitle}</p>}
       </div>
 
       <div className="space-y-3">
@@ -108,10 +106,10 @@ export function TapQuestionStep({
                   ? handleSingle(option.id)
                   : handleMulti(option)
               }
-              className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${
+              className={`w-full text-left px-4 py-3 rounded-sm border transition-colors ${
                 isSelected
-                  ? "bg-em-purple-300/30 border-em-purple-400 text-navy"
-                  : "bg-white/60 border-white/60 text-teal-900/80 hover:bg-white/80"
+                  ? "bg-cobalt-wash border-cobalt text-ink"
+                  : "bg-surface border-rule text-ink hover:border-cobalt"
               }`}
             >
               {option.label}
@@ -126,7 +124,7 @@ export function TapQuestionStep({
           variant="outline"
           aria-label="Go back"
           onClick={onBack}
-          className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+          className="h-12 px-4 border-rule text-muted hover:bg-surface rounded-sm"
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -135,7 +133,7 @@ export function TapQuestionStep({
             type="button"
             onClick={onNext}
             disabled={selected.length === 0}
-            className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium disabled:opacity-40"
+            className="flex-1 h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium disabled:opacity-40"
           >
             {continueLabel}
           </Button>

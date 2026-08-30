@@ -17,7 +17,7 @@ interface ContentCreateDialogProps {
 }
 
 const fieldClass =
-  "w-full rounded-xl border border-em-purple-300/40 bg-white/80 px-3 py-2 text-sm text-navy focus:outline-none focus:ring-2 focus:ring-em-purple-400";
+  "w-full rounded-sm border border-rule bg-surface px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-cobalt";
 
 const FORMATS_BY_TARGET: Record<string, string[]> = {
   ad: ["image_ad", "video_ad", "carousel_ad"],
@@ -35,7 +35,9 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
   const [target, setTarget] = useState<"ad" | "organic">("organic");
   const [platform, setPlatform] = useState("instagram");
   const [format, setFormat] = useState("post");
-  const [productionMode, setProductionMode] = useState<"ai_generated" | "founder_filmed">("ai_generated");
+  const [productionMode, setProductionMode] = useState<
+    "ai_generated" | "founder_filmed"
+  >("ai_generated");
   const [mode, setMode] = useState<"ai" | "manual">("ai");
   const [headline, setHeadline] = useState("");
   const [caption, setCaption] = useState("");
@@ -95,36 +97,40 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
         <Button
           type="button"
           variant="outline"
-          className="border-em-purple-300/60 text-navy rounded-xl"
+          className="border-rule text-ink rounded-sm"
         >
           <Plus className="w-4 h-4 mr-1" /> New piece
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-serif text-navy">New content piece</DialogTitle>
+          <DialogTitle className="font-serif text-ink">
+            New content piece
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
               {error}
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-3">
-            <label className="block text-sm text-teal-900/60">
+            <label className="block text-sm text-muted">
               Target
               <select
                 value={target}
-                onChange={(e) => onTargetChange(e.target.value as "ad" | "organic")}
+                onChange={(e) =>
+                  onTargetChange(e.target.value as "ad" | "organic")
+                }
                 className={fieldClass}
               >
                 <option value="organic">Organic post</option>
                 <option value="ad">Paid ad (Meta)</option>
               </select>
             </label>
-            <label className="block text-sm text-teal-900/60">
+            <label className="block text-sm text-muted">
               Platform
               <select
                 value={platform}
@@ -143,9 +149,13 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
                 )}
               </select>
             </label>
-            <label className="block text-sm text-teal-900/60">
+            <label className="block text-sm text-muted">
               Format
-              <select value={format} onChange={(e) => setFormat(e.target.value)} className={fieldClass}>
+              <select
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+                className={fieldClass}
+              >
                 {FORMATS_BY_TARGET[target].map((f) => (
                   <option key={f} value={f}>
                     {f.replace(/_/g, " ")}
@@ -153,11 +163,15 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
                 ))}
               </select>
             </label>
-            <label className="block text-sm text-teal-900/60">
+            <label className="block text-sm text-muted">
               Production
               <select
                 value={productionMode}
-                onChange={(e) => setProductionMode(e.target.value as "ai_generated" | "founder_filmed")}
+                onChange={(e) =>
+                  setProductionMode(
+                    e.target.value as "ai_generated" | "founder_filmed",
+                  )
+                }
                 className={fieldClass}
               >
                 <option value="ai_generated">AI generated</option>
@@ -166,7 +180,7 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
             </label>
           </div>
 
-          <label className="block text-sm text-teal-900/60">
+          <label className="block text-sm text-muted">
             How should it be written?
             <select
               value={mode}
@@ -178,7 +192,7 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
             </select>
           </label>
 
-          <label className="block text-sm text-teal-900/60">
+          <label className="block text-sm text-muted">
             Angle / idea
             <input
               value={angle}
@@ -190,17 +204,31 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
 
           {mode === "manual" && (
             <>
-              <label className="block text-sm text-teal-900/60">
+              <label className="block text-sm text-muted">
                 Headline / hook
-                <input value={headline} onChange={(e) => setHeadline(e.target.value)} className={fieldClass} />
+                <input
+                  value={headline}
+                  onChange={(e) => setHeadline(e.target.value)}
+                  className={fieldClass}
+                />
               </label>
-              <label className="block text-sm text-teal-900/60">
+              <label className="block text-sm text-muted">
                 Caption
-                <textarea value={caption} onChange={(e) => setCaption(e.target.value)} rows={3} className={fieldClass} />
+                <textarea
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                  rows={3}
+                  className={fieldClass}
+                />
               </label>
-              <label className="block text-sm text-teal-900/60">
+              <label className="block text-sm text-muted">
                 Script (for video)
-                <textarea value={script} onChange={(e) => setScript(e.target.value)} rows={4} className={fieldClass} />
+                <textarea
+                  value={script}
+                  onChange={(e) => setScript(e.target.value)}
+                  rows={4}
+                  className={fieldClass}
+                />
               </label>
             </>
           )}
@@ -210,11 +238,16 @@ export function ContentCreateDialog({ brandId }: ContentCreateDialogProps) {
               type="button"
               onClick={create}
               disabled={saving}
-              className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+              className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create"}
             </Button>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="rounded-xl">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              className="rounded-sm"
+            >
               Cancel
             </Button>
           </div>

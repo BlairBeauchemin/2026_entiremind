@@ -98,17 +98,17 @@ export function QuizGate({
       <button
         type="button"
         onClick={onBack}
-        className="inline-flex items-center gap-1 text-sm text-teal-900/50 hover:text-teal-900/80 transition-colors"
+        className="inline-flex items-center gap-1 text-sm text-muted hover:text-cobalt transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back
       </button>
 
       <div className="space-y-2 text-center">
-        <h2 className="font-serif text-2xl text-navy font-medium">
+        <h2 className="font-serif text-2xl text-ink">
           Your {archetypeName.replace(/^The\s+/, "")} reading is ready
         </h2>
-        <p className="text-sm text-teal-900/60">
+        <p className="text-sm text-muted">
           Tell us where it belongs and it&apos;s yours — on screen now, and in
           your inbox to keep.
         </p>
@@ -128,12 +128,8 @@ export function QuizGate({
         />
 
         <div className="space-y-1.5">
-          <label
-            htmlFor="quiz-name"
-            className="text-xs font-medium text-teal-900/60"
-          >
-            First name{" "}
-            <span className="text-teal-900/40">(makes it personal)</span>
+          <label htmlFor="quiz-name" className="text-xs font-medium text-muted">
+            First name <span className="text-muted">(makes it personal)</span>
           </label>
           <input
             id="quiz-name"
@@ -142,14 +138,14 @@ export function QuizGate({
             onChange={(e) => setName(e.target.value)}
             maxLength={200}
             placeholder="Your first name"
-            className="w-full h-11 rounded-xl border border-teal-900/15 bg-white/70 px-4 text-sm text-teal-900 placeholder:text-teal-900/30 focus:outline-none focus:ring-2 focus:ring-em-purple-300/50"
+            className="w-full h-11 rounded-sm border border-rule bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-cobalt"
           />
         </div>
 
         <div className="space-y-1.5">
           <label
             htmlFor="quiz-email"
-            className="text-xs font-medium text-teal-900/60"
+            className="text-xs font-medium text-muted"
           >
             Email
           </label>
@@ -161,12 +157,12 @@ export function QuizGate({
             onChange={(e) => setEmail(e.target.value)}
             maxLength={320}
             placeholder="you@example.com"
-            className="w-full h-11 rounded-xl border border-teal-900/15 bg-white/70 px-4 text-sm text-teal-900 placeholder:text-teal-900/30 focus:outline-none focus:ring-2 focus:ring-em-purple-300/50"
+            className="w-full h-11 rounded-sm border border-rule bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-cobalt"
           />
         </div>
 
-        <details className="rounded-xl border border-teal-900/10 bg-white/40 px-4 py-3">
-          <summary className="cursor-pointer text-xs font-medium text-teal-900/60 select-none">
+        <details className="rounded-sm border border-rule bg-surface px-4 py-3">
+          <summary className="cursor-pointer text-xs font-medium text-muted select-none">
             Want the daily practice by text? (optional)
           </summary>
           <div className="mt-3 space-y-3">
@@ -177,9 +173,9 @@ export function QuizGate({
               onChange={(e) => setPhone(e.target.value)}
               maxLength={20}
               placeholder="(555) 123-4567"
-              className="w-full h-11 rounded-xl border border-teal-900/15 bg-white/70 px-4 text-sm text-teal-900 placeholder:text-teal-900/30 focus:outline-none focus:ring-2 focus:ring-em-purple-300/50"
+              className="w-full h-11 rounded-sm border border-rule bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-cobalt"
             />
-            <label className="flex items-start gap-2 text-[11px] leading-relaxed text-teal-900/60">
+            <label className="flex items-start gap-2 text-[11px] leading-relaxed text-muted">
               <input
                 type="checkbox"
                 checked={smsConsent}
@@ -196,7 +192,7 @@ export function QuizGate({
         <Button
           type="submit"
           disabled={submitting}
-          className="w-full h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium"
+          className="w-full h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium"
         >
           {submitting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -204,7 +200,7 @@ export function QuizGate({
             "Show me my full reading"
           )}
         </Button>
-        <p className="text-center text-[11px] text-teal-900/45">
+        <p className="text-center text-[11px] text-muted">
           No spam, ever. One email with your reading, and you can unsubscribe
           from anything else with one tap.
         </p>

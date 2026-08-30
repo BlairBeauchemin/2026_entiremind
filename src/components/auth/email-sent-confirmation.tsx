@@ -10,7 +10,10 @@ interface EmailSentConfirmationProps {
   onBack: () => void;
 }
 
-export function EmailSentConfirmation({ email, onBack }: EmailSentConfirmationProps) {
+export function EmailSentConfirmation({
+  email,
+  onBack,
+}: EmailSentConfirmationProps) {
   const [isResending, setIsResending] = useState(false);
   const [resendCountdown, setResendCountdown] = useState(60);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +21,10 @@ export function EmailSentConfirmation({ email, onBack }: EmailSentConfirmationPr
 
   useEffect(() => {
     if (resendCountdown > 0) {
-      const timer = setTimeout(() => setResendCountdown(resendCountdown - 1), 1000);
+      const timer = setTimeout(
+        () => setResendCountdown(resendCountdown - 1),
+        1000,
+      );
       return () => clearTimeout(timer);
     }
   }, [resendCountdown]);
@@ -61,24 +67,22 @@ export function EmailSentConfirmation({ email, onBack }: EmailSentConfirmationPr
       <button
         type="button"
         onClick={onBack}
-        className="flex items-center gap-2 text-sm text-teal-900/60 hover:text-teal-900 transition-colors"
+        className="flex items-center gap-2 text-sm text-muted hover:text-cobalt transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Use a different email
       </button>
 
       <div className="text-center py-4">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-em-purple-300/20 flex items-center justify-center">
-          <Mail className="w-8 h-8 text-em-purple-400" />
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-cobalt-wash flex items-center justify-center">
+          <Mail className="w-8 h-8 text-cobalt" />
         </div>
-        <p className="text-sm text-teal-900/70 mb-1">
-          We sent a magic link to
-        </p>
-        <p className="font-medium text-navy">{email}</p>
+        <p className="text-sm text-muted mb-1">We sent a magic link to</p>
+        <p className="font-medium text-ink">{email}</p>
       </div>
 
-      <div className="bg-white/40 rounded-xl p-4 text-center">
-        <p className="text-sm text-teal-900/60">
+      <div className="bg-surface rounded-sm p-4 text-center">
+        <p className="text-sm text-muted">
           Click the link in your email to sign in. You can close this tab.
         </p>
       </div>
@@ -108,7 +112,7 @@ export function EmailSentConfirmation({ email, onBack }: EmailSentConfirmationPr
           type="button"
           onClick={handleResend}
           disabled={resendCountdown > 0 || isResending}
-          className="text-sm text-teal-900/60 hover:text-teal-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-sm text-muted hover:text-cobalt transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isResending ? (
             <span className="flex items-center gap-2 justify-center">

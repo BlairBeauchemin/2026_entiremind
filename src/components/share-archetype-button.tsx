@@ -49,7 +49,7 @@ export function ShareArchetypeButton({
     <button
       type="button"
       onClick={handleShare}
-      className="inline-flex items-center gap-2 rounded-full border border-navy/20 bg-white/60 px-4 py-2 text-sm font-medium text-navy transition-colors hover:bg-white/80"
+      className="inline-flex items-center gap-2 rounded-full border border-cobalt bg-surface px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-cobalt"
     >
       {copied ? (
         <>

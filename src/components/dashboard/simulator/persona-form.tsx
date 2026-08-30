@@ -145,10 +145,10 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`text-left text-[13px] px-3 py-1.5 rounded-full border transition-colors ${
+      className={`text-left text-sm px-3 py-1.5 rounded-full border transition-colors ${
         selected
-          ? "bg-navy text-white border-navy"
-          : "bg-white/50 text-teal-900/70 border-teal-900/15 hover:border-teal-900/40"
+          ? "bg-cobalt text-linen border-cobalt"
+          : "bg-surface text-muted border-rule hover:border-rule"
       }`}
     >
       {children}
@@ -165,7 +165,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-[11px] uppercase tracking-widest text-teal-900/50">
+      <div className="text-[11px] uppercase tracking-widest text-muted">
         {label}
       </div>
       {children}
@@ -174,7 +174,7 @@ function Field({
 }
 
 const inputClass =
-  "w-full rounded-xl border border-teal-900/15 bg-white/60 px-3 py-2 text-sm text-navy placeholder:text-teal-900/30 focus:outline-none focus:ring-2 focus:ring-em-purple-300";
+  "w-full rounded-sm border border-rule bg-surface px-3 py-2 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-cobalt";
 
 /**
  * Single-screen persona creation form: the same answers the 15-step
@@ -270,9 +270,9 @@ export function PersonaForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-cream">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-linen">
         <DialogHeader>
-          <DialogTitle className="font-serif text-navy">
+          <DialogTitle className="font-serif text-ink">
             New test persona
           </DialogTitle>
         </DialogHeader>
@@ -467,7 +467,7 @@ export function PersonaForm({
           </Field>
 
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
               {error}
             </div>
           )}
@@ -477,7 +477,7 @@ export function PersonaForm({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="border-teal-900/20 text-teal-900/60 rounded-xl"
+              className="border-rule text-muted rounded-sm"
             >
               Cancel
             </Button>
@@ -485,7 +485,7 @@ export function PersonaForm({
               type="button"
               onClick={submit}
               disabled={!valid || saving}
-              className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+              className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
             >
               {saving ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

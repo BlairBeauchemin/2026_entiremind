@@ -31,7 +31,7 @@ export function SacredTestimonial() {
               width="60"
               height="60"
               viewBox="0 0 60 60"
-              className="text-em-purple-300/30"
+              className="text-muted"
               aria-hidden="true"
             >
               <path
@@ -55,7 +55,7 @@ export function SacredTestimonial() {
 
           {/* Quote */}
           <blockquote className="mb-10">
-            <p className="font-serif text-3xl md:text-4xl lg:text-5xl text-navy leading-relaxed font-light italic">
+            <p className="font-serif text-3xl md:text-4xl lg:text-5xl text-ink leading-relaxed italic">
               It feels like having a wise friend in my pocket who actually
               listens. The silence between messages is just as meaningful as the
               words.
@@ -64,14 +64,12 @@ export function SacredTestimonial() {
 
           {/* Attribution */}
           <div className="flex items-center justify-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-em-purple-100 border border-em-purple-300/20 flex items-center justify-center">
-              <span className="font-serif text-lg text-navy">S</span>
+            <div className="w-12 h-12 rounded-full bg-cobalt-wash border border-rule flex items-center justify-center">
+              <span className="font-serif text-lg text-ink">S</span>
             </div>
             <div className="text-left">
-              <div className="font-sans font-medium text-navy">Sarah M.</div>
-              <div className="font-sans text-sm text-teal-900/60">
-                Early Adopter
-              </div>
+              <div className="font-sans font-medium text-ink">Sarah M.</div>
+              <div className="font-sans text-sm text-muted">Early Adopter</div>
             </div>
           </div>
 
@@ -80,7 +78,7 @@ export function SacredTestimonial() {
             {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
-                className="w-4 h-4 text-em-yellow-400"
+                className="w-4 h-4 text-cobalt"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >

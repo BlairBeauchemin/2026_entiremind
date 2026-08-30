@@ -141,11 +141,11 @@ export function WaitlistModalSingle({
             transition={{ duration: 0.2 }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md"
           >
-            <div className="bg-white rounded-3xl shadow-2xl p-8 mx-4">
+            <div className="bg-surface rounded-sm p-8 mx-4">
               {/* Close button */}
               <button
                 onClick={handleClose}
-                className="absolute top-6 right-6 text-teal-900/30 hover:text-teal-900 transition-colors"
+                className="absolute top-6 right-6 text-muted hover:text-cobalt transition-colors"
                 aria-label="Close modal"
               >
                 <X size={20} />
@@ -153,17 +153,17 @@ export function WaitlistModalSingle({
 
               <h2
                 id="waitlist-modal-title"
-                className="font-serif text-2xl text-navy font-medium text-center mb-2"
+                className="font-serif text-2xl text-ink text-center mb-2"
               >
                 Join the Waitlist
               </h2>
-              <p className="text-sm text-teal-900/60 text-center mb-6">
+              <p className="text-sm text-muted text-center mb-6">
                 Be the first to experience Entiremind via SMS.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-teal-900 mb-2 ml-1 uppercase tracking-wider">
+                  <label className="block text-xs font-medium text-ink mb-2 ml-1 uppercase tracking-wider">
                     Name
                   </label>
                   <input
@@ -171,13 +171,13 @@ export function WaitlistModalSingle({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your name"
-                    className="input-autofill-fix w-full px-4 py-3 bg-cream/50 border border-teal-900/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 text-teal-900 placeholder-teal-900/40 transition-all font-sans"
+                    className="input-autofill-fix w-full px-4 py-3 bg-linen border border-rule rounded-sm focus:outline-none focus:ring-2 focus:ring-cobalt focus:border-cobalt text-ink placeholder-muted transition-all font-sans"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-teal-900 mb-2 ml-1 uppercase tracking-wider">
+                  <label className="block text-xs font-medium text-ink mb-2 ml-1 uppercase tracking-wider">
                     Email
                   </label>
                   <input
@@ -185,13 +185,13 @@ export function WaitlistModalSingle({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="input-autofill-fix w-full px-4 py-3 bg-cream/50 border border-teal-900/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 text-teal-900 placeholder-teal-900/40 transition-all font-sans"
+                    className="input-autofill-fix w-full px-4 py-3 bg-linen border border-rule rounded-sm focus:outline-none focus:ring-2 focus:ring-cobalt focus:border-cobalt text-ink placeholder-muted transition-all font-sans"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-teal-900 mb-2 ml-1 uppercase tracking-wider">
+                  <label className="block text-xs font-medium text-ink mb-2 ml-1 uppercase tracking-wider">
                     Phone Number
                   </label>
                   <input
@@ -199,7 +199,7 @@ export function WaitlistModalSingle({
                     value={phone}
                     onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
                     placeholder="(555) 000-0000"
-                    className="input-autofill-fix w-full px-4 py-3 bg-cream/50 border border-teal-900/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 text-teal-900 placeholder-teal-900/40 transition-all font-sans"
+                    className="input-autofill-fix w-full px-4 py-3 bg-linen border border-rule rounded-sm focus:outline-none focus:ring-2 focus:ring-cobalt focus:border-cobalt text-ink placeholder-muted transition-all font-sans"
                     required
                   />
                 </div>
@@ -211,14 +211,14 @@ export function WaitlistModalSingle({
                       type="checkbox"
                       checked={smsConsent}
                       onChange={(e) => setSmsConsent(e.target.checked)}
-                      className="mt-1 w-4 h-4 rounded border-teal-900/20 text-navy focus:ring-navy/30"
+                      className="mt-1 w-4 h-4 rounded border-rule text-ink focus:ring-cobalt"
                     />
-                    <span className="text-xs text-teal-900/70 leading-relaxed">
+                    <span className="text-xs text-muted leading-relaxed">
                       I agree to receive recurring automated SMS messages from
                       Entiremind (up to 2 msgs/day depending on engagement).
                     </span>
                   </label>
-                  <p className="text-[10px] text-teal-900/50 leading-relaxed mt-1.5 ml-7 max-w-[280px]">
+                  <p className="text-[10px] text-muted leading-relaxed mt-1.5 ml-7 max-w-[280px]">
                     Msg &amp; data rates may apply. Reply HELP for help or STOP
                     to cancel. Consent not required for purchase.
                   </p>
@@ -230,13 +230,13 @@ export function WaitlistModalSingle({
                     type="checkbox"
                     checked={termsConsent}
                     onChange={(e) => setTermsConsent(e.target.checked)}
-                    className="mt-1 w-4 h-4 rounded border-teal-900/20 text-navy focus:ring-navy/30"
+                    className="mt-1 w-4 h-4 rounded border-rule text-ink focus:ring-cobalt"
                   />
-                  <span className="text-xs text-teal-900/70 leading-relaxed">
+                  <span className="text-xs text-muted leading-relaxed">
                     I agree to the{" "}
                     <Link
                       href="/terms"
-                      className="underline hover:text-teal-900"
+                      className="underline hover:text-cobalt"
                       target="_blank"
                     >
                       Terms of Service
@@ -244,7 +244,7 @@ export function WaitlistModalSingle({
                     ,{" "}
                     <Link
                       href="/privacy"
-                      className="underline hover:text-teal-900"
+                      className="underline hover:text-cobalt"
                       target="_blank"
                     >
                       Privacy Policy
@@ -252,7 +252,7 @@ export function WaitlistModalSingle({
                     , and{" "}
                     <Link
                       href="/sms-policy"
-                      className="underline hover:text-teal-900"
+                      className="underline hover:text-cobalt"
                       target="_blank"
                     >
                       SMS Policy
@@ -268,13 +268,13 @@ export function WaitlistModalSingle({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-navy text-cream py-3.5 rounded-xl font-medium hover:bg-navy/90 transition-all duration-300 font-sans disabled:opacity-50"
+                  className="w-full bg-cobalt text-linen py-3.5 rounded-sm font-medium hover:bg-cobalt-deep transition-all duration-300 font-sans disabled:opacity-50"
                 >
                   {isSubmitting ? "Submitting..." : "Reserve My Spot"}
                 </button>
 
                 {/* Risk reversal messaging */}
-                <p className="text-[10px] text-teal-900/50 text-center leading-relaxed">
+                <p className="text-[10px] text-muted text-center leading-relaxed">
                   No spam, ever. Unsubscribe anytime. Your info stays private.
                 </p>
               </form>

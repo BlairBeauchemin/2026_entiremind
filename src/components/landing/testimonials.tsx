@@ -15,7 +15,7 @@ export function Testimonials() {
           </div>
 
           <div className="space-y-12 order-1 lg:order-2">
-            <h2 className="font-serif text-5xl md:text-6xl text-navy font-medium leading-tight">
+            <h2 className="font-serif text-5xl md:text-6xl text-ink leading-tight">
               What You&apos;ll Experience
             </h2>
 
@@ -38,14 +38,14 @@ export function Testimonials() {
                 },
               ].map((item) => (
                 <div key={item.title} className="flex gap-6 items-start group">
-                  <div className="w-12 h-12 rounded-full border border-teal-900/10 flex items-center justify-center text-teal-900 flex-shrink-0 mt-1 group-hover:bg-teal-900 group-hover:text-cream transition-colors duration-300">
+                  <div className="w-12 h-12 rounded-full border border-rule flex items-center justify-center text-ink flex-shrink-0 mt-1 group-hover:bg-cobalt group-hover:text-linen transition-colors duration-300">
                     <Check className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-serif text-2xl text-navy mb-2 font-medium">
+                    <h4 className="font-serif text-2xl text-ink mb-2">
                       {item.title}
                     </h4>
-                    <p className="text-teal-900/70 font-sans font-light leading-relaxed">
+                    <p className="text-muted font-sans font-light leading-relaxed">
                       {item.description}
                     </p>
                   </div>

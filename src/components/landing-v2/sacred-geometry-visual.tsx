@@ -36,9 +36,10 @@ export function SacredGeometryVisual({
   }
 
   // Create the hexagon path
-  const hexagonPath = hexagonPoints
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
-    .join(" ") + " Z";
+  const hexagonPath =
+    hexagonPoints
+      .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
+      .join(" ") + " Z";
 
   // Metatron's cube connecting lines
   const metatronLines = [];
@@ -73,12 +74,7 @@ export function SacredGeometryVisual({
         transition={{ duration: 1.5, ease: "easeOut" }}
       >
         {/* Outer circle */}
-        <circle
-          cx={center}
-          cy={center}
-          r={radius}
-          className="geometry-line"
-        />
+        <circle cx={center} cy={center} r={radius} className="geometry-line" />
 
         {/* Flower of Life circles */}
         {flowerPoints.map((point, i) => (
@@ -145,7 +141,7 @@ export function SacredGeometryVisual({
           cx={center}
           cy={center}
           r={4}
-          fill="#f9d97a"
+          fill="var(--color-cobalt)"
           className="geometry-pulse geometry-glow"
         />
         {flowerPoints.map((point, i) => (
@@ -154,7 +150,7 @@ export function SacredGeometryVisual({
             cx={point.x}
             cy={point.y}
             r={3}
-            fill="#f9d97a"
+            fill="var(--color-cobalt)"
             opacity={0.6}
             className="geometry-pulse"
             style={{ animationDelay: `${i * 0.3}s` }}

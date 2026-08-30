@@ -67,9 +67,7 @@ export default async function SettingsPage() {
           stripeSubscriptionId={currentSubscription.stripeSubscriptionId}
         />
       </Suspense>
-      <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
-        Settings
-      </h1>
+      <h1 className="font-serif text-3xl md:text-4xl text-ink">Settings</h1>
 
       <div className="space-y-6">
         <SettingsProfileForm user={profile} />

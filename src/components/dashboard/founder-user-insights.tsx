@@ -97,24 +97,24 @@ function UserCard({
   }, [insight.sentimentTrend]);
 
   return (
-    <div className="bg-white/60 border border-white/60 rounded-2xl overflow-hidden">
+    <div className="bg-surface border border-rule rounded-sm overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-white/40 transition-colors"
+        className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-surface transition-colors"
       >
         <div className="flex items-center gap-4 flex-1 min-w-0">
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-medium text-navy truncate">
+            <div className="text-sm font-medium text-ink truncate">
               {insight.userName ?? insight.userEmail}
             </div>
-            <div className="text-[11px] uppercase tracking-widest text-teal-900/40">
+            <div className="text-[11px] uppercase tracking-widest text-muted">
               memory updated {formatDate(insight.memoryUpdatedAt)}
             </div>
           </div>
           <SentimentBar trend={insight.sentimentTrend} total={sentimentTotal} />
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-teal-900/40 transition-transform ${
+          className={`w-4 h-4 text-muted transition-transform ${
             expanded ? "rotate-180" : ""
           }`}
         />
@@ -150,16 +150,16 @@ function SentimentBar({
   total: number;
 }) {
   if (total === 0) {
-    return <div className="text-[11px] text-teal-900/30 italic">no signal</div>;
+    return <div className="text-[11px] text-muted italic">no signal</div>;
   }
   const pct = (n: number) => `${(n / total) * 100}%`;
   return (
-    <div className="hidden sm:flex h-2 w-32 rounded-full overflow-hidden border border-white/80">
+    <div className="hidden sm:flex h-2 w-32 rounded-full overflow-hidden border border-rule">
       <div
         className="bg-emerald-400/70"
         style={{ width: pct(trend.positive) }}
       />
-      <div className="bg-teal-300/60" style={{ width: pct(trend.neutral) }} />
+      <div className="bg-cobalt-wash" style={{ width: pct(trend.neutral) }} />
       <div
         className="bg-rose-400/60"
         style={{ width: pct(trend.struggling) }}
@@ -178,10 +178,10 @@ function MemoryRow({
   if (!value) return null;
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-widest text-teal-900/40">
+      <div className="text-[10px] uppercase tracking-widest text-muted">
         {label}
       </div>
-      <div className="text-navy">{value}</div>
+      <div className="text-ink">{value}</div>
     </div>
   );
 }
@@ -193,7 +193,7 @@ function distortionLabel(d: Distortion): string {
 function ProfilePanel({ profile }: { profile: FounderUserProfile | null }) {
   if (!profile) {
     return (
-      <div className="text-xs italic text-teal-900/50">
+      <div className="text-xs italic text-muted">
         No persona profile yet (pre-Onboarding-v2 user).
       </div>
     );
@@ -204,21 +204,21 @@ function ProfilePanel({ profile }: { profile: FounderUserProfile | null }) {
     .sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className="space-y-3 bg-teal-900/5 rounded-xl p-4">
+    <div className="space-y-3 bg-surface rounded-sm p-4">
       <div className="flex items-center justify-between">
-        <div className="text-[10px] uppercase tracking-widest text-teal-900/50">
+        <div className="text-[10px] uppercase tracking-widest text-muted">
           Persona profile
         </div>
-        <div className="text-[10px] text-teal-900/40">
+        <div className="text-[10px] text-muted">
           quiz v{profile.quizVersion}
         </div>
       </div>
 
       <div>
-        <div className="text-[10px] uppercase tracking-widest text-teal-900/40">
+        <div className="text-[10px] uppercase tracking-widest text-muted">
           Archetype
         </div>
-        <div className="text-navy font-medium">
+        <div className="text-ink font-medium">
           {ARCHETYPE_NAMES[profile.archetype]}
         </div>
       </div>
@@ -255,17 +255,17 @@ function ProfilePanel({ profile }: { profile: FounderUserProfile | null }) {
 
       {scoreEntries.length > 0 && (
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
             Distortion scores
           </div>
           <div className="flex flex-wrap gap-1.5">
             {scoreEntries.map(([code, score]) => (
               <span
                 key={code}
-                className="text-xs px-2 py-0.5 rounded-full bg-em-purple-300/15 text-navy border border-em-purple-300/30"
+                className="text-xs px-2 py-0.5 rounded-full bg-cobalt-wash text-ink border border-rule"
               >
                 {distortionLabel(code as Distortion)}
-                <span className="text-teal-900/50 ml-1">{score}</span>
+                <span className="text-muted ml-1">{score}</span>
               </span>
             ))}
           </div>
@@ -274,16 +274,16 @@ function ProfilePanel({ profile }: { profile: FounderUserProfile | null }) {
 
       {profile.rawAnswers && profile.rawAnswers.length > 0 && (
         <details className="group">
-          <summary className="cursor-pointer text-[11px] uppercase tracking-widest text-teal-900/40 hover:text-teal-900/70 select-none">
+          <summary className="cursor-pointer text-[11px] uppercase tracking-widest text-muted hover:text-cobalt select-none">
             Raw answers
           </summary>
           <dl className="mt-2 space-y-1.5">
             {profile.rawAnswers.map((a) => (
               <div key={a.question}>
-                <dt className="text-[10px] uppercase tracking-widest text-teal-900/40">
+                <dt className="text-[10px] uppercase tracking-widest text-muted">
                   {a.question}
                 </dt>
-                <dd className="text-navy">{a.answer}</dd>
+                <dd className="text-ink">{a.answer}</dd>
               </div>
             ))}
           </dl>
@@ -296,15 +296,15 @@ function ProfilePanel({ profile }: { profile: FounderUserProfile | null }) {
 function MemoryPanel({ memory }: { memory: FounderUserInsight["memory"] }) {
   if (!memory) {
     return (
-      <div className="text-xs italic text-teal-900/50">
+      <div className="text-xs italic text-muted">
         No memory blob yet for this user.
       </div>
     );
   }
 
   return (
-    <div className="space-y-3 bg-em-purple-300/10 rounded-xl p-4">
-      <div className="text-[10px] uppercase tracking-widest text-em-purple-400">
+    <div className="space-y-3 bg-cobalt-wash rounded-sm p-4">
+      <div className="text-[10px] uppercase tracking-widest text-cobalt">
         Memory
       </div>
       <MemoryRow label="Vision" value={memory.vision ?? null} />
@@ -320,10 +320,10 @@ function MemoryPanel({ memory }: { memory: FounderUserInsight["memory"] }) {
       <MemoryRow label="Tone notes" value={memory.tone_notes ?? null} />
       {memory.open_threads && memory.open_threads.length > 0 && (
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-teal-900/40">
+          <div className="text-[10px] uppercase tracking-widest text-muted">
             Open threads
           </div>
-          <ul className="list-disc pl-5 text-navy">
+          <ul className="list-disc pl-5 text-ink">
             {memory.open_threads.map((thread, i) => (
               <li key={i}>{thread}</li>
             ))}
@@ -341,25 +341,25 @@ function ThemeCloud({
 }) {
   if (themes.length === 0) {
     return (
-      <div className="text-xs italic text-teal-900/50">
+      <div className="text-xs italic text-muted">
         No themes tagged yet (last 30 days).
       </div>
     );
   }
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-2">
+      <div className="text-[10px] uppercase tracking-widest text-muted mb-2">
         Recent themes
       </div>
       <div className="flex flex-wrap gap-1.5">
         {themes.map((t) => (
           <span
             key={t.theme}
-            className="text-xs px-2 py-1 rounded-full bg-em-yellow-400/20 text-navy border border-em-yellow-400/40"
+            className="text-xs px-2 py-1 rounded-full bg-cobalt-wash text-ink border border-rule"
             title={`${t.category} · ${t.count}×`}
           >
             {t.theme}
-            <span className="text-teal-900/50 ml-1">×{t.count}</span>
+            <span className="text-muted ml-1">×{t.count}</span>
           </span>
         ))}
       </div>
@@ -375,19 +375,19 @@ function ReplyRateTable({
   const entries = Object.entries(rates).filter(([, v]) => v.sends > 0);
   if (entries.length === 0) {
     return (
-      <div className="text-xs italic text-teal-900/50">
+      <div className="text-xs italic text-muted">
         Not enough sends yet for per-type stats.
       </div>
     );
   }
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-widest text-teal-900/40 mb-2">
+      <div className="text-[10px] uppercase tracking-widest text-muted mb-2">
         Reply rate by type (last 30 days)
       </div>
       <table className="w-full text-xs">
         <thead>
-          <tr className="text-teal-900/50">
+          <tr className="text-muted">
             <th className="text-left font-normal py-1">Type</th>
             <th className="text-right font-normal py-1">Sends</th>
             <th className="text-right font-normal py-1">Replies</th>
@@ -396,11 +396,11 @@ function ReplyRateTable({
         </thead>
         <tbody>
           {entries.map(([type, stat]) => (
-            <tr key={type} className="border-t border-white/60">
-              <td className="py-1.5 text-navy">{type}</td>
-              <td className="py-1.5 text-right text-navy">{stat.sends}</td>
-              <td className="py-1.5 text-right text-navy">{stat.replies}</td>
-              <td className="py-1.5 text-right text-navy">
+            <tr key={type} className="border-t border-rule">
+              <td className="py-1.5 text-ink">{type}</td>
+              <td className="py-1.5 text-right text-ink">{stat.sends}</td>
+              <td className="py-1.5 text-right text-ink">{stat.replies}</td>
+              <td className="py-1.5 text-right text-ink">
                 {Math.round(stat.rate * 100)}%
               </td>
             </tr>

@@ -26,45 +26,45 @@ export function CurrentIntention({ intention }: CurrentIntentionProps) {
 
   return (
     <>
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 p-8 md:p-10"
-    >
-      {/* Micro label */}
-      <div className="flex items-center gap-2 mb-5">
-        <span className="w-2 h-2 rounded-full bg-em-purple-300 animate-pulse-slow" />
-        <span className="text-[10px] font-medium uppercase tracking-widest text-teal-900/50">
-          Current Intention
-        </span>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="bg-surface rounded-sm border border-rule p-8 md:p-10"
+      >
+        {/* Micro label */}
+        <div className="flex items-center gap-2 mb-5">
+          <span className="w-2 h-2 rounded-full bg-cobalt-wash animate-pulse-slow" />
+          <span className="text-[10px] font-medium uppercase tracking-widest text-muted">
+            Current Intention
+          </span>
+        </div>
 
-      {/* Intention text */}
-      <p className="font-serif text-2xl md:text-3xl italic text-navy leading-snug">
-        &ldquo;{intention.text}&rdquo;
-      </p>
+        {/* Intention text */}
+        <p className="font-serif text-2xl md:text-3xl italic text-ink leading-snug">
+          &ldquo;{intention.text}&rdquo;
+        </p>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between mt-6">
-        <span className="text-[12px] text-teal-900/40 font-sans">
-          {relativeTime(intention.createdAt)}
-        </span>
-        <button
-          onClick={() => setIsEditOpen(true)}
-          className="flex items-center gap-1.5 text-[12px] text-teal-900/50 hover:text-teal-900 transition-colors"
-        >
-          <Pencil className="w-3.5 h-3.5" />
-          Edit
-        </button>
-      </div>
-    </motion.div>
+        {/* Footer */}
+        <div className="flex items-center justify-between mt-6">
+          <span className="text-xs text-muted font-sans">
+            {relativeTime(intention.createdAt)}
+          </span>
+          <button
+            onClick={() => setIsEditOpen(true)}
+            className="flex items-center gap-1.5 text-xs text-muted hover:text-cobalt transition-colors"
+          >
+            <Pencil className="w-3.5 h-3.5" />
+            Edit
+          </button>
+        </div>
+      </motion.div>
 
-    <EditIntentionDialog
-      intention={intention}
-      open={isEditOpen}
-      onOpenChange={setIsEditOpen}
-    />
+      <EditIntentionDialog
+        intention={intention}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+      />
     </>
   );
 }

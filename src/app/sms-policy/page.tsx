@@ -9,38 +9,37 @@ export const metadata = {
 
 export default function SmsMessagingPolicyPage() {
   return (
-    <div className="bg-cream text-teal-900 font-sans min-h-screen relative overflow-x-hidden selection:bg-em-purple-300/30 selection:text-teal-900">
+    <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
       {/* Background Grain Texture */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-grain mix-blend-multiply" />
 
       {/* Ambient Background Gradients */}
-      <div className="fixed top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-em-purple-300/15 rounded-full blur-[120px] pointer-events-none z-0" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-em-yellow-400/10 rounded-full blur-[100px] pointer-events-none z-0" />
 
       <Navigation />
 
       <main className="relative z-10 py-24 px-6">
         <div className="max-w-3xl mx-auto">
-          <h1 className="font-serif text-4xl md:text-5xl text-navy font-medium mb-4">
+          <h1 className="font-serif text-4xl md:text-5xl text-ink mb-4">
             SMS Messaging Policy
           </h1>
-          <p className="text-teal-900/60 mb-12">Last updated: February 24, 2026</p>
+          <p className="text-muted mb-12">Last updated: February 24, 2026</p>
 
-          <div className="prose prose-teal max-w-none space-y-8 text-teal-900/80">
+          <div className="prose prose-teal max-w-none space-y-8 text-ink">
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Program Description
               </h2>
               <p className="leading-relaxed">
                 Entiremind is an SMS-based manifestation and reflection service.
-                After opting in, you will receive recurring automated personalized
-                manifestation and reflection messages designed to help you align
-                your intentions and take action toward your goals.
+                After opting in, you will receive recurring automated
+                personalized manifestation and reflection messages designed to
+                help you align your intentions and take action toward your
+                goals.
               </p>
             </section>
 
-            <section className="bg-white/40 backdrop-blur-sm rounded-2xl p-6 border border-white/60">
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+            <section className="bg-surface rounded-sm p-6 border border-rule">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 SMS Program Terms
               </h2>
               <p className="leading-relaxed mb-6">
@@ -92,7 +91,7 @@ export default function SmsMessagingPolicyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 How to Opt In
               </h2>
               <p className="leading-relaxed">
@@ -111,9 +110,7 @@ export default function SmsMessagingPolicyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
-                Contact Us
-              </h2>
+              <h2 className="font-serif text-2xl text-ink mb-4">Contact Us</h2>
               <p className="leading-relaxed">
                 If you have questions about our SMS program, contact us at:
               </p>

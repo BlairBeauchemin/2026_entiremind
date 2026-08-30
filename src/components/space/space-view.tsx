@@ -154,7 +154,7 @@ export function SpaceView({
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(130% 100% at 50% 8%, #14243f 0%, #0a1428 38%, #05080f 100%)",
+            "radial-gradient(130% 100% at 50% 8%, var(--color-night-horizon) 0%, var(--color-night-mid) 38%, var(--color-night) 100%)",
         }}
       />
       <div className="pointer-events-none absolute inset-0 opacity-[0.12] bg-grain mix-blend-overlay" />
@@ -194,7 +194,7 @@ export function SpaceView({
           >
             <Link
               href="/dashboard"
-              className="flex h-11 w-11 items-center justify-center rounded-full text-cream/60 transition hover:bg-white/10 hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-linen/60 transition hover:bg-linen/10 hover:text-linen focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf"
               aria-label="Leave the space"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -203,7 +203,7 @@ export function SpaceView({
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-full text-cream/60 transition hover:bg-white/10 hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-linen/60 transition hover:bg-linen/10 hover:text-linen focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf"
               aria-label="Edit your affirmations"
             >
               <Pencil className="h-5 w-5" />
@@ -221,7 +221,7 @@ export function SpaceView({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="pointer-events-none absolute inset-x-0 bottom-8 text-center text-xs tracking-widest text-cream/35"
+              className="pointer-events-none absolute inset-x-0 bottom-8 text-center text-xs tracking-widest text-linen/60"
             >
               TAP FOR THE NEXT · DRAG THE SKY
             </motion.p>
@@ -244,7 +244,7 @@ function EmptyInvitation({ onWrite }: { onWrite: () => void }) {
   return (
     <div className="flex max-w-sm flex-col items-center gap-6 px-8 text-center">
       <p
-        className="text-balance font-serif text-2xl leading-snug tracking-wide text-cream/85 sm:text-3xl"
+        className="text-balance font-serif text-2xl leading-snug tracking-wide text-linen/85 sm:text-3xl"
         style={{ opacity: "calc(0.5 + 0.5 * var(--breath, 0.5))" }}
       >
         Write the first thing you want to be true.
@@ -252,7 +252,7 @@ function EmptyInvitation({ onWrite }: { onWrite: () => void }) {
       <button
         type="button"
         onClick={onWrite}
-        className="pointer-events-auto rounded-full bg-em-yellow-400 px-6 py-3 text-sm font-medium text-teal-900 transition hover:bg-em-yellow-400/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-em-yellow-400"
+        className="pointer-events-auto rounded-full bg-linen px-6 py-3 text-sm font-medium text-ink transition hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf"
       >
         Write one
       </button>

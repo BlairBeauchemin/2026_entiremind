@@ -54,8 +54,8 @@ export function AffirmationDisplay({
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -10, filter: "blur(5px)" }}
             transition={{ duration: 0.9, ease: [0.22, 0.61, 0.36, 1] }}
-            className="text-balance text-center font-serif text-[1.65rem] leading-snug tracking-wide text-cream sm:text-4xl md:text-5xl"
-            style={{ textShadow: "0 2px 24px rgba(13, 33, 38, 0.85)" }}
+            className="text-balance text-center font-serif text-display leading-snug tracking-wide text-linen"
+            style={{ textShadow: "0 2px 24px var(--night-scrim)" }}
           >
             {text}
           </motion.p>

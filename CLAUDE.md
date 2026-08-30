@@ -79,14 +79,36 @@ npx shadcn@latest add [component]
 
 ## Design Guidelines
 
+> **`DESIGN.md` at the repo root is the single visual authority.** Colours,
+> typography, spacing, shapes and component values live there and nowhere else.
+> Do not restate token values in this file — that duplication is exactly what caused
+> the drift documented below.
+
 - **Lightly magical aesthetic** — calm, inspiring, intuitive
 - Simple layouts, soft spacing, calm typography, no visual noise
 - Conversion-optimized landing page for email/phone capture
 - Mobile-responsive layouts
-- Theme colors:
-  - Primary: Dark teal (#204147)
-  - Secondary: Soft purple (#cbbbe3)
-  - Accent: Warm yellow (#f9d97a)
+- **The world is "Daylight"**: warm linen ground, near-black ink, a single saturated
+  cobalt, gold as foil-style ornament only. It should read as *printed*, not
+  rendered — physical journals and decks are a stated future direction, so no
+  identity may depend on gradients, glow, or backlit colour. There is **no dark
+  mode** and no theme toggle. The one exception is a *place*, not a mode: The Space
+  (`/space`) is a night sky, with its own bounded token ramp that nothing else may
+  use — see the "One night surface" rule in `DESIGN.md`.
+
+**Palette drift — resolved August 2026.** This file previously declared teal
+`#204147` primary, soft purple `#cbbbe3` secondary and warm yellow `#f9d97a` accent,
+while `src/app/globals.css` had actually made navy `#2E2A58` primary and demoted teal
+to body text. Both were wrong and both are retired, along with cream `#fdfbf7`.
+The palette of record is now cobalt `#2A3A9C` on linen `#F2EFE9` — see `DESIGN.md`.
+
+**The migration is done.** `globals.css` carries the DESIGN.md tokens (`cobalt`,
+`cobalt-deep`, `cobalt-wash`, `linen`, `surface`, `ink`, `muted`, `leaf`, `rule`) plus
+a named type ramp, and every component was moved off the retired names in one
+big-bang pass — no aliases were left behind, so `text-navy` and friends now resolve to
+nothing rather than to a silent fallback. Fonts are **Prata** (display) and **Karla**
+(body/UI) via `next/font`. Radius is 2px; `rounded-full` is for badges and true
+circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 
 ### Persuasion & Behavioral Design
 
@@ -219,7 +241,7 @@ npx shadcn@latest add [component]
 
 - `src/components/dashboard/message-card.tsx` - Card component for paired prompt + reply
 - `src/components/dashboard/message-feed.tsx` - Feed that pairs outbound prompts with inbound replies
-- **Layout**: Cards with left purple border accent, prompt in bold, reply in regular text
+- **Layout**: Surface cards with a hairline `rule` border. The prompt is set in the serif and the reply in the sans — a difference in kind, not in weight. (The old 4px left purple accent is gone: retired colour, and a thick one-sided border is a refused pattern.)
 - **Typography**: 18px+ fonts for mobile readability, WCAG AA accessible
 - **Pairing Logic**: Each outbound prompt is matched with its following inbound reply
 - **Unprompted Messages**: Standalone inbound messages shown with "You reached out:" header
@@ -597,7 +619,7 @@ Curated, themed quote library feeding the `quote` SMS content type and a dashboa
 - Migration seeds a ~12-quote public-domain fallback; the real library is built by `scripts/import-quotes.ts` (`npx tsx scripts/import-quotes.ts [--source zenquotes|quotable] [--target 200]`) — fetches from ZenQuotes (Quotable dataset fallback), filters to ≤120 chars, categorizes via tag map + Haiku batch pass (rejects off-brand quotes), inserts with `source`/`source_tags`
 - ZenQuotes attribution: free tier requires "Quotes via ZenQuotes.io" on surfaces displaying imported quotes (check `quotes.source`)
 - When `selectContentType` picks `quote`, `generateMessageForUser` pulls from the library (matched to persona `intention_category` via `mapCategoryToQuoteThemes`), formatted `"text" — Author`; excludes the user's last 20 sent quotes via `messages.quote_id`; falls back to the LLM path if the library is empty
-- Dashboard: `QuoteOfTheDay` card on `/dashboard` — deterministic per user per day (`pickDeterministicQuote`, yellow left-border accent)
+- Dashboard: `QuoteOfTheDay` card on `/dashboard` — deterministic per user per day (`pickDeterministicQuote`). It reads as distinct from the message cards through the serif setting, not a different accent colour.
 - Founder curates by flipping `quotes.active` in Supabase
 
 **Weekly email editions (`weekly_editions` table + `src/lib/editions/`):**

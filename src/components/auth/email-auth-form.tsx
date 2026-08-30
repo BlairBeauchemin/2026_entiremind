@@ -61,7 +61,7 @@ export function EmailAuthForm({ onEmailSent }: EmailAuthFormProps) {
       className="space-y-6"
     >
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-sm font-medium text-teal-900">
+        <Label htmlFor="email" className="text-sm font-medium text-ink">
           Email address
         </Label>
         <Input
@@ -73,7 +73,7 @@ export function EmailAuthForm({ onEmailSent }: EmailAuthFormProps) {
             setError(null);
           }}
           placeholder="you@example.com"
-          className="h-12 bg-white/60 border-white/60 rounded-xl focus:border-em-purple-300 focus:ring-em-purple-300/20"
+          className="h-12 bg-surface border-rule rounded-sm focus:border-cobalt focus:ring-cobalt"
           disabled={isLoading}
           autoComplete="email"
         />
@@ -91,7 +91,7 @@ export function EmailAuthForm({ onEmailSent }: EmailAuthFormProps) {
       <Button
         type="submit"
         disabled={isLoading || !email}
-        className="w-full h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium transition-colors"
+        className="w-full h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium transition-colors"
       >
         {isLoading ? (
           <Loader2 className="w-5 h-5 animate-spin" />
@@ -100,7 +100,7 @@ export function EmailAuthForm({ onEmailSent }: EmailAuthFormProps) {
         )}
       </Button>
 
-      <p className="text-xs text-center text-teal-900/50">
+      <p className="text-xs text-center text-muted">
         We&apos;ll send you a magic link to sign in
       </p>
     </motion.form>

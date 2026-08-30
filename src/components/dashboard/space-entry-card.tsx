@@ -36,7 +36,7 @@ export function SpaceEntryCard({
   return (
     <Link
       href="/space"
-      className="group block rounded-2xl border-l-4 border-em-purple-300 bg-white/60 p-6 transition hover:bg-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+      className="group block rounded-sm border border-rule bg-surface p-6 transition-colors hover:border-cobalt focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
     >
       <div className="flex items-center gap-5">
         <div
@@ -44,7 +44,7 @@ export function SpaceEntryCard({
           className="relative hidden h-20 w-20 shrink-0 overflow-hidden rounded-full sm:block"
           style={{
             background:
-              "radial-gradient(120% 110% at 50% 10%, #16294a 0%, #0a1428 55%, #05080f 100%)",
+              "radial-gradient(120% 110% at 50% 10%, var(--color-night-horizon) 0%, var(--color-night-mid) 55%, var(--color-night) 100%)",
           }}
         >
           <svg viewBox="0 0 80 80" className="absolute inset-0 h-full w-full">
@@ -63,15 +63,15 @@ export function SpaceEntryCard({
         </div>
 
         <div className="min-w-0">
-          <p className="mb-2 text-xs uppercase tracking-widest text-teal-900/50">
+          <p className="mb-2 text-xs uppercase tracking-widest text-ink/50">
             The Space
           </p>
-          <p className="font-serif text-xl leading-relaxed text-navy md:text-2xl">
+          <p className="font-serif text-xl leading-relaxed text-ink md:text-2xl">
             {hasAffirmations
               ? "Sit under your sky for a few breaths."
               : "A quiet sky to sit under with what you're manifesting."}
           </p>
-          <p className="mt-2 text-sm text-teal-900/60">
+          <p className="mt-2 text-sm text-ink/60">
             {hasAffirmations
               ? "Enter the space"
               : "Write your first affirmation"}{" "}

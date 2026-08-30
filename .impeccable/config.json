@@ -1,17 +1,10 @@
 {
   "detector": {
     "ignoreRules": [],
-    "ignoreFiles": [],
-    "ignoreValues": [
-      {
-        "rule": "side-tab",
-        "value": "*",
-        "files": [
-          "src/components/dashboard/space-entry-card.tsx"
-        ],
-        "createdAt": "2026-08-19T06:53:11.556Z",
-        "reason": "Matches the established house card pattern, not a new AI tell: quote-of-the-day.tsx:16 (border-l-4 border-em-yellow-400) and message-card.tsx:53 (border-l-4 border-em-purple-300), documented in CLAUDE.md:222 and CLAUDE.md:600. This card renders between CurrentIntention and QuoteOfTheDay on /dashboard; dropping the accent here alone would break the row. Whether the house pattern itself should change is a separate call for the repo owner."
-      }
-    ]
+    "ignoreFiles": [
+      "docs/brand/moodboard.html",
+      "src/lib/email-campaigns/template.ts"
+    ],
+    "ignoreValues": []
   }
 }

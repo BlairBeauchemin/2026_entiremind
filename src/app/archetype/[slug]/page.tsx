@@ -48,22 +48,20 @@ export default async function ArchetypePage({
   const content = ARCHETYPE_PUBLIC[slug];
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-em-purple-100 to-white flex items-center justify-center px-6 py-16">
+    <main className="min-h-screen bg-linen flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-lg space-y-10 text-center">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted">
           A manifestation archetype
         </p>
 
         <div className="space-y-4">
-          <h1 className="font-serif text-4xl md:text-5xl text-navy font-medium">
+          <h1 className="font-serif text-4xl md:text-5xl text-ink">
             {content.name}
           </h1>
-          <p className="font-serif text-xl text-em-purple-400">
-            {content.essence}
-          </p>
+          <p className="font-serif text-xl text-cobalt">{content.essence}</p>
         </div>
 
-        <p className="text-teal-900/70 leading-relaxed text-left">
+        <p className="text-muted leading-relaxed text-left">
           {content.description}
         </p>
 
@@ -71,7 +69,7 @@ export default async function ArchetypePage({
           {content.traits.map((trait) => (
             <li
               key={trait}
-              className="rounded-2xl bg-white/50 border border-white/70 px-5 py-3 text-sm text-teal-900/80"
+              className="rounded-sm bg-surface border border-rule px-5 py-3 text-sm text-ink"
             >
               {trait}
             </li>
@@ -81,11 +79,11 @@ export default async function ArchetypePage({
         <div className="space-y-3 pt-2">
           <Link
             href={`/quiz?src=share-${slug}`}
-            className="inline-block rounded-xl bg-navy px-8 py-3.5 text-sm font-medium text-white transition-colors hover:bg-navy/90"
+            className="inline-block rounded-sm bg-cobalt px-8 py-3.5 text-sm font-medium text-linen transition-colors hover:bg-cobalt-deep"
           >
             Discover your archetype
           </Link>
-          <p className="text-xs text-teal-900/50">
+          <p className="text-xs text-muted">
             8 taps, 2 minutes. Then a daily practice by text.
           </p>
         </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
  * Full-bleed shell for The Space.
  *
  * A sibling of /dashboard rather than a child, so none of the dashboard chrome
- * (sidebar, cream ground, max-width column) reaches it. `100dvh` rather than
+ * (sidebar, linen ground, max-width column) reaches it. `100dvh` rather than
  * `100vh` because mobile browser chrome collapses on scroll and `vh` would
  * leave the sky clipped behind it.
  */
@@ -21,7 +21,7 @@ export default function SpaceLayout({
 }) {
   return (
     <div
-      className="relative h-[100dvh] w-full overflow-hidden overscroll-none bg-[#05080f] text-cream"
+      className="relative h-[100dvh] w-full overflow-hidden overscroll-none bg-night text-linen"
       style={{
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: "env(safe-area-inset-bottom)",

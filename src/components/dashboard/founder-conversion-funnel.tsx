@@ -59,19 +59,19 @@ export function FounderConversionFunnel({
           return (
             <li
               key={key}
-              className="flex items-center gap-3 bg-white/60 border border-white/60 rounded-xl px-4 py-2.5"
+              className="flex items-center gap-3 bg-surface border border-rule rounded-sm px-4 py-2.5"
             >
-              <div className="w-28 shrink-0 text-sm text-navy">{label}</div>
-              <div className="flex-1 h-3 rounded-full bg-white/70 overflow-hidden">
+              <div className="w-28 shrink-0 text-sm text-ink">{label}</div>
+              <div className="flex-1 h-3 rounded-full bg-surface overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-em-yellow-400/70"
+                  className="h-full rounded-full bg-cobalt"
                   style={{ width: `${Math.min(share, 100)}%` }}
                 />
               </div>
-              <div className="w-10 shrink-0 text-right text-sm text-navy tabular-nums">
+              <div className="w-10 shrink-0 text-right text-sm text-ink tabular-nums">
                 {count}
               </div>
-              <div className="w-12 shrink-0 text-right text-xs text-teal-900/50 tabular-nums">
+              <div className="w-12 shrink-0 text-right text-xs text-muted tabular-nums">
                 {share}%
               </div>
             </li>
@@ -83,7 +83,7 @@ export function FounderConversionFunnel({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs uppercase tracking-wide text-teal-900/50">
+            <tr className="text-left text-xs uppercase tracking-wide text-muted">
               <th className="py-2 pr-4 font-medium">Source</th>
               <th className="py-2 pr-4 font-medium text-right">Leads</th>
               <th className="py-2 pr-4 font-medium text-right">Signups</th>
@@ -94,10 +94,7 @@ export function FounderConversionFunnel({
           </thead>
           <tbody>
             {funnel.bySource.map((row) => (
-              <tr
-                key={row.source}
-                className="border-t border-white/60 text-navy"
-              >
+              <tr key={row.source} className="border-t border-rule text-ink">
                 <td className="py-2 pr-4">{sourceLabel(row.source)}</td>
                 <td className="py-2 pr-4 text-right tabular-nums">
                   {row.leads}
@@ -111,7 +108,7 @@ export function FounderConversionFunnel({
                 <td className="py-2 pr-4 text-right tabular-nums">
                   {row.paid}
                 </td>
-                <td className="py-2 text-right tabular-nums text-teal-900/60">
+                <td className="py-2 text-right tabular-nums text-muted">
                   {pct(row.paid, row.leads)}
                 </td>
               </tr>

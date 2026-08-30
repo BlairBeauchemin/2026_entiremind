@@ -28,11 +28,14 @@ export function FilmingQueue({ pieces: initialPieces }: FilmingQueueProps) {
     setError(null);
     try {
       // 1. init: get a signed upload URL + pending asset row
-      const initRes = await fetch(`/api/founder/marketing/content/${pieceId}/upload`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ step: "init", mimeType: file.type }),
-      });
+      const initRes = await fetch(
+        `/api/founder/marketing/content/${pieceId}/upload`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ step: "init", mimeType: file.type }),
+        },
+      );
       const init = await initRes.json().catch(() => ({}));
       if (!initRes.ok) {
         setError(init.error || `Upload init failed (${initRes.status})`);
@@ -55,14 +58,19 @@ export function FilmingQueue({ pieces: initialPieces }: FilmingQueueProps) {
       }
 
       // 3. complete: mark asset ready, move piece to review
-      const completeRes = await fetch(`/api/founder/marketing/content/${pieceId}/upload`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ step: "complete", assetId: init.assetId }),
-      });
+      const completeRes = await fetch(
+        `/api/founder/marketing/content/${pieceId}/upload`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ step: "complete", assetId: init.assetId }),
+        },
+      );
       if (!completeRes.ok) {
         const body = await completeRes.json().catch(() => ({}));
-        setError(body.error || `Upload completion failed (${completeRes.status})`);
+        setError(
+          body.error || `Upload completion failed (${completeRes.status})`,
+        );
         return;
       }
 
@@ -78,7 +86,8 @@ export function FilmingQueue({ pieces: initialPieces }: FilmingQueueProps) {
   if (pieces.length === 0) {
     return (
       <div className="text-sm text-muted-foreground italic">
-        No scripts waiting to be filmed. Founder-filmed pieces appear here once their script is ready.
+        No scripts waiting to be filmed. Founder-filmed pieces appear here once
+        their script is ready.
       </div>
     );
   }
@@ -86,21 +95,21 @@ export function FilmingQueue({ pieces: initialPieces }: FilmingQueueProps) {
   return (
     <div className="space-y-3">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
           {error}
         </div>
       )}
       {pieces.map((piece) => (
         <div
           key={piece.id}
-          className="bg-white/60 border border-em-purple-300/40 rounded-2xl p-5 space-y-3"
+          className="bg-surface border border-rule rounded-sm p-5 space-y-3"
         >
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-sm font-medium text-navy">
+              <div className="text-sm font-medium text-ink">
                 {piece.headline ?? "Untitled"} · {piece.platform} {piece.format}
               </div>
-              <div className="text-[11px] uppercase tracking-widest text-teal-900/40">
+              <div className="text-[11px] uppercase tracking-widest text-muted">
                 {formatDateTime(piece.createdAt)}
                 {piece.angle ? ` · ${piece.angle}` : ""}
               </div>
@@ -108,7 +117,7 @@ export function FilmingQueue({ pieces: initialPieces }: FilmingQueueProps) {
           </div>
 
           {piece.script && (
-            <div className="rounded-xl bg-em-purple-300/10 border border-em-purple-300/30 p-4 text-sm text-teal-900/80 whitespace-pre-line">
+            <div className="rounded-sm bg-cobalt-wash border border-rule p-4 text-sm text-ink whitespace-pre-line">
               {piece.script}
             </div>
           )}
@@ -130,7 +139,7 @@ export function FilmingQueue({ pieces: initialPieces }: FilmingQueueProps) {
               type="button"
               onClick={() => fileInputs.current[piece.id]?.click()}
               disabled={uploadingId === piece.id}
-              className="bg-navy hover:bg-navy/90 text-white rounded-xl"
+              className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
             >
               {uploadingId === piece.id ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-1" />

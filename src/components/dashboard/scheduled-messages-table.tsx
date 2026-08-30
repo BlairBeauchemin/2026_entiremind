@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { X, Loader2, Clock, CheckCircle, XCircle, Ban, Send } from "lucide-react";
+import {
+  X,
+  Loader2,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Ban,
+  Send,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 interface ScheduledMessage {
@@ -35,7 +43,10 @@ function truncatePhone(phone: string): string {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
+  const config: Record<
+    string,
+    { bg: string; text: string; icon: React.ReactNode }
+  > = {
     pending: {
       bg: "bg-amber-100",
       text: "text-amber-700",
@@ -52,8 +63,8 @@ function StatusBadge({ status }: { status: string }) {
       icon: <XCircle className="w-3 h-3" />,
     },
     cancelled: {
-      bg: "bg-gray-100",
-      text: "text-gray-600",
+      bg: "bg-cobalt-wash",
+      text: "text-muted",
       icon: <Ban className="w-3 h-3" />,
     },
   };
@@ -132,9 +143,9 @@ export function ScheduledMessagesTable({
 
   if (messages.length === 0) {
     return (
-      <div className="rounded-2xl border border-teal-900/10 bg-white/60 p-8 text-center">
-        <p className="text-teal-900/50">No scheduled messages.</p>
-        <p className="text-sm text-teal-900/40 mt-2">
+      <div className="rounded-sm border border-rule bg-surface p-8 text-center">
+        <p className="text-muted">No scheduled messages.</p>
+        <p className="text-sm text-muted mt-2">
           Schedule a message using the form above.
         </p>
       </div>
@@ -144,29 +155,29 @@ export function ScheduledMessagesTable({
   return (
     <div className="space-y-2">
       {error && (
-        <div className="px-4 py-2 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+        <div className="px-4 py-2 bg-red-50 border border-red-200 rounded-sm text-sm text-red-600">
           {error}
         </div>
       )}
 
-      <div className="rounded-2xl border border-teal-900/10 bg-white/60 overflow-hidden">
+      <div className="rounded-sm border border-rule bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-teal-900/10 bg-teal-900/5">
-                <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+              <tr className="border-b border-rule bg-surface">
+                <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                   Scheduled For
                 </th>
-                <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+                <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                   Phone
                 </th>
-                <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3 min-w-[300px]">
+                <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3 min-w-[300px]">
                   Message
                 </th>
-                <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+                <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                   Status
                 </th>
-                <th className="text-left text-xs font-medium text-teal-900/50 uppercase tracking-wider px-4 py-3">
+                <th className="text-left text-xs font-medium text-muted uppercase tracking-wider px-4 py-3">
                   Actions
                 </th>
               </tr>
@@ -178,20 +189,20 @@ export function ScheduledMessagesTable({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.02, duration: 0.2 }}
-                  className="border-b border-teal-900/5 hover:bg-teal-900/5 transition-colors"
+                  className="border-b border-rule hover:bg-cobalt-wash transition-colors"
                 >
                   <td className="px-4 py-3">
-                    <span className="text-sm text-navy whitespace-nowrap">
+                    <span className="text-sm text-ink whitespace-nowrap">
                       {formatTime(msg.scheduledFor)}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-sm text-teal-900/60 font-mono">
+                    <span className="text-sm text-muted font-mono">
                       {truncatePhone(msg.toPhone)}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <p className="text-sm text-navy line-clamp-2">{msg.text}</p>
+                    <p className="text-sm text-ink line-clamp-2">{msg.text}</p>
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={msg.status} />
@@ -201,8 +212,10 @@ export function ScheduledMessagesTable({
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => handleSendNow(msg.id)}
-                          disabled={sendingId === msg.id || cancellingId === msg.id}
-                          className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-50"
+                          disabled={
+                            sendingId === msg.id || cancellingId === msg.id
+                          }
+                          className="p-1.5 rounded-sm text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-50"
                           title="Send now"
                         >
                           {sendingId === msg.id ? (
@@ -213,8 +226,10 @@ export function ScheduledMessagesTable({
                         </button>
                         <button
                           onClick={() => handleCancel(msg.id)}
-                          disabled={cancellingId === msg.id || sendingId === msg.id}
-                          className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                          disabled={
+                            cancellingId === msg.id || sendingId === msg.id
+                          }
+                          className="p-1.5 rounded-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
                           title="Cancel message"
                         >
                           {cancellingId === msg.id ? (

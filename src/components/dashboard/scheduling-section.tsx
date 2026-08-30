@@ -43,7 +43,7 @@ export function SchedulingSection({ initialMessages }: SchedulingSectionProps) {
             scheduledFor: msg.scheduled_for,
             status: msg.status,
             createdAt: msg.created_at,
-          })
+          }),
         );
         setMessages(formatted);
       }
@@ -57,9 +57,7 @@ export function SchedulingSection({ initialMessages }: SchedulingSectionProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium">
-          Schedule Messages
-        </h2>
+        <h2 className="font-serif text-2xl text-ink">Schedule Messages</h2>
         <p className="text-muted-foreground mt-1 text-sm">
           Schedule SMS messages to be sent during the daily cron job.
         </p>
@@ -69,11 +67,14 @@ export function SchedulingSection({ initialMessages }: SchedulingSectionProps) {
 
       <div className="relative">
         {isRefreshing && (
-          <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
-            <div className="text-sm text-teal-900/50">Refreshing...</div>
+          <div className="absolute inset-0 bg-surface z-10 flex items-center justify-center rounded-sm">
+            <div className="text-sm text-muted">Refreshing...</div>
           </div>
         )}
-        <ScheduledMessagesTable messages={messages} onCancelled={refreshMessages} />
+        <ScheduledMessagesTable
+          messages={messages}
+          onCancelled={refreshMessages}
+        />
       </div>
     </div>
   );

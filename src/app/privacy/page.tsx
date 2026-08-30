@@ -9,28 +9,24 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="bg-cream text-teal-900 font-sans min-h-screen relative overflow-x-hidden selection:bg-em-purple-300/30 selection:text-teal-900">
+    <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
       {/* Background Grain Texture */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-grain mix-blend-multiply" />
 
       {/* Ambient Background Gradients */}
-      <div className="fixed top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-em-purple-300/15 rounded-full blur-[120px] pointer-events-none z-0" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-em-yellow-400/10 rounded-full blur-[100px] pointer-events-none z-0" />
 
       <Navigation />
 
       <main className="relative z-10 py-24 px-6">
         <div className="max-w-3xl mx-auto">
-          <h1 className="font-serif text-4xl md:text-5xl text-navy font-medium mb-4">
+          <h1 className="font-serif text-4xl md:text-5xl text-ink mb-4">
             Privacy Policy
           </h1>
-          <p className="text-teal-900/60 mb-12">
-            Last updated: February 24, 2026
-          </p>
+          <p className="text-muted mb-12">Last updated: February 24, 2026</p>
 
-          <div className="prose prose-teal max-w-none space-y-8 text-teal-900/80">
+          <div className="prose prose-teal max-w-none space-y-8 text-ink">
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Introduction
               </h2>
               <p className="leading-relaxed">
@@ -42,7 +38,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Information We Collect
               </h2>
               <p className="leading-relaxed mb-4">
@@ -78,7 +74,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 How We Use Your Information
               </h2>
               <p className="leading-relaxed mb-4">
@@ -94,8 +90,8 @@ export default function PrivacyPage() {
               </ul>
             </section>
 
-            <section className="bg-white/40 backdrop-blur-sm rounded-2xl p-6 border border-white/60">
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+            <section className="bg-surface rounded-sm p-6 border border-rule">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 SMS/Mobile Messaging Privacy
               </h2>
               <p className="leading-relaxed mb-4">
@@ -107,9 +103,9 @@ export default function PrivacyPage() {
                   <strong>
                     No mobile information will be shared with third
                     parties/affiliates for marketing/promotional purposes. All
-                    categories of personal data exclude text messaging originator
-                    opt-in data and consent; this information will not be shared
-                    with any third parties.
+                    categories of personal data exclude text messaging
+                    originator opt-in data and consent; this information will
+                    not be shared with any third parties.
                   </strong>
                 </li>
                 <li>
@@ -134,7 +130,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Data Sharing
               </h2>
               <p className="leading-relaxed mb-4">
@@ -162,7 +158,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Data Retention
               </h2>
               <p className="leading-relaxed">
@@ -175,7 +171,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Data Security
               </h2>
               <p className="leading-relaxed">
@@ -187,9 +183,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
-                Your Rights
-              </h2>
+              <h2 className="font-serif text-2xl text-ink mb-4">Your Rights</h2>
               <p className="leading-relaxed mb-4">
                 Depending on your location, you may have certain rights
                 regarding your personal information, including:
@@ -208,7 +202,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Children&apos;s Privacy
               </h2>
               <p className="leading-relaxed">
@@ -220,7 +214,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+              <h2 className="font-serif text-2xl text-ink mb-4">
                 Changes to This Policy
               </h2>
               <p className="leading-relaxed">
@@ -232,9 +226,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-navy font-medium mb-4">
-                Contact Us
-              </h2>
+              <h2 className="font-serif text-2xl text-ink mb-4">Contact Us</h2>
               <p className="leading-relaxed">
                 If you have any questions about this Privacy Policy or our data
                 practices, please contact us at:

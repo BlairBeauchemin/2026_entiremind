@@ -49,14 +49,14 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
     >
       <div className="text-center space-y-2">
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-full bg-em-purple-300/20 flex items-center justify-center">
-            <Target className="w-6 h-6 text-em-purple-400" />
+          <div className="w-12 h-12 rounded-full bg-cobalt-wash flex items-center justify-center">
+            <Target className="w-6 h-6 text-cobalt" />
           </div>
         </div>
-        <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
+        <h1 className="font-serif text-2xl md:text-3xl text-ink">
           What do you want to manifest?
         </h1>
-        <p className="text-teal-900/60 text-sm">
+        <p className="text-muted text-sm">
           Share your intention. This is the beginning of your journey.
         </p>
       </div>
@@ -65,7 +65,7 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
         <div className="space-y-2">
           <Label
             htmlFor="intention"
-            className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40"
+            className="text-[10px] font-medium uppercase tracking-widest text-muted"
           >
             Your Intention
           </Label>
@@ -75,12 +75,12 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
             onChange={(e) => setIntention(e.target.value)}
             placeholder="I want to manifest..."
             rows={4}
-            className="w-full px-4 py-3 bg-white/60 border border-white/60 rounded-xl text-navy placeholder:text-teal-900/30 resize-none focus:outline-none focus:ring-2 focus:ring-em-purple-300/30"
+            className="w-full px-4 py-3 bg-surface border border-rule rounded-sm text-ink placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-cobalt"
             autoFocus
           />
         </div>
 
-        <p className="text-xs text-teal-900/40 italic">
+        <p className="text-xs text-muted italic">
           &quot;What you seek is seeking you.&quot; — Rumi
         </p>
 
@@ -92,14 +92,14 @@ export function IntentionStep({ onNext, onBack }: IntentionStepProps) {
             variant="outline"
             aria-label="Go back"
             onClick={onBack}
-            className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+            className="h-12 px-4 border-rule text-muted hover:bg-surface rounded-sm"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <Button
             type="submit"
             disabled={isLoading}
-            className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium"
+            className="flex-1 h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

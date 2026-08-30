@@ -1,13 +1,23 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Karla, Prata } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Serif carries meaning, sans carries mechanics. Prata ships a single weight,
+// which is why headings earn hierarchy by size rather than by bolding.
+const prata = Prata({
+  variable: "--font-prata",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400"],
+  display: "swap",
+});
+
+const karla = Karla({
+  variable: "--font-karla",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -46,20 +56,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       {gtmId && <GoogleTagManager gtmId={gtmId} />}
-      <body className={`${inter.variable} font-sans antialiased min-h-screen`}>
+      <body
+        className={`${prata.variable} ${karla.variable} font-sans antialiased min-h-screen`}
+      >
         {children}
       </body>
     </html>

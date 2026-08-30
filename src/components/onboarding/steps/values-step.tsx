@@ -40,10 +40,10 @@ export function ValuesStep({
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h1 className="font-serif text-2xl md:text-3xl text-navy font-medium">
+        <h1 className="font-serif text-2xl md:text-3xl text-ink">
           Pick the three that matter most — not the ones that should.
         </h1>
-        <p className="text-teal-900/60 text-sm">
+        <p className="text-muted text-sm">
           {selected.length} of {VALUES_PICK} chosen
         </p>
       </div>
@@ -61,8 +61,8 @@ export function ValuesStep({
               onClick={() => toggle(option.id)}
               className={`px-4 py-2 rounded-full border text-sm font-medium transition-colors ${
                 isSelected
-                  ? "bg-em-purple-300/40 border-em-purple-400 text-navy"
-                  : "bg-white/60 border-white/60 text-teal-900/80 hover:bg-white/80"
+                  ? "bg-cobalt-wash border-cobalt text-ink"
+                  : "bg-surface border-rule text-ink hover:border-cobalt"
               } ${atCap ? "opacity-40" : ""}`}
             >
               {option.label}
@@ -77,7 +77,7 @@ export function ValuesStep({
           variant="outline"
           aria-label="Go back"
           onClick={onBack}
-          className="h-12 px-4 border-teal-900/20 text-teal-900/60 hover:bg-white/40 rounded-xl"
+          className="h-12 px-4 border-rule text-muted hover:bg-surface rounded-sm"
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -85,7 +85,7 @@ export function ValuesStep({
           type="button"
           onClick={onNext}
           disabled={!complete}
-          className="flex-1 h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium disabled:opacity-40"
+          className="flex-1 h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium disabled:opacity-40"
         >
           Continue
         </Button>

@@ -262,7 +262,7 @@ export default async function FounderPage() {
     <div className="space-y-10">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl md:text-4xl text-navy font-medium">
+          <h1 className="font-serif text-3xl md:text-4xl text-ink">
             Founder Review
           </h1>
           <p className="text-muted-foreground mt-2">
@@ -271,7 +271,7 @@ export default async function FounderPage() {
           </p>
           <Link
             href="/dashboard/founder/marketing"
-            className="text-sm text-em-purple-400 hover:underline mt-1 inline-block"
+            className="text-sm text-cobalt hover:underline mt-1 inline-block"
           >
             Marketing Engine →
           </Link>
@@ -280,7 +280,7 @@ export default async function FounderPage() {
       </div>
 
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
+        <h2 className="font-serif text-2xl text-ink mb-2">
           Intention Shift Suggestions
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
@@ -291,7 +291,7 @@ export default async function FounderPage() {
       </div>
 
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
+        <h2 className="font-serif text-2xl text-ink mb-2">
           Technique Playbook
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
@@ -303,7 +303,7 @@ export default async function FounderPage() {
       </div>
 
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
+        <h2 className="font-serif text-2xl text-ink mb-2">
           Acquisition Funnel
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
@@ -314,9 +314,7 @@ export default async function FounderPage() {
       </div>
 
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
-          Onboarding Funnel
-        </h2>
+        <h2 className="font-serif text-2xl text-ink mb-2">Onboarding Funnel</h2>
         <p className="text-sm text-muted-foreground mb-4">
           Distinct users who reached each step of the archetype-discovery flow
           (last 30 days). Watch for the biggest drops.
@@ -325,9 +323,7 @@ export default async function FounderPage() {
       </div>
 
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
-          Per-User Insights
-        </h2>
+        <h2 className="font-serif text-2xl text-ink mb-2">Per-User Insights</h2>
         <p className="text-sm text-muted-foreground mb-4">
           Memory blob, recent themes, sentiment trend, and reply rate by content
           type for each user. Click to expand.
@@ -338,9 +334,7 @@ export default async function FounderPage() {
       <SchedulingSection initialMessages={formattedScheduledMessages} />
 
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium mb-2">
-          Testimonials
-        </h2>
+        <h2 className="font-serif text-2xl text-ink mb-2">Testimonials</h2>
         <p className="text-sm text-muted-foreground mb-4">
           Replies to testimonial requests land here. Approve only when the
           user&apos;s words clearly grant permission to share.
@@ -349,7 +343,7 @@ export default async function FounderPage() {
       </div>
 
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium mb-4">
+        <h2 className="font-serif text-2xl text-ink mb-4">
           User Engagement Signals
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
@@ -364,9 +358,7 @@ export default async function FounderPage() {
       </div>
 
       <div>
-        <h2 className="font-serif text-2xl text-navy font-medium mb-4">
-          User Messages
-        </h2>
+        <h2 className="font-serif text-2xl text-ink mb-4">User Messages</h2>
         <FounderMessageTable messages={formattedMessages} />
       </div>
     </div>

@@ -49,11 +49,11 @@ export function PartialReveal({
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 rounded-full bg-em-purple-300/20 flex items-center justify-center"
+          className="w-12 h-12 rounded-full bg-cobalt-wash flex items-center justify-center"
         >
-          <Sparkles className="w-6 h-6 text-em-purple-400" />
+          <Sparkles className="w-6 h-6 text-cobalt" />
         </motion.div>
-        <p className="text-teal-900/60 text-sm">Reading your answers…</p>
+        <p className="text-muted text-sm">Reading your answers…</p>
       </motion.button>
     );
   }
@@ -69,20 +69,20 @@ export function PartialReveal({
       className="space-y-8 text-center"
     >
       <section className="space-y-3">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted">
           You are
         </p>
-        <h1 className="font-serif text-3xl text-navy font-medium">{name}</h1>
-        <p className="text-teal-900/70 text-sm leading-relaxed">{hook}</p>
+        <h1 className="font-serif text-3xl text-ink">{name}</h1>
+        <p className="text-muted text-sm leading-relaxed">{hook}</p>
       </section>
 
       {/* Honest preview of what the full reading contains — teased, not tricked. */}
-      <section className="space-y-3 rounded-2xl bg-white/40 border border-white/60 p-5 text-left">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-teal-900/40 flex items-center gap-1.5">
+      <section className="space-y-3 rounded-sm bg-surface border border-rule p-5 text-left">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted flex items-center gap-1.5">
           <Lock className="w-3 h-3" />
           In your full reading
         </p>
-        <ul className="space-y-2 text-sm text-teal-900/70">
+        <ul className="space-y-2 text-sm text-muted">
           <li>Your inner critic&apos;s favorite trick — named</li>
           <li>
             What your {name.replace(/^The\s+/, "")} pattern means day to day
@@ -95,11 +95,11 @@ export function PartialReveal({
         <Button
           type="button"
           onClick={onUnlock}
-          className="w-full h-12 bg-navy hover:bg-navy/90 text-white rounded-xl font-medium"
+          className="w-full h-12 bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm font-medium"
         >
           Unlock my full reading
         </Button>
-        <p className="text-xs text-teal-900/50">
+        <p className="text-xs text-muted">
           Free. We&apos;ll ask for your email so it&apos;s yours to keep.
         </p>
       </div>
