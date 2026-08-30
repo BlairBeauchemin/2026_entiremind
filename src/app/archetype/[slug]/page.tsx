@@ -55,7 +55,7 @@ export default async function ArchetypePage({
         </p>
 
         <div className="space-y-4">
-          <h1 className="font-serif text-4xl md:text-5xl text-ink">
+          <h1 className="font-serif text-display text-ink">
             {content.name}
           </h1>
           <p className="font-serif text-xl text-cobalt">{content.essence}</p>

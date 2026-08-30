@@ -9,7 +9,9 @@
  * uses foil. It has to survive being printed, so there are no gradients, no
  * glow, and no drop shadows anywhere in this file.
  *
- * There is deliberately no dark mode.
+ * There is deliberately no dark mode and no theme toggle. The one exception is
+ * a place, not a mode: The Space (/space) is a night sky with its own bounded
+ * ramp. See the "One Night Rule" in DESIGN.md.
  */
 
 @theme inline {
@@ -88,6 +90,13 @@
   --text-display--line-height: 1.08;
   --text-display--letter-spacing: -0.01em;
 
+  /* Section openers sit between heading and display. This step was found by
+   * scanning the built pages rather than designed up front: the landing page
+   * was already rendering 48–60px here via text-5xl/6xl, and the ramp had no
+   * name for it. The clamp also brings mobile down from a flat 48px. */
+  --text-section: clamp(2rem, 1.5rem + 2.2vw, 3.75rem);
+  --text-section--line-height: 1;
+
   --text-heading: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
   --text-heading--line-height: 1.18;
 
@@ -98,7 +107,7 @@
    * tracked caps read as engraved. Both steps below carry their own. */
   --text-label: 0.6875rem;
   --text-label--line-height: 1.3;
-  --text-label--letter-spacing: 0.2em;
+  --text-label--letter-spacing: 0.1em;
 
   --text-attribution: 0.625rem;
   --text-attribution--line-height: 1.3;

@@ -15,7 +15,7 @@ export function Testimonials() {
           </div>
 
           <div className="space-y-12 order-1 lg:order-2">
-            <h2 className="font-serif text-5xl md:text-6xl text-ink leading-tight">
+            <h2 className="font-serif text-section text-ink leading-tight">
               What You&apos;ll Experience
             </h2>
 

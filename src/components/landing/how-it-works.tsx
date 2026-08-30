@@ -36,7 +36,7 @@ export function HowItWorks() {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
           <div className="max-w-2xl">
-            <h2 className="font-serif text-5xl md:text-6xl mb-6 italic">
+            <h2 className="font-serif text-section mb-6 italic">
               How It Works
             </h2>
             <p className="text-linen/80 text-xl font-light font-sans">

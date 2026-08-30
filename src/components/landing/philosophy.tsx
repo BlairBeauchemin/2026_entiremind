@@ -4,7 +4,7 @@ export function Philosophy() {
   return (
     <section id="section-philosophy" className="py-32 relative overflow-hidden">
       <div className="max-w-3xl mx-auto px-6 text-center space-y-8">
-        <h2 className="font-serif text-5xl md:text-6xl text-ink">
+        <h2 className="font-serif text-section text-ink">
           The Philosophy of Less
         </h2>
         <p className="text-xl text-ink leading-relaxed font-light font-sans">

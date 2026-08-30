@@ -19,7 +19,7 @@ export default function TermsPage() {
 
       <main className="relative z-10 py-24 px-6">
         <div className="max-w-3xl mx-auto">
-          <h1 className="font-serif text-4xl md:text-5xl text-ink mb-4">
+          <h1 className="font-serif text-display text-ink mb-4">
             Terms of Service
           </h1>
           <p className="text-muted mb-12">Last updated: February 10, 2026</p>

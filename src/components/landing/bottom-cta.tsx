@@ -16,7 +16,7 @@ export function BottomCTA() {
     <>
       <section className="py-24 bg-cobalt relative overflow-hidden">
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-          <h2 className="font-serif text-4xl md:text-5xl text-linen mb-6">
+          <h2 className="font-serif text-section text-linen mb-6">
             Ready to Transform Your Intentions?
           </h2>
           <p className="text-lg text-linen/80 mb-10 font-sans font-light">

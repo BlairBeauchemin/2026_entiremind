@@ -94,7 +94,7 @@ export function SacredValues() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="font-serif text-5xl md:text-6xl text-ink tracking-tight"
+          className="font-serif text-section text-ink tracking-tight"
         >
           The Philosophy of Less
         </motion.h2>

@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-30T00:00:00.000Z",
+  "title": "Design System: Entiremind",
+  "extensions": {
+    "colorMeta": {
+      "cobalt": {
+        "role": "primary",
+        "displayName": "Structural Cobalt",
+        "canonical": "#2A3A9C",
+        "tonalRamp": ["#0B0F29", "#131A45", "#1B2461", "#233285", "#2A3A9C", "#5765B5", "#8B95CE", "#C5CAE6"]
+      },
+      "cobalt-deep": {
+        "role": "primary",
+        "displayName": "Pressed Cobalt",
+        "canonical": "#233285",
+        "tonalRamp": ["#090C22", "#10163A", "#171F52", "#1D2969", "#233285", "#4F5CA5", "#8590C4", "#C2C7E2"]
+      },
+      "cobalt-wash": {
+        "role": "primary",
+        "displayName": "Cobalt Wash",
+        "canonical": "#E7E9F4",
+        "tonalRamp": ["#23263A", "#383D5C", "#4E547E", "#6B72A0", "#9198C2", "#B8BDD9", "#E7E9F4", "#F5F6FB"]
+      },
+      "linen": {
+        "role": "neutral",
+        "displayName": "Warm Linen",
+        "canonical": "#F2EFE9",
+        "tonalRamp": ["#26241F", "#3D3A33", "#57534A", "#736E63", "#9B9488", "#C4BEB2", "#F2EFE9", "#FAF8F5"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Raised Paper",
+        "canonical": "#F8F5EE",
+        "tonalRamp": ["#292723", "#413E37", "#5B574E", "#787268", "#A19A8D", "#C9C3B7", "#F8F5EE", "#FCFBF7"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Near-Black Ink",
+        "canonical": "#14120F",
+        "tonalRamp": ["#14120F", "#2B2721", "#443E35", "#5F574B", "#7D7365", "#9E9484", "#C3BBAD", "#E6E1D8"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Faded Ink",
+        "canonical": "#5B5346",
+        "tonalRamp": ["#17140F", "#2C271F", "#433C30", "#5B5346", "#786F5F", "#9A9080", "#C0B7A7", "#E4DED4"]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#D8CFBE",
+        "tonalRamp": ["#282419", "#3F3927", "#585037", "#746A49", "#948960", "#B5AA84", "#D8CFBE", "#EFEAE0"]
+      },
+      "leaf": {
+        "role": "tertiary",
+        "displayName": "Foil Gold",
+        "canonical": "#C9A24B",
+        "tonalRamp": ["#241A08", "#3C2C10", "#57401A", "#755726", "#966F33", "#B58B42", "#C9A24B", "#E3C88A"]
+      },
+      "destructive": {
+        "role": "tertiary",
+        "displayName": "Brick",
+        "canonical": "#9A2B25",
+        "tonalRamp": ["#1F0806", "#360D0A", "#4E1310", "#6B1B17", "#9A2B25", "#C24F48", "#DB8580", "#F0C4C1"]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Night Sky",
+        "canonical": "#070A16",
+        "tonalRamp": ["#070A16", "#0A1428", "#14243F", "#1E3459", "#2C4574", "#436091", "#6C86B3", "#A9BCD6"]
+      },
+      "night-mid": { "role": "neutral", "displayName": "Mid Sky", "canonical": "#0A1428" },
+      "night-horizon": { "role": "neutral", "displayName": "Horizon Glow", "canonical": "#14243F" },
+      "night-raised": { "role": "neutral", "displayName": "Raised Night", "canonical": "#101728" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page opener. One per viewport. Renders 64px at desktop." },
+      "section": { "displayName": "Section", "purpose": "Section openers on the landing page. Renders 48-60px and carries the editorial rhythm." },
+      "heading": { "displayName": "Heading", "purpose": "Sub-heads and card titles. 24-36px." },
+      "lead": { "displayName": "Lead", "purpose": "The paragraph directly under a display or section opener." },
+      "body": { "displayName": "Body", "purpose": "Running text, ~68ch measure. Ink for primary, muted for secondary." },
+      "small": { "displayName": "Small", "purpose": "Dense UI, table cells, helper text, input values." },
+      "label": { "displayName": "Label", "purpose": "Eyebrows, badges, controls. Uppercase, always tracked." },
+      "attribution": { "displayName": "Attribution", "purpose": "Quote sources, timestamps, captions under emblems." },
+      "device": { "displayName": "Device", "purpose": "iOS message facsimile only. Apple's value, not ours. Never product UI." }
+    },
+    "shadows": [
+      {
+        "name": "contact",
+        "value": "0 18px 40px -24px rgba(20, 18, 15, 0.45)",
+        "purpose": "The only elevation shadow in the system. Permitted under the phone mockup, which is an object sitting on the page rather than a raised panel."
+      },
+      {
+        "name": "night-scrim",
+        "value": "text-shadow: 0 2px 24px rgba(7, 10, 22, 0.85)",
+        "purpose": "Darkens the sky directly behind the affirmation at /space so it stays legible over moving stars. A legibility device, not elevation."
+      }
+    ],
+    "motion": [
+      { "name": "ease-out-quint", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default easing for entrances and state transitions. Exponential ease-out from an already-visible default." },
+      { "name": "breath", "value": "13s (4s inhale / 2s hold / 6s exhale / 1s rest)", "purpose": "The /space breathing cycle, published to CSS as --breath." },
+      { "name": "slow-rotate", "value": "90s linear infinite", "purpose": "Ambient line-art rotation on the v2 landing geometry." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "container", "value": "1180px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The main call to action. Deepens on hover; never lifts, scales or glows.",
+      "html": "<button class=\"ds-btn-primary\">Reserve My Spot</button>",
+      "css": ".ds-btn-primary { background: var(--color-cobalt, #2A3A9C); color: var(--color-linen, #F2EFE9); font-family: Karla, ui-sans-serif, sans-serif; font-size: 18px; font-weight: 500; padding: 16px 40px; border: none; border-radius: 2px; cursor: pointer; transition: background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-primary:hover { background: var(--color-cobalt-deep, #233285); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-cobalt, #2A3A9C); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Paired with the primary. A cobalt hairline on paper; fills on hover.",
+      "html": "<button class=\"ds-btn-secondary\">Join the Waitlist</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: var(--color-ink, #14120F); font-family: Karla, ui-sans-serif, sans-serif; font-size: 18px; font-weight: 500; padding: 16px 40px; border: 1px solid var(--color-cobalt, #2A3A9C); border-radius: 2px; cursor: pointer; transition: background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s; } .ds-btn-secondary:hover { background: var(--color-cobalt, #2A3A9C); color: var(--color-linen, #F2EFE9); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-cobalt, #2A3A9C); outline-offset: 2px; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Surface paper on the linen ground, bounded by a hairline. No shadow, ever.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">It Remembers You</h3><p class=\"ds-card-body\">Every reply teaches it a little more about what you're calling in.</p></div>",
+      "css": ".ds-card { background: var(--color-surface, #F8F5EE); border: 1px solid var(--color-rule, #D8CFBE); border-radius: 2px; padding: 32px; } .ds-card-title { font-family: Prata, Georgia, serif; font-weight: 400; font-size: 24px; line-height: 1.18; color: var(--color-ink, #14120F); margin: 0 0 12px; } .ds-card-body { font-family: Karla, ui-sans-serif, sans-serif; font-size: 17px; line-height: 1.6; color: var(--color-muted, #5B5346); margin: 0; }"
+    },
+    {
+      "name": "Card on Cobalt",
+      "kind": "card",
+      "refersTo": "card-on-cobalt",
+      "description": "Inside a cobalt band a card cannot be paper — that is the ground inverted. Depth becomes a deeper cobalt plus a linen hairline, and the step numeral is the one gold on the landing page.",
+      "html": "<div class=\"ds-card-cobalt\"><div class=\"ds-card-cobalt-num\">01</div><h3 class=\"ds-card-cobalt-title\">Discover Your Archetype</h3><p class=\"ds-card-cobalt-body\">A three-minute reflection reveals how you manifest.</p></div>",
+      "css": ".ds-card-cobalt { background: var(--color-cobalt-deep, #233285); border: 1px solid rgba(242, 239, 233, 0.15); border-radius: 2px; padding: 32px; transition: border-color 0.3s; } .ds-card-cobalt:hover { border-color: rgba(242, 239, 233, 0.4); } .ds-card-cobalt-num { font-family: Prata, Georgia, serif; font-style: italic; font-size: 36px; color: var(--color-leaf, #C9A24B); margin-bottom: 32px; } .ds-card-cobalt-title { font-family: Prata, Georgia, serif; font-style: italic; font-weight: 400; font-size: 24px; color: var(--color-linen, #F2EFE9); margin: 0 0 12px; } .ds-card-cobalt-body { font-family: Karla, ui-sans-serif, sans-serif; font-size: 14px; line-height: 1.625; color: rgba(242, 239, 233, 0.8); margin: 0; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Surface fill on a rule hairline. Focus shifts the border to cobalt and adds the ring.",
+      "html": "<input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\" />",
+      "css": ".ds-input { background: var(--color-surface, #F8F5EE); color: var(--color-ink, #14120F); font-family: Karla, ui-sans-serif, sans-serif; font-size: 14px; height: 48px; width: 280px; padding: 4px 12px; border: 1px solid var(--color-rule, #D8CFBE); border-radius: 2px; outline: none; caret-color: var(--color-cobalt, #2A3A9C); transition: border-color 0.2s; } .ds-input::placeholder { color: var(--color-muted, #5B5346); } .ds-input:focus-visible { border-color: var(--color-cobalt, #2A3A9C); outline: 2px solid var(--color-cobalt, #2A3A9C); outline-offset: 2px; }"
+    },
+    {
+      "name": "Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "The one place the pill is allowed. Tracked caps on a wash ground.",
+      "html": "<span class=\"ds-badge\">Two Months Free</span>",
+      "css": ".ds-badge { display: inline-block; background: var(--color-cobalt-wash, #E7E9F4); color: var(--color-ink, #14120F); font-family: Karla, ui-sans-serif, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 16px; border-radius: 999px; }"
+    },
+    {
+      "name": "Error Panel",
+      "kind": "custom",
+      "refersTo": "error-panel",
+      "description": "The single status treatment. A destructive tint with a destructive hairline; colour is never the only signal.",
+      "html": "<div class=\"ds-error\">Something went wrong saving your intention. Try again.</div>",
+      "css": ".ds-error { background: color-mix(in srgb, var(--color-destructive, #9A2B25) 10%, var(--color-linen, #F2EFE9)); color: var(--color-destructive, #9A2B25); border: 1px solid color-mix(in srgb, var(--color-destructive, #9A2B25) 25%, transparent); border-radius: 2px; padding: 12px; font-family: Karla, ui-sans-serif, sans-serif; font-size: 14px; line-height: 1.625; }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Fixed, opaque linen, one hairline. Links resolve to cobalt on hover — cobalt doing its documented job as the link colour.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-mark\">Entiremind</span><div class=\"ds-nav-links\"><a href=\"#\" class=\"ds-nav-link\">Philosophy</a><a href=\"#\" class=\"ds-nav-link\">The Loop</a><a href=\"#\" class=\"ds-nav-link\">Membership</a></div></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; background: var(--color-linen, #F2EFE9); border-bottom: 1px solid var(--color-rule, #D8CFBE); height: 96px; padding: 0 24px; } .ds-nav-mark { font-family: Prata, Georgia, serif; font-size: 30px; letter-spacing: 2px; color: var(--color-ink, #14120F); } .ds-nav-links { display: flex; gap: 40px; } .ds-nav-link { font-family: Karla, ui-sans-serif, sans-serif; font-size: 14px; letter-spacing: 0.025em; color: var(--color-ink, #14120F); text-decoration: none; transition: color 0.2s; } .ds-nav-link:hover { color: var(--color-cobalt, #2A3A9C); } .ds-nav-link:focus-visible { outline: 2px solid var(--color-cobalt, #2A3A9C); outline-offset: 2px; }"
+    },
+    {
+      "name": "Night Surface",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The Space. A dark surface, not a dark mode. Cobalt is unavailable here at 2.05:1, so the company is carried by linen and gold.",
+      "html": "<div class=\"ds-night\"><p class=\"ds-night-affirmation\">I am building something that outlasts my doubt.</p><span class=\"ds-night-hint\">Tap for the next</span></div>",
+      "css": ".ds-night { background: radial-gradient(130% 100% at 50% 8%, var(--color-night-horizon, #14243F) 0%, var(--color-night-mid, #0A1428) 38%, var(--color-night, #070A16) 100%); padding: 48px 32px; border-radius: 2px; text-align: center; } .ds-night-affirmation { font-family: Prata, Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.3; color: var(--color-linen, #F2EFE9); text-shadow: 0 2px 24px rgba(7, 10, 22, 0.85); margin: 0 0 32px; } .ds-night-hint { font-family: Karla, ui-sans-serif, sans-serif; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(242, 239, 233, 0.6); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Printed Almanac",
+    "overview": "An almanac is a daily companion you keep on a shelf — printed, dated, plain, and consulted every morning. It is not an app pretending to be paper; it is paper that happens to arrive by text. Entiremind sends one question a day and reads the answer, and the whole visual system exists to make that exchange feel like something that was set in type rather than rendered on a screen.\n\nThat constraint is literal, not romantic. Physical journals and card decks are a stated product direction, so the identity is built to survive being printed: no gradients standing in for depth, no glow, no backlit colour, no drop shadows. Depth is a change of paper — linen to surface, or linen to cobalt — and hairlines in a warm rule colour. Anything that would vanish on a press is not in the system.\n\nThe register is calm and warm, never clinical and never mystical-for-its-own-sake. The house stance is \"thoughts are material, not master\", so the visual language may carry symbolism but must never imply prediction. There is exactly one place that leaves daylight, and it is a place rather than a mode: The Space (/space) is a night sky.",
+    "keyCharacteristics": [
+      "Warm linen ground carries almost every surface; cobalt is spent, not sprayed",
+      "High-contrast serif for meaning, humanist grotesque for mechanics — never blurred",
+      "Near-square corners (2px); the pill is reserved for badges and true circles",
+      "No shadows, no glass, no gradients, with two named exceptions",
+      "Emphasis is a mid-sentence italic, never a heavier weight",
+      "Gold behaves like foil: it appears only where it can physically be seen"
+    ],
+    "rules": [
+      { "name": "The Foil Rule", "body": "Gold lives on the dark grounds; ink lives on linen. A line-art emblem on cobalt or night is gold. The same emblem on linen is ink, with gold permitted only as small sparkles that carry no meaning. Gold on linen measures 2.09:1 — it fails even the 3.0:1 floor for non-text graphics, so this is a legibility fact, not taste.", "section": "colors" },
+      { "name": "The One Night Rule", "body": "The Space is a dark surface, not a dark mode. A mode is the same interface re-coloured and follows the viewer everywhere; a surface is one place you deliberately go, the way a full-bleed cobalt band is one place. The sky is the content, not a theme applied to content. No toggle, no prefers-color-scheme, and nothing outside /space may touch the night tokens. Cobalt measures 2.05:1 there and is unavailable — on night the company is carried by linen and gold.", "section": "colors" },
+      { "name": "The Company Rule", "body": "Cobalt owns every structural surface. A user's archetype colour appears in exactly two places — the quiz reveal and the share card — and nowhere else. Cobalt is not an archetype colour; the Visionary gets its own accent like the other three, and those four accents are still unchosen. Do not invent them before the reveal is designed.", "section": "colors" },
+      { "name": "The No Spare Colour Rule", "body": "Every value has one job. A new colour has to displace one rather than join them.", "section": "colors" },
+      { "name": "The Mid-Sentence Italic Rule", "body": "Emphasis is set by switching a clause to italic inside the sentence, never by bolding, colouring or enlarging it. This is the single most characteristic typographic move in the system, and it is also a necessity: Prata ships one weight, so asking for bold produces a synthesised smear. Headings are pinned to 400 in the base layer.", "section": "typography" },
+      { "name": "The Tracked Caps Rule", "body": "No uppercase string anywhere without letter-spacing. Untracked caps read as shouting; tracked caps read as engraved. The floor in practice is 0.1em, and the attribution step goes to 0.18em.", "section": "typography" },
+      { "name": "The Two Voices Rule", "body": "The serif carries meaning, the sans carries mechanics, and they never blur. A button never uses the serif; a headline never uses the sans.", "section": "typography" },
+      { "name": "The Foreign Chrome Rule", "body": "phone-mockup.tsx renders someone else's design system on purpose. Its bubble radius and its 15px/10px type are Apple's values, and the device step exists so they sit on a documented ramp instead of reading as drift. The messages inside it are set in the sans: a text message carries no typography at all, and setting the mockup in Prata would advertise something the product cannot do.", "section": "typography" },
+      { "name": "The Pressed-Flat Rule", "body": "If an element needs to feel raised, change its paper. Do not reach for a shadow, a blur, a glass panel, or a glow — all four were removed from this codebase deliberately and none of them survive being printed.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do let linen carry most of the page, and spend cobalt where it means something.",
+      "Do put gold on cobalt or on night, and ink on linen.",
+      "Do set emphasis with a mid-sentence italic rather than a heavier weight.",
+      "Do track every uppercase string — 0.1em floor, 0.18em for attribution.",
+      "Do express depth as a change of ground plus a 1px rule hairline.",
+      "Do pair every error colour with a worded message.",
+      "Do resolve every layout at 390px with no horizontal page scroll."
+    ],
+    "donts": [
+      "Don't use gold as text, on any ground, at any size.",
+      "Don't add a drop shadow, glass panel, blurred orb or background gradient to make something feel raised.",
+      "Don't reintroduce teal #204147, navy #2E2A58, purple #cbbbe3, yellow #f9d97a or cream #fdfbf7. They resolve to nothing now, by design.",
+      "Don't use the night tokens outside /space, or add a theme toggle.",
+      "Don't reach for cobalt on the night ground — it measures 2.05:1 and vanishes.",
+      "Don't invent archetype accent colours before the reveal is designed.",
+      "Don't put a colour value in a JS prop (rgb(...) inside a style or an animate object). The detector only reads literal hex and class names, so a colour hidden there survives migrations invisibly — this happened twice in this codebase.",
+      "Don't copy the reference brand's commerce patterns — mystery-discount popups, struck-through pricing and volume-purchase urgency all fail the trusted-friend test in docs/design-philosophy.md, which outranks any visual reference.",
+      "Don't let a surface imply prediction. Symbolism yes; fortune-telling no."
+    ]
+  }
+}

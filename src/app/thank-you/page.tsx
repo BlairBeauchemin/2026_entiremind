@@ -23,7 +23,7 @@ export default function ThankYouPage() {
             <Check className="w-8 h-8 text-ink" />
           </div>
 
-          <h1 className="font-serif text-4xl md:text-5xl text-ink mb-6">
+          <h1 className="font-serif text-display text-ink mb-6">
             You&apos;re on the list
           </h1>
 
