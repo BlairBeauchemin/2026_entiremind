@@ -92,7 +92,9 @@ npx shadcn@latest add [component]
   cobalt, gold as foil-style ornament only. It should read as *printed*, not
   rendered — physical journals and decks are a stated future direction, so no
   identity may depend on gradients, glow, or backlit colour. There is **no dark
-  mode** in scope.
+  mode** and no theme toggle. The one exception is a *place*, not a mode: The Space
+  (`/space`) is a night sky, with its own bounded token ramp that nothing else may
+  use — see the "One night surface" rule in `DESIGN.md`.
 
 **Palette drift — resolved August 2026.** This file previously declared teal
 `#204147` primary, soft purple `#cbbbe3` secondary and warm yellow `#f9d97a` accent,

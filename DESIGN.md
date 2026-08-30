@@ -11,6 +11,10 @@ colors:
   muted: "#5B5346"
   leaf: "#C9A24B"
   rule: "#D8CFBE"
+  night: "#070A16"
+  night-mid: "#0A1428"
+  night-horizon: "#14243F"
+  night-raised: "#101728"
 typography:
   display:
     fontFamily: "Prata, Georgia, 'Times New Roman', serif"
@@ -132,6 +136,10 @@ rendered. That is a deliberate constraint, not a style preference: physical jour
 and card decks are a stated future direction, and an identity built on gradients,
 glow or backlit colour cannot survive being put on paper.
 
+There is **one exception, and it is a place rather than a mode**: The Space
+(`/space`) is a night sky. See "One night surface" below. Everything else is
+daylight, and there is no theme switch anywhere in the product.
+
 The register is calm and warm, never clinical and never mystical-for-its-own-sake.
 The house stance is *"thoughts are material, not master"* — the visual language may
 carry symbolism, but it must never imply prediction.
@@ -162,15 +170,17 @@ from a change of paper, not from a shadow. **Ink `#14120F`** is body and heading
 **Leaf `#C9A24B`** is gold, and it is **ornament only** — emblems, hairline rules,
 and small marks. It is never text, never a button, never a fill behind text. Gold on
 linen measures 2.09:1, which fails even the 3.0:1 floor for non-text graphics, so the
-restriction below is a legibility fact, not taste.
+restriction below is a legibility fact, not taste. Gold has exactly two homes: cobalt
+and night.
 
 ### Named Rules
 
-**Gold lives on cobalt, ink lives on linen.** A line-art emblem rendered on a cobalt
-ground is gold. The same emblem on a linen ground is **ink**, with gold permitted only
-as small decorative sparkles that carry no meaning. This is what the reference brand
-actually does — foil on the coloured boxes, black line art on the linen cover — and
-it is the only way one gold value survives both grounds.
+**Gold lives on the dark grounds, ink lives on linen.** A line-art emblem rendered on
+cobalt or on night is gold (4.01:1 and 8.23:1). The same emblem on a linen ground is
+**ink**, with gold permitted only as small decorative sparkles that carry no meaning.
+This is what the reference brand actually does — foil on the coloured boxes, black
+line art on the linen cover — and it is the only way one gold value survives every
+ground in the system.
 
 **Cobalt is the company; the archetype colour is the person.** Cobalt owns every
 structural surface. A user's archetype colour appears in exactly two places — the
@@ -179,6 +189,35 @@ colour; The Visionary gets its own accent like the other three.
 
 **Never show a colour with no job.** Every value above has one role. If a new colour
 is needed, it has to displace one of these rather than join them.
+
+**One night surface, and it is not a dark mode.** The Space (`/space`) is a night
+sky, and it is the only place in the product that is not on linen. The distinction is
+load-bearing: a dark *mode* is the same interface re-coloured and follows the viewer
+everywhere, which this product does not have and will not get. A dark *surface* is
+one place you deliberately go, the way a full-bleed cobalt band is one place — the
+sky is the content, not a theme applied to content. There is no toggle, nothing
+outside `/space` may use the night tokens, and `prefers-color-scheme` is not read
+anywhere.
+
+The night ramp is `night #070A16` (the sky at its darkest), `night-mid #0A1428` and
+`night-horizon #14243F` (the two stops that make the sky a real gradient, which a sky
+genuinely is — the no-gradient rule is about faking depth on paper, not about
+depicting an actual night), and `night-raised #101728` (the drawer sitting on the
+sky).
+
+What changes on that ground, measured:
+
+| | on night | |
+|---|---|---|
+| Linen text | 17.20:1 | body and the affirmation |
+| Gold ornament | 8.23:1 | the stars — this is gold's second home |
+| Rule hairline | 12.77:1 | borders |
+| **Cobalt** | **2.05:1** | **unavailable — it disappears** |
+
+So on night the company is carried by **linen and gold**, not by cobalt. A primary
+action there is a *paper* button — linen ground, ink label — because cobalt would
+vanish and gold may never fill a button on any ground. Secondary text bottoms out at
+`linen/60` (6.45:1); `linen/35` measures 2.87:1 and fails.
 
 ### Retired
 
@@ -306,7 +345,7 @@ worded message.
 ## Do's and Don'ts
 
 **Do** let linen carry most of the page, and spend cobalt where it means something.
-**Do** put gold on cobalt and ink on linen.
+**Do** put gold on cobalt or on night, and ink on linen.
 **Do** set emphasis with a mid-sentence italic.
 **Do** track every uppercase string.
 
@@ -314,6 +353,9 @@ worded message.
 **Don't** add a drop shadow to make something feel raised.
 **Don't** reintroduce teal, navy, purple, yellow or cream.
 **Don't** invent archetype accent colours before the reveal is designed.
+**Don't** use the night tokens outside `/space`, or add a theme toggle. One place,
+not a mode.
+**Don't** reach for cobalt on the night ground — it measures 2.05:1 and vanishes.
 **Don't** copy the reference brand's commerce patterns — mystery-discount popups,
 struck-through pricing, and volume-purchase urgency all fail the trusted-friend test
 in `docs/design-philosophy.md`, which outranks any visual reference.
