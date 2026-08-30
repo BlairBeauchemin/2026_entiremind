@@ -60,7 +60,7 @@ function DebugDrawer({ day }: { day: SimDayView }) {
             {d.founder_edited ? " (reply edited by you)" : ""}
           </div>
           {d.proposal.raw && (
-            <pre className="mt-1 whitespace-pre-wrap font-mono text-[11px] text-red-800/80 bg-red-50 rounded-sm p-3 max-h-32 overflow-y-auto">
+            <pre className="mt-1 whitespace-pre-wrap font-mono text-[11px] text-destructive bg-destructive/10 rounded-sm p-3 max-h-32 overflow-y-auto">
               Raw model output (unparseable): {d.proposal.raw}
             </pre>
           )}
@@ -164,7 +164,7 @@ export function ConversationTimeline({ days }: { days: SimDayView[] }) {
                   {day.outbound_text?.length ?? 0} chars
                 </span>
                 {day.debug.fallback && (
-                  <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium">
+                  <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-destructive/10 text-destructive font-medium">
                     <AlertTriangle className="w-3 h-3" />
                     fallback — not AI-generated
                   </span>

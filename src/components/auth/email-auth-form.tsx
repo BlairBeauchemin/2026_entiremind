@@ -81,7 +81,7 @@ export function EmailAuthForm({ onEmailSent }: EmailAuthFormProps) {
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-sm text-red-600"
+            className="text-sm text-destructive"
           >
             {error}
           </motion.p>

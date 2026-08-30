@@ -117,7 +117,7 @@ export function FounderMessageTable({ messages }: FounderMessageTableProps) {
                       msg.status === "delivered" || msg.status === "received"
                         ? "bg-green-100 text-green-700"
                         : msg.status === "failed"
-                          ? "bg-red-100 text-red-700"
+                          ? "bg-destructive/10 text-destructive"
                           : msg.status === "sent"
                             ? "bg-blue-100 text-blue-700"
                             : "bg-cobalt-wash text-muted"

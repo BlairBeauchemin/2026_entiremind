@@ -52,7 +52,7 @@ function getStatusDisplay(status: Subscription["status"]): {
     case "cancelled":
       return {
         label: "Cancelled",
-        className: "bg-red-500/20 text-red-700",
+        className: "bg-destructive/15 text-destructive",
       };
     default:
       return {

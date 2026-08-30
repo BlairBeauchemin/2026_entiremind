@@ -58,7 +58,7 @@ export function GoogleAuthButton() {
         <motion.p
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-sm text-red-600 text-center"
+          className="text-sm text-destructive text-center"
         >
           {error}
         </motion.p>

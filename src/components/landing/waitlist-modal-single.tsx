@@ -262,7 +262,7 @@ export function WaitlistModalSingle({
                 </label>
 
                 {error && (
-                  <p className="text-sm text-red-500 text-center">{error}</p>
+                  <p className="text-sm text-destructive text-center">{error}</p>
                 )}
 
                 <button
