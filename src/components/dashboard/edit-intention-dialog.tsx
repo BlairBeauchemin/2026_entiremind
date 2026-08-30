@@ -70,7 +70,7 @@ export function EditIntentionDialog({
             placeholder="What do you want to manifest?"
             disabled={isPending}
           />
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+          {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         </div>
 
         <div className="flex flex-row justify-end gap-3">

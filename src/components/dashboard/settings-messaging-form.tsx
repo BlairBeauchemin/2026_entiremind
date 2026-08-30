@@ -76,9 +76,9 @@ export function SettingsMessagingForm({ status }: SettingsMessagingFormProps) {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="mt-5 p-4 rounded-sm bg-red-50 border border-red-200"
+          className="mt-5 p-4 rounded-sm bg-destructive/10 border border-destructive/25"
         >
-          <p className="text-sm text-red-600">{error}</p>
+          <p className="text-sm text-destructive">{error}</p>
         </motion.div>
       )}
 

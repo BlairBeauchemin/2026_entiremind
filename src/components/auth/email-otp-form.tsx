@@ -181,7 +181,7 @@ export function EmailOtpForm({ email, onBack }: EmailOtpFormProps) {
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-sm text-center text-red-600"
+            className="text-sm text-center text-destructive"
           >
             {error}
           </motion.p>

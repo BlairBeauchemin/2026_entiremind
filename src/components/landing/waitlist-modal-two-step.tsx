@@ -230,7 +230,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       </div>
 
                       {error && (
-                        <p className="text-sm text-red-500 text-center">
+                        <p className="text-sm text-destructive text-center">
                           {error}
                         </p>
                       )}
@@ -357,7 +357,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       </div>
 
                       {error && (
-                        <p className="text-sm text-red-500 text-center mt-4">
+                        <p className="text-sm text-destructive text-center mt-4">
                           {error}
                         </p>
                       )}

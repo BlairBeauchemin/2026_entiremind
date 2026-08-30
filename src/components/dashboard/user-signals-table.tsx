@@ -38,7 +38,7 @@ function formatTime(iso: string | null): string {
 function getEngagementColor(score: number): string {
   if (score >= 70) return "bg-green-100 text-green-700";
   if (score >= 40) return "bg-yellow-100 text-yellow-700";
-  return "bg-red-100 text-red-700";
+  return "bg-destructive/10 text-destructive";
 }
 
 function getEngagementIcon(score: number) {
@@ -94,7 +94,7 @@ export function UserSignalsTable({
   return (
     <div className="rounded-sm border border-rule bg-surface overflow-hidden">
       {askError && (
-        <div className="text-sm text-red-600 bg-red-50 border-b border-red-200 p-2 px-4">
+        <div className="text-sm text-destructive bg-destructive/10 border-b border-destructive/25 p-2 px-4">
           {askError}
         </div>
       )}
@@ -188,7 +188,7 @@ export function UserSignalsTable({
                   <span
                     className={`text-sm ${
                       signal.consecutiveSilences >= 3
-                        ? "text-red-600 font-medium"
+                        ? "text-destructive font-medium"
                         : "text-ink"
                     }`}
                   >

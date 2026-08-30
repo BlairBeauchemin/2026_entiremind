@@ -130,7 +130,7 @@ export function ContentEditDialog({
 
         <div className="space-y-4">
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-2">
+            <div className="text-sm text-destructive bg-destructive/10 border border-destructive/25 rounded-sm p-2">
               {error}
             </div>
           )}

@@ -262,7 +262,7 @@ export function SimulatorClient({
   return (
     <div className="space-y-8">
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-sm p-3">
+        <div className="text-sm text-destructive bg-destructive/10 border border-destructive/25 rounded-sm p-3">
           {error}
         </div>
       )}
@@ -323,7 +323,7 @@ export function SimulatorClient({
                       void handleDeletePersona(p.id);
                     }}
                     disabled={busy !== null}
-                    className="p-2 text-muted hover:text-red-600 transition-colors"
+                    className="p-2 text-muted hover:text-destructive transition-colors"
                     title="Delete persona"
                   >
                     <Trash2 className="w-4 h-4" />

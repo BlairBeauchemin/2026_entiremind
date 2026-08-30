@@ -58,8 +58,8 @@ function StatusBadge({ status }: { status: string }) {
       icon: <CheckCircle className="w-3 h-3" />,
     },
     failed: {
-      bg: "bg-red-100",
-      text: "text-red-700",
+      bg: "bg-destructive/10",
+      text: "text-destructive",
       icon: <XCircle className="w-3 h-3" />,
     },
     cancelled: {
@@ -155,7 +155,7 @@ export function ScheduledMessagesTable({
   return (
     <div className="space-y-2">
       {error && (
-        <div className="px-4 py-2 bg-red-50 border border-red-200 rounded-sm text-sm text-red-600">
+        <div className="px-4 py-2 bg-destructive/10 border border-destructive/25 rounded-sm text-sm text-destructive">
           {error}
         </div>
       )}
@@ -229,7 +229,7 @@ export function ScheduledMessagesTable({
                           disabled={
                             cancellingId === msg.id || sendingId === msg.id
                           }
-                          className="p-1.5 rounded-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                          className="p-1.5 rounded-sm text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
                           title="Cancel message"
                         >
                           {cancellingId === msg.id ? (
