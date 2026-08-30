@@ -57,19 +57,12 @@ export function SacredHero() {
               </button>
             </div>
 
-            <div className="pt-2 flex items-center justify-center lg:justify-start gap-4 text-sm text-muted font-sans font-light">
-              <div className="flex -space-x-3 opacity-80">
-                {[1, 2, 3].map((i) => (
-                  <img
-                    key={i}
-                    src={`https://i.pravatar.cc/150?u=${i}`}
-                    alt=""
-                    className="w-8 h-8 rounded-full border-2 border-linen grayscale"
-                  />
-                ))}
-              </div>
-              <span>Join 2,000+ others aligning intentions.</span>
-            </div>
+            {/* There is no social proof here on purpose. This slot held
+                "Join 2,000+ others aligning intentions." beside three
+                i.pravatar.cc stock avatars. There are zero users; both the
+                number and the faces were invented, which fails the
+                trusted-friend test in docs/design-philosophy.md. Real proof
+                goes here when it exists, and not before. */}
           </motion.div>
 
           {/* Hero Visual - Phone with Sacred Geometry */}
