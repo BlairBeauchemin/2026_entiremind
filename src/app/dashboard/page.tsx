@@ -6,6 +6,7 @@ import { ArchetypeBanner } from "@/components/dashboard/archetype-banner";
 import { TrialEndedBanner } from "@/components/dashboard/trial-ended-banner";
 import { computeEntitlement } from "@/lib/billing/entitlement";
 import { QuoteOfTheDay } from "@/components/dashboard/quote-of-the-day";
+import { SpaceEntryCard } from "@/components/dashboard/space-entry-card";
 import { pickDeterministicQuote, mapCategoryToQuoteThemes } from "@/lib/quotes";
 import type { Quote } from "@/lib/quotes/types";
 import type { Message } from "@/lib/types";
@@ -31,6 +32,7 @@ export default async function DashboardPage() {
   let personaProfile: PersonaProfile | null = null;
   let trialEnded = false;
   let dailyQuote: Quote | null = null;
+  let hasAffirmations = false;
 
   if (authUser) {
     const { data: userData } = await supabase
@@ -39,6 +41,15 @@ export default async function DashboardPage() {
       .eq("id", authUser.id)
       .single();
     profile = userData;
+
+    // Only whether any exist — the card's copy changes, the list stays in
+    // The Space itself.
+    const { count: affirmationCount } = await supabase
+      .from("affirmations")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", authUser.id)
+      .eq("status", "active");
+    hasAffirmations = (affirmationCount ?? 0) > 0;
 
     // Trial state (own row, RLS-scoped read)
     const { data: subRow } = await supabase
@@ -155,6 +166,10 @@ export default async function DashboardPage() {
 
       {/* Current intention card */}
       {currentIntention && <CurrentIntention intention={currentIntention} />}
+
+      {/* Door into The Space — sits under the intention because it is what you
+          do with it. */}
+      <SpaceEntryCard hasAffirmations={hasAffirmations} />
 
       {/* Quote for today */}
       {dailyQuote && <QuoteOfTheDay quote={dailyQuote} />}

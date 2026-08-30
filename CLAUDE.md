@@ -9,6 +9,7 @@ Entiremind is a **lightly magical, SMS-based manifestation system** that helps u
 The competitive advantage is **learning velocity**, not features. The system operates as a real-time behavioral learning loop that improves through user interaction.
 
 ### Core Philosophy
+
 **Action → Signal → Learning → Adjustment → Action**
 
 - Messages ship quickly
@@ -17,18 +18,21 @@ The competitive advantage is **learning velocity**, not features. The system ope
 - Founder judgment compounds early
 
 ### System Phases
+
 1. **Phase 1 (Pretotype)**: Landing page, email/phone capture, no monetization
 2. **Phase 2 (Evergreen MVP)**: Paid traffic, SMS-first experience, monetization as signal
 
 ## Architecture
 
 ### Primary Components
+
 - **SMS Engine**: Twilio integration for two-way messaging
 - **Web Dashboard**: Minimal profile, subscription status, pause/resume controls (not primary engagement surface)
 - **Signal Storage**: Behavioral signals persisted per user, queryable by founder
 - **Founder Review**: Inspect raw replies, tag patterns, guide system evolution
 
 ### Tech Stack
+
 - **Frontend**: Next.js 16 with App Router, TypeScript, Tailwind CSS v4
 - **Backend**: Supabase (Postgres, Auth, Edge Functions)
 - **Hosting**: Vercel (auto-deploys from `main` branch)
@@ -39,6 +43,7 @@ The competitive advantage is **learning velocity**, not features. The system ope
 - **Payments**: Stripe subscriptions (payment as behavioral signal)
 
 ### Database Tables
+
 - `users` - user profiles with phone, email, timezone
 - `leads` - waitlist signups with name, email, phone
 - `intentions` - user intention statements
@@ -104,6 +109,7 @@ nothing rather than to a silent fallback. Fonts are **Prata** (display) and **Ka
 circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 
 ### Persuasion & Behavioral Design
+
 - **Required reading for any user-facing change**: `docs/design-philosophy.md`
 - Six principles govern onboarding, SMS, dashboard, paywall, and landing decisions:
   **smart defaults, goal-gradient/progress, reciprocity, IKEA/endowment, loss-aversion,
@@ -117,6 +123,7 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
   `docs/plans/2026-07-08-psychology-principles-backlog.md`
 
 ### Dashboard Principles
+
 - Supports trust, reflection, and control
 - NOT the primary engagement surface (SMS is)
 - No leaderboards, streaks, or productivity theater — nothing that induces guilt or a
@@ -136,6 +143,7 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 ## Core User Flows
 
 ### Flow A: Pretotype Signup
+
 1. User lands on landing page
 2. Sees manifestation-first positioning
 3. Submits name, email, and phone via waitlist modal
@@ -143,6 +151,7 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 5. Optional waitlist confirmation SMS
 
 ### Flow B: Onboarding & Intention
+
 1. Welcome SMS
 2. Prompt to state what they want to manifest
 3. User replies in free text
@@ -150,6 +159,7 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 5. Emotional buy-in moment
 
 ### Flow C: Reflection Loop
+
 1. Prompt sent
 2. User replies or stays silent
 3. Signal logged (including silence)
@@ -168,9 +178,11 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 ## Success Metrics
 
 ### North Star
+
 **Unprompted user replies to SMS**
 
 ### Supporting Signals
+
 - Reply rate by prompt type
 - Time-to-reply
 - Message length
@@ -178,6 +190,7 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 - Engagement change after payment
 
 ### Explicit Non-Goals (v0)
+
 - Heavy dashboards
 - Productivity theater
 - Fully autonomous AI
@@ -190,6 +203,7 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 ### Completed (as of May 2026)
 
 #### Authentication System
+
 - **Email magic link auth** via Supabase Auth (no SMS provider needed for MVP)
 - **Google OAuth** via Supabase Auth (requires Google Cloud Console credentials configured in Supabase dashboard)
 - Auth flow: `/auth` page → email input → magic link sent → callback verifies → redirect to dashboard
@@ -198,19 +212,23 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 - Sign out functionality in dashboard sidebar
 
 #### Database Constraints
+
 - `users.phone` has unique constraint - each phone number can only be used by one account (required for SMS routing)
 
 #### Supabase SSR Clients
+
 - `src/lib/supabase/server.ts` - Server Component client with cookie handling
 - `src/lib/supabase/client.ts` - Browser client for Client Components
 - `src/lib/supabase/proxy.ts` - Session refresh helper
 
 #### Database
+
 - `users` table with RLS policies (users can only view/edit their own profile)
 - Auto-create user profile on auth signup via database trigger
 - Schema: id, email (required), phone (optional), name, timezone, status, onboarding_completed
 
 #### Dashboard
+
 - Server Component layout fetches real user data
 - User context provider for client components
 - Settings page with editable profile form (name, email, timezone)
@@ -218,6 +236,7 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 - Sidebar shows real user info + sign out button
 
 **Messages UI (Card-Based Journal Layout):**
+
 - `src/components/dashboard/message-card.tsx` - Card component for paired prompt + reply
 - `src/components/dashboard/message-feed.tsx` - Feed that pairs outbound prompts with inbound replies
 - **Layout**: Surface cards with a hairline `rule` border. The prompt is set in the serif and the reply in the sans — a difference in kind, not in weight. (The old 4px left purple accent is gone: retired colour, and a thick one-sided border is a refused pattern.)
@@ -227,10 +246,12 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 - **Accessibility**: Semantic HTML (`<article>`, `<time>`, `<section>`), ARIA labels, focus states
 
 #### Environment
+
 - Supabase project configured: `cprzebhlwfibajrrtuqp.supabase.co`
 - `.env.local` contains Supabase credentials
 
 #### Production Deployment
+
 - **Domain**: https://www.entiremind.com (canonical; entiremind.com redirects to www)
 - **Hosting**: Vercel (`blairs-projects-7e709a29/2026-entiremind`)
 - **Note**: External webhooks (Stripe, etc.) must use `www.entiremind.com` to avoid 307 redirects
@@ -238,11 +259,13 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 - **Deploy**: Push to `main` branch or run `vercel --prod`
 
 **Configured Services:**
+
 - Twilio webhook: `https://entiremind.com/api/sms/webhook/twilio`
 - Supabase Auth redirect URLs: `https://entiremind.com/**`, `https://www.entiremind.com/**`
 - Supabase Site URL: `https://entiremind.com`
 
 #### SMS Engine (Twilio)
+
 - **Provider layer**: `src/lib/sms/` - Twilio adapter behind a thin abstraction
 - **Send SMS**: `src/lib/sms/index.ts` - wrapper functions
 - **Send endpoint**: `src/app/api/sms/send/route.ts` - founder/admin-only SMS sending
@@ -251,12 +274,14 @@ circles only. There are no drop shadows, glass panels, glow orbs or gradients.
 - **Database**: `messages` table stores all SMS with `provider` and `external_message_id` columns. Historical rows may have `provider = 'telnyx'` from the removed Telnyx integration; the DB CHECK constraint still allows that value for old rows.
 
 **Current Status:**
+
 - Twilio integration complete and configured in `.env.local`
 - Database migration `007_sms_provider_abstraction.sql` has been run
 - **A2P 10DLC approved and working** ✅
 - Telnyx support was fully removed (July 2026) — Twilio is the only provider
 
 **Required env vars (Twilio):**
+
 ```
 TWILIO_ACCOUNT_SID=your_account_sid
 TWILIO_AUTH_TOKEN=your_auth_token
@@ -264,6 +289,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 ```
 
 #### Waitlist & Lead Capture
+
 - **Waitlist modal**: `src/components/waitlist-modal.tsx` - reusable modal for lead capture
 - **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads
 - **Form fields**: name, email, phone (all required)
@@ -271,6 +297,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 - **Integration points**: Hero section, pricing section, navigation "Join Waitlist" button
 
 #### Founder Review Interface
+
 - **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer and scheduling UI
 - **Message table**: `src/components/dashboard/founder-message-table.tsx` - displays all user messages
 - **Scheduling UI**: Schedule, view, send immediately, and cancel SMS messages
@@ -286,6 +313,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 - Shows: direction (in/out), user name, phone, message text, status, timestamp
 
 #### Database Tables Implemented
+
 - `users` - user profiles with phone, email, timezone, onboarding status
 - `leads` - waitlist signups with name, email, phone, source, created_at
 - `intentions` - user intention statements (active/completed/archived)
@@ -296,6 +324,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 - `user_signals` - computed engagement aggregates per user (reply rate, engagement score, consecutive silences, etc.)
 
 #### Stripe Subscriptions
+
 - **Stripe client**: `src/lib/stripe.ts` - Stripe SDK singleton with API version 2026-01-28.clover
 - **Checkout route**: `src/app/api/checkout/route.ts` - Creates Stripe Checkout session for upgrades
 - **Webhook handler**: `src/app/api/webhooks/stripe/route.ts` - Handles checkout.session.completed, customer.subscription.updated/deleted, invoice.payment_failed
@@ -305,10 +334,12 @@ TWILIO_PHONE_NUMBER=+1234567890
 - **Flow**: User clicks Upgrade → redirected to Stripe Checkout → webhook updates DB → user redirected back
 
 **Webhook URL (configure in Stripe Dashboard):**
+
 - Production: `https://www.entiremind.com/api/webhooks/stripe` (must use `www` - non-www redirects cause 307 errors)
 - Events to enable: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
 
 **Required env vars (Stripe):**
+
 ```
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_xxx
 STRIPE_SECRET_KEY=sk_xxx
@@ -318,6 +349,7 @@ STRIPE_YEARLY_PRICE_ID=price_xxx
 ```
 
 #### SMS Scheduling
+
 - **Scheduled messages table**: `scheduled_messages` - stores pending/sent/failed/cancelled scheduled messages
 - **Schedule API**: `src/app/api/schedule/route.ts` - founder-only POST/GET/PATCH for scheduling and cancelling messages
 - **Send Now API**: `src/app/api/schedule/send/route.ts` - founder-only POST to immediately send a scheduled message
@@ -325,20 +357,24 @@ STRIPE_YEARLY_PRICE_ID=price_xxx
 - **Vercel cron**: Configured in `vercel.json` (scheduled sends at 7:40 AM Pacific, AI daily send at 7:45 AM)
 
 **Scheduling Features:**
+
 - Schedule messages with phone number, date/time, and message text
 - View all scheduled messages with status badges (pending/sent/failed/cancelled)
 - Send immediately via "Send Now" button (bypasses cron schedule)
 - Cancel pending messages
 
 **Required env vars (Cron):**
+
 ```
 CRON_SECRET=your_cron_secret
 ```
 
 #### Content Engine (Phase 1)
+
 AI-powered autonomous messaging system with behavioral signal tracking.
 
 **Signal Tracking:**
+
 - `src/lib/signals/` - Signal tracking library
   - `index.ts` - Main exports: `trackReply()`, `trackSilence()`, `trackUnprompted()`, `trackStopRequest()`, `getUserSignals()`
   - `compute.ts` - Engagement score computation and signal aggregation
@@ -348,6 +384,7 @@ AI-powered autonomous messaging system with behavioral signal tracking.
 - **Automatic tracking**: Twilio webhook automatically tracks signals on inbound messages
 
 **AI Message Generation:**
+
 - `src/lib/ai/` - AI content generation library (multi-provider)
   - `index.ts` - Main exports: `generateMessageForUser()`, `buildUserContext()`, `getAiProvider()`
   - `prompts.ts` - System prompts and content type selection
@@ -360,15 +397,18 @@ AI-powered autonomous messaging system with behavioral signal tracking.
 - **Fallback**: Pre-written messages if AI call fails
 
 **Cron Jobs:**
+
 - **Scheduled Send**: `src/app/api/cron/send-scheduled/route.ts` - Processes pending scheduled messages at 7:40 AM Pacific
 - **Daily Send**: `src/app/api/cron/daily-send/route.ts` - Sends AI-generated messages to all active users at 7:45 AM Pacific (runs after scheduled send to avoid duplicates)
 - **Silence Detection**: `src/app/api/cron/detect-silence/route.ts` - Detects unreplied messages and tracks silence signals at 5:00 AM Pacific
 
 **Founder Dashboard:**
+
 - `src/components/dashboard/user-signals-table.tsx` - Engagement signals table with scores and metrics
 - Founder page now shows user engagement signals alongside messages
 
 **Required env vars (AI - choose one provider):**
+
 ```
 # Provider selection (default: anthropic)
 AI_PROVIDER=anthropic
@@ -387,15 +427,19 @@ OPENAI_MODEL=gpt-4o-mini  # optional, defaults to gpt-4o-mini
 ```
 
 **Database Migration:**
+
 - `supabase/migrations/012_content_engine.sql` - Creates signal_events, user_signals tables, adds tracking columns to messages
 
 #### Content Engine v2 (Trusted Guide)
+
 Evolves the content engine from a daily message generator into a system that listens, remembers, and adapts.
+
 - **PRD**: `docs/prds/2026-05-12-content-engine-v2.md`
 - **Implementation plan**: `docs/plans/2026-05-12-content-engine-v2.md`
 - **Database migration**: `supabase/migrations/013_content_engine_v2.sql`
 
 **Reply enrichment + acknowledgement (every inbound gets feedback):**
+
 - `src/lib/ai/enrich.ts` - Haiku-powered enrichment, returns sentiment, emotional_state, themes, category, modality, mentions, open_thread, substantive flag, `directive`, `enriched` flag, and (when substantive) an AI mirror line
 - **Enrichment has its OWN model** via `resolveEnrichModel()` (`ANTHROPIC_ENRICH_MODEL`, default Haiku) — it must never inherit `ANTHROPIC_MODEL` (that's the daily-gen model, now Sonnet). Regression fixed July 2026: sharing the var silently broke enrichment when daily gen moved to Sonnet (thinking-on + 3s race → null insights). Enrich now: pins Haiku, disables thinking for non-Haiku, 10s timeout (`ENRICH_TIMEOUT_MS`), one retry, and `console.error`s on final failure.
 - `src/lib/ai/prompts/enrich.ts` - System prompt for the enrichment + mirror call
@@ -406,12 +450,14 @@ Evolves the content engine from a daily message generator into a system that lis
 - STOP/HELP keywords bypass acks entirely
 
 **Enrichment reliability + explicit topic steers (migration 027, July 2026):**
+
 - **Reconcile cron** `src/app/api/cron/reconcile-enrichment/route.ts` - re-enriches recent inbound with `insights IS NULL` or `insights->>'enriched'='false'`. CRON_SECRET-guarded. **Built but NOT scheduled** (Vercel cron-slot limit) — add `{ "path": "/api/cron/reconcile-enrichment", "schedule": "0 8 * * *" }` to `vercel.json` when a slot frees. Manually runnable to backfill: `curl -H "Authorization: Bearer $CRON_SECRET" https://www.entiremind.com/api/cron/reconcile-enrichment`
 - **Explicit "focus on X"**: enrichment sets `insights.directive` when a reply explicitly asks to change focus. `src/lib/ai/steer.ts` persists it as `user_memory.active_steer` (+ `steer_set_at`, `steer_nudged`); `buildUserPrompt` injects it at TOP priority (decays after `STEER_TTL_DAYS`=10). The intention is NEVER auto-rewritten — the first directive per window sends an ack nudging the user to set it in-app (`/dashboard/settings`). Weekly compaction folds the steer into themes then clears it. Reconcile backfill does NOT set steers or send SMS (insights-only).
 - **`loadRecentSubstantiveReply`** (`src/lib/ai/index.ts`) uses `deriveSubstantive()` — falls back to a length heuristic when `insights` is null, so a long reply surfaces next-day even if enrichment hasn't run.
 - **Memory rebalance**: `MEMORY_SYSTEM_PROMPT` weights current intention + recent replies over stale recurring topics and drops stale open threads; `buildUserPrompt` demotes the memory block to "background, not the agenda."
 
 **User memory + weekly compaction:**
+
 - `src/lib/ai/memory.ts` - `compactUserMemory()`, `loadUserMemory()`, `renderMemoryForPrompt()`, `buildSeedMemoryFromOnboarding()`
 - `src/lib/ai/prompts/memory.ts` - Sonnet system prompt for compaction + intention shift detection
 - `src/app/api/cron/weekly-memory/route.ts` - Monday morning cron (12:00 UTC ≈ 4-5 AM Pacific)
@@ -422,6 +468,7 @@ Evolves the content engine from a daily message generator into a system that lis
 - Same Sonnet call also detects intention shifts (see below)
 
 **Smarter content selection (`src/lib/ai/prompts.ts`):**
+
 - `selectContentType()` is now async and rules-based:
   - No same content type two days in a row (configurable via `no_repeat_days`)
   - Gentle types only (check-in, gratitude) when user is silent (≥3 silences) or last sentiment was struggling
@@ -432,11 +479,13 @@ Evolves the content engine from a daily message generator into a system that lis
 - All thresholds live in `content_selection_config` table — founder can tune from Supabase dashboard without deploy
 
 **Next-day reply reference:**
+
 - `buildUserContext()` loads the most recent substantive reply within 48 hours
 - When present, the daily prompt builder injects the reply's text, themes, emotional state, and sentiment with guidance: "subtly reference if it fits naturally, do not force a callback"
 - Substantive flag set by the enrichment call — short replies are not surfaced
 
 **Extended web onboarding (`src/app/onboarding/page.tsx`):**
+
 - 7 steps total: welcome → name → phone → intention → vision → obstacles → aligned-state
 - New steps in `src/components/onboarding/steps/`: `vision-step.tsx`, `obstacles-step.tsx`, `aligned-state-step.tsx`
 - `createInitialIntention` server action now only saves the intention (no longer completes onboarding)
@@ -444,6 +493,7 @@ Evolves the content engine from a daily message generator into a system that lis
 - Vision, obstacles, aligned-state accumulate in client state and persist together at the end
 
 **Intention shift detection:**
+
 - Same weekly Sonnet pass that compacts memory also assesses whether the user's stated intention has drifted
 - Confidence threshold of 0.6 to surface a suggestion (false positives are costly; missed shifts surface again next week)
 - Suggestions written to `intention_shift_suggestions` table with status='pending'
@@ -453,16 +503,19 @@ Evolves the content engine from a daily message generator into a system that lis
 - API: `POST /api/founder/intention-shifts` with `{ id, action: 'approve' | 'dismiss' }`
 
 **Founder review surfaces (`/dashboard/founder`):**
+
 - `IntentionShiftReview` - pending intention shifts queue at top
 - `FounderUserInsights` - per-user expandable cards showing memory blob, recent theme cloud (last 30 days), sentiment trend bar (last 14 days), and reply-rate-by-content-type table
 
 **Weekly recap SMS ("here's what we've noticed"):**
+
 - The Monday memory-compaction Sonnet pass also writes an optional `recap_message` — a ≤300-char SMS reflecting 1–2 concrete specifics from the user's week back to them (null when the week has nothing real to recap; never invented)
 - Staged on `user_memory.pending_recap` / `recap_generated_at` (migration 018); a compaction with no recap clears any stale one
 - Daily-send delivers a fresh (<48h) staged recap **in place of** that morning's regular prompt, `content_type = 'recap'`; `takePendingRecap()` (in `src/lib/ai/memory.ts`) claims-then-clears so a recap can never double-send
 - Cost: $0 extra — piggybacks on the existing weekly Sonnet call
 
 **Silence recovery arc (`src/lib/reconnect.ts`):**
+
 - Daily-send checks `user_signals.consecutive_silences` before prompting:
   - At `reconnect_after_silences` (default 5): sends a reconnect message (`content_type = 'reconnect'`) instead of the prompt — names the quiet, offers PAUSE. Sent once per silent stretch (tracked via reconnect outbound newer than `last_reply_at`)
   - At `pause_after_silences` (default 9), only after an unanswered reconnect: sends a farewell and sets `users.status = 'paused'` — never pauses without warning
@@ -473,21 +526,25 @@ Evolves the content engine from a daily message generator into a system that lis
 - Pure decision logic (`decideSilenceRecovery`) unit-tested in `src/lib/reconnect.test.ts`
 
 **Timezone + preferred send hour (Phase 1 of Phase 2 UI; cron honoring deferred):**
+
 - `users.preferred_send_hour` (0–23, default 7) added to settings UI
 - Daily-send still goes out at 7:45 AM Pacific globally — preference is stored but not yet honored
 - UI copy: "We'll send around your preferred hour soon. For now all messages go out at 7:45 AM Pacific."
 - Will activate when Vercel Pro upgrade enables hourly crons
 
 **Daily-send bug fix:**
+
 - The "already sent today" check now excludes `content_type = 'ack'` so a user who replied to a prompt still receives the next day's morning message
 
 **Cron Jobs (updated):**
+
 - **Scheduled Send**: `40 14 * * *` (7:40 AM Pacific) - processes pending scheduled messages
 - **Daily Send**: `45 14 * * *` (7:45 AM Pacific) - AI-generated daily prompts
 - **Silence Detection**: `0 12 * * *` (4-5 AM Pacific) - flags unreplied messages
 - **Weekly Memory**: `0 12 * * 1` (Monday 4-5 AM Pacific) - compacts user replies + detects intention shifts
 
 **Database Tables Added (migration 013):**
+
 - `message_themes` - one row per (message_id, theme) pair with required category
 - `user_memory` - current memory blob per user (JSONB), version, token_count
 - `user_memory_history` - archived previous memory versions
@@ -501,11 +558,13 @@ Evolves the content engine from a daily message generator into a system that lis
 - `users.preferred_send_hour` INTEGER added
 
 **Database changes (migration 018):**
+
 - `user_memory.pending_recap` TEXT + `recap_generated_at` TIMESTAMPTZ (staged weekly recap)
 - `messages.content_type` CHECK extended with `'recap'` and `'reconnect'`
 - `content_selection_config.reconnect_after_silences` (default 5) + `pause_after_silences` (default 9)
 
 **Cost notes:**
+
 - Enrichment + ack: Haiku, ~$0.0002 per inbound
 - Daily prompt: Haiku, ~$0.0002 per send
 - Weekly memory: Sonnet, ~$0.005 per active user per week
@@ -513,9 +572,11 @@ Evolves the content engine from a daily message generator into a system that lis
 - Prompt caching deliberately not enabled (system prompt is well under Haiku's 2048-token cache minimum at current scale)
 
 #### Monetization & Growth (July 2026)
+
 Plan: `docs/prds/../plans/2026-07-04-monetization-growth.md`. Migration: `020_value_ladder_dunning.sql`.
 
 **Free-trial value ladder (`src/lib/billing/`):**
+
 - `computeEntitlement()` (entitlement.ts) — single source of plan logic: `paid` (monthly/yearly with active/trialing/past_due), `trial` (inside 10-day window, or missing data — fails toward generosity), `expired`. Founder/admin always `paid`.
 - Trial starts at onboarding completion: `completeFullOnboarding` sets `subscriptions.trial_ends_at = now() + 10 days` (write-once). Existing users grandfathered with 14 days at migration time.
 - `daily-send` gates on entitlement first: `expired` users exit the daily loop into the upgrade path — trial-end SMS personalized from their memory theme (template-based, deliberately no LLM), one follow-up 7 days later, then quiet. Inbound enrichment + acks continue for everyone.
@@ -523,11 +584,13 @@ Plan: `docs/prds/../plans/2026-07-04-monetization-growth.md`. Migration: `020_va
 - Dashboard: "Trial — N days left" / "Trial ended" chips in settings; non-dismissible `TrialEndedBanner` on `/dashboard` when expired.
 
 **Failed-payment dunning (`src/lib/billing/dunning.ts`):**
+
 - `invoice.payment_failed` → SMS notice (content_type `billing`), throttled to one per 5 days via `subscriptions.dunning_notified_at` (Stripe fires the event on every Smart Retry). Enable Smart Retries in the Stripe dashboard.
 - `customer.subscription.deleted` → farewell SMS with the way back; recovery to `active` clears the throttle.
 - `billing` messages never suppress the daily prompt and never count toward silence; `upgrade` messages excluded from silence detection, replies to them reply-linked (hot lead).
 
 **One-tap SMS upgrade links (`src/lib/billing/token.ts`):**
+
 - Plan: `docs/plans/2026-07-04-sms-upgrade-link.md`. HMAC-signed, purpose-bound tokens (`intent: upgrade|billing`) embedded as `https://www.entiremind.com/u/{token}` in trial-end, follow-up, dunning, and subscription-ended SMS. **Never a login** — a token only authorizes opening a payment flow for its user; `/u/*` routes must never set a session.
 - `GET /u/[token]` (public): upgrade intent → plan-choice interstitial (`UpgradePlanPicker` → `POST /api/upgrade-checkout` → Stripe Checkout); billing intent (past_due only) → 302 straight into the Stripe billing portal. Invalid/expired/errors degrade to `/auth?next=/dashboard/settings`.
 - Checkout session creation shared between `/api/checkout` (authenticated) and `/api/upgrade-checkout` (tokenized) via `src/lib/billing/checkout.ts`; SMS-driven sessions carry `metadata.source = 'sms-upgrade-link'`.
@@ -536,16 +599,20 @@ Plan: `docs/prds/../plans/2026-07-04-monetization-growth.md`. Migration: `020_va
 - **Requires env var `UPGRADE_LINK_SECRET`** (32+ random bytes, e.g. `openssl rand -base64 32`). If unset, messages fall back to the settings URL — sends never fail.
 
 **Shareable archetype pages (`src/app/archetype/[slug]/`):**
+
 - Public, statically generated pages for the four archetypes — generic copy only (`ARCHETYPE_PUBLIC` in `src/lib/persona/content.ts`), zero user data. Invalid slugs 404 (`dynamicParams = false`).
 - `opengraph-image.tsx` renders the share card per archetype via `next/og` (params is a Promise in Next 16 — must be awaited).
 - `ShareArchetypeButton` (native share sheet + clipboard fallback) on the onboarding reveal step and the dashboard persona card.
 - Attribution: CTA links `/?src=share-{slug}`; waitlist modals pass `source` through; leads API validates against `^share-(visionary|alchemist|seeker|phoenix)$` and defaults to `landing_page` otherwise. Query share-driven signups via `leads.source LIKE 'share-%'`.
 
 #### Curated Quote Library + Weekly Email Editions
+
 Curated, themed quote library feeding the `quote` SMS content type and a dashboard card, plus an AI-drafted weekly email pushed to ActiveCampaign as a draft campaign.
+
 - **Database migration**: `supabase/migrations/022_quotes_and_weekly_editions.sql`
 
 **Quote library (`quotes` table + `src/lib/quotes/`):**
+
 - 8 themes aligned with manifestation topics: abundance, confidence, trusting-the-process, gratitude, resilience, love, purpose, presence
 - Migration seeds a ~12-quote public-domain fallback; the real library is built by `scripts/import-quotes.ts` (`npx tsx scripts/import-quotes.ts [--source zenquotes|quotable] [--target 200]`) — fetches from ZenQuotes (Quotable dataset fallback), filters to ≤120 chars, categorizes via tag map + Haiku batch pass (rejects off-brand quotes), inserts with `source`/`source_tags`
 - ZenQuotes attribution: free tier requires "Quotes via ZenQuotes.io" on surfaces displaying imported quotes (check `quotes.source`)
@@ -554,12 +621,14 @@ Curated, themed quote library feeding the `quote` SMS content type and a dashboa
 - Founder curates by flipping `quotes.active` in Supabase
 
 **Weekly email editions (`weekly_editions` table + `src/lib/editions/`):**
+
 - Monday cron `/api/cron/weekly-edition-draft` (16:00 UTC): rotates to the least-recently-used theme, picks 3 library quotes (excluding the last 8 editions' quotes), drafts title/intro/reflection/question via direct Anthropic call (`ANTHROPIC_EDITION_MODEL`, default `claude-sonnet-4-6`), renders branded HTML (`src/lib/email-campaigns/template.ts`), and pushes it into the email provider as a **draft campaign**
 - **Nothing is ever auto-sent** — the founder reviews, tweaks, and sends from the provider's UI; the provider owns list management, unsubscribe compliance, and delivery
 - Daily cron `/api/cron/sync-email-contacts` (13:00 UTC): upserts active users + waitlist leads into the provider list (tagged `user`/`lead`, deduped by email, user wins)
 - Provider abstraction `src/lib/email-campaigns/` mirrors the SMS layer; ActiveCampaign is the only adapter (contact sync via v3 API; draft campaign creation via legacy v1 `message_add` + `campaign_create` because v3 cannot link a message to a campaign)
 
 **Required env vars (ActiveCampaign):**
+
 ```
 ACTIVECAMPAIGN_API_URL=https://youraccount.api-us1.com
 ACTIVECAMPAIGN_API_KEY=your_api_key
@@ -571,22 +640,26 @@ ACTIVECAMPAIGN_FROM_NAME=Entiremind   # optional, defaults to Entiremind
 **Manual setup:** create the AC list, verify the sending domain (DKIM) in AC, set env vars in Vercel. Run migration 022 + the import script before the first Monday draft.
 
 #### Marketing Content & Ads Engine (multi-brand)
+
 AI content engine for paid ads (Meta-first) and organic social (Instagram, TikTok, YouTube). Multi-brand by design: every table is keyed by `brands` — Entiremind is seeded as the first brand; future projects are new rows, not code.
 
 **Agentic loop:** trend research → campaign plan → copy/script → image (Gemini "Nano Banana", real) / video (Veo, stub) → founder review → publish/launch (platform adapters, placeholder credentials) → metrics → next week's plan.
 
 **Approval model (enforced in code, not just config):**
+
 - Paid ads ALWAYS require founder review — `terminalStatusFor()` in `src/lib/marketing/pipeline/generate.ts` plus a hard guard in `pipeline/publish.ts` (`reviewed_by` required for `target='ad'`)
 - Organic channels have per-channel `publish_mode`: `require_approval` (default) or `auto_publish`; the channels API rejects `auto_publish` for `meta_ads`
 - Meta ads are additionally created with `status: "PAUSED"` while `marketing_engine_config.ads_launch_paused` is true
 
 **Dual production path (`content_pieces.production_mode`):**
+
 - `ai_generated`: AI writes copy + generates the image; piece goes to review (or auto-schedule for organic auto_publish channels)
 - `founder_filmed`: AI writes a talking-head script → status `awaiting_footage` → founder films and uploads (direct-to-storage via signed upload URL — videos exceed Vercel's ~4.5 MB body limit) → `pending_review`
 
 **Manual control:** every creative field (headline, copy, caption, script, hashtags, image_prompt, CTA, budget, schedule) is founder-editable at any pre-publish status via `PATCH /api/founder/marketing/content/[id]`; images can be regenerated from an edited prompt; pieces can be created fully by hand (`POST /api/founder/marketing/content` with `mode: "manual"`).
 
 **Library (`src/lib/marketing/`):**
+
 - `ai.ts` - `generateStrictJson()` (zod-validated JSON from the existing AI provider adapter; adapters now accept `maxTokens`)
 - `prompts/` - campaign-plan, ad-copy, organic-post, video-script, trend-research, image-prompt (brand voice/visual guardrails injected everywhere)
 - `media/` - `MediaGeneratorAdapter`; `providers/gemini.ts` (real, `GEMINI_API_KEY`, model `gemini-2.5-flash-image`), `providers/veo.ts` (stub); `storage.ts` uploads to the public `marketing-media` bucket (public so Meta/IG can fetch creative URLs)
@@ -599,6 +672,7 @@ AI content engine for paid ads (Meta-first) and organic social (Instagram, TikTo
 **API routes (founder-only, `src/app/api/founder/marketing/`):** brands (GET/POST, PATCH [id]), channels PATCH, campaigns (GET/POST, PATCH [id]), content (GET/POST, PATCH [id]), content/[id]/review, /upload (signed-URL two-step), /regenerate, /publish, and generate (modes: research | plan | generate). Shared guard: `requireFounder()` in `src/lib/auth/founder.ts`.
 
 **Crons (all in vercel.json):**
+
 - Marketing Planning: `0 11 * * 1` (weekly Monday) - trend research + plan per active brand
 - Marketing Generate: `0 13 * * *` - drain draft pieces (batch cap `max_generations_per_run`, stale-claim reaper)
 - Marketing Publish: `30 13 * * *` - publish scheduled pieces due now
@@ -609,6 +683,7 @@ AI content engine for paid ads (Meta-first) and organic social (Instagram, TikTo
 **Database (migration 018):** `brands`, `brand_channels`, `trend_snapshots`, `marketing_campaigns`, `content_pieces` (status lifecycle: draft → generating → [awaiting_footage →] pending_review → approved/rejected → scheduled → publishing → published|launched|failed), `media_assets`, `content_metrics`, `marketing_engine_config`, plus the public `marketing-media` storage bucket.
 
 **Required env vars (marketing engine):**
+
 ```
 GEMINI_API_KEY=...            # real — Nano Banana image generation
 GEMINI_IMAGE_MODEL=gemini-2.5-flash-image  # optional
@@ -629,9 +704,11 @@ YOUTUBE_REFRESH_TOKEN=
 **Not yet wired (placeholders in place):** Veo video generation, live Meta/TikTok/YouTube API calls (Meta needs app review + Business verification: `ads_management`, `pages_manage_ads`, `instagram_content_publish`), live trend sources, real metrics pulls.
 
 #### Public Archetype Quiz + SEO Plumbing + Site Config (July 2026)
+
 Migration: `025_public_quiz_leads.sql`.
 
 **Public quiz (`/quiz`, no auth):**
+
 - Same eight tap screens as the authed `ArchetypeFlow` — identical step components, `questions.ts` config, and pure `scoreProfile()`; only the ending differs, built on the design-philosophy "partial value before contact capture" principle: taps → **partial reveal** (archetype name + hook line — the feel-seen moment) → **email gate** (name/phone/SMS-consent optional, honeypot field) → **full reveal** (same `buildRevealContent()` reading onboarding users get) + share
 - Components in `src/components/quiz/`; sessionStorage persistence so refresh keeps progress; quiz share copy in `src/lib/persona/share.ts` (archetype-level only — inner-critic content never appears in public copy; unit-tested)
 - API `POST /api/quiz/lead` — zod-validated, server re-runs `scoreProfile()` (client results never trusted), **upserts on `leads.email`**: retakes refresh quiz fields but never clobber original `source`, revoke prior `sms_consent`, or overwrite a stored phone. New leads get `source='quiz'` (or validated `share-{slug}`)
@@ -641,12 +718,15 @@ Migration: `025_public_quiz_leads.sql`.
 - `leads` columns added (migration 025): `archetype`, `quiz_answers`, `quiz_version`, `quiz_completed_at`
 
 **SEO plumbing:**
+
 - `src/app/sitemap.ts` (public pages + quiz + 4 archetype pages), `src/app/robots.ts` (disallow /dashboard, /onboarding, /auth, /api, /u), `src/app/opengraph-image.tsx` (site-default OG card), full `metadataBase`/OpenGraph/Twitter defaults in `layout.tsx`
 
 **Site config (`src/config/site.ts`):**
+
 - `siteConfig` (name, tagline, description, url, supportEmail, keywords, gtmId) + `absoluteUrl()` — the templating seed for future business ideas. New code imports it; existing hardcoded "Entiremind" strings migrate opportunistically when files are touched.
 
 ### Not Yet Implemented
+
 - Hourly send cadence honoring `preferred_send_hour` (waiting on Vercel Pro)
 - True timezone-aware delivery (Phase 2)
 - Embedding-based reply retrieval for richer prompts (Phase 3)
@@ -655,11 +735,14 @@ Migration: `025_public_quiz_leads.sql`.
 - Fully autonomous intention updates without founder approval (Phase 4)
 
 #### Technique Playbook
-A curated, founder-editable library of distilled thinking-tools (from books like *Designing Your Life*, *Don't Believe Everything You Think*, *The Mountain Is You*, neuroscience-of-manifestation) stored as **prompt recipes** the daily-SMS engine injects, matched to a user's cognitive-distortion profile + current state. Internal-only — never shown to users.
+
+A curated, founder-editable library of distilled thinking-tools (from books like _Designing Your Life_, _Don't Believe Everything You Think_, _The Mountain Is You_, neuroscience-of-manifestation) stored as **prompt recipes** the daily-SMS engine injects, matched to a user's cognitive-distortion profile + current state. Internal-only — never shown to users.
+
 - **Database migration**: `supabase/migrations/023_techniques.sql`
 - **House stance**: `docs/methodology.md` — "thoughts are material, not master"; enact-don't-teach; IP hygiene (own names, no branded exercises, `source_*` internal-only); `gentle` safety flag.
 
 **Selection (`src/lib/techniques/`):**
+
 - `pickTechniqueForUser(context, contentType)` in `generateMessageForUser` after content-type selection (past the quote fast-path); returns `null` (probability roll, empty library, or no eligible match) → generic prompt path runs unchanged (zero regression)
 - Rolls `technique_apply_probability` (default 0.50; 0 disables); hard filters (content type · `gentle` when struggling/silent · tone compat · exclude last `technique_no_repeat_count`); scores `+3` distortion overlap, `+2` sentiment fit, `+1` category, `+priority`, `+jitter`
 - When a technique is picked, `buildUserPrompt(context, contentType, technique)` replaces the generic content-type instruction with a recipe frame ("turn into ONE question that enacts the approach — never name or explain it"); all persona/memory/reply blocks still stack
@@ -667,11 +750,97 @@ A curated, founder-editable library of distilled thinking-tools (from books like
 - Config knobs on `content_selection_config`: `technique_apply_probability`, `technique_no_repeat_count`
 
 **Curation:**
+
 - `scripts/digest-techniques.ts <notes.md>` — paste book takeaways (+ `Source: Title — Author`), Sonnet drafts technique rows in house voice with IP rules, inserts as `status='draft'`
 - Founder dashboard "Technique Playbook" section (`/dashboard/founder`): list + per-technique sends/reply-rate, edit-in-place, activate/retire/create. API `src/app/api/founder/techniques/route.ts` (create/update/activate/retire, founder-gated)
 - 10 seed techniques ship active in migration 019, one per distortion family
 
 **Deferred to v2:** signal-weighted (bandit) selection, reply-rate-by-distortion cross-tabs, A/B recipe variants.
+
+#### The Space (`/space`) — affirmations under a night sky
+
+A full-bleed, mobile-first place users go _deliberately_ to sit with their own affirmations
+under a drifting, twinkling starfield. The one surface in the product with no timer, no
+session count, and no completion state — you arrive, you breathe, you leave, and nothing
+tracks whether you came back.
+
+**The sky accumulates, and that is the point.** A sparse ambient starfield seeded from the
+user's id, plus **one bright warm star per affirmation**, each placed by its own id hash.
+Saving an affirmation ignites its star; it then stays in the same spot on every future
+visit. (An interactive breathing mandala shipped first and was replaced — the sky reads
+better and carries the endowment idea more literally.)
+
+- **Database migration**: `supabase/migrations/028_affirmations.sql` (`affirmations` table; RLS
+  `auth.uid() = user_id`). Deliberately **no** sessions/visits table — nothing that could grow
+  into a streak. `affirmations.source` (`user` | `ai_draft`) is a founder-side learning signal
+  only, never shown to the user.
+
+**Route + access:**
+
+- `/space` is a _sibling_ of `/dashboard`, not a child, so it escapes the dashboard shell
+  (sidebar, cream ground, max-width column) and runs `100dvh` full-bleed with safe-area insets
+- Gated identically to `/dashboard`: `/space` is named in **both** `resolveRouteRedirect`
+  (`src/lib/supabase/redirect-rules.ts`) and `isRouteWithRules` (`src/lib/supabase/proxy.ts`) —
+  omitting the second means `isOnboarded` is always false and onboarded users get bounced to
+  `/onboarding`. Also `disallow`ed in `src/app/robots.ts`
+- Entry points: sidebar nav item ("The Space") + `SpaceEntryCard` on `/dashboard` (a static
+  inline-SVG star preview with a `.star-twinkle` CSS keyframe — no canvas on the dashboard)
+
+**The sky (`src/components/space/starfield-sky.tsx` + `src/lib/space/`):**
+
+- One canvas, one rAF loop, **zero React state written per frame**. The breath is published to
+  CSS as a `--breath` custom property on the surface element; the affirmation's opacity is a
+  plain `calc()` off it. React hears from the loop once per completed breath (`onCycle`) and on tap
+- `breath.ts` — 4s inhale / 2s hold / 6s exhale / 1s rest (13s cycle). The eased 0→1→0 amplitude
+  lifts the brightness of the whole field together, so the sky inhales as one organism rather
+  than as a few hundred independently-blinking points
+- `starfield.ts` — `buildAmbientSky()` (220 stars, depth cubed so most are faint) and
+  `starForAffirmation(id)`. `AFFIRMATION_ALPHA_FLOOR` (0.95) sits above the ambient ceiling
+  **by construction**, so a backdrop star can never outshine one of the user's own — unit-tested
+  across seeds rather than left to luck. Every `Star` carries a stable `id`
+- `render.ts` — the pure drawing pass, split out so it can be exercised against a mock 2D
+  context (`render.test.ts`). A canvas that draws nothing looks identical to one that works,
+  so draw calls, coordinate finiteness and the per-frame `DRAW_BUDGET` (400 ops) are asserted
+  directly
+- **Parallax + wrapping**: `wrapUnit()` wraps every drawn position into 0..1, so panning is
+  endless and a drag can never run off the edge into empty black. Depth scales how far each
+  star moves, which is the entire illusion of depth
+- **Glows are pre-rendered sprites**, not arcs. A flat-alpha disc leaves a hard edge that reads
+  as a grey ring around the star; a real gradient per star would mean hundreds of
+  CanvasGradient allocations per frame. Two 64px sprites (white + warm) are built once by the
+  component and blitted scaled
+- **Touch/drag**: Pointer Events only, `touch-action: none` (a vertical drag pans the sky
+  instead of scrolling the page). Drag pans with a short damped coast; a held finger flares
+  nearby stars via a squared-Lorentzian falloff — the plain form has a long tail that lifts the
+  whole sky whenever you touch anywhere, which reads as a global brightness bug
+- Tap (<260ms, <12px travel) advances the affirmation; drags never do
+- **Ignition** (`IGNITE_MS` 2200): an `Ignition` references its star by **`starId`, never by
+  object reference**. `starForAffirmation` returns a fresh object each call, so identity
+  matching fails silently — the flare simply never draws, with nothing to debug. This bit once;
+  `render.test.ts` has a regression guard that builds the ignition from the id alone
+- Perf: DPR capped at 2, rAF paused on `visibilitychange` (clock rolled forward on return so the
+  breath resumes mid-stride), glows only on the brightest ~30 stars
+- `prefers-reduced-motion: reduce` → no twinkle, no drift, no pan, no flare, no glow sprites;
+  ignition becomes a fade-in and the breath survives as brightness only
+
+**Affirmations:**
+
+- Server actions in `src/lib/affirmations/actions.ts` (RLS-scoped `createClient`, never service-role).
+  Pure helpers + `MAX_ACTIVE_AFFIRMATIONS` (30) live in `src/lib/affirmations/index.ts` — a
+  `"use server"` file may only export async functions
+- `draftAffirmations()` builds context via `buildUserContext()` and returns 3–5 suggestions
+  **unsaved**; the user keeps what lands and discards the rest. Prompt in
+  `src/lib/ai/prompts/affirmations.ts` (present tense, first person, no "I will", no hustle, no
+  outcome promises)
+- Drawer (`affirmation-drawer.tsx`) lives _inside_ `/space` as a sheet — leaving the surface to
+  edit would break what the surface is for. Reorder is up/down chevrons, not drag-and-drop.
+  Its `onCreated` callback is what fires the ignition, and its overlay is deliberately light
+  (the sheet stays open on save, so an opaque scrim would play the payoff to nobody)
+- **Never empty**: with no affirmations the space falls back to the user's active intention as the
+  focus line, so day one is never a blank stage
+
+**Shared refactor:** `generateStrictJson` / `StrictJsonError` moved from `src/lib/marketing/ai.ts`
+to `src/lib/ai/json.ts` (they were never marketing-specific); the old path re-exports.
 
 ---
 
@@ -682,6 +851,7 @@ A curated, founder-editable library of distilled thinking-tools (from books like
 **Project**: `blairs-projects-7e709a29/2026-entiremind`
 
 **Required Environment Variables (set in Vercel Dashboard):**
+
 ```
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL
@@ -718,6 +888,7 @@ ADMIN_EMAIL
 ```
 
 **Deploy Commands:**
+
 ```bash
 vercel --prod          # Deploy to production
 vercel                 # Deploy preview
@@ -727,9 +898,11 @@ vercel logs            # View deployment logs
 ### External Service Configuration
 
 **Twilio Console** (Phone Numbers → Messaging):
+
 - Webhook URL: `https://entiremind.com/api/sms/webhook/twilio`
 - Method: POST
 
 **Supabase Dashboard** (Authentication → URL Configuration):
+
 - Site URL: `https://entiremind.com`
 - Redirect URLs: `https://entiremind.com/**`, `https://www.entiremind.com/**`

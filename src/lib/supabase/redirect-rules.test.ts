@@ -127,4 +127,49 @@ describe("resolveRouteRedirect", () => {
       ).toBeNull();
     });
   });
+
+  // /space renders outside the dashboard shell (full-bleed), so it is a
+  // top-level path — but it holds the user's own words and must be gated
+  // exactly as tightly as /dashboard.
+  describe("/space", () => {
+    it("sends unauthenticated users to /auth", () => {
+      expect(
+        resolveRouteRedirect({
+          pathname: "/space",
+          isAuthed: false,
+          isOnboarded: false,
+        }),
+      ).toBe("/auth");
+    });
+
+    it("sends not-onboarded users to /onboarding", () => {
+      expect(
+        resolveRouteRedirect({
+          pathname: "/space",
+          isAuthed: true,
+          isOnboarded: false,
+        }),
+      ).toBe("/onboarding");
+    });
+
+    it("lets onboarded users in", () => {
+      expect(
+        resolveRouteRedirect({
+          pathname: "/space",
+          isAuthed: true,
+          isOnboarded: true,
+        }),
+      ).toBeNull();
+    });
+
+    it("gates nested space paths the same way", () => {
+      expect(
+        resolveRouteRedirect({
+          pathname: "/space/anything",
+          isAuthed: false,
+          isOnboarded: false,
+        }),
+      ).toBe("/auth");
+    });
+  });
 });

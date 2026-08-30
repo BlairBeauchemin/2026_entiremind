@@ -31,8 +31,22 @@
 
   /* Gold is ORNAMENT ONLY — never text, never a button, never a fill behind
    * text. It measures 2.09:1 on linen, which fails even the 3.0:1 floor for
-   * non-text graphics, so it lives on cobalt (4.01:1) and nowhere else. */
+   * non-text graphics, so it lives on cobalt (4.01:1) and on night, and
+   * nowhere else. */
   --color-leaf: #c9a24b;
+
+  /* ---- Night --------------------------------------------------------------
+   * The Space (/space) ONLY. This is not a dark mode and there is no theme
+   * switch: it is one immersive surface, the way a full-bleed cobalt band is
+   * one surface. Nothing outside /space may use these.
+   *
+   * Note what is NOT available here: cobalt measures 2.05:1 on night and
+   * disappears. On this ground the company is carried by linen and gold
+   * instead — a paper button on a night sky, and gold for the stars. */
+  --color-night: #070a16; /* the sky at its darkest */
+  --color-night-mid: #0a1428; /* the sky mid-way up */
+  --color-night-horizon: #14243f; /* the glow just above the horizon */
+  --color-night-raised: #101728; /* the drawer sitting on the sky */
 
   /* ---- Semantic layer (shadcn primitives in src/components/ui) --------- */
 
@@ -154,6 +168,10 @@
   --sidebar-accent-foreground: var(--color-cobalt-deep);
   --sidebar-border: var(--color-rule);
   --sidebar-ring: var(--color-cobalt);
+
+  /* A legibility scrim, not a drop shadow: the affirmation at /space sits over
+   * moving stars and needs the sky darkened directly behind the letterforms. */
+  --night-scrim: rgba(7, 10, 22, 0.85);
 }
 
 @layer base {
@@ -394,6 +412,23 @@ table,
   }
 }
 
+/* Star twinkle (The Space entry card preview). The live sky at /space draws its
+   own stars on canvas; this is the CSS-only version for the dashboard, which
+   should not be running an animation loop. */
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.star-twinkle {
+  animation: star-twinkle 4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -404,7 +439,8 @@ table,
   .geometry-pulse,
   .animate-float,
   .animate-float-delayed,
-  .animate-pulse-slow {
+  .animate-pulse-slow,
+  .star-twinkle {
     animation: none;
   }
   .animate-fade-in,

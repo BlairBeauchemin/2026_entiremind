@@ -12,7 +12,10 @@ export function resolveRouteRedirect(opts: {
 }): string | null {
   const { pathname, isAuthed, isOnboarded } = opts;
 
-  const isProtectedRoute = pathname.startsWith("/dashboard");
+  // /space is a sibling of /dashboard (it escapes the dashboard shell to run
+  // full-bleed) but is gated identically: authed, onboarded users only.
+  const isProtectedRoute =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/space");
   const isOnboardingRoute = pathname.startsWith("/onboarding");
   // The shortened archetype retake flow is for ALREADY-onboarded users, so it
   // must be exempt from the "onboarded → dashboard" bounce below.
