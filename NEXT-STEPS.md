@@ -36,10 +36,9 @@ sends, testimonial publishing.
 3. **Watch the next few daily sends.** Prompts should start varying between questions,
    mirrors, callbacks and plain statements. If they all still read as questions,
    `feeling_seen_enabled` didn't take.
-4. **Optional, your call:** activate the seeded *"Craft pass v1 (feeling-seen)"* system
-   prompt. It adds concrete exemplars and bans flat template shapes — the likely fix for
-   "the voice reads as AI." A/B it in the simulator first
-   (`/dashboard/founder/simulator`); production prose is unchanged until you activate it.
+4. ~~Activate the Craft pass system prompt.~~ **Already done** — it was activated
+   2026-07-25 and has driven every daily prompt since (verified against production; the
+   live body matches the 026 seed unedited). Nothing to do here.
 
 ---
 
