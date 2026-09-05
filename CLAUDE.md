@@ -842,9 +842,17 @@ picks the topic; `message_mode` picks how the message stands:
 - **Shipped dark and later switched on.** `feeling_seen_enabled` defaulted to `false` from
   migration 026 (July) until migration **029** flipped it, so every send in between was
   `question`. If prompts suddenly read differently, this is why.
-- Migration 026 also seeded a `system_prompts` row, *"Craft pass v1 (feeling-seen)"*, as
-  **inactive** — it adds concrete exemplars and bans template shapes. Activate it from the
-  simulator when you want it; production prose is unchanged until you do.
+- Migration 026 seeded a `system_prompts` row, *"Craft pass v1 (feeling-seen)"* — it adds
+  concrete exemplars and bans flat template shapes (e.g. "Good morning, Alex. What's one
+  thing you'd like to notice today?"). The migration inserts it **inactive**, but in *this*
+  production database it was **activated on 2026-07-25** and has driven every daily prompt
+  since. `loadActiveSystemPrompt()` (`src/lib/ai/system-prompt.ts`) falls back to the
+  built-in `SYSTEM_PROMPT` constant only when no row is active — which is no longer the case
+  here. Check `system_prompts` before assuming the constant in `prompts.ts` is what shipped.
+- Note the interaction: the craft pass deliberately drops the unconditional "end with a
+  question" mandate, because stance is carried per `message_mode`. That was inert while
+  `feeling_seen_enabled` was false (every send was `question`, and `getModeInstruction`
+  supplies the question instruction itself). Migration 029 is what makes it matter.
 - Pure decision logic unit-tested in `src/lib/ai/mode.test.ts`
 
 #### Founder messaging simulator (migration 021)
