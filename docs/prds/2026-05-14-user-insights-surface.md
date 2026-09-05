@@ -1,6 +1,6 @@
 # User-Facing Insights Surface
 
-**Status:** Draft
+**Status:** Not built. This is the only PRD in this directory still describing unshipped work (Phase 3).
 **Author:** Blair Beauchemin
 **Date:** 2026-05-14
 **Depends on:** Content Engine v2 (memory blob, message_themes, signals already in production)

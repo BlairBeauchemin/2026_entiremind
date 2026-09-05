@@ -1,164 +1,102 @@
-# Next Steps — July 11, 2026
+# Next Steps — September 5, 2026
 
-Where everything landed after the big merge + quiz session, and what's left.
-Written to be read from a phone. Sections are ordered by urgency.
+Where everything stands and what's open. Ordered by urgency, written to be read from a phone.
 
 **Quick links**
-- PR #11 (quiz + SEO + funnel): https://github.com/BlairBeauchemin/2026_entiremind/pull/11
-- Preview of the quiz: https://2026-entiremind-git-claude-proj-47bbc2-blairs-projects-7e709a29.vercel.app/quiz
-- Vercel dashboard: https://vercel.com/blairs-projects-7e709a29/2026-entiremind
+- Vercel: https://vercel.com/blairs-projects-7e709a29/2026-entiremind
 - Supabase SQL editor: https://supabase.com/dashboard/project/cprzebhlwfibajrrtuqp/sql
+- Founder dashboard: https://www.entiremind.com/dashboard/founder
 
 ---
 
-## 0. WHERE WE LEFT OFF — enrichment / memory learning-loop fix (July 26, DONE)
+## 0. WHERE WE LEFT OFF — docs alignment + automation (Sept 5)
 
-The learning loop was silently dropping replies: enrichment shared
-`ANTHROPIC_MODEL` with daily generation, so when daily gen moved to
-`claude-sonnet-5` enrichment ran on Sonnet too (thinking-on + a 3s timeout) and
-left `messages.insights` null — including your "focus on manifestation" texts.
-That's why the daily messages kept fixating on the shoulder.
+Two things landed together on `docs/align-to-reality-and-automate`:
 
-**All shipped & verified today (PR #15, merged → deployed to prod):**
-- ✅ Enrichment hardened — its own `ANTHROPIC_ENRICH_MODEL` (Haiku), thinking off,
-  10s timeout, one retry, loud on failure. Never inherits the Sonnet daily model.
-- ✅ Migration `027_reply_steer.sql` applied — steer columns on `user_memory`.
-- ✅ Reconcile cron run once by hand — backfilled all 7 null-insights replies
-  (`reconciled: 7, stillFailed: 0`). The two "manifestation" texts now carry
-  `directive: "manifestation"`; the shoulder-mention reply was re-tagged with the
-  real theme (motivation / side project).
-- ✅ Temp test knobs reverted (`mirror_target_per_week`=2, `callback_target_per_week`=1,
-  `technique_apply_probability`=0.50).
-- ✅ Memory blob for 714-872-2834 is manifestation-focused (no shoulder).
+**The docs now describe what's actually built.** They had drifted badly — `prd.md` hadn't
+been touched since February and named database tables that were never created; four shipped
+systems (message modes, the founder simulator, testimonials, the funnels) appeared in no
+doc at all; `CLAUDE.md` carried three wrong migration numbers and said onboarding was 7
+steps when it's 15.
 
-**The one thing to watch:** tomorrow's 7:45 AM Pacific daily send — it should read
-as manifestation / side-project focused, not shoulder. If it drifts back, check
-`select summary->'themes', summary->'open_threads' from user_memory where user_id
-= (select id from users where phone like '%7148722834%');`.
+**Founder-approval gates are gone except where they earn their place.** Techniques now go
+live when you digest them. Message modes are switched on. Intention drift texts the *user*
+instead of queueing for you — and critically, **nothing rewrites a user's intention**; the
+old "approve" action that did is deleted.
 
-**Still open (low priority, when you want):**
-- Schedule the reconcile cron once a Vercel cron slot frees up — add
-  `{ "path": "/api/cron/reconcile-enrichment", "schedule": "0 8 * * *" }` to
-  `vercel.json`. (Inline retry + fallback already prevent silent losses; this is
-  just belt-and-suspenders.)
-- Optional live test of the steer: text "can we focus on X" → expect an ack
-  pointing you to set it in-app, `user_memory.active_steer` populated, and the next
-  morning's prompt to follow X.
+**Still gated, deliberately:** paid ad launches, organic social publishing, weekly email
+sends, testimonial publishing.
+
+### To finish this off
+
+1. **Run migration `029_autonomous_operation.sql`** in the Supabase SQL editor. Until you
+   do, message modes stay off and drift nudges will fail on the status constraint.
+2. **Sanity check** — `select feeling_seen_enabled, intention_shift_min_confidence from
+   content_selection_config;` → should be `true, 0.60`.
+3. **Watch the next few daily sends.** Prompts should start varying between questions,
+   mirrors, callbacks and plain statements. If they all still read as questions,
+   `feeling_seen_enabled` didn't take.
+4. **Optional, your call:** activate the seeded *"Craft pass v1 (feeling-seen)"* system
+   prompt. It adds concrete exemplars and bans flat template shapes — the likely fix for
+   "the voice reads as AI." A/B it in the simulator first
+   (`/dashboard/founder/simulator`); production prose is unchanged until you activate it.
 
 ---
 
-## 1. URGENT — run the migrations (needs ~15 min, phone browser works)
+## 1. Open decisions (flagged, not acted on)
 
-Production `main` was deployed today with 8 merged branches. The code expects
-tables that don't exist until these run. Until then, some new features will
-error (existing SMS + billing keep working; the testimonial capture hook on
-inbound SMS is the one live path that can log errors).
+- **The "Two Months Free" badge understates your discount.** $12.99 × 12 = $155.88; $99
+  saves $56.88 — about **4.4 months free**. Two months would be $129.90. Your pricing
+  claim, so I left it alone (`src/components/landing/pricing.tsx:85`).
+- **`/v2` is a live, publicly reachable landing page** using `landing-v2/*`, while `/` uses
+  `landing/*`. Noindexed and unlinked, but it's a second front door — intentional or not.
+- **Dead auth code** — `phone-auth-form.tsx`, `otp-verification-form.tsx`,
+  `email-otp-form.tsx` are imported by no route. Deletion candidates.
+- **Cron collision** — `sync-email-contacts` and `marketing-generate` both fire at
+  `0 13 * * *`.
 
-Open the Supabase SQL editor and run each file's contents **in this order**
-(files are in `supabase/migrations/` on GitHub — copy/paste one at a time):
+---
 
-1. `018_testimonials.sql`
-2. `019_weekly_recap_silence_recovery.sql`
-3. `020_value_ladder_dunning.sql`
-4. `021_messaging_simulator.sql`
-5. `022_quotes_and_weekly_editions.sql`
-6. `023_techniques.sql`
-7. `024_marketing_engine.sql`
-8. `025_public_quiz_leads.sql` (this one is on PR #11's branch until it merges)
+## 2. Dashboard chores (still open from July)
 
-The Supabase dashboard works fine from a phone browser. If you'd rather wait
-for a computer, that's OK — just know the cron jobs (silence detection,
-weekly memory, daily send extras) may log errors until then.
+- **Vercel env vars**: `NEXT_PUBLIC_GTM_ID` (GTM-WBJQRSNT), `UPGRADE_LINK_SECRET`
+  (`openssl rand -base64 32`), the four `ACTIVECAMPAIGN_*` vars, `GEMINI_API_KEY`
+  (https://aistudio.google.com/apikey — without it the marketing-generate cron fails on
+  image pieces).
+- **ActiveCampaign**: create the list, verify the sending domain (DKIM), then the two AC
+  crons start working.
+- **GTM container**: add GA4 tags per `docs/marketing/gtm-setup.md` — events fire today but
+  land nowhere.
+- **Stripe**: enable Smart Retries (the dunning flow assumes it).
+- **Schedule the reconcile cron** when a Vercel cron slot frees:
+  `{ "path": "/api/cron/reconcile-enrichment", "schedule": "0 8 * * *" }`.
 
-**After the migrations, two quick sanity checks** (same SQL editor, from the
-merged PRs' verify steps):
+---
 
-- `select name, status, gentle from techniques;` → should show 10 seed rows
-  (PR #10). Dial `technique_apply_probability` in `content_selection_config`
-  to taste — 0 disables techniques instantly, default is 0.50
-- `select count(*) from quotes;` → should show ~12 seeded fallback quotes
-  (PR #9; the real library comes from the import script, section 4)
+## 3. Needs a computer
 
-## 2. Phone-friendly — review + merge PR #11
+- `npx tsx scripts/import-quotes.ts` to build the real quote library (needs
+  `ANTHROPIC_API_KEY`; `--source quotable` avoids ZenQuotes attribution). Until then
+  quotes use the ~12 seeded fallbacks.
+- Feed a book through `scripts/digest-techniques.ts <notes.md>` to grow the playbook past
+  the 10 seeds. **Note:** techniques now go live immediately — running the script is the
+  decision.
 
-- Try the quiz on the preview link above (it's the real thing, end to end)
-- Read the copy that needs your review (all v1 draft under your copy rule):
-  - `src/lib/persona/share.ts` — archetype hook lines + share text
-  - `src/components/quiz/partial-reveal.tsx` + `quiz-gate.tsx` — gate copy
-- Merge PR #11 from the GitHub app/mobile site when happy
-- Claude is watching the PR and will handle CI failures + review comments
+---
 
-## 3. Phone-friendly — dashboard settings (each ~5 min)
+## 4. Known-open, lower priority
 
-- **Vercel env vars** (Vercel dashboard → Settings → Environment Variables):
-  - `NEXT_PUBLIC_GTM_ID` = GTM-WBJQRSNT (code falls back to this, but set it)
-  - `UPGRADE_LINK_SECRET` = 32+ random bytes (needs a terminal to generate —
-    or use any password generator, 44+ chars)
-  - `ACTIVECAMPAIGN_API_URL`, `ACTIVECAMPAIGN_API_KEY`,
-    `ACTIVECAMPAIGN_LIST_ID`, `ACTIVECAMPAIGN_FROM_EMAIL`
-  - `GEMINI_API_KEY` — marketing engine image generation ("Nano Banana");
-    without it the daily marketing-generate cron fails on image pieces.
-    Get one at https://aistudio.google.com/apikey
-  - (An old `SMS_PROVIDER` var, if set, is now ignored — Twilio is the only
-    provider after the Telnyx removal. Safe to delete, harmless to keep.)
-- **ActiveCampaign** (their web app): create the list, verify sending domain
-  (DKIM records — needs your DNS provider's app/site), then the two AC crons
-  start working
-- **GTM container** (tagmanager.google.com): add GA4 tags triggered off the
-  events per `docs/marketing/gtm-setup.md` — until then events fire but land
-  nowhere
-- **Stripe dashboard**: enable Smart Retries (the dunning flow assumes it)
-- **GitHub**: delete the 7 stale branches listed at the bottom of
-  `docs/plans/2026-07-10-merge-sequencing.md` (GitHub mobile can do this)
-
-## 4. Needs a computer — later
-
-- Run `npx tsx scripts/import-quotes.ts` to build the real quote library
-  (needs `ANTHROPIC_API_KEY` in env; `--source quotable` avoids ZenQuotes
-  attribution requirements). Until then quotes use the 12 seeded fallbacks.
-- Feed a book through `scripts/digest-techniques.ts <notes.md>` when you want
-  to grow the technique playbook past the 10 seeds.
-- Generate `UPGRADE_LINK_SECRET` properly: `openssl rand -base64 32`
-
-## 5. When you're back — worth a look
-
-- **Founder dashboard** now has: Acquisition Funnel (leads → signups →
-  onboarded → paid, per source), Technique Playbook, testimonial review,
-  intention shifts, simulator (`/dashboard/founder/simulator`), Marketing
-  Engine (`/dashboard/founder/marketing`)
-- **Try the simulator** before the next real cohort (PR #8's verify step):
-  create a preset persona, "Step 1 day", check the per-day "why" drawer,
-  run the remaining week, view the end-of-week memory. Note: production
-  message generation is byte-identical to before until you explicitly
-  "Activate" a new system-prompt version there
-- **Marketing engine switches** live in the `marketing_engine_config` table
-  (Supabase): `enabled`, weekly piece count, `ads_launch_paused` (paid ads
-  additionally always require your review — enforced in code)
-- **Set up an AC nurture automation** for quiz leads — they arrive tagged
-  `quiz-lead` + `archetype-{slug}`, so a per-archetype welcome sequence is
-  pure AC config, no code
-
-## What shipped today (context for future-you)
-
-- All 7 branches + 3 PRs merged to main in dependency order; five colliding
-  "018" migrations renumbered to 018–024; a constraint bug fixed that would
-  have broken testimonials (`messages_content_type_check` rebuilt without
-  `testimonial_request` by two later migrations)
-- Public quiz at `/quiz`: 8 taps → partial reveal (free) → email gate →
-  full reading → share; server re-scores answers; leads upsert by email
-  without clobbering source/consent; share pages now funnel into the quiz
-  with attribution
-- SEO: sitemap, robots, OG/Twitter cards, default OG image
-- `src/config/site.ts`: the brand-config seed for templating future ideas
-- Verified: 234 tests, clean build, Playwright walk of the whole quiz flow,
-  all GTM events firing
-
-## Deferred / known-open items
-
-- Per-IP rate limiting on `/api/quiz/lead` (has zod + honeypot + idempotent
-  upsert; Vercel bot protection recommended as a dashboard toggle)
-- Migrating the ~26 remaining hardcoded "Entiremind" strings to `siteConfig`
-  (happens opportunistically as files are touched)
+- Per-IP rate limiting on `/api/quiz/lead` (has zod + honeypot + idempotent upsert today)
+- ~26 hardcoded "Entiremind" strings still to migrate to `siteConfig` (opportunistic)
 - Hourly send cadence honoring `preferred_send_hour` (needs Vercel Pro)
-- Marketing engine live platform credentials (Meta/TikTok/YouTube app
-  approvals) — adapters stub until env vars are set
+- Marketing engine live platform credentials (Meta/TikTok/YouTube app approvals)
+- User-facing insights surface — the one PRD in `docs/prds/` still describing unbuilt work
+
+---
+
+## Context for future-you
+
+- **August** was the design system: `DESIGN.md` is now the single visual authority, the
+  whole codebase moved onto the Daylight palette (cobalt on linen), and The Space
+  (`/space`) shipped — affirmations under an accumulating night sky.
+- **Still no real users.** Nothing in the product has been tested against a stranger.

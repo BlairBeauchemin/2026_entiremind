@@ -4,6 +4,12 @@
 **Scope:** Target market research, competitive landscape, gap analysis of the current product (features, positioning, design, aha moments), and prioritized recommendations.
 **Inputs:** Web research (sources linked throughout), full codebase review of user-facing surfaces, `prd.md`, and a review of unmerged remote branches.
 
+> **Caveat added 2026-09-05:** one of this document's inputs, `prd.md`, was already five
+> months stale when this was written and has since been retired (see its banner). Any
+> claim here about *what the product currently is* — as opposed to market or competitor
+> findings — should be re-checked against `PRODUCT.md` and `CLAUDE.md`. The market
+> research itself is unaffected.
+
 ---
 
 ## 1. Target market profile

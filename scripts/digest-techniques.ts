@@ -1,12 +1,20 @@
 /**
- * Technique digest: turn raw book notes into draft playbook techniques.
+ * Technique digest: turn raw book notes into live playbook techniques.
  *
  * Paste your takeaways from a book into a markdown file (with a
  * `Source: <title> — <author>` line), run this, and Claude drafts technique
  * rows in Entiremind's house voice — distilled into original wording, given
  * new house names, and written as recipes that enact a question rather than
- * teach a lesson. Rows are inserted as status='draft'; the founder reviews and
- * activates them in the dashboard. Nothing is ever auto-activated.
+ * teach a lesson.
+ *
+ * Rows are inserted as status='active' and enter rotation immediately. Running
+ * this script IS the decision to use them; there is no second approval step.
+ * Review happens after the fact in /dashboard/founder, where per-technique
+ * reply rate accrues and anything that doesn't land can be edited or retired.
+ *
+ * The rails that matter still hold: `gentle` governs what reaches struggling or
+ * silent users, and content_selection_config.technique_apply_probability = 0
+ * disables the whole system instantly.
  *
  * Usage: npx tsx scripts/digest-techniques.ts <notes.md>
  */
@@ -169,7 +177,7 @@ async function main() {
       gentle: Boolean(d.gentle),
       source_title: sourceTitle,
       source_author: sourceAuthor,
-      status: "draft" as const,
+      status: "active" as const,
     }));
 
   if (rows.length === 0) {
@@ -185,7 +193,9 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`\nDrafted ${rows.length} technique(s) as status='draft':`);
+  console.log(
+    `\nActivated ${rows.length} technique(s) — live in rotation now:`,
+  );
   for (const r of rows) {
     console.log(`  • ${r.name} — ${r.principle}`);
     console.log(`      recipe: ${r.prompt_recipe}`);
@@ -193,7 +203,9 @@ async function main() {
       `      distortions: [${r.target_distortions.join(", ")}]  gentle: ${r.gentle}`,
     );
   }
-  console.log("\nReview and activate them on /dashboard/founder.");
+  console.log(
+    "\nThey are live now. Watch reply rate on /dashboard/founder and retire what doesn't land.",
+  );
 }
 
 main().catch((err) => {

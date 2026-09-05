@@ -109,8 +109,9 @@ export async function GET(request: Request) {
 
     try {
       // Check if we already sent a daily prompt to this user today.
-      // Exclude 'ack' (reactive responses to replies) and 'billing'
-      // (payment notices) — neither should block the morning prompt.
+      // Exclude 'ack' (reactive responses to replies), 'billing' (payment
+      // notices) and 'intention_nudge' (the intention-shift note) — none of
+      // them should block the morning prompt.
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
 
@@ -119,7 +120,9 @@ export async function GET(request: Request) {
         .select("id")
         .eq("user_id", user.id)
         .eq("direction", "outbound")
-        .or("content_type.not.in.(ack,billing),content_type.is.null")
+        .or(
+          "content_type.not.in.(ack,billing,intention_nudge),content_type.is.null",
+        )
         .gte("created_at", todayStart.toISOString())
         .limit(1);
 

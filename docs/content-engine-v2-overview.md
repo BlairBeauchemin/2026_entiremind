@@ -1,8 +1,12 @@
 # Content Engine v2 — Plain-English Overview
 
-A non-technical reference for what just got built, what it does, what you can tune yourself, and what's next.
+*Written May 2026, when v2 shipped. **This is a snapshot of that release, not of the
+system today.*** It is still the clearest plain-English explanation of how the loop
+works, which is why it's kept — but the product has moved on around it. See "What has
+changed since this was written" at the bottom before acting on anything here.
 
-For the deep technical version, see `docs/prds/2026-05-12-content-engine-v2.md` and `docs/plans/2026-05-12-content-engine-v2.md`.
+For current operations, use `docs/founder-ops-playbook.md`. For what is actually built,
+`CLAUDE.md`. For the original technical design, `docs/prds/2026-05-12-content-engine-v2.md`.
 
 ---
 
@@ -73,7 +77,8 @@ Now: rules-based. The system:
 
 Before: 4 steps — welcome, name, phone, intention.
 
-Now: 7 steps. Three new ones after intention:
+At the time of writing: 7 steps. (It is **15** today — Onboarding v2 replaced this in June
+2026 with the archetype flow.) Three new ones after intention:
 - **Vision** — "If this manifested, what would your life look like?"
 - **Obstacles** — "What's been getting in the way?"
 - **Aligned-state** — "When do you feel most like yourself?"
@@ -84,11 +89,14 @@ These four answers (intention, vision, obstacles, aligned-state) are saved AND t
 
 The same Monday memory pass also looks for signs that a user's goal has shifted — maybe they signed up to manifest a new job but they've spent the last two weeks talking about their relationship.
 
-When detected with enough confidence (60%+), the system writes a suggestion for you to review. You can:
-- **Approve** — the system archives the old intention and creates a new one
-- **Dismiss** — nothing changes
+When detected with enough confidence (60%+), the system **texts the user** — once — saying
+what it's noticed and pointing them at the app if they want to change it. You see it in a
+read-only log on the founder dashboard.
 
-The system never updates intentions on its own. You decide.
+The system never updates intentions on its own, and neither do you. **The user decides.**
+
+*(Changed September 2026. This originally routed to a founder approve/dismiss queue, and
+approving rewrote the user's intention for them. Both halves were wrong.)*
 
 ### 7. New founder dashboard
 
@@ -144,11 +152,16 @@ Table: `content_selection_config` (one row, id = 1)
 | `quote_max_per_week` | Max number of "quote" messages per user per week | 1 |
 | `silence_threshold` | Number of silent days before forcing lighter content | 3 |
 
+**This table has grown a lot since.** It now also carries the silence-recovery thresholds,
+the technique knobs, the four message-mode knobs, and the intention-drift confidence gate.
+The current, complete list is in `docs/founder-ops-playbook.md` §4.
+
 Changes take effect on the next daily send.
 
-### Intention shift confidence
+### Intention drift confidence
 
-Currently hardcoded at 0.6 (60% confidence). If false positives become annoying, raise it. If you suspect the system is missing real shifts, lower it. Right now this requires a small code change — let me know if you want it moved into the config table too.
+Was hardcoded at 0.6. **It is now `content_selection_config.intention_shift_min_confidence`**
+— tunable from Supabase like everything else. Raise it if drift nudges feel premature.
 
 ---
 
@@ -163,47 +176,6 @@ At 1,000 active users:
 - **Total: roughly $30/month**
 
 If costs climb unexpectedly, the most likely culprit is too many inbound messages per user. The system enriches every inbound, and each one runs an AI call. STOP, HELP, and unknown numbers don't trigger AI calls, so spam isn't an issue.
-
----
-
-## Your deployment steps
-
-When you're back on your laptop:
-
-1. **Pull the branch:**
-   ```
-   git checkout claude/document-skills-GSDID
-   git pull origin claude/document-skills-GSDID
-   ```
-
-2. **Install dependencies and verify locally:**
-   ```
-   npm install
-   npm run typecheck
-   npm run lint:check
-   npm run build
-   ```
-
-3. **Walk through onboarding in your browser:**
-   ```
-   npm run dev
-   ```
-   Sign up as a fresh user, complete all 7 steps. Confirm the new vision/obstacles/aligned-state screens feel calm and consistent.
-
-4. **Verify the founder dashboard:** Visit `/dashboard/founder` — should now show intention shift queue and per-user insights sections (they'll be empty until the cron runs).
-
-5. **Verify settings:** Visit `/dashboard/settings`, edit profile, confirm the "preferred send hour" picker shows up.
-
-6. **Merge to main** to trigger production deploy.
-
-7. **After deploy, test the ack flow:** reply to a daily prompt from your test phone. You should get either a soft ack or an AI mirror within about 5 seconds.
-
-8. **Manually trigger the weekly memory cron once** so existing users get memory blobs immediately rather than waiting for next Monday:
-   ```
-   curl -H "Authorization: Bearer $CRON_SECRET" https://www.entiremind.com/api/cron/weekly-memory
-   ```
-
-9. **Check the founder page** — per-user insights should now populate.
 
 ---
 
@@ -225,7 +197,7 @@ These were scoped out of Phase 1 intentionally — they're on the roadmap but re
 - **Embedding-based reply retrieval.** Right now memory captures themes but doesn't search across past replies semantically. Phase 3.
 - **Bandit-style content selection.** Rules work fine today; replacing them with statistical optimization is overkill until you have hundreds of users with rich reply history. Phase 3.
 - **User-facing insights surface.** Right now the memory blob is founder-only. Eventually we could show users "here's what we've noticed about your patterns." Phase 3.
-- **Automatic intention updates without approval.** Founder approval gate stays in place until the system has proven it's reliable. Phase 4.
+- ~~**Automatic intention updates without approval.**~~ **Cancelled, not deferred.** The founder approval gate is gone, but nothing replaced it: the intention is authored by the user and by nobody else. This is a settled product principle, not a roadmap item.
 
 ---
 
@@ -257,3 +229,26 @@ Tell me, in plain language, what's bothering you. Examples:
 - "I want users to see their own memory." → That's a Phase 3 build but I can prioritize it.
 
 You don't need to translate to technical language. Just describe the symptom and I'll figure out the fix.
+
+---
+
+## What has changed since this was written
+
+May 2026 → September 2026, in brief. Anything above that contradicts this list is out of date.
+
+- **Onboarding is 15 steps, not 7** — the archetype flow (June 2026) replaced the
+  four-question version. There is also a public 11-step quiz at `/quiz`.
+- **Intention drift nudges the user instead of queueing for the founder** (September 2026).
+  Nothing rewrites a user's intention.
+- **Techniques** — an internal playbook of prompt recipes now shapes how prompts ask
+  (July 2026). They go live on digest; review is after the fact.
+- **Message modes** — prompts now vary rhetorical stance (question / mirror / callback /
+  attunement), not just topic (July 2026, switched on September 2026).
+- **Weekly recap + silence recovery** — a Monday recap message, and an arc that names the
+  quiet and offers PAUSE before ever pausing an account.
+- **Quotes** come from a curated library, not the LLM.
+- **Free trial + dunning** — 10-day trial, paywall messaging, failed-payment notices.
+- **The founder simulator** — test the whole pipeline against fake personas, no SMS sent.
+- **The Space** (`/space`) and the marketing engine did not exist at all.
+- **Enrichment has its own model** (`ANTHROPIC_ENRICH_MODEL`) after a July regression where
+  sharing `ANTHROPIC_MODEL` with daily generation silently broke it.

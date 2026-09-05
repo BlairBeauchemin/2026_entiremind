@@ -37,8 +37,9 @@ export async function GET(request: Request) {
 
   // Find outbound messages in the window that don't have replies.
   // Exclude 'ack' (reactive responses, not prompts), 'billing' (payment
-  // notices), and 'upgrade' (paywall messages) — no reply to those is not
-  // an engagement-silence signal.
+  // notices), 'upgrade' (paywall messages), and 'intention_nudge' (a one-time
+  // "your focus looks like it moved" note) — no reply to those is not an
+  // engagement-silence signal.
   // users!inner + is_test filter: simulated outbounds (founder simulator)
   // land inside this window with backdated timestamps — the simulator tracks
   // its own silences, so the cron must skip test personas or it would
@@ -48,7 +49,9 @@ export async function GET(request: Request) {
     .select("id, user_id, created_at, text, users!inner(is_test)")
     .eq("direction", "outbound")
     .eq("users.is_test", false)
-    .or("content_type.not.in.(ack,billing,upgrade),content_type.is.null")
+    .or(
+      "content_type.not.in.(ack,billing,upgrade,intention_nudge),content_type.is.null",
+    )
     .gte("created_at", windowStart.toISOString())
     .lte("created_at", windowEnd.toISOString())
     .order("created_at", { ascending: true });
