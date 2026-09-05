@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Check, X, Loader2 } from "lucide-react";
+import { X, Loader2, Send } from "lucide-react";
 
 export interface IntentionShiftItem {
   id: string;
@@ -14,6 +14,7 @@ export interface IntentionShiftItem {
   confidence: number | null;
   rationale: string | null;
   createdAt: string;
+  notifiedAt: string | null;
 }
 
 interface IntentionShiftReviewProps {
@@ -29,6 +30,15 @@ function formatDate(iso: string): string {
   });
 }
 
+/**
+ * A read-only log of intention drift the weekly memory pass noticed, and
+ * whether the user was told.
+ *
+ * This is not a queue and there is nothing here to approve. The user's
+ * intention is theirs — the system says "your focus looks like it moved" once
+ * and points them at the app; it never rewrites it, and neither does the
+ * founder. Dismiss only tidies this list.
+ */
 export function IntentionShiftReview({
   items: initialItems,
 }: IntentionShiftReviewProps) {
@@ -36,14 +46,14 @@ export function IntentionShiftReview({
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleAction(id: string, action: "approve" | "dismiss") {
+  async function handleDismiss(id: string) {
     setPendingId(id);
     setError(null);
     try {
       const res = await fetch("/api/founder/intention-shifts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, action }),
+        body: JSON.stringify({ id, action: "dismiss" }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
@@ -61,14 +71,19 @@ export function IntentionShiftReview({
   if (items.length === 0) {
     return (
       <div className="text-sm text-muted-foreground italic">
-        No pending intention shifts. The weekly memory pass will surface any
-        here.
+        No intention drift noticed yet. The weekly memory pass logs any here and
+        texts the user directly.
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
+      <p className="text-sm text-muted">
+        What the weekly pass noticed, and whether the user was told. Nothing
+        here needs your approval — the user changes their own intention in the
+        app, or leaves it as it is.
+      </p>
       {error && (
         <div className="text-sm text-destructive bg-destructive/10 border border-destructive/25 rounded-sm p-2">
           {error}
@@ -94,18 +109,24 @@ export function IntentionShiftReview({
                   : ""}
               </div>
             </div>
+            {item.notifiedAt && (
+              <div className="flex items-center gap-1 text-[11px] uppercase tracking-widest text-cobalt shrink-0">
+                <Send className="w-3 h-3" aria-hidden="true" />
+                Nudged {formatDate(item.notifiedAt)}
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div>
               <div className="text-[10px] uppercase tracking-widest text-muted mb-1">
-                Current
+                Their intention
               </div>
               <div className="font-serif text-ink">{item.currentIntention}</div>
             </div>
             <div>
               <div className="text-[10px] uppercase tracking-widest text-cobalt mb-1">
-                Proposed
+                What they keep talking about
               </div>
               <div className="font-serif text-ink">
                 {item.proposedIntention}
@@ -120,26 +141,18 @@ export function IntentionShiftReview({
           <div className="flex gap-2 pt-1">
             <Button
               type="button"
-              onClick={() => handleAction(item.id, "approve")}
+              variant="outline"
+              onClick={() => handleDismiss(item.id)}
               disabled={pendingId === item.id}
-              className="bg-cobalt hover:bg-cobalt-deep text-linen rounded-sm"
+              className="border-rule text-muted hover:bg-surface rounded-sm"
             >
               {pendingId === item.id ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <Check className="w-4 h-4 mr-1" /> Approve
+                  <X className="w-4 h-4 mr-1" /> Dismiss from log
                 </>
               )}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleAction(item.id, "dismiss")}
-              disabled={pendingId === item.id}
-              className="border-rule text-muted hover:bg-surface rounded-sm"
-            >
-              <X className="w-4 h-4 mr-1" /> Dismiss
             </Button>
           </div>
         </motion.div>

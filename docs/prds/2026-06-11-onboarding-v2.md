@@ -1,6 +1,6 @@
 # Onboarding v2: Archetype Discovery
 
-**Status:** Draft
+**Status:** Shipped (merged 2026-06-28, PR #7). Historical — the flow now runs 15 steps; see `CLAUDE.md` "Extended web onboarding".
 **Author:** Blair Beauchemin
 **Date:** 2026-06-11
 **Target launch:** New signups first, then existing-user backfill

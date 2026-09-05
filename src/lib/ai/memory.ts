@@ -4,6 +4,8 @@ import { MEMORY_SYSTEM_PROMPT } from "./prompts/memory";
 import { tonePromptPhrase, distortionPromptHint } from "../persona/prompt";
 import type { PersonaProfile } from "../persona/types";
 import { loadActiveSteer, clearSteer } from "./steer";
+import { sendSms } from "../sms";
+import { buildIntentionShiftNudge } from "../intentions/shift-nudge";
 
 export interface UserMemorySummary {
   themes: string[];
@@ -24,7 +26,12 @@ export interface MemoryHistoryEntry {
 
 const MEMORY_LOOKBACK_DAYS = 7;
 const MEMORY_VERSION = 1;
-const INTENTION_SHIFT_MIN_CONFIDENCE = 0.6;
+/**
+ * Fallback confidence gate for intention-shift detection. The live value comes
+ * from content_selection_config.intention_shift_min_confidence — crossing it
+ * texts a real person, so it has to be tunable without a deploy.
+ */
+const DEFAULT_INTENTION_SHIFT_MIN_CONFIDENCE = 0.6;
 
 interface IntentionShiftDetection {
   detected: boolean;
@@ -367,9 +374,7 @@ export async function compactUserMemory(
     return null;
   }
 
-  const recap = coerceRecap(
-    (parsed as Record<string, unknown>).recap_message,
-  );
+  const recap = coerceRecap((parsed as Record<string, unknown>).recap_message);
 
   await persistMemory(userId, summary, recap);
 
@@ -388,9 +393,10 @@ export async function compactUserMemory(
     const shift = coerceIntentionShift(
       (parsed as Record<string, unknown>).intention_shift,
     );
+    const minConfidence = await loadIntentionShiftMinConfidence(supabase);
     if (
       shift.detected &&
-      shift.confidence >= INTENTION_SHIFT_MIN_CONFIDENCE &&
+      shift.confidence >= minConfidence &&
       shift.proposedIntention &&
       currentIntention
     ) {
@@ -410,6 +416,37 @@ export async function compactUserMemory(
   return summary;
 }
 
+/**
+ * The founder-tunable confidence gate. Falls back to the built-in default when
+ * the config row or column is missing — a missing knob must never mean "nudge
+ * everyone".
+ */
+async function loadIntentionShiftMinConfidence(
+  supabase: ReturnType<typeof createServiceRoleClient>,
+): Promise<number> {
+  const { data } = await supabase
+    .from("content_selection_config")
+    .select("intention_shift_min_confidence")
+    .eq("id", 1)
+    .single();
+
+  const value = data?.intention_shift_min_confidence;
+  return typeof value === "number"
+    ? value
+    : DEFAULT_INTENTION_SHIFT_MIN_CONFIDENCE;
+}
+
+/**
+ * Record a detected intention shift and tell the user about it.
+ *
+ * This function does NOT change the user's intention, and nothing downstream
+ * does either. The intention is the one thing in the product the user authored;
+ * the system may notice that their attention has moved and say so, but editing
+ * it on their behalf — silently, or via a founder approving a queue — would
+ * fail the trusted-friend test. The nudge points them at the app and stops.
+ *
+ * Best-effort throughout: a failure here must never fail memory compaction.
+ */
 async function recordIntentionShift(params: {
   userId: string;
   currentIntention: string;
@@ -420,33 +457,69 @@ async function recordIntentionShift(params: {
 }): Promise<void> {
   const supabase = createServiceRoleClient();
 
-  // Avoid duplicates: if there's already a pending suggestion with the same
-  // proposed text for this user, skip.
+  // Nudge once, never nag. If this user has already been told about this same
+  // proposed focus, say nothing — a weekly "are you sure about your goal?" text
+  // is exactly the nagging the brand promise rules out.
   const { data: existing } = await supabase
     .from("intention_shift_suggestions")
     .select("id")
     .eq("user_id", params.userId)
-    .eq("status", "pending")
     .eq("proposed_intention", params.proposedIntention)
-    .limit(1)
+    .in("status", ["pending", "notified", "approved"])
+    .limit(1);
+
+  if (existing && existing.length > 0) return;
+
+  const { data: inserted, error } = await supabase
+    .from("intention_shift_suggestions")
+    .insert({
+      user_id: params.userId,
+      current_intention: params.currentIntention,
+      proposed_intention: params.proposedIntention,
+      confidence: params.confidence,
+      rationale: params.rationale,
+      supporting_message_ids: params.supportingMessageIds,
+      status: "notified",
+    })
+    .select("id")
     .single();
-
-  if (existing) return;
-
-  const { error } = await supabase.from("intention_shift_suggestions").insert({
-    user_id: params.userId,
-    current_intention: params.currentIntention,
-    proposed_intention: params.proposedIntention,
-    confidence: params.confidence,
-    rationale: params.rationale,
-    supporting_message_ids: params.supportingMessageIds,
-    status: "pending",
-  });
 
   if (error) {
     console.error(
       `Failed to record intention shift for user ${params.userId}:`,
       error,
+    );
+    return;
+  }
+
+  // Tell the user. Paused accounts and users without a phone get the row but no
+  // text — the log still carries the signal.
+  const { data: user } = await supabase
+    .from("users")
+    .select("name, phone, status")
+    .eq("id", params.userId)
+    .single();
+
+  if (!user?.phone || user.status !== "active") return;
+
+  try {
+    const result = await sendSms(
+      params.userId,
+      user.phone,
+      buildIntentionShiftNudge(params.proposedIntention, user.name ?? null),
+      { contentType: "intention_nudge" },
+    );
+
+    if (result.success && inserted?.id) {
+      await supabase
+        .from("intention_shift_suggestions")
+        .update({ notified_at: new Date().toISOString() })
+        .eq("id", inserted.id);
+    }
+  } catch (err) {
+    console.error(
+      `Failed to send intention-shift nudge to user ${params.userId}:`,
+      err,
     );
   }
 }
@@ -638,7 +711,8 @@ export function renderProgressionForPrompt(
         (7 * 24 * 3_600_000),
     ),
   );
-  const whenLabel = weeksAgo === 1 ? "About a week ago" : `About ${weeksAgo} weeks ago`;
+  const whenLabel =
+    weeksAgo === 1 ? "About a week ago" : `About ${weeksAgo} weeks ago`;
 
   const parts: string[] = [];
   parts.push("How this user has shifted over time (for a callback):");

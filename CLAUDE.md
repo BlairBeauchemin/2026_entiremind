@@ -15,7 +15,43 @@ The competitive advantage is **learning velocity**, not features. The system ope
 - Messages ship quickly
 - Replies and silence are signals
 - Prompts evolve weekly
-- Founder judgment compounds early
+- Founder judgment compounds early — as *taste applied to outputs*, not as a queue in the
+  request path. See the operating stance below.
+
+### Operating stance: the system runs itself
+
+**Default: no human in the loop.** The goal is automation and scalability. If a feature
+requires the founder to approve each instance before it reaches a user, that is a bug in
+the feature, not a safety measure. Review happens *after* the fact, against outcomes —
+per-technique reply rate, per-mode reply rate, the drift log — and the lever is a config
+knob, not an approval click.
+
+Exactly four gates remain, and each one exists for a reason that is not preference:
+
+| Gate | Why it stays | Enforced at |
+|---|---|---|
+| **Paid ad launches** | Unattended ad spend against a live budget | `src/lib/marketing/pipeline/publish.ts` — `reviewed_by` required for `target='ad'` |
+| **Organic social publishing** | Brand voice going public, hard to unpublish | `brand_channels.publish_mode` (default `require_approval`) |
+| **Weekly email editions** | CAN-SPAM / list-compliance exposure on bulk send | pushed to the provider as a **draft**; never auto-sent |
+| **The user's intention** | It is the user's, not ours | see below |
+
+#### Intentions are the user's
+
+**The intention is written by the user and by nobody else** — not the model, not the
+founder, not a cron. The system may notice that someone's attention has moved and *say so*;
+it may steer the day's prompt toward what they're actually talking about; it never edits the
+intention itself.
+
+This is a product principle, not an implementation detail, and it is the rule most likely to
+be broken by someone "finishing" a feature:
+
+- `src/lib/ai/steer.ts` — an explicit "let's focus on X" sets a short-lived `active_steer`
+  and nudges the user to change it in-app. It never rewrites.
+- `src/lib/ai/memory.ts` `recordIntentionShift` — weekly drift detection logs and texts the
+  user. It never rewrites. There is no approve action anywhere.
+- `src/lib/intentions/authorship.test.ts` — guards the invariant at the source level across
+  every file that touches the `intentions` table. If you are here because that test failed,
+  the test is right.
 
 ### System Phases
 
@@ -325,6 +361,20 @@ TWILIO_PHONE_NUMBER=+1234567890
 - `signal_events` - individual behavioral events (reply, silence, unprompted, quick_reply, long_reply, stop_request)
 - `user_signals` - computed engagement aggregates per user (reply rate, engagement score, consecutive silences, etc.)
 
+**Full table inventory (35 tables, migrations 001–029).** The list above is the original core;
+the rest arrive with their feature sections below. Tables not covered elsewhere in this file:
+
+- `audit_logs` (006), `user_profiles` / `user_profile_history` / `onboarding_step_events` (015),
+  `testimonials` (018), `system_prompts` / `sim_runs` / `sim_days` (021)
+
+**Migration numbering is a known trap.** Five branches independently claimed "018" in July 2026
+and were renumbered 018–024 at merge; several migration files still carry a stale "018" header
+comment describing what is now a different number. **The filename is the truth**, not the
+comment inside it. Current mapping: 018 testimonials · 019 weekly recap + silence recovery ·
+020 value ladder + dunning · 021 messaging simulator · 022 quotes + weekly editions ·
+023 techniques · 024 marketing engine · 025 public quiz leads · 026 message modes ·
+027 reply steer · 028 affirmations · 029 autonomous operation.
+
 #### Stripe Subscriptions
 
 - **Stripe client**: `src/lib/stripe.ts` - Stripe SDK singleton with API version 2026-01-28.clover
@@ -488,8 +538,10 @@ Evolves the content engine from a daily message generator into a system that lis
 
 **Extended web onboarding (`src/app/onboarding/page.tsx`):**
 
-- 7 steps total: welcome → name → phone → intention → vision → obstacles → aligned-state
-- New steps in `src/components/onboarding/steps/`: `vision-step.tsx`, `obstacles-step.tsx`, `aligned-state-step.tsx`
+- **15 steps total** (`src/components/onboarding/onboarding-flow.tsx`): welcome → name → phone → category → intention → vision → orientation → style → past_pattern → first_doubt → inner_voice → values → tone → aligned → reveal
+- Eight of those are the shared archetype tap screens (`category, orientation, style, past_pattern, first_doubt, inner_voice, values, tone`, configured in `src/lib/persona/questions.ts`); three are free text (`intention`, `vision`, `aligned`)
+- Step components in `src/components/onboarding/steps/`: `vision-step.tsx`, `aligned-state-step.tsx`, `tap-question-step.tsx`, `values-step.tsx`, `reveal-step.tsx` (there is **no** `obstacles-step.tsx` — obstacles are no longer a discrete step; the field survives on `onboarding_responses` and in seed memory)
+- Related counts, which are easy to conflate: the public quiz (`/quiz`) is **11** steps (8 taps + partial reveal + gate + full reveal); the authed archetype retake (`archetype-flow.tsx`) is **9** (8 taps + reveal)
 - `createInitialIntention` server action now only saves the intention (no longer completes onboarding)
 - `completeFullOnboarding` action (called from the final step) writes `onboarding_responses`, seeds `user_memory` from the four answers, marks `onboarding_completed`, and fires welcome SMS
 - Vision, obstacles, aligned-state accumulate in client state and persist together at the end
@@ -497,22 +549,22 @@ Evolves the content engine from a daily message generator into a system that lis
 **Intention shift detection:**
 
 - Same weekly Sonnet pass that compacts memory also assesses whether the user's stated intention has drifted
-- Confidence threshold of 0.6 to surface a suggestion (false positives are costly; missed shifts surface again next week)
-- Suggestions written to `intention_shift_suggestions` table with status='pending'
-- Founder reviews via `IntentionShiftReview` component on `/dashboard/founder`
-- Approve: archives current active intention, creates new one with proposed text
-- Dismiss: marks suggestion dismissed, no change to active intention
-- API: `POST /api/founder/intention-shifts` with `{ id, action: 'approve' | 'dismiss' }`
+- **Nothing applies the shift.** The intention is written by the user and by nobody else — not the model, not the founder. Detection observes and tells the user; that is the whole feature. See "Intentions are the user's" below.
+- Confidence gate lives on `content_selection_config.intention_shift_min_confidence` (default 0.60, migration 029). It was hardcoded until crossing it started texting a real person.
+- Detection writes `intention_shift_suggestions` with `status='notified'`, then sends the **user** a one-time SMS (`content_type='intention_nudge'`, copy in `src/lib/intentions/shift-nudge.ts`) pointing them at `/dashboard/intentions` to change it themselves — or not.
+- **Nudge once, never nag**: a second detection of the same proposed text sends nothing (`recordIntentionShift` in `src/lib/ai/memory.ts`). Paused users and users without a phone get the log row but no text.
+- `intention_nudge` is excluded from silence detection and never suppresses the next morning's prompt — same treatment as `billing`.
+- API: `POST /api/founder/intention-shifts` with `{ id, action: 'dismiss' }`. There is deliberately **no** approve action.
 
 **Founder review surfaces (`/dashboard/founder`):**
 
-- `IntentionShiftReview` - pending intention shifts queue at top
+- `IntentionShiftReview` - read-only intention drift log (what was noticed, and whether the user was nudged). Not a queue; nothing here needs review.
 - `FounderUserInsights` - per-user expandable cards showing memory blob, recent theme cloud (last 30 days), sentiment trend bar (last 14 days), and reply-rate-by-content-type table
 
 **Weekly recap SMS ("here's what we've noticed"):**
 
 - The Monday memory-compaction Sonnet pass also writes an optional `recap_message` — a ≤300-char SMS reflecting 1–2 concrete specifics from the user's week back to them (null when the week has nothing real to recap; never invented)
-- Staged on `user_memory.pending_recap` / `recap_generated_at` (migration 018); a compaction with no recap clears any stale one
+- Staged on `user_memory.pending_recap` / `recap_generated_at` (migration 019); a compaction with no recap clears any stale one
 - Daily-send delivers a fresh (<48h) staged recap **in place of** that morning's regular prompt, `content_type = 'recap'`; `takePendingRecap()` (in `src/lib/ai/memory.ts`) claims-then-clears so a recap can never double-send
 - Cost: $0 extra — piggybacks on the existing weekly Sonnet call
 
@@ -521,7 +573,7 @@ Evolves the content engine from a daily message generator into a system that lis
 - Daily-send checks `user_signals.consecutive_silences` before prompting:
   - At `reconnect_after_silences` (default 5): sends a reconnect message (`content_type = 'reconnect'`) instead of the prompt — names the quiet, offers PAUSE. Sent once per silent stretch (tracked via reconnect outbound newer than `last_reply_at`)
   - At `pause_after_silences` (default 9), only after an unanswered reconnect: sends a farewell and sets `users.status = 'paused'` — never pauses without warning
-- Thresholds founder-tunable in `content_selection_config` (migration 018)
+- Thresholds founder-tunable in `content_selection_config` (migration 019)
 - SMS keywords in the Twilio webhook: PAUSE → status paused + confirmation; RESUME/UNPAUSE → status active + confirmation + synthetic reply signal so the silence streak resets (otherwise the arc would immediately re-pause them)
 - Replies to recap/reconnect messages link as replies (reset the streak) and count in reply-rate denominators
 - Recovery messages are deliberately template-based, not AI-generated
@@ -551,7 +603,7 @@ Evolves the content engine from a daily message generator into a system that lis
 - `user_memory` - current memory blob per user (JSONB), version, token_count
 - `user_memory_history` - archived previous memory versions
 - `onboarding_responses` - intention, vision, obstacles, aligned_state per user
-- `intention_shift_suggestions` - founder-reviewed intention updates
+- `intention_shift_suggestions` - log of detected intention drift and whether the user was nudged (never applied)
 - `content_selection_config` - singleton table for runtime-tunable selection rules
 - `soft_acks` - rotating library of acknowledgement phrases (15 seeded)
 - `messages.insights` JSONB column added (enrichment payload)
@@ -559,7 +611,7 @@ Evolves the content engine from a daily message generator into a system that lis
 - `messages.content_type` CHECK extended to include `'ack'`
 - `users.preferred_send_hour` INTEGER added
 
-**Database changes (migration 018):**
+**Database changes (migration 019):**
 
 - `user_memory.pending_recap` TEXT + `recap_generated_at` TIMESTAMPTZ (staged weekly recap)
 - `messages.content_type` CHECK extended with `'recap'` and `'reconnect'`
@@ -682,7 +734,7 @@ AI content engine for paid ads (Meta-first) and organic social (Instagram, TikTo
 
 **Config:** `marketing_engine_config` singleton (enabled, weekly_pieces_per_brand, batch caps, default budget, ads_launch_paused, video_enabled, image/video provider) — founder-tunable from Supabase without deploy.
 
-**Database (migration 018):** `brands`, `brand_channels`, `trend_snapshots`, `marketing_campaigns`, `content_pieces` (status lifecycle: draft → generating → [awaiting_footage →] pending_review → approved/rejected → scheduled → publishing → published|launched|failed), `media_assets`, `content_metrics`, `marketing_engine_config`, plus the public `marketing-media` storage bucket.
+**Database (migration 024):** `brands`, `brand_channels`, `trend_snapshots`, `marketing_campaigns`, `content_pieces` (status lifecycle: draft → generating → [awaiting_footage →] pending_review → approved/rejected → scheduled → publishing → published|launched|failed), `media_assets`, `content_metrics`, `marketing_engine_config`, plus the public `marketing-media` storage bucket.
 
 **Required env vars (marketing engine):**
 
@@ -734,7 +786,12 @@ Migration: `025_public_quiz_leads.sql`.
 - Embedding-based reply retrieval for richer prompts (Phase 3)
 - Bandit-style content selection replacing rules (Phase 3)
 - User-facing insights surface ("here's what we've noticed") (Phase 3)
-- Fully autonomous intention updates without founder approval (Phase 4)
+- Live Meta/TikTok/YouTube publishing (adapters stub until platform app approval)
+- Veo video generation (stub)
+- `/api/cron/reconcile-enrichment` is built but unscheduled (Vercel cron-slot limit)
+
+**Not a gap — a decision:** autonomous intention updates are *not* on this list and never
+will be. See "Intentions are the user's" above.
 
 #### Technique Playbook
 
@@ -753,11 +810,78 @@ A curated, founder-editable library of distilled thinking-tools (from books like
 
 **Curation:**
 
-- `scripts/digest-techniques.ts <notes.md>` — paste book takeaways (+ `Source: Title — Author`), Sonnet drafts technique rows in house voice with IP rules, inserts as `status='draft'`
-- Founder dashboard "Technique Playbook" section (`/dashboard/founder`): list + per-technique sends/reply-rate, edit-in-place, activate/retire/create. API `src/app/api/founder/techniques/route.ts` (create/update/activate/retire, founder-gated)
-- 10 seed techniques ship active in migration 019, one per distortion family
+- `scripts/digest-techniques.ts <notes.md>` — paste book takeaways (+ `Source: Title — Author`), Sonnet drafts technique rows in house voice with IP rules, inserts as **`status='active'`** — running the script IS the decision to use them; there is no second approval step
+- Founder dashboard "Technique Playbook" section (`/dashboard/founder`): list + per-technique sends/reply-rate, edit-in-place, retire/create. Review happens **after** the fact — retire what doesn't land. API `src/app/api/founder/techniques/route.ts` (create/update/activate/retire, founder-gated)
+- Rails that still hold regardless: `gentle` filtering governs what reaches struggling/silent users, and `technique_apply_probability = 0` disables the system instantly
+- 10 seed techniques ship active in migration 023, one per distortion family
 
 **Deferred to v2:** signal-weighted (bandit) selection, reply-rate-by-distortion cross-tabs, A/B recipe variants.
+
+#### Message modes — the "feeling seen" axis (migration 026)
+
+A rhetorical-stance axis for daily prompts, **orthogonal to `content_type`**. `content_type`
+picks the topic; `message_mode` picks how the message stands:
+
+| Mode | What it does |
+|---|---|
+| `question` | ends with a question — the historical default |
+| `mirror` | declaratively reflects a specific thing they said, or a pattern |
+| `callback` | references something from weeks ago and contrasts it with now |
+| `attunement` | one grounded statement that lands, with no question at all |
+
+- Selection: `selectMessageMode` / `decideMessageMode` in `src/lib/ai/prompts.ts`; every send
+  is tagged `messages.message_mode` (NULL for acks, recaps, reconnects and other non-prompts),
+  so reply-rate-by-mode accrues for free
+- **Techniques and modes are mutually exclusive per message** — when a technique is active,
+  mode selection returns `question` so the message isn't transformed twice
+  (`prompts.ts` `decideMessageMode`, `techniqueActive` branch)
+- Config knobs on `content_selection_config`: `feeling_seen_enabled`, `mirror_target_per_week`
+  (default 2), `callback_target_per_week` (default 1), `mode_char_ceiling` (default 300 — modes
+  are allowed to run past the 160-char SMS norm)
+- Optional own model via `ANTHROPIC_FEELING_SEEN_MODEL`; unset falls back to the adapter default
+- **Shipped dark and later switched on.** `feeling_seen_enabled` defaulted to `false` from
+  migration 026 (July) until migration **029** flipped it, so every send in between was
+  `question`. If prompts suddenly read differently, this is why.
+- Migration 026 also seeded a `system_prompts` row, *"Craft pass v1 (feeling-seen)"*, as
+  **inactive** — it adds concrete exemplars and bans template shapes. Activate it from the
+  simulator when you want it; production prose is unchanged until you do.
+- Pure decision logic unit-tested in `src/lib/ai/mode.test.ts`
+
+#### Founder messaging simulator (migration 021)
+
+Test the whole pipeline against fake people without sending a single SMS.
+
+- **`/dashboard/founder/simulator`**; engine in `src/lib/simulator/` (`engine.ts`, `persona.ts`,
+  `personas.ts`, `guard.ts`)
+- Test personas are **real rows in the real tables**, flagged `users.is_test`, so the simulator
+  exercises the actual production path — context building, content selection, mode selection,
+  enrichment, signals, memory compaction — and never calls the SMS provider
+- `is_test` is service-role-only (migration 017 restricted the user-writable column list), and
+  the `detect-silence` and `weekly-memory` crons both exclude test personas so they don't
+  double-track simulated activity
+- Ledger: `sim_runs` + `sim_days` with per-day debug payloads — the "why" drawer showing which
+  content type, mode and technique were chosen and what drove each choice
+- **`system_prompts`** — versioned generation prompts, one active row. **Production generation
+  is byte-identical to the built-in default until a version is explicitly activated**, which is
+  what makes the simulator safe to A/B in.
+
+#### Testimonial capture (migration 018)
+
+- Founder asks a high-engagement user for a one-line testimonial by SMS
+  (`content_type = 'testimonial_request'`); the user's next reply is captured in `testimonials`
+- `src/components/dashboard/testimonial-review.tsx` on `/dashboard/founder`; API
+  `src/app/api/founder/testimonials/route.ts`
+- **Publishing requires the user's explicit consent confirmation.** This is a consent gate, not
+  a throughput gate — it stays. We do not publish a person's words because a model classified
+  them as positive.
+
+#### Founder funnels
+
+- `founder-conversion-funnel.tsx` — acquisition: leads → signups → onboarded → paid, overall and
+  per source (`landing_page` / `quiz` / `share-{archetype}`). Computed server-side in
+  `src/lib/founder/conversion-funnel.ts`
+- `founder-onboarding-funnel.tsx` — drop-off across the 15 onboarding screens in order, with the
+  distinct-user count reaching each step and its share of starts, from `onboarding_step_events`
 
 #### The Space (`/space`) — affirmations under a night sky
 

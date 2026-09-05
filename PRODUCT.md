@@ -70,11 +70,14 @@ product speaks from. It also rules out both hustle-culture framing and uncritica
 ## Capabilities and Constraints
 
 **Confirmed capabilities:** two-way SMS (Twilio); AI-generated daily prompts with
-per-user memory; reply enrichment (sentiment, themes, emotional state) with a mirror
-or soft-ack response to every substantive inbound; a 15-step archetype quiz, public
-at `/quiz` and inside onboarding; shareable public archetype pages; Stripe
-subscriptions; a curated quote library; a weekly email edition drafted for founder
-review; an internal technique playbook.
+per-user memory and a four-way rhetorical mode axis (question / mirror / callback /
+attunement); reply enrichment (sentiment, themes, emotional state) with a mirror
+or soft-ack response to every substantive inbound; an eight-screen archetype quiz —
+served inside a 15-step authed onboarding and as an 11-step public flow at `/quiz`;
+shareable public archetype pages; Stripe subscriptions; a curated quote library; a
+weekly email edition drafted for founder review; an internal technique playbook; a
+founder simulator that exercises the whole pipeline against test personas without
+sending SMS.
 
 **Hard constraints:**
 
@@ -141,10 +144,14 @@ Specifically:
 - No paying subscribers, no live users generating replies, no testimonials.
 - `src/components/landing/testimonials.tsx` is named misleadingly — it is a
   "What You'll Experience" benefits section containing no customer quotes.
-- The **"Join 2,000+ others aligning intentions"** line with three `i.pravatar.cc`
-  stock avatars in `src/components/landing-v2/sacred-hero.tsx:70` is **placeholder,
-  not a fact**, and violates the trusted-friend guardrail. It must not be reproduced
-  and should be removed from that route.
+- The invented social-proof line that used to sit in
+  `src/components/landing-v2/sacred-hero.tsx` (a follower count beside stock avatars)
+  **was removed on 30 August 2026**. What remains at that spot is a comment explaining
+  why the slot is deliberately empty. Real proof goes there when it exists, and not
+  before — do not reintroduce a number, a count, or an avatar row.
+- Note that `/v2` (which renders `landing-v2/*`) is a live but unlinked alternate
+  landing page; the production landing at `/` renders `landing/*`. A claim removed
+  from one is not removed from the other.
 
 **Real assets that do exist:** the archetype and inner-critic writing in
 `src/lib/persona/content.ts`; the seeded technique library; the curated quote library;
@@ -165,6 +172,16 @@ the methodology and design-philosophy documents. These are genuine and citable.
 5. **Warmth is a constraint, not a tone.** The trusted-friend test can veto a decision
    that would otherwise convert better. Persuasion serves the user's own stated
    intention or it does not ship.
+6. **The user authors their intention.** The system may notice that someone's attention
+   has drifted and say so — once, gently, with a link to change it. It never edits the
+   intention itself, and neither does the founder. This is the one place where "the
+   system decides" is not an improvement.
+7. **The system runs itself.** Nothing that reaches a user waits on a human to approve
+   it. Judgment is applied to outcomes after the fact and expressed as config, not as a
+   queue in the request path. Four gates survive this rule and only these four: paid ad
+   launches (unattended spend), organic social publishing (brand voice in public),
+   weekly email sends (list compliance), and testimonial publishing (the user's
+   consent). None of them is about founder taste.
 
 ## Accessibility & Inclusion
 

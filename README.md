@@ -43,7 +43,6 @@ Copy `.env.example` to `.env.local` and fill in:
 - `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anon key
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
-- `SMS_PROVIDER` - `twilio` or `telnyx`
 - `TWILIO_*` - Twilio credentials
 - `STRIPE_*` - Stripe credentials
 - `CRON_SECRET` - Secret for cron job authentication
@@ -54,7 +53,9 @@ Copy `.env.example` to `.env.local` and fill in:
 ## Key Features
 
 - **Landing page** with waitlist capture (name, email, phone)
-- **SMS engine** with provider abstraction (Twilio/Telnyx)
+- **Public archetype quiz** (`/quiz`) — eight tap screens → partial reveal → email gate →
+  full personalized reading → share; shareable archetype pages at `/archetype/[slug]`
+- **SMS engine** on Twilio (A2P 10DLC approved), behind a thin provider abstraction
 - **User dashboard** with profile, settings, pause/resume controls
 - **Founder dashboard** (`/dashboard/founder`) with:
   - Searchable user dropdown for message scheduling
@@ -63,11 +64,24 @@ Copy `.env.example` to `.env.local` and fill in:
   - User message viewer with status and direction
   - Engagement signals table (reply rates, scores)
 - **Content Engine** with:
-  - AI-generated personalized messages (Claude/OpenAI)
+  - AI-generated personalized messages (Claude/OpenAI) with per-user memory
+  - Four rhetorical modes: question, mirror, callback, attunement
+  - Reply enrichment — every substantive inbound gets a mirror or soft ack
   - Signal tracking (replies, silence, engagement scores)
-  - Automated daily sends to all active users
-- **Stripe subscriptions** with checkout and billing portal
-- **Daily crons** at 7:40-7:45 AM Pacific (scheduled messages at 7:40, AI daily send at 7:45)
+  - Silence recovery arc — names the quiet, offers PAUSE, never nags
+  - An internal technique playbook shaping how prompts ask
+- **The Space** (`/space`) — affirmations under an accumulating night sky
+- **Curated quote library** + weekly email editions drafted for review
+- **Marketing engine** — AI content and ads pipeline (paid ads always founder-reviewed)
+- **Stripe subscriptions** with checkout, billing portal, and one-tap SMS upgrade links
+- **10 daily/weekly crons** — see `vercel.json` (daily send at 7:45 AM Pacific)
+
+## Operating stance
+
+The system runs itself. Nothing that reaches a user waits on a human to approve it, with
+four deliberate exceptions: paid ad launches, organic social publishing, weekly email
+sends, and testimonial publishing. A fifth rule is not a gate but a principle — **the
+user's intention is written by the user and by nobody else.** See CLAUDE.md.
 
 ## Documentation
 

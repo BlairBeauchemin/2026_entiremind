@@ -4,11 +4,16 @@ import { requireFounder } from "@/lib/founder/auth";
 
 /**
  * POST /api/founder/intention-shifts
- * Body: { id: string, action: "approve" | "dismiss" }
+ * Body: { id: string, action: "dismiss" }
  *
- * Approve: archive the user's active intention, create a new one with the
- * proposed text, mark the suggestion as approved.
- * Dismiss: mark the suggestion as dismissed.
+ * Dismiss: clear a detected shift from the founder log.
+ *
+ * There is deliberately no "approve" action. Approving used to archive the
+ * user's active intention and write a new one on their behalf — the intention
+ * is the one thing in the product the user authored, and nobody else edits it,
+ * founder included. Detection now texts the *user* a one-time nudge pointing
+ * them at /dashboard/intentions (see src/lib/ai/memory.ts recordIntentionShift
+ * and src/lib/intentions/shift-nudge.ts); this endpoint only tidies the log.
  */
 export async function POST(request: Request) {
   const auth = await requireFounder();
@@ -25,56 +30,37 @@ export async function POST(request: Request) {
   }
 
   const id = typeof body.id === "string" ? body.id : null;
-  const action = body.action === "approve" || body.action === "dismiss" ? body.action : null;
+  const action = body.action === "dismiss" ? body.action : null;
   if (!id || !action) {
-    return NextResponse.json({ error: "id and action required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "id and action: 'dismiss' required" },
+      { status: 400 },
+    );
   }
 
   const supabase = createServiceRoleClient();
 
   const { data: suggestion, error: fetchError } = await supabase
     .from("intention_shift_suggestions")
-    .select("*")
+    .select("id, status")
     .eq("id", id)
     .single();
 
   if (fetchError || !suggestion) {
-    return NextResponse.json({ error: "Suggestion not found" }, { status: 404 });
-  }
-
-  if (suggestion.status !== "pending") {
     return NextResponse.json(
-      { error: `Already ${suggestion.status}` },
-      { status: 409 }
+      { error: "Suggestion not found" },
+      { status: 404 },
     );
   }
 
-  if (action === "approve") {
-    // Archive existing active intention(s)
-    const { error: archiveError } = await supabase
-      .from("intentions")
-      .update({ status: "completed", updated_at: new Date().toISOString() })
-      .eq("user_id", suggestion.user_id)
-      .eq("status", "active");
-    if (archiveError) {
-      return NextResponse.json({ error: archiveError.message }, { status: 500 });
-    }
-
-    // Insert the new intention
-    const { error: insertError } = await supabase.from("intentions").insert({
-      user_id: suggestion.user_id,
-      text: suggestion.proposed_intention,
-      status: "active",
-    });
-    if (insertError) {
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
-    }
+  if (suggestion.status === "dismissed") {
+    return NextResponse.json({ error: "Already dismissed" }, { status: 409 });
   }
 
   const { error: updateError } = await supabase
     .from("intention_shift_suggestions")
     .update({
-      status: action === "approve" ? "approved" : "dismissed",
+      status: "dismissed",
       reviewed_at: new Date().toISOString(),
       reviewed_by: auth.userId,
     })

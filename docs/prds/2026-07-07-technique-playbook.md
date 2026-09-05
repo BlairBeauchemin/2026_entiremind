@@ -1,6 +1,6 @@
 # Technique Playbook
 
-**Status:** Draft
+**Status:** Shipped (migration 023, July 2026). Historical. Note one deliberate divergence: `scripts/digest-techniques.ts` now inserts techniques as `status='active'` rather than as drafts awaiting founder activation.
 **Author:** Blair Beauchemin
 **Date:** 2026-07-07
 **Target launch:** stacked on PR #9 (quote library + weekly editions)

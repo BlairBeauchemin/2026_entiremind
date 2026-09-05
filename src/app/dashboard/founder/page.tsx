@@ -131,8 +131,9 @@ export default async function FounderPage() {
       )
     `,
     )
-    .eq("status", "pending")
-    .order("created_at", { ascending: false });
+    .in("status", ["pending", "notified"])
+    .order("created_at", { ascending: false })
+    .limit(50);
 
   type ShiftRow = {
     id: string;
@@ -141,6 +142,7 @@ export default async function FounderPage() {
     confidence: number | null;
     rationale: string | null;
     created_at: string;
+    notified_at: string | null;
     users: { name: string | null; email: string; is_test: boolean } | null;
   };
 
@@ -157,6 +159,7 @@ export default async function FounderPage() {
     confidence: row.confidence !== null ? Number(row.confidence) : null,
     rationale: row.rationale,
     createdAt: row.created_at,
+    notifiedAt: row.notified_at,
   }));
 
   // Testimonials: review queue + which users have already been asked
@@ -281,11 +284,12 @@ export default async function FounderPage() {
 
       <div>
         <h2 className="font-serif text-2xl text-ink mb-2">
-          Intention Shift Suggestions
+          Intention Drift Log
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
-          Detected by the weekly memory pass. Approve to update the user&apos;s
-          active intention; dismiss to keep the current one.
+          Noticed by the weekly memory pass, which texts the user directly. Read
+          only — intentions are changed by the user, in the app, and by nobody
+          else.
         </p>
         <IntentionShiftReview items={intentionShifts} />
       </div>

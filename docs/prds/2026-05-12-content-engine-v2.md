@@ -1,6 +1,6 @@
 # Content Engine v2: Trusted Guide
 
-**Status:** Draft
+**Status:** Shipped (Phase 1 live since May 2026). Historical — the built system is documented in `CLAUDE.md` under "Content Engine v2"; where this PRD and the code disagree, the code wins.
 **Author:** Blair Beauchemin
 **Date:** 2026-05-12
 **Target launch:** Phase 1 first, then incremental rollout

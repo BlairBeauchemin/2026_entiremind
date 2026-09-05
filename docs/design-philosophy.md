@@ -21,7 +21,7 @@ Every principle below mixes two kinds of statement, and they age differently:
   below. They go stale silently — the code moves, the bullet doesn't — and a stale one
   is worse than none, because it reads with the same authority as the rule above it.
 
-**Last verified against the codebase: 30 August 2026**, file by file. If you are
+**Last verified against the codebase: 5 September 2026**, file by file. If you are
 reading this well after that date, re-check any "Where it lives" bullet before acting
 on it, and correct it in place when it has drifted. The visual system is governed
 separately by `DESIGN.md`, which is the only palette and typography authority.
@@ -82,9 +82,13 @@ framing. You get to choose where the starting line is.*
 **Rule:** Reframe already-done work as step one. Show momentum, and "almost there" near
 the finish. Never render progress as 0% or a flat, uncountable bar.
 
-- **Where it lives:** `onboarding-progress.tsx` renders one dot per step — 15 for
-  onboarding, 11 for the public quiz — filling completed dots in cobalt and scaling the
-  current one. So position *is* legible.
+- **Where it lives:** `onboarding-progress.tsx` renders one dot per step, filling completed
+  dots in cobalt and scaling the current one, so position *is* legible. Authed onboarding
+  passes `STEPS.length` (15); the archetype retake passes 9.
+- **The public quiz counts differently, on purpose:** `public-quiz-flow.tsx:199` hardcodes
+  `totalSteps={8}` — the eight taps — even though the flow is 11 screens. The bar completes
+  as the *work* completes, and the reveal / gate / reveal that follow read as payoff rather
+  than as three more steps. Defensible, but know it is a deliberate mismatch, not a bug.
 - **The remaining gap:** the row still starts empty and ends without a cue. There is no
   head-start (the user has already given you a name and a phone number before the dots
   appear, and none of that counts toward the bar) and no "almost done" near the finish.
@@ -130,6 +134,11 @@ ask them to commit. The more they invest, the more leaving feels like a loss.
   both.
 - **The gap:** vision and aligned-state answers are collected but never echoed back until
   the very end. There's a lot of unused endowment mid-flow.
+- **The hard boundary:** endowment only works if what the user built stays theirs. The
+  intention is never rewritten by the system or the founder — weekly drift detection
+  observes and texts them a one-time nudge, and stops there
+  (`src/lib/intentions/shift-nudge.ts`). "We updated your intention for you" would
+  destroy the exact ownership this principle depends on.
 - **Do:** reflect the user's own phrasing back within the flow; give them a persona/result
   that is unmistakably *theirs* (and shareable).
 - **Don't:** a bare email + password screen with nothing on it that belongs to the user.

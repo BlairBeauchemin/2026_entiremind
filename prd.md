@@ -1,3 +1,30 @@
+> ## ⚠️ Historical document — superseded
+>
+> **This is the original MVP PRD, written 6 February 2026, and it has not been updated
+> since.** It is kept for the founding thesis in §2 and §16, which still hold. Almost
+> everything else in it is wrong.
+>
+> Known-false claims below, so nobody acts on them: the landing page is Next.js, not
+> WordPress (§7); the core tables are `signal_events` and `user_signals`, and
+> `reflections` / `behavioral_signals` (§14) **were never built**; AI is Anthropic-first,
+> not OpenAI (§14); and the document predates archetypes, the quiz, per-user memory,
+> message modes, the technique playbook, The Space, quotes, weekly editions, and the
+> marketing engine entirely.
+>
+> §5 and §9 also describe founder-in-the-loop review as a v0 feature. **That is no longer
+> the direction** — the system runs itself except for four deliberate gates, and the
+> user's intention is authored only by the user.
+>
+> **The current sources of truth:**
+>
+> | For | Read |
+> |---|---|
+> | Product truth, users, principles, brand | `PRODUCT.md` |
+> | What is actually built, and how | `CLAUDE.md` |
+> | Visual system | `DESIGN.md` |
+> | Behavioral design rules | `docs/design-philosophy.md` |
+> | House editorial stance | `docs/methodology.md` |
+
 # Entiremind — Unified MVP PRD
 **Manifestation-First · Loop-Driven · AI-Buildable**
 

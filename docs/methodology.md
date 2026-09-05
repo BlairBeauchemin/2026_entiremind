@@ -71,8 +71,18 @@ techniques *informed by* books, never copies of them.
 1. Founder reads a book, pastes takeaways (+ a `Source:` line) into a markdown
    file.
 2. `npx tsx scripts/digest-techniques.ts <notes.md>` drafts technique rows in
-   this voice, following the rules above, as `status='draft'`.
-3. Founder reviews on `/dashboard/founder`, edits the recipe/targeting, and
-   activates. Nothing is ever auto-activated.
-4. Per-technique reply rate accrues automatically (every send is tagged); retire
-   the ones that don't land.
+   this voice, following the rules above, and inserts them as `status='active'`.
+   **Running the script is the decision** — there is no second approval step.
+3. Review happens after the fact on `/dashboard/founder`: per-technique reply
+   rate accrues automatically (every send is tagged), the recipe and targeting
+   are editable in place, and anything that doesn't land gets retired.
+
+The rails that protect users are in the selection logic, not in a review queue:
+a technique marked `gentle = false` never reaches someone struggling or
+withdrawn, and setting `technique_apply_probability = 0` disables the whole
+system instantly, without a deploy. That is what makes shipping-by-default safe
+here — write `gentle` honestly and the system cannot misuse the library.
+
+The one thing no technique may ever do is rewrite what the user said they want.
+A technique changes how we *ask*; the intention itself is the user's, and only
+the user edits it.
