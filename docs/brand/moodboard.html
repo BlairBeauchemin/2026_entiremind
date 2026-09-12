@@ -318,6 +318,14 @@
   .rec { border: 1px solid var(--gold-dim); background: linear-gradient(180deg, rgba(201,162,75,.07), transparent); padding: clamp(1.5rem, 4vw, 2.5rem); }
   .rec h2 { font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.2rem); line-height: 1.16; color: #F2E6CA; margin-bottom: 1.5rem; }
 
+  /* Added Aug 2026. This page is a dated record; the note reconciles it with
+     what was actually built rather than rewriting the original recommendation. */
+  .superseded { border-left: 2px solid var(--ember); padding: 1rem 0 0.25rem 1.25rem; margin: 0 0 2rem; }
+  .superseded-head { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ember); margin: 0 0 0.75rem; }
+  .superseded p { font-size: 0.94rem; color: var(--paper-dim); margin: 0 0 0.75rem; }
+  .superseded p strong { color: var(--paper); font-weight: 400; }
+  .superseded code { font-family: var(--f-mono); font-size: 0.86em; color: var(--gold); }
+
   ol.steps { padding-left: 0; list-style: none; counter-reset: s; margin: 0; display: grid; gap: 1rem; }
   ol.steps li { counter-increment: s; display: grid; grid-template-columns: 2rem 1fr; gap: .9rem; }
   ol.steps li::before {
@@ -977,10 +985,35 @@
     <div class="rec">
       <p class="eyebrow">The recommendation · revised</p>
       <h2>Build Daylight. Keep the Deck's anatomy. Candlelight becomes night. The Almanac still waits.</h2>
+
+      <div class="superseded">
+        <p class="superseded-head">Status · August 2026 — built</p>
+        <p><strong>Daylight was taken and is built.</strong> The palette, type system and
+        every surface now run on it. <code>DESIGN.md</code> at the repo root is the
+        binding authority; this page is the dated record of how the decision was reached,
+        not a live spec.</p>
+        <p><strong>The paragraph above about Candlelight is stale, and contradicts this
+        page's own masthead.</strong> It says Candlelight becomes "the evening" — a dark
+        mode, and eventually packaging. None of that happened. The masthead states there
+        is no dark mode, and Territory II is marked closed and explicitly not a night
+        mode, a theme, or a packaging treatment. Read those; ignore the sentence above.
+        What shipped instead is one dark <em>surface</em> — The Space at
+        <code>/space</code> — with no toggle, and a cool blue-black sky rather than
+        Candlelight's warm ground and gold leaf.</p>
+        <p><strong>Step 4 was partly superseded.</strong> "Keep the cream" became linen
+        <code>#F2EFE9</code>; cream <code>#fdfbf7</code> is retired. The four archetype
+        accents are still deliberately unchosen — they get picked when the reveal is
+        designed, not before.</p>
+        <p><strong>Steps 2 and 3 remain open, and remain the priority this page named.</strong>
+        The emblems in Territory IV are placeholders drawn to show the rule; they have
+        not been commissioned as final artwork or ported into the codebase, and the
+        reveal has not been rebuilt around them. That is still the highest-leverage
+        unbuilt work.</p>
+      </div>
       <p><strong>Daylight is the pick, and it replaces the earlier one.</strong> Reference 06 settled the argument this document could not settle on its own: the esoteric symbol set and an explicitly anti-magic stance can coexist, because someone is already selling that combination to your customer. Once that is established, the only real question was the ground — and a pre-launch brand asking strangers for a phone number is better served by looking established than by looking rare.</p>
       <p><strong>The emblems are the actual work.</strong> One drawing system, four archetypes, four colours, four symbols. This is the thing you own that a competitor cannot copy without copying the product underneath it, and it is the reason the quiz reveal will feel like receiving something rather than reading a result. If only one item on this page gets built, make it this one.</p>
       <p><strong>Keep the inverted-shadow structure from The Deck.</strong> It survived the change of ground intact and now has two independent precedents: the tarot card's reversed meanings, and Intelligent Change's quote-front / prompt-back. Show the shadow beside the strength. You have already written both halves.</p>
-      <p><strong>Candlelight is not discarded — it is demoted to the evening.</strong> Dark mode, late-night messages, and eventually the packaging. Intelligent Change runs the same split: a pale site, saturated boxes. <strong>The Almanac stays deferred</strong>; it solves retention, and you have no retention problem until you have users.</p>
+      <p><strong>Candlelight is not discarded — it is demoted to the evening.</strong> Dark mode, late-night messages, and eventually the packaging. Intelligent Change runs the same split: a pale site, saturated boxes. <strong>The Almanac stays deferred</strong>; it solves retention, and you have no retention problem until you have users. <em style="color:var(--ember);">[Stale — contradicts this page's own masthead and Territory II. There is no dark mode and Candlelight is closed. See Status above.]</em></p>
 
       <div class="ornament"><span>◆</span></div>
 

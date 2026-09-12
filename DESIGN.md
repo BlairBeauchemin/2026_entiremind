@@ -240,6 +240,14 @@ content, not a theme applied to content. No toggle, no `prefers-color-scheme`, a
 nothing outside `/space` may touch the night tokens. Cobalt measures 2.05:1 there and
 is unavailable — on night the company is carried by linen and gold.
 
+*Lineage.* The territories exploration (`docs/brand/moodboard.html`) weighed four
+directions and closed three. **Candlelight** — warm near-black, one light source — was
+the original recommendation and lost; that page records it as superseded and explicitly
+not a night mode, a theme, or a packaging treatment. The night that shipped here is
+therefore not Candlelight revived: it is a cool blue-black sky belonging to one surface,
+with no toggle and no theme. Same appetite for depth, different execution, and bounded
+to a place. **This file supersedes the moodboard wherever they disagree.**
+
 **The Company Rule.** Cobalt owns every structural surface. A user's archetype colour
 appears in exactly two places — the quiz reveal and the share card — and nowhere else.
 Cobalt is not an archetype colour; the Visionary gets its own accent like the other
