@@ -23,6 +23,8 @@ import {
 import { FounderOnboardingFunnel } from "@/components/dashboard/founder-onboarding-funnel";
 import { FounderConversionFunnel } from "@/components/dashboard/founder-conversion-funnel";
 import { buildConversionFunnel } from "@/lib/founder/conversion-funnel";
+import { CronHealthPanel } from "@/components/dashboard/cron-health-panel";
+import { loadCronHealth } from "@/lib/ops/dashboard";
 import {
   TechniquePlaybook,
   type TechniquePlaybookItem,
@@ -215,6 +217,10 @@ export default async function FounderPage() {
   // Acquisition funnel: leads → signups → onboarded → paid, per source
   const conversionFunnel = await buildConversionFunnel(serviceSupabase);
 
+  // Did the scheduled jobs actually run? Surfaced first on the page because a
+  // missed send is the one failure that is otherwise invisible from here.
+  const cronHealth = await loadCronHealth();
+
   // Transform user signals for display
   const formattedSignals =
     userSignals?.map((signal) => ({
@@ -280,6 +286,16 @@ export default async function FounderPage() {
           </Link>
         </div>
         <FounderRefreshButton />
+      </div>
+
+      <div>
+        <h2 className="font-serif text-2xl text-ink mb-2">System Health</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Whether each scheduled job actually ran. A missed daily send leaves no
+          message row at all, so this table is the only place it shows up.
+          Alerts also go out by email from the GitHub Actions watchdog.
+        </p>
+        <CronHealthPanel health={cronHealth} />
       </div>
 
       <div>

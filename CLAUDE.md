@@ -361,7 +361,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 - `signal_events` - individual behavioral events (reply, silence, unprompted, quick_reply, long_reply, stop_request)
 - `user_signals` - computed engagement aggregates per user (reply rate, engagement score, consecutive silences, etc.)
 
-**Full table inventory (35 tables, migrations 001–029).** The list above is the original core;
+**Full table inventory (37 tables, migrations 001–030).** The list above is the original core;
 the rest arrive with their feature sections below. Tables not covered elsewhere in this file:
 
 - `audit_logs` (006), `user_profiles` / `user_profile_history` / `onboarding_step_events` (015),
@@ -373,7 +373,7 @@ comment describing what is now a different number. **The filename is the truth**
 comment inside it. Current mapping: 018 testimonials · 019 weekly recap + silence recovery ·
 020 value ladder + dunning · 021 messaging simulator · 022 quotes + weekly editions ·
 023 techniques · 024 marketing engine · 025 public quiz leads · 026 message modes ·
-027 reply steer · 028 affirmations · 029 autonomous operation.
+027 reply steer · 028 affirmations · 029 autonomous operation · 030 cron health.
 
 #### Stripe Subscriptions
 
@@ -975,6 +975,72 @@ better and carries the endowment idea more literally.)
 
 **Shared refactor:** `generateStrictJson` / `StrictJsonError` moved from `src/lib/marketing/ai.ts`
 to `src/lib/ai/json.ts` (they were never marketing-specific); the old path re-exports.
+
+#### Cron health & alerting (migration 030)
+
+**Why this exists.** On 2026-09-12 the daily send silently did not happen: zero `messages` rows
+for the day, of any status. Neither provider could have caused that — `sendSms` writes a
+`status='failed'` row on _every_ failure path (so a Twilio billing rejection leaves a trace), and
+`generateMessageForUser` catches LLM errors and sends pre-written fallback copy (so an Anthropic
+outage still delivers). The send loop was never reached: **the Vercel cron did not fire.**
+Hobby-plan crons are best-effort, and this one has always drifted — 14:55 → 15:12 → 15:21 →
+15:04 against a declared `45 14 * * *`.
+
+The bug worth fixing was not the miss but its **invisibility**. Nothing recorded that a run had
+been attempted, so the only detector was a human noticing their phone was quiet.
+
+- **`cron_runs`** — one row per invocation, written even when the run does nothing. This is what
+  makes "the job never ran" distinguishable from "the job ran and had no work". A row left at
+  `status='running'` means the invocation died mid-flight. Wired into `daily-send` via
+  `startCronRun` / `finishCronRun` (`src/lib/ops/run-log.ts`); every cron route can adopt the
+  same two calls.
+- **`health_alerts`** — throttle + recovery ledger, keyed on `alert_key`. One email per condition
+  per `ALERT_THROTTLE_HOURS` (default 12), and a one-time "recovered" email when it clears.
+
+**`src/lib/ops/health.ts` is pure** — no Supabase, no provider calls — so the rules are exercised
+directly in `health.test.ts`, same as `src/lib/reconnect.ts`. Facts are gathered separately in
+`facts.ts`.
+
+> **The staleness check is a calendar comparison, never a rolling threshold.** With the send at
+> ~15:05 UTC and a check at 16:30 UTC, a _completely missed day_ is only 25.4 hours old — a
+> "stale after 26h" rule waves it straight through. `expectedSendDeadline()` anchors to today's
+> UTC date instead. There is a regression test pinning exactly this.
+
+**`GET /api/ops/health`** (CRON_SECRET-guarded, _not_ in `vercel.json`) returns the full check
+list and **503 when any check is critical**. Checks: `daily_send_missing`, `daily_send_no_output`
+(ran but sent nothing), `daily_send_failures`, `twilio_balance_low`, `anthropic_unavailable`.
+Provider pre-flight lives in `src/lib/ops/providers.ts` — Twilio balance over REST, and a
+1-token Haiku ping that distinguishes a rejected key from exhausted credit.
+
+> **The health ping pins its own model and never reads `ANTHROPIC_MODEL`** — the same trap that
+> broke enrichment in July 2026 when daily gen moved to Sonnet.
+
+**The watchdog runs on GitHub Actions, deliberately — not Vercel Cron.**
+`.github/workflows/health-check.yml` fires at 12:00 UTC (pre-flight, before the send window) and
+16:30 UTC (verification, clear of the drift). A watchdog on Vercel Cron could not have detected
+this outage, because Vercel Cron _was_ the outage. Two notification layers: the endpoint emails
+via Resend (`src/lib/ops/notify.ts`, plain `fetch`, no new dependency), and `curl -f` fails the
+job on any non-2xx so GitHub emails too — the backstop that survives the app being unreachable.
+
+**Self-healing:** when health reports `daily_send_missing`, the workflow re-triggers
+`/api/cron/daily-send`. Safe because that route is already idempotent per UTC day (its "already
+received a message today" guard), so a second run is a no-op for anyone already served. This
+turns a missed day into a late one.
+
+Founder surface: the "System Health" panel on `/dashboard/founder`
+(`src/components/dashboard/cron-health-panel.tsx`, rollup in `src/lib/ops/dashboard.ts`).
+
+**Manual setup required:** add `CRON_SECRET` as a GitHub Actions repository secret (the workflow
+fails loudly without it), and set the Resend vars in Vercel. Missing Resend config degrades to
+log-and-skip — alerts still surface as failed Actions runs.
+
+```
+RESEND_API_KEY=re_xxx
+ALERT_EMAIL_TO=you@example.com          # optional, defaults to ADMIN_EMAIL
+ALERT_EMAIL_FROM=alerts@entiremind.com  # domain must be DKIM-verified in Resend
+ALERT_THROTTLE_HOURS=12                 # optional
+TWILIO_BALANCE_WARN_USD=10              # optional; critical below half
+```
 
 ---
 

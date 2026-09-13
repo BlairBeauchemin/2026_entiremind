@@ -1,0 +1,103 @@
+name: Health Check
+
+# Watchdog for the daily SMS send.
+#
+# This runs on GitHub Actions and NOT on Vercel Cron, deliberately. On
+# 2026-09-12 the daily send silently did not happen because the Vercel cron did
+# not fire; a watchdog hosted on the same scheduler could not have caught it.
+# Running here means the check survives Vercel being slow, broken, or entirely
+# down.
+#
+# Two layers of notification:
+#   1. The endpoint emails a detailed alert (see src/lib/ops/notify.ts).
+#   2. `curl -f` fails this job on any non-2xx, and GitHub emails on a failed
+#      workflow run. That backstop works even when the app is unreachable and
+#      cannot send its own email.
+#
+# Caveats worth knowing:
+#   - GitHub disables scheduled workflows after 60 days of repository
+#     inactivity. A push re-enables them.
+#   - GitHub's cron is also best effort. That is why the in-app founder panel
+#     and the email alerts exist rather than trusting any single timer.
+
+on:
+  schedule:
+    # Pre-flight, well before the send window: catches a dead Anthropic key or a
+    # drained Twilio balance while there is still time to fix it.
+    - cron: "0 12 * * *"
+    # Post-send verification. The send is scheduled for 14:45 UTC but has always
+    # drifted late (observed 14:55–15:25), so 16:30 is comfortably clear of it.
+    - cron: "30 16 * * *"
+  workflow_dispatch:
+
+jobs:
+  health:
+    name: Daily send health
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check health endpoint
+        id: health
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          HEALTH_URL: https://www.entiremind.com/api/ops/health
+        run: |
+          set -o pipefail
+
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET repository secret is not set."
+            exit 1
+          fi
+
+          # -f fails the step on any non-2xx, which is what turns a critical
+          # health report (503) into a red workflow run and a GitHub email.
+          # Capture the body either way so the run log shows what was wrong.
+          http_status=$(curl -sS \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            -o response.json \
+            -w '%{http_code}' \
+            --max-time 60 \
+            "$HEALTH_URL" || echo "000")
+
+          echo "HTTP $http_status"
+          echo "--- response ---"
+          cat response.json 2>/dev/null || echo "(no response body)"
+          echo ""
+
+          if [ "$http_status" = "000" ]; then
+            echo "::error::Health endpoint unreachable — the app or Vercel may be down."
+            exit 1
+          fi
+
+          # Surface whether a repair run is worth attempting before we exit.
+          if grep -q '"repairable":true' response.json 2>/dev/null; then
+            echo "repairable=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ "$http_status" -ge 300 ]; then
+            echo "::error::Health check reported a critical condition (HTTP $http_status)."
+            exit 1
+          fi
+
+          echo "Health check passed."
+
+      - name: Repair missed send
+        # Runs only when the health check found a missed daily send. Safe to
+        # invoke: daily-send is idempotent per UTC day — its "already received a
+        # message today" guard makes a second run a no-op for anyone already
+        # served. This turns a missed day into a late day rather than a lost one.
+        if: always() && steps.health.outputs.repairable == 'true'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SEND_URL: https://www.entiremind.com/api/cron/daily-send
+        run: |
+          set -o pipefail
+          echo "Health check reported a missed send — triggering daily-send."
+
+          curl -fsS \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            --max-time 120 \
+            "$SEND_URL" | tee repair.json
+
+          echo ""
+          echo "::warning::Daily send was missed and has been re-triggered from the watchdog."

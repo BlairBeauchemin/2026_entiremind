@@ -21,6 +21,7 @@ import {
   loadUpgradeTheme,
 } from "@/lib/billing/upgrade";
 import { buildUpgradeLink } from "@/lib/billing/token";
+import { startCronRun, finishCronRun, DAILY_SEND_JOB } from "@/lib/ops/run-log";
 
 /**
  * Daily Send Cron: Send AI-generated messages to all active users
@@ -44,12 +45,21 @@ export async function GET(request: Request) {
   const authError = requireCronAuth(request);
   if (authError) return authError;
 
+  // Opened before any work so that "the job never ran" is distinguishable from
+  // "the job ran and did nothing" — the distinction that made the 2026-09-12
+  // miss invisible. A row left at 'running' means this invocation died
+  // mid-flight, which is itself a signal worth seeing.
+  const runId = await startCronRun(DAILY_SEND_JOB);
+
   // Check if AI provider is configured
   const aiProvider = getAiProvider();
   const apiKeyEnvVar =
     aiProvider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY";
   if (!process.env[apiKeyEnvVar]) {
     console.error(`${apiKeyEnvVar} environment variable not set`);
+    await finishCronRun(runId, "failure", {
+      detail: { error: `AI provider (${aiProvider}) not configured` },
+    });
     return NextResponse.json(
       { error: `AI provider (${aiProvider}) not configured` },
       { status: 500 },
@@ -73,6 +83,9 @@ export async function GET(request: Request) {
 
   if (usersError) {
     console.error("Failed to fetch active users:", usersError);
+    await finishCronRun(runId, "failure", {
+      detail: { error: "Failed to fetch users", supabase: usersError.message },
+    });
     return NextResponse.json(
       { error: "Failed to fetch users" },
       { status: 500 },
@@ -81,6 +94,7 @@ export async function GET(request: Request) {
 
   if (!activeUsers || activeUsers.length === 0) {
     console.log("No active users to send messages to");
+    await finishCronRun(runId, "success", { processed: 0, sent: 0, failed: 0 });
     return NextResponse.json({
       success: true,
       processed: 0,
@@ -308,6 +322,20 @@ export async function GET(request: Request) {
   console.log(
     `Daily send complete: ${sent} sent (${recaps} recaps, ${reconnects} reconnects, ${paused} paused, ${upgrades} upgrades, ${gated} gated), ${failed} failed in ${duration}ms`,
   );
+
+  await finishCronRun(runId, "success", {
+    processed: activeUsers.length,
+    sent,
+    failed,
+    detail: {
+      recaps,
+      reconnects,
+      paused,
+      upgrades,
+      gated,
+      errors: errors.length > 0 ? errors : undefined,
+    },
+  });
 
   return NextResponse.json({
     success: true,
