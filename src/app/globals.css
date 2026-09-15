@@ -267,6 +267,32 @@ table,
   );
 }
 
+/* ---- Photographic phone composites --------------------------------------
+ * The plates in /mock/phone lay the coded thread over a photograph using a
+ * projection matrix, so the screen and the photograph must scale together or
+ * the screen slides off the glass. The stage is therefore a fixed 560x700
+ * coordinate space that is scaled as one unit; the negative margins pull the
+ * layout box back in to match what the scale actually occupies. */
+.plate-stage {
+  --plate-scale: 1;
+  transform: scale(var(--plate-scale));
+  transform-origin: top left;
+  margin-right: calc(560px * (var(--plate-scale) - 1));
+  margin-bottom: calc(700px * (var(--plate-scale) - 1));
+}
+
+@media (max-width: 900px) {
+  .plate-stage {
+    --plate-scale: 0.72;
+  }
+}
+
+@media (max-width: 640px) {
+  .plate-stage {
+    --plate-scale: 0.56;
+  }
+}
+
 /* ---- Motion ------------------------------------------------------------
  * Exponential ease-out from an already-visible default. Nothing bounces. */
 
