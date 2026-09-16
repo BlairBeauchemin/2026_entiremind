@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Next's default output list omits AVIF. The /v3 hero plates are the first
+  // photographs in the product, and they are large; AVIF roughly halves them.
+  images: { formats: ["image/avif", "image/webp"] },
+
   async headers() {
     return [
       {
@@ -40,9 +44,7 @@ const nextConfig: NextConfig = {
         // override it. This config applies no-store at the infrastructure level so
         // every reload fetches a fresh server render regardless of edge behavior.
         source: "/dashboard/:path*",
-        headers: [
-          { key: "Cache-Control", value: "no-store" },
-        ],
+        headers: [{ key: "Cache-Control", value: "no-store" }],
       },
     ];
   },
