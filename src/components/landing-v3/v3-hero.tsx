@@ -3,20 +3,37 @@
 import { useState } from "react";
 import { WaitlistModal } from "@/components/landing/waitlist-modal";
 import { V3HeroScene } from "./v3-hero-scene";
+import heroWideA from "../../../public/images/v3/hero-wide-a.webp";
+import heroWideB from "../../../public/images/v3/hero-wide-b.webp";
+import heroTall from "../../../public/images/v3/hero-tall.webp";
+
+/**
+ * Two candidate rooms. `tableLine` is where each plate's table surface sits,
+ * measured off the rendered page — A's runs brighter and higher in frame than
+ * B's, so the device's resting point is not the same number for both.
+ */
+const PLATES = {
+  a: { wide: heroWideA, tableLine: "21%" },
+  b: { wide: heroWideB, tableLine: "23%" },
+} as const;
+
+const PLATE = PLATES.a;
 
 export function V3Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
-      <header
-        id="section-hero"
-        className="relative z-10 pt-32 pb-4 lg:pt-40 lg:pb-12"
-      >
-        <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)] lg:gap-10 xl:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] xl:gap-14">
-          {/* Copy first in the DOM: on a phone the words should arrive before
-              the photograph, and that is also the reading order we want. */}
-          <div className="max-w-[34rem]">
+      <header id="section-hero" className="relative z-10">
+        <V3HeroScene
+          wide={PLATE.wide}
+          tall={heroTall}
+          tableLine={PLATE.tableLine}
+        >
+          {/* The copy sits directly on the plaster. The plates were generated
+              with a deliberately bright, empty left field for exactly this;
+              ink measures ~12:1 against it even in the darkest tile. */}
+          <div className="max-w-[34rem] lg:max-w-[30rem]">
             <h1 className="font-serif text-display text-balance text-ink">
               A manifestation practice that{" "}
               {/* The mock sets this clause in cobalt italic. DESIGN.md asks for
@@ -56,9 +73,7 @@ export function V3Hero() {
               Free to join.
             </p>
           </div>
-
-          <V3HeroScene />
-        </div>
+        </V3HeroScene>
       </header>
 
       <WaitlistModal

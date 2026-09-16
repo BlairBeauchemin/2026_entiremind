@@ -16,8 +16,18 @@ export function V3Nav() {
 
   return (
     <>
-      <nav className="fixed top-0 z-40 w-full">
-        <div className="border-b border-rule bg-linen">
+      {/*
+       * Absolute, not fixed: the mock has the nav sitting on the photograph, and
+       * the plaster behind it measures ~12:1 against ink. A transparent FIXED
+       * nav would keep floating after the hero scrolls away and land on the
+       * cobalt band, where ink drops to roughly 1.6:1 and disappears. Scrolling
+       * away with the hero avoids that with no scroll listener.
+       *
+       * The cost: the waitlist CTA is no longer pinned. The hero CTA and the
+       * closing CTA both remain, so the page is never without one.
+       */}
+      <nav className="absolute top-0 z-40 w-full">
+        <div>
           <div className="mx-auto flex h-20 max-w-[1180px] items-center justify-between px-6">
             <Link
               href="/v3"
@@ -63,7 +73,7 @@ export function V3Nav() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="border-b border-rule bg-linen md:hidden">
+          <div className="border-b border-rule bg-linen/95 md:hidden">
             <div className="mx-auto flex max-w-[1180px] flex-col gap-4 px-6 py-6">
               {LINKS.map((link) => (
                 <a

@@ -1,103 +1,127 @@
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { PhoneMockup } from "@/components/landing/phone-mockup";
-import plateDesktop from "../../../public/images/v3/hero-plate-desktop.webp";
-import plateMobile from "../../../public/images/v3/hero-plate-mobile.webp";
 
 /**
- * The photographic hero: a generated environment plate with the live
- * `PhoneMockup` standing in it.
+ * The photographic stage the hero is built on.
  *
- * The plate is deliberately generated WITHOUT a phone in it. Baking the message
- * thread into the photograph would make the conversation — the entire product —
- * unselectable, invisible to screen readers, and soft on high-DPI displays. So
- * the photograph supplies only light, material and place; every word on the
- * screen is real DOM.
+ * The room IS the hero — edge to edge, with the headline set on the plaster and
+ * the live `PhoneMockup` standing on the table. The plates are generated WITHOUT
+ * a phone in them: baking the message thread into the photograph would make the
+ * conversation — the entire product — unselectable, invisible to screen readers
+ * and soft on high-DPI displays. The photograph supplies light, material and
+ * place; every word on the screen is real DOM.
  *
- * Two things here look like over-engineering and are not:
+ * Two measured numbers drive every offset below, taken off the plates rather
+ * than guessed: the tablecloth edge sits 16-18% up from the bottom of the frame,
+ * and the cobalt vase occupies the far right from about x 86% outward. So the
+ * phone belongs near x 66% — clear of the vase on one side and of the headline's
+ * text field on the other.
  *
- *  - **Desktop container aspect matches the asset aspect exactly (3:4).**
- *    `object-cover` crops whenever they disagree, and the crop amount changes
- *    with container width, so a fixed percentage anchor would drift against the
- *    depicted vase as you resize. Matching the ratio makes cover a no-op and the
- *    anchors exact at every width. For the same reason the desktop plate is
- *    constrained by max-width only — height-capping it reintroduces the crop.
+ * ## The one invariant that keeps the phone on the table
  *
- *  - **Below `lg` the phone straddles the plate's lower edge instead of sitting
- *    inside it.** `PhoneMockup` is a hard-coded 340×680 px, a 1:2 object. There
- *    is no way to fit that inside a landscape plate on a 390px screen without
- *    scaling to ~0.5, which renders the message bubbles at 7-8px. On a
- *    mobile-first product that is a legibility regression, not a style choice,
- *    so on small screens the photograph becomes a band and the phone stands in
- *    front of it at full size.
+ * `object-cover` crops whenever the container's ratio differs from the asset's,
+ * and which axis it crops decides which percentage offsets are trustworthy:
  *
- * One `PhoneMockup` serves both layouts — `lg:absolute` flips the positioning
- * mode. Rendering two would duplicate the whole thread for screen readers.
+ *   - container relatively WIDER than the plate -> width-driven; vertical
+ *     offsets drift as the viewport changes. This must never happen.
+ *   - container relatively TALLER -> height-driven; the rendered height equals
+ *     the box height exactly, so vertical offsets are stable and only the
+ *     horizontal ones drift.
+ *   - ratios equal -> no crop at all, both axes exact.
+ *
+ * Every branch below is sized so the box is never relatively wider than its
+ * plate, which is why the heights look oddly specific. `min-h-[215vw] sm:min-h-[150vw]` on the
+ * 3:4 plate forces a 0.70 ratio; `aspect-[16/9]` with a `min-h` floor on the
+ * 16:9 plate either matches exactly or falls to the taller case. Horizontal
+ * drift is absorbed by the wide run of empty tabletop the plates were composed
+ * for, and `object-position` favours the right so a crop never eats the vase.
  */
-export function V3HeroScene() {
+interface V3HeroSceneProps {
+  /** Wide plate for md and up. Swapping candidates is a one-line change. */
+  wide: StaticImageData;
+  /** 3:4 plate for phones. */
+  tall: StaticImageData;
+  /**
+   * Where the table surface sits in `wide`, as a distance up from the bottom of
+   * the frame. This travels WITH the plate because it differs between them —
+   * measured off the rendered page by luminance profile, not estimated. Get it
+   * wrong and the device stands in front of the table rather than on it.
+   */
+  tableLine: string;
+  children: React.ReactNode;
+}
+
+export function V3HeroScene({
+  wide,
+  tall,
+  tableLine,
+  children,
+}: V3HeroSceneProps) {
   return (
-    <div className="relative">
-      {/*
-       * --- below lg: a band, with the phone standing in front of it.
-       *
-       * Cropping is free here because nothing registers to the photograph.
-       *
-       * On a phone the band goes full-bleed (`-mx-6`) and slim. Inside the
-       * gutter it would be 342px wide against a 340px device — the mockup
-       * covers it completely and the photograph reads as a brown rectangle.
-       * Edge to edge it becomes a band the device stands in front of, which is
-       * also the one full-bleed case DESIGN.md allows: a single image.
-       */}
-      <div className="relative -mx-6 aspect-[5/3] overflow-hidden sm:mx-0 sm:aspect-[4/3] sm:rounded-sm lg:hidden">
+    <div className="relative isolate">
+      <div
+        /* w-full is load-bearing, not decoration: with width left to block
+           layout, `aspect-ratio` resolves the box's WIDTH from the min-height
+           instead of its height, so at 1024 the stage computed 1351px wide and
+           shoved the headline off-centre. Pinning the width makes aspect-ratio
+           govern height only. */
+        className="relative w-full overflow-hidden
+                   min-h-[215vw] sm:min-h-[150vw]
+                   md:min-h-[780px]
+                   lg:aspect-[16/9] lg:min-h-[880px]"
+      >
         <Image
-          src={plateMobile}
+          src={tall}
           alt=""
+          fill
           priority
           sizes="100vw"
-          className="object-cover object-[64%_38%] sm:object-[62%_50%]"
-          fill
+          className="-z-10 object-cover md:hidden"
         />
-      </div>
-
-      {/* --- lg and up: the true composite. Ratio must stay 3:4, see above. */}
-      <div className="relative hidden aspect-[3/4] w-full overflow-hidden rounded-sm lg:block">
         <Image
-          src={plateDesktop}
+          src={wide}
           alt=""
-          priority
-          sizes="(min-width: 1280px) 620px, 52vw"
-          className="object-cover"
           fill
+          priority
+          sizes="100vw"
+          className="-z-10 hidden object-cover object-[62%_50%] md:block"
         />
+
+        <div className="mx-auto max-w-[1180px] px-6 pt-28 sm:pt-32 lg:pt-28 xl:pt-32">
+          {children}
+        </div>
       </div>
 
       {/*
-       * The one live phone.
+       * One phone instance for every layout — rendering two would duplicate the
+       * whole thread for screen readers.
        *
-       * `--ph` is the scale. Discrete steps, not a fluid calc: there is no
-       * portable pure-CSS way to make a px-sized DOM subtree track a container
-       * width, and at these stops the phone holds ~72-73% of the plate's height
-       * across the whole desktop range, which is invisible drift.
+       * Below lg it sits in normal flow and is pulled up so it straddles the
+       * plate's lower edge at full 340px. `PhoneMockup` is a hard-coded 340x680
+       * 1:2 object; shrinking it to fit inside the frame would put the message
+       * bubbles near 10px on the one surface where the product is actually read.
        *
-       * `bottom-[17%]` is not a guess — it is where the tablecloth's edge falls
-       * in the desktop plate (measured at 17.4% from the bottom), so the device
-       * stands on the table rather than floating in front of it.
-       *
-       * The tilt lives here rather than on PhoneMockup's `rotated` prop: at -2°
-       * the rotated bounding box grows to ~363px, which overflows a 390px
-       * viewport. Tilting only at lg keeps the mobile box exactly 340px.
+       * At lg it becomes absolute and stands on the tablecloth, at the plate's
+       * own measured table line rather than a shared guess.
        */}
       <div
-        className="
-          relative z-10 mx-auto w-fit
-          -mt-[38%] sm:-mt-[38%] md:-mt-[30%]
-          lg:absolute lg:bottom-[17%] lg:left-[56%] lg:mt-0
-          lg:-translate-x-1/2 lg:rotate-[-2deg]
-          [--ph:0.78] min-[380px]:[--ph:1]
-          lg:[--ph:0.58] xl:[--ph:0.84]
-        "
+        style={{ "--table-line": tableLine } as React.CSSProperties}
+        className="relative z-10 mx-auto w-fit
+                   -mt-[26%] sm:-mt-[24%]
+                   md:mr-[6%] md:ml-auto md:-mt-[10%]
+                   lg:absolute lg:bottom-[var(--table-line)] lg:left-[66%] lg:mt-0
+                   lg:-translate-x-1/2 lg:rotate-[-2deg]
+                   [--ph:0.78] min-[380px]:[--ph:1]
+                   lg:[--ph:0.74] xl:[--ph:0.84] 2xl:[--ph:0.94]"
       >
-        {/* Outer box reserves the SCALED footprint so the surrounding flow is
-            correct; the inner box does the scaling from its top-left corner. */}
+        {/* Outer box reserves the SCALED footprint so surrounding flow stays
+            correct; the inner box scales from its top-left corner. `--ph` moves
+            in discrete steps because there is no portable pure-CSS way to make a
+            px-sized DOM subtree track a container's width.
+
+            The tilt is on the wrapper rather than PhoneMockup's `rotated` prop:
+            at -2 degrees the rotated bounding box grows to ~363px and overflows
+            a 390px viewport, so only the lg branch tilts. */}
         <div
           style={{
             width: "calc(340px * var(--ph))",
@@ -113,8 +137,12 @@ export function V3HeroScene() {
         </div>
       </div>
 
-      {/* The thread is written copy, not a transcript. Say so. */}
-      <p className="mt-6 text-center text-attribution font-medium uppercase text-muted">
+      {/* The thread is written copy, not a transcript. Say so.
+
+          This sits below the photograph rather than on it: over the tablecloth
+          even solid ink only reaches 4.84:1, and this is 10px tracked caps. On
+          linen text-muted is 6.6:1. */}
+      <p className="mx-auto mt-6 max-w-[1180px] px-6 text-center text-attribution font-medium uppercase text-muted lg:mt-4 lg:text-right">
         Illustrative conversation
       </p>
     </div>
