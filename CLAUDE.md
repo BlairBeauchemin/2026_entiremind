@@ -789,6 +789,7 @@ Migration: `025_public_quiz_leads.sql`.
 - Live Meta/TikTok/YouTube publishing (adapters stub until platform app approval)
 - Veo video generation (stub)
 - `/api/cron/reconcile-enrichment` is built but unscheduled (Vercel cron-slot limit)
+- "Good Things" gratitude practice (capture moment, collection page, Evidence board, weekly SMS ritual, keepsakes) — designed, not built: `docs/superpowers/specs/2026-10-08-good-things-design.md`
 
 **Not a gap — a decision:** autonomous intention updates are *not* on this list and never
 will be. See "Intentions are the user's" above.

@@ -143,6 +143,18 @@ quiet moments a day"). Keep required compliance language intact.
 - **Target:** `src/lib/sms/welcome.ts` and any UI that echoes cadence.
 - **Source:** 🆕.
 
+### P2.6 🆕 Endowment + goal-gradient (gentle): "Good Things" gratitude practice
+A standalone gratitude practice: a guided reflect-and-capture moment, a personal
+collection page, an "Evidence board" of signs the user's intention is arriving, a weekly
+"three good things" SMS ritual, and keepsakes (resurfacing, monthly letter). Targets
+retention + trial→paid conversion through a collection the user owns. Also fixes a live
+issue: `STRUGGLING_TYPES` currently steers struggling users *toward* gratitude prompts.
+- **Spec:** `docs/superpowers/specs/2026-10-08-good-things-design.md` (phased 0–4; Phase 0
+  is a block in the weekly email).
+- **Guardrails:** no counts/streaks; evidence tagged only by the user; collection stays
+  visible after trial expiry; never ask a struggling user for gratitude.
+- **Source:** 🆕.
+
 ---
 
 ## Cherry-pick hazards (read before implementing P0.2 / P1.1 / P2.x)
