@@ -68,7 +68,11 @@ export function HeroPhone({
           </div>
         ) : null}
 
-        <div className={styles.pill}>
+        <div
+          className={[styles.pill, content.mark ? styles.pillWithMark : ""]
+            .filter(Boolean)
+            .join(" ")}
+        >
           <div className={styles.pillName}>{content.name}</div>
           {content.status ? (
             <div className={styles.pillStatus}>{content.status}</div>

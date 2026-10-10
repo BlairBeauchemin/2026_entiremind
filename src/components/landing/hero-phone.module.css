@@ -78,30 +78,33 @@
       rgba(0, 0, 0, 0.07);
 }
 
-/* ---- Badge (sits where the reference has its avatar) ----------------- */
+/* ---- Mark (sits where the reference has its avatar) ------------------ */
 
+/* Bare line art, no badge behind it. It sits inside the panel (crossing the
+   panel's top edge made the rim and shadow cut through the mark), so the
+   name pill drops slightly when a mark is present — see .pill.pillWithMark. */
 .badge {
   position: absolute;
   left: 50%;
-  top: calc(var(--u) * 14);
+  top: calc(var(--u) * 44);
   z-index: 1;
   transform: translateX(-50%);
-  width: calc(var(--u) * 66);
-  height: calc(var(--u) * 66);
-  border-radius: 50%;
-  background: var(--surface);
-  box-shadow: var(--surface-shadow);
+  width: calc(var(--u) * 60);
+  height: calc(var(--u) * 60);
   color: var(--tile-ink);
-  display: grid;
-  place-items: center;
 }
 
 .badge svg {
-  width: calc(var(--u) * 50);
-  height: calc(var(--u) * 50);
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* ---- Header pill ---------------------------------------------------- */
+
+.pill.pillWithMark {
+  top: calc(var(--u) * 114);
+}
 
 .pill {
   position: absolute;
