@@ -2,78 +2,64 @@
 <html>
 <head>
 <meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700&family=Prata&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* Values sampled from the Muse reference (panel ~#FAFAFA, surfaces pure white,
+     shadows ~4-5% alpha), with Entiremind cobalt as the single accent. */
   :root {
+    --font: "Karla", system-ui, sans-serif;
     --cobalt: #2A3A9C;
-    --cobalt-wash: #E7E9F4;
-    --ink: #14120F;
-    --muted: #6B6F7B;
-    --panel: #F4F5F7;
-    --bubble: #FFFFFF;
-    --out-bg: #DCE1F7;
-    --out-ink: #14120F;
-    --card: #FFFFFF;
-    --bar: #FFFFFF;
-    --shadow: 0 1px 2px rgba(20,24,40,.04), 0 10px 30px rgba(20,24,40,.07);
-    --panel-shadow: 0 2px 4px rgba(20,24,40,.03), 0 30px 80px rgba(20,24,40,.08);
+    --ink: #111111;
+    --muted: #6E7480;
+    --panel-top: #FDFDFD;
+    --panel-bot: #F7F7F7;
+    --surface: #FFFFFF;
+    --out-bg: #DDE3FB;          /* light cobalt */
+    --tile-bg: #E9EDFC;
+    --button-bg: #F3F5F7;
+    --placeholder: #A9AEB7;
+    --shadow: 0 1px 1px rgba(0,0,0,.02), 0 6px 24px rgba(0,0,0,.045);
+    --panel-shadow: 0 0 0 1px rgba(0,0,0,.025), 0 20px 60px rgba(0,0,0,.05);
   }
-  /* B: warm, brand linen */
-  body.warm {
-    --panel: #F3F0EA;
-    --bubble: #FFFDF9;
-    --out-bg: #E7E9F4;
-    --card: #FFFDF9;
-    --bar: #FFFDF9;
-    --muted: #7A7264;
-    --shadow: 0 1px 2px rgba(40,30,10,.04), 0 10px 30px rgba(40,30,10,.07);
-    --panel-shadow: 0 2px 4px rgba(40,30,10,.03), 0 30px 80px rgba(40,30,10,.08);
-  }
-  /* C: solid cobalt replies */
-  body.solid { --out-bg: var(--cobalt); --out-ink: #FFFFFF; }
+  body.inter { --font: "Inter", system-ui, sans-serif; }
+  body.sky { --out-bg: #CDE5FD; --tile-bg: #E6F4FF; }
 
   html, body { margin: 0; background: transparent; }
   body { width: 1024px; height: 1024px; position: relative; overflow: hidden;
-         font-family: "Karla", system-ui, sans-serif; color: var(--ink);
-         -webkit-font-smoothing: antialiased; }
+         font-family: var(--font); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  body.inter { letter-spacing: -0.012em; }
 
-  .panel { position: absolute; left: 287px; top: 36px; width: 450px; height: 948px;
-           background: var(--panel); border-radius: 76px; box-shadow: var(--panel-shadow); }
+  .panel { position: absolute; left: 289px; top: 33px; width: 445px; height: 966px;
+           border-radius: 74px; box-shadow: var(--panel-shadow);
+           background: linear-gradient(180deg, var(--panel-top), var(--panel-bot)); }
 
-  .pill { position: absolute; left: 50%; top: 78px; transform: translateX(-50%);
-          background: var(--bubble); border-radius: 999px; padding: 18px 44px;
-          font-weight: 700; font-size: 29px; letter-spacing: -.01em; box-shadow: var(--shadow); }
+  .pill { position: absolute; left: 50%; top: 74px; transform: translateX(-50%);
+          background: var(--surface); border-radius: 26px; padding: 22px 52px;
+          font-weight: 700; font-size: 30px; box-shadow: var(--shadow); }
 
-  .bubble { position: absolute; background: var(--bubble); border-radius: 30px;
-            padding: 20px 28px; font-size: 25px; line-height: 1.32; font-weight: 500;
-            box-shadow: var(--shadow); letter-spacing: -.005em; }
-  .in { left: 228px; }
-  .out { right: 300px; background: var(--out-bg); color: var(--out-ink); }
+  .stack { position: absolute; left: 228px; top: 180px; width: 488px;
+           display: flex; flex-direction: column; gap: 14px; }
+  .bubble { background: var(--surface); border-radius: 30px; padding: 19px 26px;
+            font-size: 22.5px; line-height: 1.36; font-weight: 500; box-shadow: var(--shadow);
+            width: fit-content; max-width: 392px; }
+  .in { align-self: flex-start; }
+  .out { align-self: flex-end; background: var(--out-bg); max-width: 300px; }
 
-  .card { position: absolute; left: 265px; top: 560px; width: 400px; background: var(--card);
-          border-radius: 30px; padding: 22px; box-shadow: var(--shadow); box-sizing: border-box; }
-  .card-head { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-  .tile { width: 58px; height: 58px; border-radius: 15px; background: var(--cobalt);
+  .card { margin-top: 14px; width: 416px; background: var(--surface); border-radius: 30px;
+          padding: 20px; box-sizing: border-box; box-shadow: var(--shadow); }
+  .card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .tile { width: 52px; height: 52px; border-radius: 14px; background: var(--tile-bg);
           display: grid; place-items: center; flex: none; }
-  .title { font-weight: 700; font-size: 23px; line-height: 1.15; }
-  .sub { color: var(--muted); font-size: 20px; font-weight: 500; margin-top: 3px; }
-  .art { border-radius: 16px; overflow: hidden; background: #EEF0FB; height: 132px; }
+  .title { font-weight: 600; font-size: 20px; line-height: 1.2; }
+  .sub { color: var(--muted); font-size: 19px; font-weight: 500; margin-top: 2px; }
+  .art { border-radius: 16px; overflow: hidden; border: 1px solid #F0F1F4; height: 104px; }
+  .btn { margin-top: 14px; height: 50px; border-radius: 999px; background: var(--button-bg);
+         display: grid; place-items: center; font-weight: 600; font-size: 19px; }
 
-  .bar { position: absolute; left: 232px; top: 876px; width: 548px; height: 72px;
-         background: var(--bar); border-radius: 999px; box-shadow: var(--shadow);
-         display: flex; align-items: center; padding: 0 28px; box-sizing: border-box; gap: 18px; }
-  .bar .ph { flex: 1; color: #9AA0AE; font-size: 26px; font-weight: 500; }
-
-  /* C variant: card floats outside, tilted */
-  body.float .card { left: 150px; top: 600px; transform: rotate(-5deg); }
-
-  .stack { position: absolute; left: 222px; top: 172px; width: 540px; display: flex;
-           flex-direction: column; gap: 16px; }
-  .stack .bubble { position: static; max-width: 400px; width: fit-content; }
-  .stack .in { align-self: flex-start; }
-  .stack .out { align-self: flex-end; margin-right: -22px; max-width: 330px; }
-  .stack .card { position: static; margin: 8px 0 0 34px; }
-  body.float .stack .card { margin: 14px 0 0 -70px; transform: rotate(-5deg); }
+  .bar { position: absolute; left: 228px; top: 875px; width: 567px; height: 68px;
+         background: var(--surface); border-radius: 999px; box-shadow: var(--shadow);
+         display: flex; align-items: center; padding: 0 30px; box-sizing: border-box; gap: 20px; }
+  .bar .ph { flex: 1; color: var(--placeholder); font-size: 27px; font-weight: 400; }
 </style>
 </head>
 <body>
@@ -84,44 +70,45 @@
     <div class="bubble in">Morning, Maya. Yesterday you said you felt braver once you sent that email. What made it possible?</div>
     <div class="bubble out">Honestly? I stopped waiting to feel ready.</div>
     <div class="bubble in">That's the whole thing, isn't it. Ready shows up after you move.</div>
-    <div class="card">
-    <div class="card-head">
-      <div class="tile">
-        <svg width="28" height="28" viewBox="0 0 24 24"><path fill="#fff" d="M12 2.2l2.6 6.1 6.6.5-5 4.4 1.5 6.5L12 16.3l-5.7 3.4 1.5-6.5-5-4.4 6.6-.5z"/></svg>
-      </div>
-      <div>
-        <div class="title">Your intention</div>
-        <div class="sub">Open my studio by spring</div>
-      </div>
-    </div>
-    <div class="art">
-      <svg viewBox="0 0 356 160" width="100%" height="132" preserveAspectRatio="none">
-        <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3F4FD"/><stop offset="1" stop-color="#E6E9FA"/></linearGradient></defs>
-        <rect width="356" height="160" fill="url(#sky)"/>
-        <g stroke="#8E9BE6" stroke-width="2.4" stroke-linecap="round">
-          <line x1="178" y1="34" x2="178" y2="48"/><line x1="152" y1="44" x2="159" y2="54"/><line x1="204" y1="44" x2="197" y2="54"/>
-          <line x1="138" y1="64" x2="149" y2="68"/><line x1="218" y1="64" x2="207" y2="68"/>
-        </g>
-        <path d="M150 92a28 28 0 0 1 56 0z" fill="#9AA6EC"/>
-        <path d="M0 110 C70 80 120 86 178 98 C240 110 290 78 356 88 L356 160 L0 160Z" fill="#D9DEF8"/>
-        <path d="M0 128 C80 100 150 112 210 124 C270 136 310 116 356 112 L356 160 L0 160Z" fill="#E8EBFB"/>
-        <path d="M0 120 C70 96 120 98 170 106" fill="none" stroke="#6D7BD8" stroke-width="2.2"/>
-        <path d="M210 124 C270 136 310 116 356 112" fill="none" stroke="#6D7BD8" stroke-width="2.2"/>
-        <path d="M150 160 C120 140 200 132 186 122 C176 114 230 110 240 106" fill="none" stroke="#6D7BD8" stroke-width="2.2"/>
-        <ellipse cx="44" cy="92" rx="8" ry="20" fill="#A7B1EE"/><line x1="44" y1="104" x2="44" y2="122" stroke="#6D7BD8" stroke-width="2"/>
-        <ellipse cx="66" cy="86" rx="9" ry="24" fill="#A7B1EE"/><line x1="66" y1="100" x2="66" y2="120" stroke="#6D7BD8" stroke-width="2"/>
-        <path d="M300 114 v-16 M300 104 c-8-2-12-10-10-16 8 2 11 9 10 16 M300 104 c8-2 12-10 10-16 -8 2-11 9-10 16" stroke="#3E4FC0" stroke-width="2" fill="#5C6BD0"/>
-      </svg>
-    </div>
-  </div>
 
+    <div class="card">
+      <div class="card-head">
+        <div class="tile">
+          <svg width="26" height="26" viewBox="0 0 24 24"><path fill="#2A3A9C" d="M12 2.2l2.6 6.1 6.6.5-5 4.4 1.5 6.5L12 16.3l-5.7 3.4 1.5-6.5-5-4.4 6.6-.5z"/></svg>
+        </div>
+        <div>
+          <div class="title">Your intention</div>
+          <div class="sub">Open my studio by spring</div>
+        </div>
+      </div>
+      <div class="art">
+        <svg viewBox="0 0 376 124" width="100%" height="104" preserveAspectRatio="xMidYMid slice">
+          <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FAFBFF"/><stop offset="1" stop-color="#EEF1FD"/></linearGradient></defs>
+          <rect width="376" height="124" fill="url(#sky)"/>
+          <g stroke="#9AA6EC" stroke-width="2.2" stroke-linecap="round">
+            <line x1="188" y1="20" x2="188" y2="32"/><line x1="164" y1="28" x2="170" y2="37"/><line x1="212" y1="28" x2="206" y2="37"/>
+            <line x1="150" y1="46" x2="160" y2="50"/><line x1="226" y1="46" x2="216" y2="50"/>
+          </g>
+          <path d="M162 72a26 26 0 0 1 52 0z" fill="#A9B3F0"/>
+          <path d="M0 86 C70 62 124 68 188 78 C252 88 304 62 376 70 L376 124 L0 124Z" fill="#E1E6FB"/>
+          <path d="M0 102 C84 80 156 90 220 100 C284 110 326 94 376 90 L376 124 L0 124Z" fill="#F0F2FD"/>
+          <path d="M0 94 C70 74 124 76 178 84" fill="none" stroke="#7C89DE" stroke-width="2"/>
+          <path d="M222 100 C284 110 326 94 376 90" fill="none" stroke="#7C89DE" stroke-width="2"/>
+          <path d="M160 124 C130 108 210 102 198 94 C188 88 240 84 252 80" fill="none" stroke="#7C89DE" stroke-width="2"/>
+          <ellipse cx="46" cy="70" rx="7" ry="18" fill="#B3BCF1"/><line x1="46" y1="80" x2="46" y2="96" stroke="#7C89DE" stroke-width="1.8"/>
+          <ellipse cx="66" cy="64" rx="8" ry="21" fill="#B3BCF1"/><line x1="66" y1="76" x2="66" y2="94" stroke="#7C89DE" stroke-width="1.8"/>
+          <path d="M318 92 v-14 M318 82 c-7-2-11-9-9-14 7 2 10 8 9 14 M318 82 c7-2 11-9 9-14 -7 2-10 8-9 14" stroke="#4A5AC6" stroke-width="1.8" fill="#6E7CD6"/>
+        </svg>
+      </div>
+      <div class="btn">Open intention</div>
+    </div>
   </div>
 
   <div class="bar">
-    <svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="#14120F" stroke-width="2.2" stroke-linecap="round"/></svg>
+    <svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg>
     <div class="ph">Message</div>
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7A7F8C" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-    <svg width="30" height="30" viewBox="0 0 24 24" stroke="#14120F" stroke-width="2.2" stroke-linecap="round"><path d="M4 9v6M8 6v12M12 9v6M16 5v14M20 10v4"/></svg>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8A9099" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+    <svg width="30" height="30" viewBox="0 0 24 24" stroke="#111" stroke-width="2" stroke-linecap="round"><path d="M5 9v6M9.5 6v12M14 9v6M18.5 7v10"/></svg>
   </div>
 </body>
 </html>

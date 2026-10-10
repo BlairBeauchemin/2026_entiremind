@@ -1,6 +1,6 @@
 const { chromium } = require('playwright');
 const dir = process.argv[2];
-const variants = { a: '', b: 'warm', c: 'solid', d: 'warm solid float' };
+const variants = { a: '', b: 'inter', c: 'sky' };
 (async () => {
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 1024, height: 1024 }, deviceScaleFactor: 2 });
