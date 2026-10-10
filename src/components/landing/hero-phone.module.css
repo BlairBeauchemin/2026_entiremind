@@ -115,6 +115,10 @@
   left: calc(var(--u) * 229);
   top: calc(var(--u) * 197);
   width: calc(var(--u) * 486);
+  /* The thread ends on a fixed line (836u, the reference card's bottom) so
+     the card always clears the composer: longer copy shrinks the card's
+     artwork instead of pushing the card underneath the bar. */
+  height: calc(var(--u) * 639);
   display: flex;
   flex-direction: column;
 }
@@ -155,6 +159,10 @@
 /* ---- Card ----------------------------------------------------------- */
 
 .card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   margin-top: calc(var(--u) * 39);
   width: calc(var(--u) * 415);
   box-sizing: border-box;
@@ -201,8 +209,9 @@
 }
 
 .cardBody {
+  flex: 1;
+  min-height: calc(var(--u) * 96);
   margin-top: calc(var(--u) * 16);
-  height: calc(var(--u) * 222);
   border-radius: calc(var(--u) * 16);
   border: calc(var(--u) * 1) solid #eeeff2;
   overflow: hidden;

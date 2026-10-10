@@ -116,15 +116,16 @@ const ReplicaArt = (
 
 export const ENTIREMIND_CONTENT: HeroPhoneContent = {
   name: "Entiremind",
-  // Same rhythm as the reference — one two-line prompt, two short replies —
-  // so the card lands in the same place above the composer.
   bubbles: [
     {
       from: "them",
-      text: "Yesterday you said you felt braver once you sent that email. What made it possible?",
+      text: "Morning, Maya. Yesterday you said you felt braver once you sent that email. What made it possible?",
     },
-    { from: "me", text: "Honestly?" },
-    { from: "me", text: "I stopped waiting to feel ready." },
+    { from: "me", text: "Honestly? I stopped waiting to feel ready." },
+    {
+      from: "them",
+      text: "That's the whole thing, isn't it. Ready shows up after you move.",
+    },
   ],
   card: {
     title: "Your intention",

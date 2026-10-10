@@ -59,12 +59,12 @@ export default async function HeroPhonePreview({
     ["transparent", "white", "linen"] as const,
     "white",
   );
-  const font = pick(
-    params.font,
-    ["karla", "inter"] as const,
-    mode === "replica" ? "inter" : "karla",
+  const font = pick(params.font, ["karla", "inter"] as const, "inter");
+  const reply = pick(
+    params.reply,
+    ["sky", "cobalt"] as const,
+    mode === "replica" ? "sky" : "cobalt",
   );
-  const reply = pick(params.reply, ["sky", "cobalt"] as const, "sky");
   const size = Number(params.size) > 0 ? Number(params.size) : 1024;
 
   return (

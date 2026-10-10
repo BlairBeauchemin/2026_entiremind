@@ -43,8 +43,8 @@ interface HeroPhoneProps {
 
 export function HeroPhone({
   content,
-  font = "karla",
-  replyTone = "sky",
+  font = "inter",
+  replyTone = "cobalt",
   className,
 }: HeroPhoneProps) {
   const canvasClass = [

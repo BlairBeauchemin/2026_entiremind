@@ -13,12 +13,11 @@ const outDir = process.argv[2] || path.dirname(fileURLToPath(import.meta.url));
 const base = process.argv[3] || "http://localhost:3000";
 
 const RENDERS = {
-  replica: "mode=replica&bg=transparent",
   entiremind: "mode=entiremind&bg=transparent",
-  "entiremind-inter": "mode=entiremind&bg=transparent&font=inter",
-  "entiremind-cobalt": "mode=entiremind&bg=transparent&reply=cobalt",
   "entiremind-on-linen": "mode=entiremind&bg=linen",
-  "entiremind-inter-on-linen": "mode=entiremind&bg=linen&font=inter",
+  "entiremind-sky": "mode=entiremind&bg=transparent&reply=sky",
+  // Calibration against the reference — keep local, don't commit the output.
+  replica: "mode=replica&bg=transparent",
 };
 
 (async () => {
