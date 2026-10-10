@@ -1,0 +1,272 @@
+/*
+ * HeroPhone — a soft, abstracted phone used for the landing hero and for ad
+ * renders (docs/marketing/hero-phone/render.mjs screenshots this component, so
+ * the site and the ads can never drift apart).
+ *
+ * Everything is laid out on a fixed 1024-unit canvas, measured against the
+ * reference image, and expressed through --u so the whole phone scales from
+ * its container width. 1u === 1px when the container is 1024px wide.
+ *
+ * Measured from the reference (1024 scale):
+ *   panel      x 287–735, y 34–998, near-white #FDFDFD→#F7F7F7
+ *   edge       symmetric on all four sides: ~2u darker band, ~10u soft fade
+ *   surfaces   pure white, faint symmetric shadow
+ *   composer   x 229–794, y 876–942, white at ~76% over the panel (frosted)
+ */
+
+.frame {
+  container-type: inline-size;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+.canvas {
+  --u: calc(100cqw / 1024);
+  --ink: #111111;
+  --muted: #6e7480;
+  --placeholder: #a3a8b0;
+  --surface: #ffffff;
+  --out-bg: #cde5fd;
+  --tile-bg: #e7f3ff;
+  --tile-ink: #2a3a9c;
+  --button-bg: #f3f5f7;
+  --font: var(--font-karla), ui-sans-serif, system-ui, sans-serif;
+
+  /* One soft, symmetric shadow for every floating surface. */
+  --surface-shadow:
+    0 0 0 calc(var(--u) * 0.6) rgba(0, 0, 0, 0.022),
+    0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0, 0, 0, 0.035),
+    0 calc(var(--u) * 4) calc(var(--u) * 16) rgba(0, 0, 0, 0.04);
+
+  position: absolute;
+  inset: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.fontInter {
+  --font: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.012em;
+}
+
+.replyCobalt {
+  --out-bg: #dde3fb;
+  --tile-bg: #e9edfc;
+}
+
+/* ---- Panel ---------------------------------------------------------- */
+
+.panel {
+  position: absolute;
+  left: calc(var(--u) * 287);
+  top: calc(var(--u) * 34);
+  width: calc(var(--u) * 448);
+  height: calc(var(--u) * 964);
+  border-radius: calc(var(--u) * 80);
+  corner-shape: superellipse(1.4);
+  background: linear-gradient(180deg, #fdfdfd 0%, #fcfcfc 100%);
+  /* Measured edge: a 1u white highlight at the rim, then a shadow that is
+     darkest right at the edge (~5% black) and fades over ~11u. Symmetric on
+     every side — that is what makes the left edge read as clearly as the
+     right — with a touch more weight at the bottom. */
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 1) #ffffff,
+    0 0 calc(var(--u) * 16) calc(var(--u) * 1) rgba(0, 0, 0, 0.115),
+    calc(var(--u) * 6) calc(var(--u) * 2) calc(var(--u) * 12)
+      rgba(0, 0, 0, 0.07);
+}
+
+/* ---- Header pill ---------------------------------------------------- */
+
+.pill {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 72);
+  transform: translateX(-50%);
+  min-width: calc(var(--u) * 189);
+  box-sizing: border-box;
+  padding: calc(var(--u) * 14) calc(var(--u) * 28);
+  border-radius: calc(var(--u) * 24);
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pillName {
+  font-weight: 700;
+  font-size: calc(var(--u) * 21);
+  line-height: 1.2;
+}
+
+.pillStatus {
+  margin-top: calc(var(--u) * 2);
+  color: var(--muted);
+  font-size: calc(var(--u) * 17);
+  line-height: 1.25;
+}
+
+/* ---- Thread --------------------------------------------------------- */
+
+.thread {
+  position: absolute;
+  left: calc(var(--u) * 229);
+  top: calc(var(--u) * 197);
+  width: calc(var(--u) * 486);
+  display: flex;
+  flex-direction: column;
+}
+
+.bubble {
+  width: fit-content;
+  box-sizing: border-box;
+  padding: calc(var(--u) * 10) calc(var(--u) * 19);
+  border-radius: calc(var(--u) * 28);
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+  font-size: calc(var(--u) * 18.8);
+  line-height: calc(var(--u) * 26.5);
+  font-weight: 450;
+  letter-spacing: -0.015em;
+}
+
+.in {
+  align-self: flex-start;
+  max-width: calc(var(--u) * 415);
+}
+
+.out {
+  align-self: flex-end;
+  max-width: calc(var(--u) * 340);
+  padding: calc(var(--u) * 13) calc(var(--u) * 19);
+  background: var(--out-bg);
+}
+
+.gapLarge {
+  margin-top: calc(var(--u) * 39);
+}
+
+.gapSmall {
+  margin-top: calc(var(--u) * 10);
+}
+
+/* ---- Card ----------------------------------------------------------- */
+
+.card {
+  margin-top: calc(var(--u) * 39);
+  width: calc(var(--u) * 415);
+  box-sizing: border-box;
+  padding: calc(var(--u) * 15) calc(var(--u) * 19) calc(var(--u) * 14);
+  border-radius: calc(var(--u) * 30);
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 13);
+  height: calc(var(--u) * 48);
+}
+
+.tile {
+  flex: none;
+  width: calc(var(--u) * 47);
+  height: calc(var(--u) * 47);
+  border-radius: calc(var(--u) * 12);
+  background: var(--tile-bg);
+  color: var(--tile-ink);
+  display: grid;
+  place-items: center;
+}
+
+.tile svg {
+  width: calc(var(--u) * 24);
+  height: calc(var(--u) * 24);
+}
+
+.cardTitle {
+  font-weight: 600;
+  font-size: calc(var(--u) * 17.5);
+  line-height: 1.2;
+}
+
+.cardSub {
+  margin-top: calc(var(--u) * 2);
+  color: var(--muted);
+  font-size: calc(var(--u) * 17);
+  line-height: 1.2;
+}
+
+.cardBody {
+  margin-top: calc(var(--u) * 16);
+  height: calc(var(--u) * 222);
+  border-radius: calc(var(--u) * 16);
+  border: calc(var(--u) * 1) solid #eeeff2;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.cardBody svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cardButton {
+  margin-top: calc(var(--u) * 16);
+  height: calc(var(--u) * 42);
+  border-radius: 999px;
+  background: var(--button-bg);
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: calc(var(--u) * 17);
+}
+
+/* ---- Composer ------------------------------------------------------- */
+
+.composer {
+  position: absolute;
+  left: calc(var(--u) * 229);
+  top: calc(var(--u) * 876);
+  width: calc(var(--u) * 565);
+  height: calc(var(--u) * 66);
+  box-sizing: border-box;
+  padding: 0 calc(var(--u) * 20);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(calc(var(--u) * 12));
+  box-shadow: var(--surface-shadow);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 16);
+}
+
+.composer svg {
+  flex: none;
+}
+
+.placeholder {
+  flex: 1;
+  color: var(--placeholder);
+  font-size: calc(var(--u) * 27);
+  font-weight: 400;
+}
+
+.iconPlus {
+  width: calc(var(--u) * 34);
+  height: calc(var(--u) * 34);
+}
+
+.iconMic {
+  width: calc(var(--u) * 32);
+  height: calc(var(--u) * 32);
+}
+
+.iconWave {
+  width: calc(var(--u) * 34);
+  height: calc(var(--u) * 34);
+}
