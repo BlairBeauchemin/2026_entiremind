@@ -43,81 +43,6 @@ const GlobeIcon = (
   </svg>
 );
 
-/** Sunrise over hills — the intention card's illustration. */
-const IntentionArt = (
-  <svg
-    viewBox="0 0 376 214"
-    preserveAspectRatio="xMidYMid slice"
-    aria-hidden="true"
-  >
-    <defs>
-      <linearGradient id="hero-phone-sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stopColor="#FAFBFF" />
-        <stop offset="1" stopColor="#EEF1FD" />
-      </linearGradient>
-    </defs>
-    <rect width="376" height="214" fill="url(#hero-phone-sky)" />
-    <g stroke="#9AA6EC" strokeWidth="2.4" strokeLinecap="round">
-      <line x1="188" y1="54" x2="188" y2="70" />
-      <line x1="160" y1="64" x2="167" y2="75" />
-      <line x1="216" y1="64" x2="209" y2="75" />
-      <line x1="144" y1="86" x2="156" y2="91" />
-      <line x1="232" y1="86" x2="220" y2="91" />
-    </g>
-    <path d="M158 118a30 30 0 0 1 60 0z" fill="#A9B3F0" />
-    <path
-      d="M0 134 C70 104 124 112 188 122 C252 134 304 104 376 112 L376 214 L0 214Z"
-      fill="#E1E6FB"
-    />
-    <path
-      d="M0 156 C84 130 156 142 220 152 C284 164 326 146 376 142 L376 214 L0 214Z"
-      fill="#F0F2FD"
-    />
-    <path
-      d="M0 146 C70 122 124 124 178 132"
-      fill="none"
-      stroke="#7C89DE"
-      strokeWidth="2"
-    />
-    <path
-      d="M222 152 C284 164 326 146 376 142"
-      fill="none"
-      stroke="#7C89DE"
-      strokeWidth="2"
-    />
-    <path
-      d="M150 214 C120 190 210 182 198 172 C188 164 240 158 252 154"
-      fill="none"
-      stroke="#7C89DE"
-      strokeWidth="2"
-    />
-    <ellipse cx="46" cy="114" rx="8" ry="21" fill="#B3BCF1" />
-    <line
-      x1="46"
-      y1="126"
-      x2="46"
-      y2="146"
-      stroke="#7C89DE"
-      strokeWidth="1.8"
-    />
-    <ellipse cx="68" cy="106" rx="9" ry="25" fill="#B3BCF1" />
-    <line
-      x1="68"
-      y1="120"
-      x2="68"
-      y2="142"
-      stroke="#7C89DE"
-      strokeWidth="1.8"
-    />
-    <path
-      d="M318 146 v-18 M318 134 c-8-2-12-10-10-16 8 2 11 9 10 16 M318 134 c8-2 12-10 10-16 -8 2-11 9-10 16"
-      stroke="#4A5AC6"
-      strokeWidth="1.8"
-      fill="#6E7CD6"
-    />
-  </svg>
-);
-
 /** Neutral seat-grid stand-in, only used to calibrate against the reference. */
 const ReplicaArt = (
   <svg viewBox="0 0 376 214" aria-hidden="true">
@@ -154,9 +79,9 @@ export const ENTIREMIND_CONTENT: HeroPhoneContent = {
   ],
   card: {
     title: "Your intention",
-    subtitle: "Open my studio by spring",
+    subtitle: "Written by you",
     icon: StarIcon,
-    body: IntentionArt,
+    quote: "Open my studio by spring.",
     action: "Open intention",
   },
 };

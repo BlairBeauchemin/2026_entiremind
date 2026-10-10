@@ -23,7 +23,10 @@ export interface HeroPhoneCard {
   title: string;
   subtitle: string;
   icon: ReactNode;
-  body: ReactNode;
+  /** Either an illustration… */
+  body?: ReactNode;
+  /** …or the person's own words, set in the brand serif. */
+  quote?: string;
   action: string;
 }
 
@@ -106,7 +109,14 @@ export function HeroPhone({
                 <div className={styles.cardSub}>{content.card.subtitle}</div>
               </div>
             </div>
-            <div className={styles.cardBody}>{content.card.body}</div>
+            {content.card.quote ? (
+              <div className={`${styles.cardBody} ${styles.cardQuote}`}>
+                <p className={styles.quoteText}>{content.card.quote}</p>
+                <span className={styles.quoteRule} aria-hidden="true" />
+              </div>
+            ) : (
+              <div className={styles.cardBody}>{content.card.body}</div>
+            )}
             <div className={styles.cardButton}>{content.card.action}</div>
           </div>
         </div>

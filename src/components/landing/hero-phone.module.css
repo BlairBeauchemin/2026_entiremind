@@ -106,14 +106,19 @@
 
 /* ---- Header pill ---------------------------------------------------- */
 
-/* With a mark, the pill tucks just under it (as the reference's pill does
-   under its avatar) and the name takes the brand cobalt. */
+/* With a mark, the name drops its pill and sits bare under the mark in
+   cobalt — mark and name read together as one lockup. */
 .pill.pillWithMark {
-  top: calc(var(--u) * 80);
+  top: calc(var(--u) * 86);
+  padding-top: 0;
+  padding-bottom: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .pillWithMark .pillName {
   color: var(--tile-ink);
+  font-size: calc(var(--u) * 24);
 }
 
 .pill {
@@ -258,6 +263,35 @@
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* The intention in the person's own words, in the brand serif. */
+.cardQuote {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--u) * 14) calc(var(--u) * 24);
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-cobalt-wash) 60%, white);
+}
+
+.quoteText {
+  margin: 0;
+  font-family: var(--font-prata), Georgia, serif;
+  font-weight: 400;
+  font-size: calc(var(--u) * 30);
+  line-height: 1.15;
+  letter-spacing: 0;
+  color: var(--tile-ink);
+}
+
+.quoteRule {
+  display: block;
+  flex: none;
+  margin-top: calc(var(--u) * 12);
+  width: calc(var(--u) * 44);
+  height: calc(var(--u) * 1.5);
+  background: var(--tile-ink);
 }
 
 .cardButton {
