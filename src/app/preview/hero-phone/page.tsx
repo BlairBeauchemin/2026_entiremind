@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { HeroPhone } from "@/components/landing/hero-phone";
 import {
   ENTIREMIND_CONTENT,
+  ENTIREMIND_QUOTE_CONTENT,
   ENTIREMIND_VISUAL_CONTENT,
   REPLICA_CONTENT,
 } from "@/components/landing/hero-phone-content";
@@ -66,7 +67,11 @@ export default async function HeroPhonePreview({
     ["sky", "cobalt"] as const,
     mode === "replica" ? "sky" : "cobalt",
   );
-  const card = pick(params.card, ["quote", "visual"] as const, "quote");
+  const card = pick(
+    params.card,
+    ["landscape", "quote", "visual"] as const,
+    "landscape",
+  );
   const size = Number(params.size) > 0 ? Number(params.size) : 1024;
 
   return (
@@ -83,7 +88,9 @@ export default async function HeroPhonePreview({
               ? REPLICA_CONTENT
               : card === "visual"
                 ? ENTIREMIND_VISUAL_CONTENT
-                : ENTIREMIND_CONTENT
+                : card === "quote"
+                  ? ENTIREMIND_QUOTE_CONTENT
+                  : ENTIREMIND_CONTENT
           }
           font={font}
           replyTone={reply}
