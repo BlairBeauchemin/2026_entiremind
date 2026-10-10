@@ -80,17 +80,17 @@
 
 /* ---- Mark (sits where the reference has its avatar) ------------------ */
 
-/* Bare line art, no badge behind it. It sits inside the panel (crossing the
-   panel's top edge made the rim and shadow cut through the mark), so the
-   name pill drops slightly when a mark is present — see .pill.pillWithMark. */
+/* Bare cobalt line art straddling the panel's top edge, the way the
+   reference's avatar does. The outer disc is filled with the panel's own
+   top colour so the rim and its shadow don't show through the linework. */
 .badge {
   position: absolute;
   left: 50%;
-  top: calc(var(--u) * 44);
+  top: calc(var(--u) * 8);
   z-index: 1;
   transform: translateX(-50%);
-  width: calc(var(--u) * 60);
-  height: calc(var(--u) * 60);
+  width: calc(var(--u) * 78);
+  height: calc(var(--u) * 78);
   color: var(--tile-ink);
 }
 
@@ -100,10 +100,20 @@
   height: 100%;
 }
 
+.badge svg > circle:first-of-type {
+  fill: #fdfdfd;
+}
+
 /* ---- Header pill ---------------------------------------------------- */
 
+/* With a mark, the pill tucks just under it (as the reference's pill does
+   under its avatar) and the name takes the brand cobalt. */
 .pill.pillWithMark {
-  top: calc(var(--u) * 114);
+  top: calc(var(--u) * 80);
+}
+
+.pillWithMark .pillName {
+  color: var(--tile-ink);
 }
 
 .pill {
