@@ -15,6 +15,8 @@ const base = process.argv[3] || "http://localhost:3000";
 const RENDERS = {
   entiremind: "mode=entiremind&bg=transparent",
   "entiremind-on-linen": "mode=entiremind&bg=linen",
+  "entiremind-visual": "mode=entiremind&bg=transparent&card=visual",
+  "entiremind-visual-on-linen": "mode=entiremind&bg=linen&card=visual",
   "entiremind-sky": "mode=entiremind&bg=transparent&reply=sky",
   // Calibration against the reference — keep local, don't commit the output.
   replica: "mode=replica&bg=transparent",
