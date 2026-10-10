@@ -78,6 +78,29 @@
       rgba(0, 0, 0, 0.07);
 }
 
+/* ---- Badge (sits where the reference has its avatar) ----------------- */
+
+.badge {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 14);
+  z-index: 1;
+  transform: translateX(-50%);
+  width: calc(var(--u) * 66);
+  height: calc(var(--u) * 66);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+  color: var(--tile-ink);
+  display: grid;
+  place-items: center;
+}
+
+.badge svg {
+  width: calc(var(--u) * 50);
+  height: calc(var(--u) * 50);
+}
+
 /* ---- Header pill ---------------------------------------------------- */
 
 .pill {

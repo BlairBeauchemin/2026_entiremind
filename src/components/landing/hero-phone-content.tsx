@@ -1,5 +1,29 @@
 import type { HeroPhoneContent } from "./hero-phone";
 
+/**
+ * Seed of Life: seven equal circles, each centred on its neighbours' edges,
+ * inside one outer ring. Even-weight line, no fills — the moodboard's emblem
+ * language (docs/brand/moodboard.html).
+ */
+const SeedOfLifeMark = (
+  <svg
+    viewBox="0 0 64 64"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.4"
+    aria-hidden="true"
+  >
+    <circle cx="32" cy="32" r="24" />
+    <circle cx="32" cy="32" r="12" />
+    <circle cx="44" cy="32" r="12" />
+    <circle cx="38" cy="42.392" r="12" />
+    <circle cx="26" cy="42.392" r="12" />
+    <circle cx="20" cy="32" r="12" />
+    <circle cx="26" cy="21.608" r="12" />
+    <circle cx="38" cy="21.608" r="12" />
+  </svg>
+);
+
 const StarIcon = (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M12 2.2l2.6 6.1 6.6.5-5 4.4 1.5 6.5L12 16.3l-5.7 3.4 1.5-6.5-5-4.4 6.6-.5z" />
@@ -116,6 +140,7 @@ const ReplicaArt = (
 
 export const ENTIREMIND_CONTENT: HeroPhoneContent = {
   name: "Entiremind",
+  mark: SeedOfLifeMark,
   bubbles: [
     {
       from: "them",

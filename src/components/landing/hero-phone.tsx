@@ -30,6 +30,8 @@ export interface HeroPhoneCard {
 export interface HeroPhoneContent {
   name: string;
   status?: string;
+  /** Optional mark shown in a badge overlapping the top of the name pill. */
+  mark?: ReactNode;
   bubbles: HeroPhoneBubble[];
   card: HeroPhoneCard;
 }
@@ -59,6 +61,12 @@ export function HeroPhone({
     <div className={[styles.frame, className].filter(Boolean).join(" ")}>
       <div className={canvasClass}>
         <div className={styles.panel} aria-hidden="true" />
+
+        {content.mark ? (
+          <div className={styles.badge} aria-hidden="true">
+            {content.mark}
+          </div>
+        ) : null}
 
         <div className={styles.pill}>
           <div className={styles.pillName}>{content.name}</div>
