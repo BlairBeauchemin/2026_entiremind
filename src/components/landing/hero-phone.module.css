@@ -118,7 +118,7 @@
 
 .pillWithMark .pillName {
   color: var(--tile-ink);
-  font-size: calc(var(--u) * 27);
+  font-size: calc(var(--u) * 30);
   font-weight: 500;
 }
 
