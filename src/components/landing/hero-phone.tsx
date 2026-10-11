@@ -37,6 +37,8 @@ export interface HeroPhoneContent {
   mark?: ReactNode;
   bubbles: HeroPhoneBubble[];
   card: HeroPhoneCard;
+  /** A reply still being typed in the composer, shown with a caret. */
+  draft?: string;
 }
 
 interface HeroPhoneProps {
@@ -130,7 +132,14 @@ export function HeroPhone({
               strokeLinecap="round"
             />
           </svg>
-          <span className={styles.placeholder}>Message</span>
+          {content.draft ? (
+            <span className={styles.draft}>
+              {content.draft}
+              <span className={styles.caret} />
+            </span>
+          ) : (
+            <span className={styles.placeholder}>Message</span>
+          )}
           <svg
             className={styles.iconMic}
             viewBox="0 0 24 24"
@@ -142,16 +151,32 @@ export function HeroPhone({
             <rect x="9" y="3" width="6" height="11" rx="3" />
             <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
           </svg>
-          <svg
-            className={styles.iconWave}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#111"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <path d="M5 9v6M9.5 5v14M14 8v8M18.5 10v4" />
-          </svg>
+          {content.draft ? (
+            // Once there is text, the voice control becomes send.
+            <span className={styles.send}>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 19V5M6 11l6-6 6 6" />
+              </svg>
+            </span>
+          ) : (
+            <svg
+              className={styles.iconWave}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#111"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M5 9v6M9.5 5v14M14 8v8M18.5 10v4" />
+            </svg>
+          )}
         </div>
       </div>
     </div>

@@ -209,6 +209,7 @@ export const ENTIREMIND_CONTENT: HeroPhoneContent = {
       text: "That's the whole thing, isn't it. Ready shows up after you move.",
     },
   ],
+  draft: "Just booked a studio viewi",
   card: {
     title: "Your intention",
     subtitle: "Open my studio by spring",

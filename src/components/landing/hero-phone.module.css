@@ -336,6 +336,42 @@
   font-weight: 400;
 }
 
+/* A reply mid-typing: same size as the placeholder, in ink, ending on a
+   cobalt caret. Static for now — the blink belongs to the motion pass. */
+.draft {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: calc(var(--u) * 27);
+  font-weight: 400;
+}
+
+.caret {
+  display: inline-block;
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 30);
+  margin-left: calc(var(--u) * 2);
+  vertical-align: middle;
+  background: var(--tile-ink);
+}
+
+.send {
+  flex: none;
+  width: calc(var(--u) * 40);
+  height: calc(var(--u) * 40);
+  border-radius: 999px;
+  background: var(--tile-ink);
+  color: var(--surface);
+  display: grid;
+  place-items: center;
+}
+
+.send svg {
+  width: calc(var(--u) * 21);
+  height: calc(var(--u) * 21);
+}
+
 .iconPlus {
   width: calc(var(--u) * 34);
   height: calc(var(--u) * 34);
