@@ -178,16 +178,49 @@
   letter-spacing: -0.015em;
 }
 
-.in {
+/* Each bubble sits in a slot that owns its side and spacing, so the
+   typing indicator can occupy the same spot before the bubble arrives. */
+.slot {
+  position: relative;
+}
+
+.slotIn {
   align-self: flex-start;
+}
+
+.slotOut {
+  align-self: flex-end;
+}
+
+.in {
   max-width: calc(var(--u) * 415);
 }
 
 .out {
-  align-self: flex-end;
   max-width: calc(var(--u) * 340);
   padding: calc(var(--u) * 13) calc(var(--u) * 19);
   background: var(--out-bg);
+}
+
+.typing {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 7);
+  height: calc(var(--u) * 46);
+  padding: 0 calc(var(--u) * 19);
+  border-radius: calc(var(--u) * 28);
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+}
+
+.typingDot {
+  width: calc(var(--u) * 8);
+  height: calc(var(--u) * 8);
+  border-radius: 999px;
+  background: var(--muted);
 }
 
 .gapLarge {

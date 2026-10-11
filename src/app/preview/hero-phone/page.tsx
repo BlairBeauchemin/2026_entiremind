@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { HeroPhone } from "@/components/landing/hero-phone";
+import { HeroPhoneMotion } from "@/components/landing/hero-phone-motion";
 import {
   ENTIREMIND_CONTENT,
   ENTIREMIND_QUOTE_CONTENT,
@@ -72,7 +73,18 @@ export default async function HeroPhonePreview({
     ["landscape", "quote", "visual"] as const,
     "landscape",
   );
+  const animated = params.motion === "1";
   const size = Number(params.size) > 0 ? Number(params.size) : 1024;
+
+  const content =
+    mode === "replica"
+      ? REPLICA_CONTENT
+      : card === "visual"
+        ? ENTIREMIND_VISUAL_CONTENT
+        : card === "quote"
+          ? ENTIREMIND_QUOTE_CONTENT
+          : ENTIREMIND_CONTENT;
+  const Phone = animated ? HeroPhoneMotion : HeroPhone;
 
   return (
     <>
@@ -82,19 +94,7 @@ export default async function HeroPhonePreview({
         className={inter.variable}
         style={{ width: size, height: size, background: BACKGROUNDS[bg] }}
       >
-        <HeroPhone
-          content={
-            mode === "replica"
-              ? REPLICA_CONTENT
-              : card === "visual"
-                ? ENTIREMIND_VISUAL_CONTENT
-                : card === "quote"
-                  ? ENTIREMIND_QUOTE_CONTENT
-                  : ENTIREMIND_CONTENT
-          }
-          font={font}
-          replyTone={reply}
-        />
+        <Phone content={content} font={font} replyTone={reply} />
       </main>
     </>
   );

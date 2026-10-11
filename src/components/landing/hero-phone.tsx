@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import styles from "./hero-phone.module.css";
 
 /**
@@ -6,12 +6,16 @@ import styles from "./hero-phone.module.css";
  *
  * Unlike `PhoneMockup` (an iOS Messages facsimile), this is a marketing
  * illustration: a near-white slab with floating bubbles, one product card and
- * a frosted composer, recreated from an approved reference. It is static for
- * now; every bubble and the card are separate elements so load-in motion can
- * be layered on later without restructuring.
+ * a frosted composer, recreated from an approved reference. Every bubble and
+ * the card are separate elements so motion can drive each one.
  *
  * Ads are produced by screenshotting /preview/hero-phone, so this component is
  * the single source of truth for both surfaces.
+ *
+ * Static unless given a `frame`: one instant of the looping timeline, which
+ * `HeroPhoneMotion` computes from a single clock (hero-phone-timeline.ts).
+ * Every animated value is a pure function of that time, so the site and the
+ * frame-by-frame ad recorder can never disagree.
  */
 
 export interface HeroPhoneBubble {
@@ -41,11 +45,38 @@ export interface HeroPhoneContent {
   draft?: string;
 }
 
+/** One instant of the animated timeline (see hero-phone-timeline.ts). */
+export interface HeroPhoneFrame {
+  /** Per bubble: opacity and how far below its resting place it sits (em). */
+  bubbles: { opacity: number; rise: number }[];
+  /** Per bubble: opacity of the typing indicator in its slot. */
+  typing: number[];
+  /** Opacity of each of the indicator's three dots. */
+  dots: [number, number, number];
+  card: { opacity: number; rise: number };
+  /** How much of the draft has been typed. */
+  draftChars: number;
+  draftOpacity: number;
+  caretOn: boolean;
+}
+
 interface HeroPhoneProps {
   content: HeroPhoneContent;
   font?: "karla" | "inter";
   replyTone?: "sky" | "cobalt";
   className?: string;
+  frame?: HeroPhoneFrame;
+}
+
+function arrive(
+  state: { opacity: number; rise: number } | undefined,
+): CSSProperties | undefined {
+  return state
+    ? {
+        opacity: state.opacity,
+        transform: state.rise ? `translateY(${state.rise}em)` : undefined,
+      }
+    : undefined;
 }
 
 export function HeroPhone({
@@ -53,7 +84,9 @@ export function HeroPhone({
   font = "inter",
   replyTone = "cobalt",
   className,
+  frame: f,
 }: HeroPhoneProps) {
+  const draft = f ? content.draft?.slice(0, f.draftChars) : content.draft;
   const canvasClass = [
     styles.canvas,
     font === "inter" ? styles.fontInter : "",
@@ -96,14 +129,32 @@ export function HeroPhone({
                   ? styles.gapSmall
                   : styles.gapLarge;
             const side = bubble.from === "me" ? styles.out : styles.in;
+            const slot = bubble.from === "me" ? styles.slotOut : styles.slotIn;
+            const typing = f?.typing[i] ?? 0;
             return (
-              <div key={i} className={[styles.bubble, side, gap].join(" ")}>
-                {bubble.text}
+              <div key={i} className={[styles.slot, slot, gap].join(" ")}>
+                <div
+                  className={[styles.bubble, side].join(" ")}
+                  style={arrive(f?.bubbles[i])}
+                >
+                  {bubble.text}
+                </div>
+                {f && typing > 0 ? (
+                  <div className={styles.typing} style={{ opacity: typing }}>
+                    {f.dots.map((o, d) => (
+                      <span
+                        key={d}
+                        className={styles.typingDot}
+                        style={{ opacity: o }}
+                      />
+                    ))}
+                  </div>
+                ) : null}
               </div>
             );
           })}
 
-          <div className={styles.card}>
+          <div className={styles.card} style={arrive(f?.card)}>
             <div className={styles.cardHead}>
               <div className={styles.tile}>{content.card.icon}</div>
               <div>
@@ -132,10 +183,16 @@ export function HeroPhone({
               strokeLinecap="round"
             />
           </svg>
-          {content.draft ? (
-            <span className={styles.draft}>
-              {content.draft}
-              <span className={styles.caret} />
+          {draft ? (
+            <span
+              className={styles.draft}
+              style={f ? { opacity: f.draftOpacity } : undefined}
+            >
+              {draft}
+              <span
+                className={styles.caret}
+                style={f && !f.caretOn ? { opacity: 0 } : undefined}
+              />
             </span>
           ) : (
             <span className={styles.placeholder}>Message</span>
@@ -151,7 +208,7 @@ export function HeroPhone({
             <rect x="9" y="3" width="6" height="11" rx="3" />
             <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
           </svg>
-          {content.draft ? (
+          {draft ? (
             // Once there is text, the voice control becomes send.
             <span className={styles.send}>
               <svg
