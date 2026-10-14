@@ -123,6 +123,7 @@
   font-size: calc(var(--u) * 24);
   font-weight: 600;
   letter-spacing: 0;
+  color: var(--color-cobalt);
 }
 
 /* ---- Thread ---------------------------------------------------------- */
