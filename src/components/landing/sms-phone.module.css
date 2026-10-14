@@ -239,6 +239,14 @@
   height: calc(var(--u) * 20);
 }
 
+.mic {
+  flex: none;
+  width: calc(var(--u) * 26);
+  height: calc(var(--u) * 26);
+  margin-right: calc(var(--u) * 10);
+  color: var(--color-muted);
+}
+
 .homeBar {
   position: absolute;
   left: 50%;

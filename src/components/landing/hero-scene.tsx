@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
 import { HeroPhone } from "./hero-phone";
-import { ENTIREMIND_CONTENT } from "./hero-phone-content";
+import { ENTIREMIND_CONTENT, SMS_CONTENT } from "./hero-phone-content";
 import { SmsPhone } from "./sms-phone";
 import styles from "./hero-scene.module.css";
 
@@ -333,7 +333,7 @@ function SpillLayout() {
         alt="A woman walking a coastal path above the sea"
       />
       <Print
-        box={at(918, 740, 236, 270, 5)}
+        box={at(934, 744, 236, 270, 5)}
         src={PHOTO.beachWalk}
         alt="A woman walking a quiet beach at sunrise"
       />
@@ -469,7 +469,7 @@ export function HeroScene({
       <div className={styles.canvas}>
         <div className={styles.phone}>
           {layout === "scatter" || layout === "spill" ? (
-            <SmsPhone content={ENTIREMIND_CONTENT} />
+            <SmsPhone content={SMS_CONTENT} />
           ) : (
             <HeroPhone content={ENTIREMIND_CONTENT} />
           )}

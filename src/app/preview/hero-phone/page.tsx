@@ -6,6 +6,7 @@ import { HeroPhoneMotion } from "@/components/landing/hero-phone-motion";
 import { SmsPhone } from "@/components/landing/sms-phone";
 import {
   ENTIREMIND_CONTENT,
+  SMS_CONTENT,
   ENTIREMIND_QUOTE_CONTENT,
   ENTIREMIND_VISUAL_CONTENT,
   REPLICA_CONTENT,
@@ -97,7 +98,7 @@ export default async function HeroPhonePreview({
         style={{ width: size, height: size, background: BACKGROUNDS[bg] }}
       >
         {sms ? (
-          <SmsPhone content={content} />
+          <SmsPhone content={SMS_CONTENT} />
         ) : (
           <Phone content={content} font={font} replyTone={reply} />
         )}

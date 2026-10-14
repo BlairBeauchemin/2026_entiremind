@@ -13,8 +13,9 @@ import styles from "./sms-phone.module.css";
  *   avatar above the name. Never a raster logo that can garble.
  * - One "Today 7:45 AM" (the daily send time) instead of a timestamp under
  *   every bubble, which Messages doesn't do.
- * - The conversation ends on the person's half-typed reply in the composer
- *   rather than on a typing indicator.
+ * - The conversation ends on the person's own reply rather than on a typing
+ *   indicator. With a `draft`, the reply is half-typed in the composer;
+ *   without one (SMS_CONTENT), it is sent and the composer sits empty.
  *
  * Static by design; motion and rotation belong to wherever it is placed.
  * Reads the same `HeroPhoneContent` as HeroPhone, so both phones always
@@ -127,18 +128,33 @@ export function SmsPhone({
               ) : (
                 <span className={styles.placeholder}>Text Message…</span>
               )}
-              <span className={styles.send}>
+              {content.draft ? (
+                <span className={styles.send}>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 19V5M6 11l6-6 6 6" />
+                  </svg>
+                </span>
+              ) : (
+                // Nothing typed: the quiet mic, as in Messages.
                 <svg
+                  className={styles.mic}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2.6"
+                  strokeWidth="1.8"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
                 >
-                  <path d="M12 19V5M6 11l6-6 6 6" />
+                  <rect x="9" y="3" width="6" height="11" rx="3" />
+                  <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
                 </svg>
-              </span>
+              )}
             </div>
             <span className={styles.homeBar} />
           </div>

@@ -219,6 +219,20 @@ export const ENTIREMIND_CONTENT: HeroPhoneContent = {
   },
 };
 
+/**
+ * The Messages-style SmsPhone's conversation: the same thread, with Maya's
+ * reply sent rather than half-typed, so the screen fills and the composer
+ * sits empty.
+ */
+export const SMS_CONTENT: HeroPhoneContent = {
+  ...ENTIREMIND_CONTENT,
+  bubbles: [
+    ...ENTIREMIND_CONTENT.bubbles,
+    { from: "me", text: "Just booked a studio viewing for Saturday." },
+  ],
+  draft: undefined,
+};
+
 /** Alternate: the intention in the person's own words, in the brand serif. */
 export const ENTIREMIND_QUOTE_CONTENT: HeroPhoneContent = {
   ...ENTIREMIND_CONTENT,
