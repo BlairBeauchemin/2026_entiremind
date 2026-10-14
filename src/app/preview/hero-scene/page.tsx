@@ -32,7 +32,12 @@ export default async function HeroScenePreview({
 }) {
   if (process.env.NODE_ENV === "production") notFound();
   const params = await searchParams;
-  const layout = params.layout === "board" ? "board" : "cards";
+  const layout =
+    params.layout === "board" ||
+    params.layout === "scatter" ||
+    params.layout === "spill"
+      ? params.layout
+      : "cards";
   const bg =
     params.bg === "transparent" || params.bg === "white" ? params.bg : "linen";
 

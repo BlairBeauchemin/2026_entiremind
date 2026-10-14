@@ -34,6 +34,10 @@ const SCENES = {
   "scene-cards-on-linen": "layout=cards&bg=linen",
   "scene-board": "layout=board&bg=transparent",
   "scene-board-on-linen": "layout=board&bg=linen",
+  "sms-scene-scatter": "layout=scatter&bg=transparent",
+  "sms-scene-scatter-on-linen": "layout=scatter&bg=linen",
+  "sms-scene-spill": "layout=spill&bg=transparent",
+  "sms-scene-spill-on-linen": "layout=spill&bg=linen",
 };
 
 const JOBS = [
