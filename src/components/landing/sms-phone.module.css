@@ -97,15 +97,15 @@
 .back {
   position: absolute;
   left: calc(var(--u) * 24);
-  top: calc(var(--u) * 26);
+  top: calc(var(--u) * 38);
   width: calc(var(--u) * 26);
   height: calc(var(--u) * 26);
   color: var(--color-cobalt);
 }
 
 .avatar {
-  width: calc(var(--u) * 64);
-  height: calc(var(--u) * 64);
+  width: calc(var(--u) * 88);
+  height: calc(var(--u) * 88);
   border-radius: 50%;
   background: var(--color-cobalt-wash);
   color: var(--color-cobalt);
@@ -114,13 +114,13 @@
 }
 
 .avatar svg {
-  width: calc(var(--u) * 48);
-  height: calc(var(--u) * 48);
+  width: calc(var(--u) * 74);
+  height: calc(var(--u) * 74);
 }
 
 .name {
   margin-top: calc(var(--u) * 8);
-  font-size: calc(var(--u) * 16);
+  font-size: calc(var(--u) * 18);
   font-weight: 500;
   letter-spacing: 0;
 }
@@ -133,12 +133,12 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: calc(var(--u) * 22) calc(var(--u) * 28) 0;
+  padding: calc(var(--u) * 14) calc(var(--u) * 28) 0;
 }
 
 .day {
   align-self: center;
-  margin-bottom: calc(var(--u) * 18);
+  margin-bottom: calc(var(--u) * 14);
   color: var(--color-muted);
   font-size: calc(var(--u) * 14);
   letter-spacing: 0;
