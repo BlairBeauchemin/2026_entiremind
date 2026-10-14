@@ -1,0 +1,249 @@
+/*
+ * SmsPhone — the landing page's Messages facsimile (phone-mockup.tsx),
+ * rebuilt for marketing renders: same ink device, linen screen and bubble
+ * language, but on the 1024-unit --u canvas HeroPhone uses, so it renders
+ * crisply at any size and drops into HeroScene.
+ *
+ * Device: x 277–747, y 37–987 on the canvas. Screen inset by the 22u frame.
+ */
+
+.frame {
+  container-type: inline-size;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+.canvas {
+  --u: calc(100cqw / 1024);
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter), var(--font-karla), ui-sans-serif, sans-serif;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.device {
+  position: absolute;
+  left: calc(var(--u) * 277);
+  top: calc(var(--u) * 37);
+  width: calc(var(--u) * 470);
+  height: calc(var(--u) * 950);
+  box-sizing: border-box;
+  border: calc(var(--u) * 22) solid var(--color-ink);
+  border-radius: calc(var(--u) * 74);
+  overflow: hidden;
+  background: var(--color-linen);
+  /* The single contact shadow DESIGN.md permits under a product object. */
+  box-shadow: 0 calc(var(--u) * 26) calc(var(--u) * 56) calc(var(--u) * -34)
+    rgba(20, 18, 15, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Status bar ------------------------------------------------------ */
+
+.status {
+  position: relative;
+  flex: none;
+  height: calc(var(--u) * 56);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 calc(var(--u) * 30) 0 calc(var(--u) * 38);
+  font-size: calc(var(--u) * 17);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.island {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 12);
+  width: calc(var(--u) * 118);
+  height: calc(var(--u) * 34);
+  margin-left: calc(var(--u) * -59);
+  border-radius: 999px;
+  background: var(--color-ink);
+}
+
+.statusIcons {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+}
+
+.statusIcons svg {
+  display: block;
+  height: calc(var(--u) * 13);
+  width: auto;
+}
+
+/* ---- Contact header -------------------------------------------------- */
+
+.header {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(var(--u) * 6) 0 calc(var(--u) * 14);
+  border-bottom: calc(var(--u) * 1) solid var(--color-rule);
+}
+
+.back {
+  position: absolute;
+  left: calc(var(--u) * 16);
+  top: calc(var(--u) * 26);
+  width: calc(var(--u) * 26);
+  height: calc(var(--u) * 26);
+  color: var(--color-cobalt);
+}
+
+.avatar {
+  width: calc(var(--u) * 64);
+  height: calc(var(--u) * 64);
+  border-radius: 50%;
+  background: var(--color-cobalt-wash);
+  color: var(--color-cobalt);
+  display: grid;
+  place-items: center;
+}
+
+.avatar svg {
+  width: calc(var(--u) * 48);
+  height: calc(var(--u) * 48);
+}
+
+.name {
+  margin-top: calc(var(--u) * 8);
+  font-size: calc(var(--u) * 16);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* ---- Thread ---------------------------------------------------------- */
+
+/* Newest messages sit just above the composer, as in Messages. */
+.thread {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 calc(var(--u) * 18) calc(var(--u) * 22);
+}
+
+.day {
+  align-self: center;
+  margin-bottom: calc(var(--u) * 18);
+  color: var(--color-muted);
+  font-size: calc(var(--u) * 14);
+  letter-spacing: 0;
+}
+
+.dayStrong {
+  font-weight: 600;
+}
+
+.bubble {
+  max-width: 80%;
+  box-sizing: border-box;
+  padding: calc(var(--u) * 12) calc(var(--u) * 17);
+  border-radius: calc(var(--u) * 24);
+  font-size: calc(var(--u) * 20.5);
+  line-height: 1.38;
+}
+
+.in {
+  align-self: flex-start;
+  border-top-left-radius: calc(var(--u) * 6);
+  background: var(--color-surface);
+  border: calc(var(--u) * 1) solid var(--color-rule);
+}
+
+.out {
+  align-self: flex-end;
+  border-top-right-radius: calc(var(--u) * 6);
+  background: var(--color-cobalt);
+  color: var(--color-linen);
+}
+
+.gapSmall {
+  margin-top: calc(var(--u) * 6);
+}
+
+.gapLarge {
+  margin-top: calc(var(--u) * 16);
+}
+
+/* ---- Composer -------------------------------------------------------- */
+
+.footer {
+  flex: none;
+  padding: calc(var(--u) * 16) calc(var(--u) * 18) calc(var(--u) * 30);
+  border-top: calc(var(--u) * 1) solid var(--color-rule);
+  position: relative;
+}
+
+.composer {
+  height: calc(var(--u) * 52);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 10);
+  padding: 0 calc(var(--u) * 7) 0 calc(var(--u) * 20);
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: calc(var(--u) * 1) solid var(--color-rule);
+}
+
+.draft {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: calc(var(--u) * 20.5);
+}
+
+.placeholder {
+  flex: 1;
+  color: var(--color-muted);
+  font-size: calc(var(--u) * 20.5);
+}
+
+.caret {
+  display: inline-block;
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 24);
+  margin-left: calc(var(--u) * 1);
+  vertical-align: middle;
+  background: var(--color-cobalt);
+}
+
+.send {
+  flex: none;
+  width: calc(var(--u) * 36);
+  height: calc(var(--u) * 36);
+  border-radius: 50%;
+  background: var(--color-cobalt);
+  color: var(--color-linen);
+  display: grid;
+  place-items: center;
+}
+
+.send svg {
+  width: calc(var(--u) * 20);
+  height: calc(var(--u) * 20);
+}
+
+.homeBar {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * 9);
+  width: calc(var(--u) * 140);
+  height: calc(var(--u) * 5);
+  margin-left: calc(var(--u) * -70);
+  border-radius: 999px;
+  background: var(--color-ink);
+}

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { HeroPhone } from "@/components/landing/hero-phone";
 import { HeroPhoneMotion } from "@/components/landing/hero-phone-motion";
+import { SmsPhone } from "@/components/landing/sms-phone";
 import {
   ENTIREMIND_CONTENT,
   ENTIREMIND_QUOTE_CONTENT,
@@ -74,6 +75,7 @@ export default async function HeroPhonePreview({
     "landscape",
   );
   const animated = params.motion === "1";
+  const sms = params.phone === "sms";
   const size = Number(params.size) > 0 ? Number(params.size) : 1024;
 
   const content =
@@ -94,7 +96,11 @@ export default async function HeroPhonePreview({
         className={inter.variable}
         style={{ width: size, height: size, background: BACKGROUNDS[bg] }}
       >
-        <Phone content={content} font={font} replyTone={reply} />
+        {sms ? (
+          <SmsPhone content={content} />
+        ) : (
+          <Phone content={content} font={font} replyTone={reply} />
+        )}
       </main>
     </>
   );

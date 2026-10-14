@@ -5,7 +5,7 @@ import type { HeroPhoneContent } from "./hero-phone";
  * inside one outer ring. Even-weight line, no fills — the moodboard's emblem
  * language (docs/brand/moodboard.html).
  */
-const SeedOfLifeMark = (
+export const SeedOfLifeMark = (
   <svg
     viewBox="0 0 64 64"
     fill="none"

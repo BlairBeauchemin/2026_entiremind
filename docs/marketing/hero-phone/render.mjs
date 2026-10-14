@@ -21,6 +21,9 @@ const RENDERS = {
   "entiremind-visual": "mode=entiremind&bg=transparent&card=visual",
   "entiremind-visual-on-linen": "mode=entiremind&bg=linen&card=visual",
   "entiremind-sky": "mode=entiremind&bg=transparent&reply=sky",
+  // The landing page's Messages-style phone, same conversation.
+  "sms-phone": "phone=sms&bg=transparent",
+  "sms-phone-on-linen": "phone=sms&bg=linen",
   // Calibration against the reference — keep local, don't commit the output.
   replica: "mode=replica&bg=transparent",
 };
