@@ -4,7 +4,9 @@
  * language, but on the 1024-unit --u canvas HeroPhone uses, so it renders
  * crisply at any size and drops into HeroScene.
  *
- * Device: x 277–747, y 37–987 on the canvas. Screen inset by the 22u frame.
+ * Dimensions follow PhoneMockup (340 × 680, 8px frame, 52px radius) scaled
+ * by 470/340: device x 277–747, y 42–982, an 11u frame, a 72u radius.
+ * Bubble, composer and padding proportions are scaled the same way.
  */
 
 .frame {
@@ -27,12 +29,12 @@
 .device {
   position: absolute;
   left: calc(var(--u) * 277);
-  top: calc(var(--u) * 37);
+  top: calc(var(--u) * 42);
   width: calc(var(--u) * 470);
-  height: calc(var(--u) * 950);
+  height: calc(var(--u) * 940);
   box-sizing: border-box;
-  border: calc(var(--u) * 22) solid var(--color-ink);
-  border-radius: calc(var(--u) * 74);
+  border: calc(var(--u) * 11) solid var(--color-ink);
+  border-radius: calc(var(--u) * 72);
   overflow: hidden;
   background: var(--color-linen);
   /* The single contact shadow DESIGN.md permits under a product object. */
@@ -47,11 +49,11 @@
 .status {
   position: relative;
   flex: none;
-  height: calc(var(--u) * 56);
+  height: calc(var(--u) * 58);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 calc(var(--u) * 30) 0 calc(var(--u) * 38);
+  padding: 0 calc(var(--u) * 38) 0 calc(var(--u) * 46);
   font-size: calc(var(--u) * 17);
   font-weight: 600;
   letter-spacing: 0;
@@ -60,7 +62,7 @@
 .island {
   position: absolute;
   left: 50%;
-  top: calc(var(--u) * 12);
+  top: calc(var(--u) * 16);
   width: calc(var(--u) * 118);
   height: calc(var(--u) * 34);
   margin-left: calc(var(--u) * -59);
@@ -94,7 +96,7 @@
 
 .back {
   position: absolute;
-  left: calc(var(--u) * 16);
+  left: calc(var(--u) * 24);
   top: calc(var(--u) * 26);
   width: calc(var(--u) * 26);
   height: calc(var(--u) * 26);
@@ -125,13 +127,13 @@
 
 /* ---- Thread ---------------------------------------------------------- */
 
-/* Newest messages sit just above the composer, as in Messages. */
+/* A short conversation starts at the top, under the header. */
 .thread {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 calc(var(--u) * 18) calc(var(--u) * 22);
+  justify-content: flex-start;
+  padding: calc(var(--u) * 22) calc(var(--u) * 28) 0;
 }
 
 .day {
@@ -149,50 +151,50 @@
 .bubble {
   max-width: 80%;
   box-sizing: border-box;
-  padding: calc(var(--u) * 12) calc(var(--u) * 17);
-  border-radius: calc(var(--u) * 24);
+  padding: calc(var(--u) * 18) calc(var(--u) * 20);
+  border-radius: calc(var(--u) * 25);
   font-size: calc(var(--u) * 20.5);
-  line-height: 1.38;
+  line-height: 1.42;
 }
 
 .in {
   align-self: flex-start;
-  border-top-left-radius: calc(var(--u) * 6);
+  border-top-left-radius: calc(var(--u) * 5.5);
   background: var(--color-surface);
   border: calc(var(--u) * 1) solid var(--color-rule);
 }
 
 .out {
   align-self: flex-end;
-  border-top-right-radius: calc(var(--u) * 6);
+  border-top-right-radius: calc(var(--u) * 5.5);
   background: var(--color-cobalt);
   color: var(--color-linen);
 }
 
 .gapSmall {
-  margin-top: calc(var(--u) * 6);
+  margin-top: calc(var(--u) * 8);
 }
 
 .gapLarge {
-  margin-top: calc(var(--u) * 16);
+  margin-top: calc(var(--u) * 22);
 }
 
 /* ---- Composer -------------------------------------------------------- */
 
 .footer {
   flex: none;
-  padding: calc(var(--u) * 16) calc(var(--u) * 18) calc(var(--u) * 30);
+  padding: calc(var(--u) * 24) calc(var(--u) * 28) calc(var(--u) * 34);
   border-top: calc(var(--u) * 1) solid var(--color-rule);
   position: relative;
 }
 
 .composer {
-  height: calc(var(--u) * 52);
+  height: calc(var(--u) * 62);
   box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: calc(var(--u) * 10);
-  padding: 0 calc(var(--u) * 7) 0 calc(var(--u) * 20);
+  padding: 0 calc(var(--u) * 9) 0 calc(var(--u) * 26);
   border-radius: 999px;
   background: var(--color-surface);
   border: calc(var(--u) * 1) solid var(--color-rule);
@@ -223,8 +225,8 @@
 
 .send {
   flex: none;
-  width: calc(var(--u) * 36);
-  height: calc(var(--u) * 36);
+  width: calc(var(--u) * 42);
+  height: calc(var(--u) * 42);
   border-radius: 50%;
   background: var(--color-cobalt);
   color: var(--color-linen);
@@ -240,7 +242,7 @@
 .homeBar {
   position: absolute;
   left: 50%;
-  bottom: calc(var(--u) * 9);
+  bottom: calc(var(--u) * 10);
   width: calc(var(--u) * 140);
   height: calc(var(--u) * 5);
   margin-left: calc(var(--u) * -70);
