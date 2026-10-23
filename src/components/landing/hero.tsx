@@ -24,11 +24,6 @@ export function Hero() {
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)] gap-12 lg:gap-8 items-center">
           {/* Hero Content */}
           <div className="relative z-10 space-y-10 text-center lg:text-left animate-fade-in-up">
-            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-surface border border-rule text-ink text-[11px] font-medium tracking-widest uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-cobalt animate-pulse" />
-              Coming Soon
-            </div>
-
             {/* Emphasis is a mid-sentence italic, never a bolder weight —
                 Prata has only one cut, and the italic is the system's most
                 characteristic typographic move. */}
@@ -66,15 +61,19 @@ export function Hero() {
           {/* Hero visual: the Messages phone with the "My vision" board and
               prints spilling out around it (HeroScene, layout "spill"). The
               scene canvas carries empty margins for ad crops; the negative
-              margins trim them here so the phone fills the column. Everything
+              margins trim them here so the phone fills the column. Mobile
+              trims harder (about 20% larger) and centres the scene's content,
+              which keeps it inside a 390px screen. Everything
               in it is transparent over the linen page. */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className={`relative ${heroInter.variable}`}
+            // On mobile the phone leads, above the headline; from lg it
+            // returns to its column beside the copy.
+            className={`relative order-first lg:order-none ${heroInter.variable}`}
           >
-            <div className="-mx-[7%] -mt-[8%] -mb-[6%]">
+            <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
               <HeroScene layout="spill" />
             </div>
           </motion.div>
