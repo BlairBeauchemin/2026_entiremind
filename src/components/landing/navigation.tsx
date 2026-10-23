@@ -22,7 +22,7 @@ export function Navigation() {
           <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <span className="font-serif text-2xl md:text-3xl tracking-[2px] text-ink whitespace-nowrap">
+              <span className="font-serif text-2xl md:text-3xl tracking-[2px] text-cobalt whitespace-nowrap">
                 Entiremind
               </span>
             </Link>

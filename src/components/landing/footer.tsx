@@ -6,7 +6,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <Link href="/" className="flex items-center gap-3">
-            <span className="font-serif text-2xl tracking-[2px] text-ink">
+            <span className="font-serif text-2xl tracking-[2px] text-cobalt">
               Entiremind
             </span>
           </Link>

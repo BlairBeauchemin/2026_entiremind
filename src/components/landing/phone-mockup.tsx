@@ -49,7 +49,7 @@ export function PhoneMockup({ rotated = true }: PhoneMockupProps) {
               <ChevronLeft className="w-5 h-5" aria-hidden="true" />
             </div>
             <div className="text-center">
-              <div className="font-serif text-xl tracking-[1px] text-ink">
+              <div className="font-serif text-xl tracking-[1px] text-cobalt">
                 Entiremind
               </div>
               <div className="text-attribution uppercase text-muted mt-1">

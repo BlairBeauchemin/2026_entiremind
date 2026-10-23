@@ -88,7 +88,7 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
         <div className="flex items-center justify-between px-7 pt-8 pb-6">
           <Link
             href="/"
-            className="font-serif text-2xl tracking-[2px] text-ink"
+            className="font-serif text-2xl tracking-[2px] text-cobalt"
           >
             Entiremind
           </Link>

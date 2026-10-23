@@ -24,7 +24,10 @@ export function MobileHeader({ onOpenSidebar }: MobileHeaderProps) {
           <Menu className="w-5 h-5" strokeWidth={1.5} />
         </button>
 
-        <Link href="/" className="font-serif text-xl tracking-[2px] text-ink">
+        <Link
+          href="/"
+          className="font-serif text-xl tracking-[2px] text-cobalt"
+        >
           Entiremind
         </Link>
 
