@@ -73,8 +73,10 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             // On mobile the phone leads, above the headline; from lg it
-            // returns to its column beside the copy.
-            className={`relative order-first lg:order-none ${heroInter.variable}`}
+            // returns to its column beside the copy. Capped at phone width
+            // until then, so tablets and landscape phones don't blow the
+            // scene up and crop the board off the edge.
+            className={`relative order-first lg:order-none w-full max-w-md mx-auto lg:max-w-none ${heroInter.variable}`}
           >
             <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
               <HeroScene layout="spill" motion={HERO_MOTION} />
