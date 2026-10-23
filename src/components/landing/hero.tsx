@@ -39,16 +39,16 @@ export function Hero() {
               <em className="italic">one text at&nbsp;a&nbsp;time.</em>
             </h1>
 
-            {/* mb-7 overrides the column's space-y-10 here only, so the
-                waitlist line, button and reassurance read as one group
-                under the subhead rather than a separate block. */}
-            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 mb-7 font-light leading-relaxed font-sans">
+            {/* mb-5 overrides the column's space-y-10 here only: the waitlist
+                line follows the subhead as its next paragraph, and the
+                button gets the room (mb-8 on that line). */}
+            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 mb-5 font-light leading-relaxed font-sans">
               Lightly magical texts that take you off autopilot and turn your
               intentions into reality.
             </p>
 
             <div>
-              <p className="text-base text-ink mb-3 font-sans text-balance">
+              <p className="text-base text-ink mb-8 font-sans text-balance">
                 Join the waitlist and be first to know when we launch.
               </p>
               <button
