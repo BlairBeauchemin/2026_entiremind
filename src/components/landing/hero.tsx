@@ -61,7 +61,9 @@ export function Hero() {
           {/* Hero visual: the Messages phone with the "My vision" board and
               prints spilling out around it (HeroScene, layout "spill"). The
               scene canvas carries empty margins for ad crops; the negative
-              margins trim them here so the phone fills the column. Everything
+              margins trim them here so the phone fills the column. Mobile
+              trims harder (about 20% larger) and centres the scene's content,
+              which keeps it inside a 390px screen. Everything
               in it is transparent over the linen page. */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
@@ -71,7 +73,7 @@ export function Hero() {
             // returns to its column beside the copy.
             className={`relative order-first lg:order-none ${heroInter.variable}`}
           >
-            <div className="-mx-[7%] -mt-[8%] -mb-[6%]">
+            <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
               <HeroScene layout="spill" />
             </div>
           </motion.div>
