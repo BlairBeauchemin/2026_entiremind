@@ -38,7 +38,8 @@ export type HeroSceneLayout = "cards" | "board" | "scatter" | "spill";
  * Everything is off under reduced motion, which leaves the exact still.
  *
  * - `twinkle`: the sparkles glint now and then, never in step.
- * - `float`: prints, board and phone drift a few pixels on slow loops.
+ * - `float`: prints, board and phone drift and tilt gently on slow loops;
+ *   `float-strong` is the same drift about 1.6× larger.
  * - `settle`: on load, the prints slide out from the phone into place.
  * - `thread`: on load, the conversation plays in once (SmsPhoneMotion).
  * - `living`: the lead photograph is a cinemagraph (spill only).
@@ -48,6 +49,7 @@ export type HeroSceneLayout = "cards" | "board" | "scatter" | "spill";
 export type HeroSceneMotion =
   | "twinkle"
   | "float"
+  | "float-strong"
   | "settle"
   | "thread"
   | "living"
@@ -527,6 +529,7 @@ function BoardLayout() {
 const MOTION_CLASS: Partial<Record<HeroSceneMotion, string>> = {
   twinkle: styles.motionTwinkle,
   float: styles.motionFloat,
+  "float-strong": `${styles.motionFloat} ${styles.floatStrong}`,
   settle: styles.motionSettle,
   parallax: styles.motionParallax,
 };

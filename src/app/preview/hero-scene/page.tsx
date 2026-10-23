@@ -23,6 +23,7 @@ const inter = Inter({
 const MOTIONS: readonly HeroSceneMotion[] = [
   "twinkle",
   "float",
+  "float-strong",
   "settle",
   "thread",
   "living",

@@ -294,43 +294,48 @@
   }
 
   .motionFloat > .phone {
-    --fdur: 14s;
-    --fdel: -4s;
+    --fdur: 9s;
+    --fdel: -2s;
     --fx: 0;
-    --fy: -5;
+    --fy: -10;
     --fr: 0deg;
   }
 
   .motionFloat > .item:nth-child(4n + 1) {
-    --fdur: 11s;
+    --fdur: 8s;
     --fdel: -3s;
-    --fx: 2;
-    --fy: -7;
-    --fr: 0.35deg;
+    --fx: 7;
+    --fy: -20;
+    --fr: 1deg;
   }
 
   .motionFloat > .item:nth-child(4n + 2) {
-    --fdur: 13s;
-    --fdel: -8s;
-    --fx: -3;
-    --fy: 6;
-    --fr: -0.3deg;
+    --fdur: 9.5s;
+    --fdel: -6s;
+    --fx: -9;
+    --fy: 18;
+    --fr: -0.9deg;
   }
 
   .motionFloat > .item:nth-child(4n + 3) {
-    --fdur: 9.5s;
+    --fdur: 7s;
     --fdel: -1s;
-    --fx: 2.5;
-    --fy: 5;
-    --fr: 0.25deg;
+    --fx: 8;
+    --fy: 16;
+    --fr: 0.8deg;
   }
 
   .motionFloat > .item:nth-child(4n + 4) {
-    --fdur: 12s;
-    --fdel: -6s;
-    --fx: -2;
-    --fy: -6;
-    --fr: -0.4deg;
+    --fdur: 10s;
+    --fdel: -5s;
+    --fx: -6;
+    --fy: -22;
+    --fr: -1.2deg;
+  }
+
+  /* A stronger drift, for comparison in the preview. */
+  .floatStrong {
+    --fk: 1.6;
   }
 
   /* Twinkle: each sparkle rests, then glints once, on its own rhythm. */
@@ -423,8 +428,9 @@
     rotate: 0deg;
   }
   50% {
-    translate: calc(var(--u) * var(--fx, 0)) calc(var(--u) * var(--fy, 0));
-    rotate: var(--fr, 0deg);
+    translate: calc(var(--u) * var(--fx, 0) * var(--fk, 1))
+      calc(var(--u) * var(--fy, 0) * var(--fk, 1));
+    rotate: calc(var(--fr, 0deg) * var(--fk, 1));
   }
 }
 
