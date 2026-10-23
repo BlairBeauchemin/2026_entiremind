@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { PhoneMockup } from "./phone-mockup";
+import { HeroScene } from "./hero-scene";
+import { heroInter } from "./hero-font";
 import { WaitlistModal } from "./waitlist-modal";
 import { analytics } from "@/lib/analytics";
 
@@ -20,29 +21,36 @@ export function Hero() {
         id="section-hero"
         className="relative pt-40 pb-24 lg:pt-56 lg:pb-40 z-10"
       >
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)] gap-12 lg:gap-8 items-center">
           {/* Hero Content */}
           <div className="relative z-10 space-y-10 text-center lg:text-left animate-fade-in-up">
             <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-surface border border-rule text-ink text-[11px] font-medium tracking-widest uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-cobalt animate-pulse" />
-              Coming Soon — Join the Waitlist
+              Coming Soon
             </div>
 
             {/* Emphasis is a mid-sentence italic, never a bolder weight —
                 Prata has only one cut, and the italic is the system's most
                 characteristic typographic move. */}
             <h1 className="font-serif text-display text-ink text-balance">
-              Manifestation <br />
-              <em className="italic">that texts back.</em>
+              Manifest your best life, <br />
+              {/* "at a time" never splits, so a narrow column wraps after
+                  "one text" instead of orphaning "time." */}
+              <em className="italic">one text at&nbsp;a&nbsp;time.</em>
             </h1>
 
-            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans">
-              A lightly magical daily text that remembers what you&apos;re
-              calling in and meets you where you are. No app. No streaks. Just a
-              conversation that helps your intentions become real.
+            {/* mb-5 overrides the column's space-y-10 here only: the waitlist
+                line follows the subhead as its next paragraph, and the
+                button gets the room (mb-8 on that line). */}
+            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 mb-5 font-light leading-relaxed font-sans">
+              Lightly magical texts that take you off autopilot and turn your
+              intentions into reality.
             </p>
 
-            <div className="pt-4">
+            <div>
+              <p className="text-base text-ink mb-8 font-sans text-balance">
+                Join the waitlist and be first to know when we launch.
+              </p>
               <button
                 onClick={openModal}
                 className="bg-cobalt text-linen px-10 py-4 rounded-sm text-lg font-medium hover:bg-cobalt-deep transition-all duration-300 font-sans"
@@ -55,39 +63,20 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Hero Visual / Phone Mockup */}
+          {/* Hero visual: the Messages phone with the "My vision" board and
+              prints spilling out around it (HeroScene, layout "spill"). The
+              scene canvas carries empty margins for ad crops; the negative
+              margins trim them here so the phone fills the column. Everything
+              in it is transparent over the linen page. */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative lg:h-[700px] flex items-center justify-center"
+            className={`relative ${heroInter.variable}`}
           >
-            {/* Floating Cards */}
-            <div className="absolute top-[20%] left-[-40px] z-20 bg-surface p-5 rounded-sm border border-rule animate-float max-w-[220px] hidden md:block">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-cobalt" />
-                <span className="text-[10px] font-medium text-ink uppercase tracking-widest">
-                  Signal Received
-                </span>
-              </div>
-              <p className="text-lg text-ink font-serif italic leading-tight">
-                &ldquo;I want to launch my project.&rdquo;
-              </p>
+            <div className="-mx-[7%] -mt-[8%] -mb-[6%]">
+              <HeroScene layout="spill" />
             </div>
-
-            <div className="absolute bottom-[25%] right-[-40px] z-20 bg-surface p-5 rounded-sm border border-rule animate-float-delayed max-w-[220px] hidden md:block">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-cobalt-wash" />
-                <span className="text-[10px] font-medium text-ink uppercase tracking-widest">
-                  Reflection
-                </span>
-              </div>
-              <p className="text-lg text-ink font-serif italic leading-tight">
-                &ldquo;What is the smallest step you can take right now?&rdquo;
-              </p>
-            </div>
-
-            <PhoneMockup />
           </motion.div>
         </div>
       </header>

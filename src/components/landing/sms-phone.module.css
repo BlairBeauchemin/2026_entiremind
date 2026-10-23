@@ -1,0 +1,246 @@
+/*
+ * SmsPhone — the landing page's Messages facsimile (phone-mockup.tsx),
+ * rebuilt for marketing renders: same ink device, linen screen and bubble
+ * language, but on the 1024-unit --u canvas HeroPhone uses, so it renders
+ * crisply at any size and drops into HeroScene.
+ *
+ * Dimensions follow PhoneMockup (340 × 680, 8px frame, 52px radius) scaled
+ * by 470/340: device x 277–747, y 42–982, an 11u frame, a 72u radius.
+ * Bubble, composer and padding proportions are scaled the same way.
+ */
+
+.frame {
+  container-type: inline-size;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+.canvas {
+  --u: calc(100cqw / 1024);
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter), var(--font-karla), ui-sans-serif, sans-serif;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.device {
+  position: absolute;
+  left: calc(var(--u) * 277);
+  top: calc(var(--u) * 42);
+  width: calc(var(--u) * 470);
+  height: calc(var(--u) * 940);
+  box-sizing: border-box;
+  border: calc(var(--u) * 11) solid var(--color-ink);
+  border-radius: calc(var(--u) * 72);
+  overflow: hidden;
+  background: var(--color-linen);
+  /* The single contact shadow DESIGN.md permits under a product object. */
+  box-shadow: 0 calc(var(--u) * 26) calc(var(--u) * 56) calc(var(--u) * -34)
+    rgba(20, 18, 15, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Status bar ------------------------------------------------------ */
+
+.status {
+  position: relative;
+  flex: none;
+  height: calc(var(--u) * 58);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 calc(var(--u) * 38) 0 calc(var(--u) * 46);
+  font-size: calc(var(--u) * 17);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.island {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 16);
+  width: calc(var(--u) * 118);
+  height: calc(var(--u) * 34);
+  margin-left: calc(var(--u) * -59);
+  border-radius: 999px;
+  background: var(--color-ink);
+}
+
+.statusIcons {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+}
+
+.statusIcons svg {
+  display: block;
+  height: calc(var(--u) * 13);
+  width: auto;
+}
+
+/* ---- Contact header -------------------------------------------------- */
+
+/* One compact line, so the screen goes to the conversation. */
+.header {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--u) * 52);
+  border-bottom: calc(var(--u) * 1) solid var(--color-rule);
+}
+
+.back {
+  position: absolute;
+  left: calc(var(--u) * 24);
+  top: 50%;
+  width: calc(var(--u) * 26);
+  height: calc(var(--u) * 26);
+  margin-top: calc(var(--u) * -13);
+  color: var(--color-cobalt);
+}
+
+.name {
+  font-size: calc(var(--u) * 23);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--color-cobalt);
+}
+
+/* ---- Thread ---------------------------------------------------------- */
+
+/* A short conversation starts at the top, under the header. */
+.thread {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: calc(var(--u) * 18) calc(var(--u) * 24) 0;
+}
+
+.day {
+  align-self: center;
+  margin-bottom: calc(var(--u) * 16);
+  color: var(--color-muted);
+  font-size: calc(var(--u) * 16);
+  letter-spacing: 0;
+}
+
+.dayStrong {
+  font-weight: 600;
+}
+
+.bubble {
+  max-width: 82%;
+  box-sizing: border-box;
+  padding: calc(var(--u) * 18) calc(var(--u) * 22);
+  border-radius: calc(var(--u) * 27);
+  font-size: calc(var(--u) * 23.5);
+  line-height: 1.38;
+}
+
+.in {
+  align-self: flex-start;
+  border-top-left-radius: calc(var(--u) * 5.5);
+  background: var(--color-surface);
+  border: calc(var(--u) * 1) solid var(--color-rule);
+}
+
+.out {
+  align-self: flex-end;
+  border-top-right-radius: calc(var(--u) * 5.5);
+  background: var(--color-cobalt);
+  color: var(--color-linen);
+}
+
+.gapSmall {
+  margin-top: calc(var(--u) * 8);
+}
+
+.gapLarge {
+  margin-top: calc(var(--u) * 22);
+}
+
+/* ---- Composer -------------------------------------------------------- */
+
+.footer {
+  flex: none;
+  padding: calc(var(--u) * 24) calc(var(--u) * 28) calc(var(--u) * 34);
+  border-top: calc(var(--u) * 1) solid var(--color-rule);
+  position: relative;
+}
+
+.composer {
+  height: calc(var(--u) * 62);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 10);
+  padding: 0 calc(var(--u) * 9) 0 calc(var(--u) * 26);
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: calc(var(--u) * 1) solid var(--color-rule);
+}
+
+.draft {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: calc(var(--u) * 22.5);
+}
+
+.placeholder {
+  flex: 1;
+  color: var(--color-muted);
+  font-size: calc(var(--u) * 22.5);
+}
+
+.caret {
+  display: inline-block;
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 24);
+  margin-left: calc(var(--u) * 1);
+  vertical-align: middle;
+  background: var(--color-cobalt);
+}
+
+.send {
+  flex: none;
+  width: calc(var(--u) * 42);
+  height: calc(var(--u) * 42);
+  border-radius: 50%;
+  background: var(--color-cobalt);
+  color: var(--color-linen);
+  display: grid;
+  place-items: center;
+}
+
+.send svg {
+  width: calc(var(--u) * 20);
+  height: calc(var(--u) * 20);
+}
+
+.mic {
+  flex: none;
+  width: calc(var(--u) * 26);
+  height: calc(var(--u) * 26);
+  margin-right: calc(var(--u) * 10);
+  color: var(--color-muted);
+}
+
+.homeBar {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * 10);
+  width: calc(var(--u) * 140);
+  height: calc(var(--u) * 5);
+  margin-left: calc(var(--u) * -70);
+  border-radius: 999px;
+  background: var(--color-ink);
+}

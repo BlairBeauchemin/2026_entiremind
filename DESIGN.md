@@ -230,7 +230,8 @@ nothing rather than a silent fallback. **This file is the only palette authority
 Retired alongside them, for the same printed-object reason: full-page blurred colour
 orbs, `backdrop-blur` glass panels, drop shadows, and background gradients. Paper does
 not glow. The one permitted shadow is a single soft contact shadow under the phone
-mockup, which is an object sitting on the page rather than a raised panel.
+mockup, which is an object sitting on the page rather than a raised panel — and, by
+the same logic, under the objects in the hero still life (see Elevation & Depth).
 
 ### Open decision
 
@@ -307,7 +308,16 @@ code, diagrams) scrolls inside its own container, never the page body.
 surface, or linen to cobalt — and by hairline rules in `rule #D8CFBE`. This follows
 directly from the printed-object goal: paper does not glow, and a system that leans on
 shadow cannot be printed. A single soft contact shadow is permitted under a
-photographed product object, and nowhere else.
+photographed product object, and nowhere else, with one named exception below.
+
+**Exception — the hero still life.** The landing hero and its ad renders
+(`src/components/landing/hero-scene.tsx`) are an illustrated still life of physical
+objects lying on the page: a phone, printed photographs, a linen board, paper tape. In
+that scene only, each object carries the same soft contact shadow, because a print
+lying on paper casts one — it reads as an object resting, not a panel raised. The
+rule still holds everywhere else: no shadow on UI cards, buttons, inputs, panels or
+any product surface, and none to make something feel raised. Approved by the founder
+in October 2026.
 
 ## Shapes
 
@@ -350,7 +360,8 @@ worded message.
 **Do** track every uppercase string.
 
 **Don't** use gold as text, on any ground, at any size.
-**Don't** add a drop shadow to make something feel raised.
+**Don't** add a drop shadow to make something feel raised. (Objects resting in the
+hero still life are the one exception — see Elevation & Depth.)
 **Don't** reintroduce teal, navy, purple, yellow or cream.
 **Don't** invent archetype accent colours before the reveal is designed.
 **Don't** use the night tokens outside `/space`, or add a theme toggle. One place,

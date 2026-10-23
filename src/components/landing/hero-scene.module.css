@@ -1,0 +1,260 @@
+/*
+ * HeroScene — the locked HeroPhone with aspirational imagery around it, for
+ * the landing hero and ad stills. The phone is the exact HeroPhone render; the
+ * photographs are generated (public/marketing/hero/), and every card, board
+ * and sparkle here is code, so text never garbles and nothing drifts.
+ *
+ * Same unit system as hero-phone.module.css: a fixed 1440 × 1200 canvas
+ * expressed through --u, scaled from the container width.
+ *
+ * In scene units the phone's panel sits at x 495–943, y 124–1088; its bubbles
+ * overhang the panel to x 437 and the composer runs to x 1002. Everything
+ * floating is placed to avoid covering message text.
+ */
+
+.frame {
+  container-type: inline-size;
+  width: 100%;
+  aspect-ratio: 1440 / 1200;
+  position: relative;
+}
+
+.canvas {
+  --u: calc(100cqw / 1440);
+  --surface: #ffffff;
+  --cobalt: var(--color-cobalt);
+  --ink: #111111;
+  --muted: #6e7480;
+  --leaf: var(--color-leaf);
+  --surface-shadow:
+    0 0 0 calc(var(--u) * 0.6) rgba(0, 0, 0, 0.022),
+    0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0, 0, 0, 0.035),
+    0 calc(var(--u) * 6) calc(var(--u) * 22) rgba(0, 0, 0, 0.06);
+
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter), var(--font-karla), ui-sans-serif, sans-serif;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.phone {
+  position: absolute;
+  left: calc(var(--u) * 208);
+  top: calc(var(--u) * 90);
+  width: calc(var(--u) * 1024);
+}
+
+/* Anything positioned on the canvas. Geometry comes from inline style. */
+.item {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.photo {
+  position: relative;
+  overflow: hidden;
+}
+
+.photo img {
+  object-fit: cover;
+}
+
+/* ---- Floating cards (Calm-style) ------------------------------------- */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--u) * 10);
+  border-radius: calc(var(--u) * 26);
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+}
+
+.card .photo {
+  flex: 1;
+  border-radius: calc(var(--u) * 18);
+}
+
+.caption {
+  padding: calc(var(--u) * 14) calc(var(--u) * 8) calc(var(--u) * 6);
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: calc(var(--u) * 15);
+  line-height: 1.2;
+}
+
+.title {
+  margin-top: calc(var(--u) * 4);
+  font-family: var(--font-prata), Georgia, serif;
+  font-size: calc(var(--u) * 24);
+  line-height: 1.15;
+  letter-spacing: 0;
+  color: var(--cobalt);
+}
+
+.recap {
+  padding: calc(var(--u) * 20) calc(var(--u) * 22) calc(var(--u) * 22);
+  border-radius: calc(var(--u) * 26);
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+}
+
+.recap .title {
+  font-size: calc(var(--u) * 23);
+  line-height: 1.25;
+}
+
+/* The Space: night is the one ground where gold may be a mark. */
+.space {
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-night-mid);
+  box-shadow: var(--surface-shadow);
+  display: grid;
+  place-items: end center;
+  padding-bottom: calc(var(--u) * 26);
+}
+
+.space svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.spaceLabel {
+  position: relative;
+  color: var(--color-linen);
+  font-size: calc(var(--u) * 16);
+  font-weight: 500;
+}
+
+/* ---- Vision board ----------------------------------------------------- */
+
+.board {
+  padding: calc(var(--u) * 30) calc(var(--u) * 30) calc(var(--u) * 26);
+  border-radius: 2px;
+  background: var(--color-linen);
+  border: calc(var(--u) * 1) solid var(--color-rule);
+  box-shadow: var(--surface-shadow);
+}
+
+.boardTitle {
+  font-family: var(--font-prata), Georgia, serif;
+  font-size: calc(var(--u) * 44);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--cobalt);
+}
+
+.boardRule {
+  margin-top: calc(var(--u) * 12);
+  width: calc(var(--u) * 52);
+  height: calc(var(--u) * 1.5);
+  background: var(--cobalt);
+}
+
+.boardCaption {
+  margin-top: calc(var(--u) * 18);
+  color: var(--cobalt);
+  font-size: calc(var(--u) * 19);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* A printed photo: white border, deeper at the bottom like a Polaroid. */
+.print {
+  padding: calc(var(--u) * 10) calc(var(--u) * 10) calc(var(--u) * 30);
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+}
+
+.print .photo {
+  width: 100%;
+  height: 100%;
+}
+
+.printSlim {
+  padding-bottom: calc(var(--u) * 10);
+}
+
+/* Paper tape holding a print to the board. */
+.tape {
+  position: absolute;
+  top: calc(var(--u) * -12);
+  left: 50%;
+  width: calc(var(--u) * 70);
+  height: calc(var(--u) * 24);
+  margin-left: calc(var(--u) * -35);
+  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  box-shadow: 0 0 0 calc(var(--u) * 0.5) rgba(0, 0, 0, 0.04);
+  transform: rotate(-4deg);
+}
+
+/* ---- Tags and doodles (scatter) --------------------------------------- */
+
+.tag {
+  padding: calc(var(--u) * 16) calc(var(--u) * 22) calc(var(--u) * 18);
+  border-radius: 2px;
+  box-shadow: var(--surface-shadow);
+}
+
+.tagCobalt {
+  background: var(--color-cobalt);
+  color: var(--color-linen);
+}
+
+.tagPaper {
+  background: var(--color-surface);
+  border: calc(var(--u) * 1) solid var(--color-rule);
+  color: var(--color-ink);
+}
+
+.tagEyebrow {
+  font-size: calc(var(--u) * 15);
+  line-height: 1.2;
+  opacity: 0.78;
+}
+
+.tagTitle {
+  margin-top: calc(var(--u) * 5);
+  font-family: var(--font-prata), Georgia, serif;
+  font-size: calc(var(--u) * 24);
+  line-height: 1.18;
+  letter-spacing: 0;
+}
+
+.tagPaper .tagTitle {
+  color: var(--color-cobalt);
+}
+
+.doodle {
+  color: var(--color-ink);
+}
+
+.doodle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- Sparkles --------------------------------------------------------- */
+
+.sparkle {
+  color: var(--leaf);
+}
+
+.sparkleCobalt {
+  color: var(--cobalt);
+}
+
+.sparkle svg,
+.sparkleCobalt svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
