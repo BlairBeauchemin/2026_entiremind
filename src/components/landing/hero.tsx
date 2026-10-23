@@ -39,14 +39,17 @@ export function Hero() {
               <em className="italic">one text at&nbsp;a&nbsp;time.</em>
             </h1>
 
-            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans">
+            {/* mb-7 overrides the column's space-y-10 here only, so the
+                waitlist line, button and reassurance read as one group
+                under the subhead rather than a separate block. */}
+            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 mb-7 font-light leading-relaxed font-sans">
               Lightly magical texts that take you off autopilot and turn your
               intentions into reality.
             </p>
 
-            <div className="pt-4">
-              <p className="text-base text-ink mb-4 font-sans">
-                Be one of the first to try it.
+            <div>
+              <p className="text-base text-ink mb-3 font-sans text-balance">
+                Join the waitlist and be first to know when we launch.
               </p>
               <button
                 onClick={openModal}
