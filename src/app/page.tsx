@@ -1,9 +1,9 @@
 import { Navigation } from "@/components/landing/navigation";
 import { Hero } from "@/components/landing/hero";
-import { Philosophy } from "@/components/landing/philosophy";
-import { HowItWorks } from "@/components/landing/how-it-works";
-import { Testimonials } from "@/components/landing/testimonials";
-import { Pricing } from "@/components/landing/pricing";
+import { ListensBack } from "@/components/landing/listens-back";
+import { Remembered } from "@/components/landing/remembered";
+import { QuizInvite } from "@/components/landing/quiz-invite";
+import { FAQ } from "@/components/landing/faq";
 import { BottomCTA } from "@/components/landing/bottom-cta";
 import { Footer } from "@/components/landing/footer";
 
@@ -13,14 +13,12 @@ export default function Home() {
       {/* Background Grain Texture */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-grain mix-blend-multiply" />
 
-      {/* Ambient Background Gradients */}
-
       <Navigation />
       <Hero />
-      <Philosophy />
-      <HowItWorks />
-      <Testimonials />
-      <Pricing />
+      <ListensBack />
+      <Remembered />
+      <QuizInvite />
+      <FAQ />
       <BottomCTA />
       <Footer />
     </div>

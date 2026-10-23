@@ -15,22 +15,19 @@ export function Footer() {
               the first and last were unreachable on a phone. */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted font-sans">
             <a
-              href="#section-philosophy"
-              className="hover:text-cobalt transition-colors"
-            >
-              Philosophy
-            </a>
-            <a
               href="#section-how-it-works"
               className="hover:text-cobalt transition-colors"
             >
-              The Loop
+              How it works
+            </a>
+            <a href="/quiz" className="hover:text-cobalt transition-colors">
+              The quiz
             </a>
             <a
-              href="#section-pricing"
+              href="#section-faq"
               className="hover:text-cobalt transition-colors"
             >
-              Membership
+              FAQ
             </a>
             <a href="/privacy" className="hover:text-cobalt transition-colors">
               Privacy

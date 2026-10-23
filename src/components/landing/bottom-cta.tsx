@@ -14,13 +14,13 @@ export function BottomCTA() {
 
   return (
     <>
-      <section className="py-24 bg-cobalt relative overflow-hidden">
+      <section className="py-section bg-cobalt relative overflow-hidden">
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-          <h2 className="font-serif text-4xl md:text-5xl text-linen mb-6">
-            Ready to Transform Your Intentions?
+          <h2 className="font-serif text-display text-linen text-balance mb-6">
+            Your intention, <em className="italic">heard</em> every morning.
           </h2>
           <p className="text-lg text-linen/80 mb-10 font-sans font-light">
-            Join the waitlist to be first when we launch.
+            First access when we launch. No card, no spam.
           </p>
           <button
             onClick={openModal}

@@ -30,22 +30,22 @@ export function Navigation() {
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-10">
               <a
-                href="#section-philosophy"
-                className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors"
-              >
-                Philosophy
-              </a>
-              <a
                 href="#section-how-it-works"
                 className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors"
               >
-                The Loop
+                How it works
               </a>
               <a
-                href="#section-pricing"
+                href="/quiz"
                 className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors"
               >
-                Membership
+                The quiz
+              </a>
+              <a
+                href="#section-faq"
+                className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors"
+              >
+                FAQ
               </a>
             </div>
 
@@ -89,25 +89,25 @@ export function Navigation() {
           <div className="md:hidden bg-linen border-b border-rule">
             <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
               <a
-                href="#section-philosophy"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors py-2"
-              >
-                Philosophy
-              </a>
-              <a
                 href="#section-how-it-works"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors py-2"
               >
-                The Loop
+                How it works
               </a>
               <a
-                href="#section-pricing"
+                href="/quiz"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors py-2"
               >
-                Membership
+                The quiz
+              </a>
+              <a
+                href="#section-faq"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors py-2"
+              >
+                FAQ
               </a>
               <div className="border-t border-rule pt-4 mt-2">
                 <Link
