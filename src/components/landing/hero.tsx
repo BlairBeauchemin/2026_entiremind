@@ -26,7 +26,7 @@ export function Hero() {
           <div className="relative z-10 space-y-10 text-center lg:text-left animate-fade-in-up">
             <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-surface border border-rule text-ink text-[11px] font-medium tracking-widest uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-cobalt animate-pulse" />
-              Coming Soon — Join the Waitlist
+              Coming Soon
             </div>
 
             {/* Emphasis is a mid-sentence italic, never a bolder weight —
