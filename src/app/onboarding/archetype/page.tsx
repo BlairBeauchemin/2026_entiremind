@@ -37,7 +37,7 @@ export default async function ArchetypePage() {
         <header className="p-6">
           <Link
             href="/dashboard"
-            className="font-serif text-2xl tracking-[2px] text-ink"
+            className="font-serif text-2xl tracking-[2px] text-cobalt"
           >
             Entiremind
           </Link>

@@ -25,7 +25,7 @@ export function SacredFooter() {
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
-            <span className="font-serif text-2xl tracking-[2px] text-ink">
+            <span className="font-serif text-2xl tracking-[2px] text-cobalt">
               Entiremind
             </span>
           </div>
