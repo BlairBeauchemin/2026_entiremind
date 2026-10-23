@@ -258,3 +258,214 @@
   width: 100%;
   height: 100%;
 }
+
+/* ---- Living photograph ------------------------------------------------ */
+
+/* The cinemagraph plays over its own still, which stays as the poster and
+ * the reduced-motion fallback. */
+.living {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .living {
+    display: none;
+  }
+}
+
+/* ---- Motion ------------------------------------------------------------
+ * Every piece is opt-in (HeroScene's `motion` prop) and off under reduced
+ * motion. Only translate, rotate, scale and opacity move, and they are the
+ * standalone properties, so they compose with each item's `transform`
+ * rotation from at() instead of replacing it. Only direct children of the
+ * canvas move; prints on the board travel with the board.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Float: a slow drift, out of phase, like paper resting on water. */
+  .motionFloat > .phone,
+  .motionFloat > .item:not(.sparkle, .sparkleCobalt) {
+    animation: float var(--fdur, 12s) ease-in-out var(--fdel, 0s) infinite;
+    animation-composition: add;
+  }
+
+  .motionFloat > .phone {
+    --fdur: 9s;
+    --fdel: -2s;
+    --fx: 0;
+    --fy: -10;
+    --fr: 0deg;
+  }
+
+  .motionFloat > .item:nth-child(4n + 1) {
+    --fdur: 8s;
+    --fdel: -3s;
+    --fx: 7;
+    --fy: -20;
+    --fr: 1deg;
+  }
+
+  .motionFloat > .item:nth-child(4n + 2) {
+    --fdur: 9.5s;
+    --fdel: -6s;
+    --fx: -9;
+    --fy: 18;
+    --fr: -0.9deg;
+  }
+
+  .motionFloat > .item:nth-child(4n + 3) {
+    --fdur: 7s;
+    --fdel: -1s;
+    --fx: 8;
+    --fy: 16;
+    --fr: 0.8deg;
+  }
+
+  .motionFloat > .item:nth-child(4n + 4) {
+    --fdur: 10s;
+    --fdel: -5s;
+    --fx: -6;
+    --fy: -22;
+    --fr: -1.2deg;
+  }
+
+  /* A stronger drift, for comparison in the preview. */
+  .floatStrong {
+    --fk: 1.6;
+  }
+
+  /* Twinkle: each sparkle rests, then glints once, on its own rhythm. */
+  .motionTwinkle .sparkle,
+  .motionTwinkle .sparkleCobalt {
+    animation: twinkle var(--tdur, 7s) ease-in-out var(--tdel, 0s) infinite;
+  }
+
+  .motionTwinkle > .item:nth-child(3n + 1) {
+    --tdur: 6s;
+    --tdel: -1.5s;
+  }
+
+  .motionTwinkle > .item:nth-child(3n + 2) {
+    --tdur: 8.5s;
+    --tdel: -5s;
+  }
+
+  .motionTwinkle > .item:nth-child(3n + 3) {
+    --tdur: 7.2s;
+    --tdel: -3.4s;
+  }
+
+  /* Settle: on load the prints slide out from the phone into place. */
+  .motionSettle > .item:not(.sparkle, .sparkleCobalt) {
+    animation: settle 1.1s cubic-bezier(0.22, 1, 0.36, 1) var(--sdel, 0.2s)
+      backwards;
+  }
+
+  .motionSettle.motionFloat > .item:not(.sparkle, .sparkleCobalt) {
+    animation:
+      settle 1.1s cubic-bezier(0.22, 1, 0.36, 1) var(--sdel, 0.2s) backwards,
+      float var(--fdur, 12s) ease-in-out var(--fdel, 0s) infinite;
+    animation-composition: replace, add;
+  }
+
+  .motionSettle > .item:nth-child(3) {
+    --sdel: 0.28s;
+  }
+
+  .motionSettle > .item:nth-child(4) {
+    --sdel: 0.36s;
+  }
+
+  .motionSettle > .item:nth-child(5) {
+    --sdel: 0.44s;
+  }
+
+  .motionSettle > .item:nth-child(6) {
+    --sdel: 0.52s;
+  }
+
+  .motionSettle > .item:nth-child(n + 7) {
+    --sdel: 0.6s;
+  }
+
+  /* Parallax: items shift by depth with the mouse (hero-scene-parallax.tsx). */
+  .motionParallax > .phone,
+  .motionParallax > .item {
+    translate: calc(var(--u) * var(--px, 0) * var(--depth, 1) * 16)
+      calc(var(--u) * var(--py, 0) * var(--depth, 1) * 11);
+  }
+
+  .motionParallax > .phone {
+    --depth: 0.35;
+  }
+
+  .motionParallax > .item:nth-child(3n + 1) {
+    --depth: 0.8;
+  }
+
+  .motionParallax > .item:nth-child(3n + 2) {
+    --depth: 1.25;
+  }
+
+  .motionParallax > .item:nth-child(3n + 3) {
+    --depth: 1;
+  }
+
+  .motionParallax > .sparkle,
+  .motionParallax > .sparkleCobalt {
+    --depth: 1.9;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  50% {
+    translate: calc(var(--u) * var(--fx, 0) * var(--fk, 1))
+      calc(var(--u) * var(--fy, 0) * var(--fk, 1));
+    rotate: calc(var(--fr, 0deg) * var(--fk, 1));
+  }
+}
+
+/* The four-point sparkle repeats every 90°, so ending a quarter turn on
+ * looks identical to the start and the loop never jumps. */
+@keyframes twinkle {
+  0%,
+  72% {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
+  }
+  80% {
+    opacity: 0.45;
+    scale: 0.62;
+    rotate: 30deg;
+  }
+  88% {
+    opacity: 1;
+    scale: 1.14;
+    rotate: 70deg;
+  }
+  94%,
+  100% {
+    opacity: 1;
+    scale: 1;
+    rotate: 90deg;
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: calc(var(--u) * var(--cx, 0) * -0.14)
+      calc(var(--u) * var(--cy, 0) * -0.14);
+    rotate: 3deg;
+  }
+}

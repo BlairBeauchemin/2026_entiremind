@@ -135,13 +135,55 @@
   font-weight: 600;
 }
 
-.bubble {
+/* A bubble's place in the thread; typing dots share it while it is pending. */
+.slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   max-width: 82%;
+}
+
+.slotIn {
+  align-self: flex-start;
+}
+
+.slotOut {
+  align-self: flex-end;
+}
+
+.typing {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 7);
+  height: calc(var(--u) * 58);
+  padding: 0 calc(var(--u) * 22);
+  box-sizing: border-box;
+  border-radius: calc(var(--u) * 27);
+  border-top-left-radius: calc(var(--u) * 5.5);
+  background: var(--color-surface);
+  border: calc(var(--u) * 1) solid var(--color-rule);
+}
+
+.typingDot {
+  width: calc(var(--u) * 9);
+  height: calc(var(--u) * 9);
+  border-radius: 999px;
+  background: var(--color-muted);
+}
+
+.bubble {
   box-sizing: border-box;
   padding: calc(var(--u) * 18) calc(var(--u) * 22);
   border-radius: calc(var(--u) * 27);
   font-size: calc(var(--u) * 23.5);
   line-height: 1.38;
+}
+
+.slot > .bubble {
+  max-width: 100%;
 }
 
 .in {
@@ -187,12 +229,21 @@
   border: calc(var(--u) * 1) solid var(--color-rule);
 }
 
+/* Like a text field: once the text outgrows it, the start scrolls out of
+ * view and the caret end stays visible. */
 .draft {
   flex: 1;
   min-width: 0;
+  display: flex;
+  justify-content: flex-end;
   overflow: hidden;
   white-space: nowrap;
   font-size: calc(var(--u) * 22.5);
+}
+
+.draftText {
+  flex: none;
+  min-width: 100%;
 }
 
 .placeholder {

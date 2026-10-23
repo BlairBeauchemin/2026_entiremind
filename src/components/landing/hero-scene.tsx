@@ -3,6 +3,8 @@ import Image from "next/image";
 import { HeroPhone } from "./hero-phone";
 import { ENTIREMIND_CONTENT, SMS_CONTENT } from "./hero-phone-content";
 import { SmsPhone } from "./sms-phone";
+import { SmsPhoneMotion } from "./sms-phone-motion";
+import { HeroSceneParallax } from "./hero-scene-parallax";
 import styles from "./hero-scene.module.css";
 
 /**
@@ -30,6 +32,28 @@ import styles from "./hero-scene.module.css";
  */
 
 export type HeroSceneLayout = "cards" | "board" | "scatter" | "spill";
+
+/**
+ * Light motion, each piece independent so they can be compared and combined.
+ * Everything is off under reduced motion, which leaves the exact still.
+ *
+ * - `twinkle`: the sparkles glint now and then, never in step.
+ * - `float`: prints, board and phone drift and tilt gently on slow loops;
+ *   `float-strong` is the same drift about 1.6× larger.
+ * - `settle`: on load, the prints slide out from the phone into place.
+ * - `thread`: on load, the conversation plays in once (SmsPhoneMotion).
+ * - `living`: the lead photograph is a cinemagraph (spill only).
+ * - `parallax`: items shift by depth with the mouse. Not combined with
+ *   `float`: both move the same `translate`.
+ */
+export type HeroSceneMotion =
+  | "twinkle"
+  | "float"
+  | "float-strong"
+  | "settle"
+  | "thread"
+  | "living"
+  | "parallax";
 
 const PHOTO = {
   studio: "/marketing/hero/studio.webp",
@@ -73,21 +97,41 @@ function at(
     width: u(w),
     height: h === undefined ? undefined : u(h),
     transform: rotate ? `rotate(${rotate}deg)` : undefined,
-  };
+    // Offset of the item's centre from the canvas centre, for `settle`.
+    "--cx": x + w / 2 - 720,
+    "--cy": y + (h ?? w) / 2 - 600,
+  } as CSSProperties;
 }
 
 function Photo({
   src,
   alt,
   sizes,
+  video,
 }: {
   src: string;
   alt: string;
   sizes: string;
+  /** A cinemagraph of the same photograph, played over it (no extension). */
+  video?: string;
 }) {
   return (
     <div className={styles.photo}>
       <Image src={src} alt={alt} fill sizes={sizes} priority />
+      {video ? (
+        <video
+          className={styles.living}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        >
+          <source src={`${video}.webm`} type="video/webm" />
+          <source src={`${video}.mp4`} type="video/mp4" />
+        </video>
+      ) : null}
     </div>
   );
 }
@@ -174,12 +218,14 @@ function Print({
   alt,
   slim,
   tape,
+  video,
 }: {
   box: CSSProperties;
   src: string;
   alt: string;
   slim?: boolean;
   tape?: boolean;
+  video?: string;
 }) {
   return (
     <div
@@ -187,7 +233,12 @@ function Print({
       style={box}
     >
       {tape ? <span className={styles.tape} aria-hidden="true" /> : null}
-      <Photo src={src} alt={alt} sizes="(max-width: 768px) 30vw, 280px" />
+      <Photo
+        src={src}
+        alt={alt}
+        sizes="(max-width: 768px) 30vw, 280px"
+        video={video}
+      />
     </div>
   );
 }
@@ -307,7 +358,7 @@ function ScatterLayout() {
   );
 }
 
-function SpillLayout() {
+function SpillLayout({ living }: { living: boolean }) {
   return (
     <>
       <div
@@ -343,6 +394,7 @@ function SpillLayout() {
         src={PHOTO.freedomField}
         alt="A woman walking through a summer field holding a straw hat"
         tape
+        video={living ? "/marketing/hero/freedom-field-loop" : undefined}
       />
       <Print
         box={at(1000, 540, 256, 220, -5)}
@@ -474,19 +526,37 @@ function BoardLayout() {
   );
 }
 
+const MOTION_CLASS: Partial<Record<HeroSceneMotion, string>> = {
+  twinkle: styles.motionTwinkle,
+  float: styles.motionFloat,
+  "float-strong": `${styles.motionFloat} ${styles.floatStrong}`,
+  settle: styles.motionSettle,
+  parallax: styles.motionParallax,
+};
+
 export function HeroScene({
   layout,
+  motion = [],
   className,
 }: {
   layout: HeroSceneLayout;
+  motion?: readonly HeroSceneMotion[];
   className?: string;
 }): ReactNode {
+  const canvasClass = [styles.canvas, ...motion.map((m) => MOTION_CLASS[m])]
+    .filter(Boolean)
+    .join(" ");
   return (
     <div className={[styles.frame, className].filter(Boolean).join(" ")}>
-      <div className={styles.canvas}>
+      <div className={canvasClass}>
+        {motion.includes("parallax") ? <HeroSceneParallax /> : null}
         <div className={styles.phone}>
           {layout === "scatter" || layout === "spill" ? (
-            <SmsPhone content={SMS_CONTENT} />
+            motion.includes("thread") ? (
+              <SmsPhoneMotion content={SMS_CONTENT} />
+            ) : (
+              <SmsPhone content={SMS_CONTENT} />
+            )
           ) : (
             <HeroPhone content={ENTIREMIND_CONTENT} />
           )}
@@ -498,7 +568,7 @@ export function HeroScene({
         ) : layout === "scatter" ? (
           <ScatterLayout />
         ) : (
-          <SpillLayout />
+          <SpillLayout living={motion.includes("living")} />
         )}
       </div>
     </div>

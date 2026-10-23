@@ -1,4 +1,6 @@
+import type { CSSProperties } from "react";
 import type { HeroPhoneContent } from "./hero-phone";
+import type { SmsPhoneFrame } from "./sms-phone-timeline";
 import styles from "./sms-phone.module.css";
 
 /**
@@ -17,17 +19,32 @@ import styles from "./sms-phone.module.css";
  *   indicator. With a `draft`, the reply is half-typed in the composer;
  *   without one (SMS_CONTENT), it is sent and the composer sits empty.
  *
- * Static by design; motion and rotation belong to wherever it is placed.
- * Reads the same `HeroPhoneContent` as HeroPhone, so both phones always
- * carry the same conversation.
+ * Static unless given a `frame`: one instant of the play-in timeline
+ * (sms-phone-timeline.ts, driven by SmsPhoneMotion). Without one it renders
+ * the finished conversation. Reads the same `HeroPhoneContent` as HeroPhone,
+ * so both phones always carry the same conversation.
  */
+function arrive(
+  state: { opacity: number; rise: number } | undefined,
+): CSSProperties | undefined {
+  return state
+    ? {
+        opacity: state.opacity,
+        transform: state.rise ? `translateY(${state.rise}em)` : undefined,
+      }
+    : undefined;
+}
+
 export function SmsPhone({
   content,
   className,
+  frame: f,
 }: {
   content: HeroPhoneContent;
   className?: string;
+  frame?: SmsPhoneFrame;
 }) {
+  const draft = f ? f.draft : content.draft;
   return (
     <div className={[styles.frame, className].filter(Boolean).join(" ")}>
       <div className={styles.canvas}>
@@ -107,9 +124,33 @@ export function SmsPhone({
                     ? styles.gapSmall
                     : styles.gapLarge;
               const side = bubble.from === "me" ? styles.out : styles.in;
+              const typing = f?.typing[i] ?? 0;
               return (
-                <div key={i} className={[styles.bubble, side, gap].join(" ")}>
-                  {bubble.text}
+                <div
+                  key={i}
+                  className={[
+                    styles.slot,
+                    bubble.from === "me" ? styles.slotOut : styles.slotIn,
+                    gap,
+                  ].join(" ")}
+                >
+                  <div
+                    className={[styles.bubble, side].join(" ")}
+                    style={arrive(f?.bubbles[i])}
+                  >
+                    {bubble.text}
+                  </div>
+                  {typing > 0 ? (
+                    <div className={styles.typing} style={{ opacity: typing }}>
+                      {f!.dots.map((o, d) => (
+                        <span
+                          key={d}
+                          className={styles.typingDot}
+                          style={{ opacity: o }}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               );
             })}
@@ -117,15 +158,20 @@ export function SmsPhone({
 
           <div className={styles.footer} aria-hidden="true">
             <div className={styles.composer}>
-              {content.draft ? (
+              {draft ? (
                 <span className={styles.draft}>
-                  {content.draft}
-                  <span className={styles.caret} />
+                  <span className={styles.draftText}>
+                    {draft}
+                    <span
+                      className={styles.caret}
+                      style={f && !f.caretOn ? { opacity: 0 } : undefined}
+                    />
+                  </span>
                 </span>
               ) : (
                 <span className={styles.placeholder}>Text Message…</span>
               )}
-              {content.draft ? (
+              {draft ? (
                 <span className={styles.send}>
                   <svg
                     viewBox="0 0 24 24"
