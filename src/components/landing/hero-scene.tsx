@@ -40,6 +40,22 @@ const PHOTO = {
   slowMorning: "/marketing/hero/slow-morning.webp",
   beachWalk: "/marketing/hero/beach-walk.webp",
   yoga: "/marketing/hero/yoga.webp",
+  // Real photographs from Unsplash (Unsplash License: free for commercial
+  // use, attribution not required; credited here anyway). Used by `spill`.
+  // Anton Mislawsky, unsplash.com/photos/1HZlP-nOr78
+  freedomField: "/marketing/hero/freedom-field.webp",
+  // Bob Oh, unsplash.com/photos/6t6h5kABuW4
+  loveBeach: "/marketing/hero/love-beach.webp",
+  // Roman Kraft, unsplash.com/photos/_oH66az_yug
+  flowerShop: "/marketing/hero/flower-shop.webp",
+  // Fredo Gerdes, unsplash.com/photos/CrsfwpUcctE
+  oliveCoast: "/marketing/hero/olive-coast.webp",
+  // Kailun Zhang, unsplash.com/photos/Qkkk7c84wNA
+  potteryStudio: "/marketing/hero/pottery-studio.webp",
+  // Yuliia Martsynkevych, unsplash.com/photos/b4lcWyZ0acg
+  slowMorningTable: "/marketing/hero/slow-morning-table.webp",
+  // Andres Molina, unsplash.com/photos/8CGOX7oSMbI
+  journalCoffee: "/marketing/hero/journal-coffee.webp",
 } as const;
 
 /** Position on the 1440 × 1200 canvas, in canvas units. */
@@ -302,53 +318,54 @@ function SpillLayout() {
         <div className={styles.boardRule} />
         <Print
           box={at(24, 110, 160, 196, -4)}
-          src={PHOTO.terrace}
-          alt="A terrace above a calm blue sea"
+          src={PHOTO.potteryStudio}
+          alt="A bright pottery studio with a wheel and shelves of ceramics"
           slim
           tape
         />
         <Print
           box={at(196, 92, 158, 128, 3)}
-          src={PHOTO.studio}
-          alt="A sunlit creative studio"
+          src={PHOTO.slowMorningTable}
+          alt="An open book, croissant and coffee by a sunlit window"
           slim
           tape
         />
         <Print
           box={at(214, 214, 128, 112, -2)}
-          src={PHOTO.coffeeJournal}
-          alt="Coffee and a journal on a windowsill"
+          src={PHOTO.journalCoffee}
+          alt="Coffee and a notebook in striped window light"
           slim
         />
       </div>
+      {/* The lead image: freedom, the largest print on the page. */}
       <Print
-        box={at(904, 214, 230, 274, 7)}
-        src={PHOTO.studioWoman}
-        alt="A woman at work in her own studio"
+        box={at(940, 165, 285, 340, 5)}
+        src={PHOTO.freedomField}
+        alt="A woman walking through a summer field holding a straw hat"
         tape
       />
       <Print
-        box={at(1010, 486, 214, 250, -6)}
-        src={PHOTO.cliffWalk}
-        alt="A woman walking a coastal path above the sea"
+        box={at(1000, 540, 256, 220, -5)}
+        src={PHOTO.loveBeach}
+        alt="A couple walking hand in hand along a golden beach"
       />
       <Print
-        box={at(934, 744, 236, 270, 5)}
-        src={PHOTO.beachWalk}
-        alt="A woman walking a quiet beach at sunrise"
+        box={at(930, 790, 260, 224, 4)}
+        src={PHOTO.flowerShop}
+        alt="Buckets of fresh flowers outside a small flower shop"
       />
       <Print
-        box={at(250, 236, 196, 236, -6)}
-        src={PHOTO.yoga}
-        alt="A yoga mat by a sunlit window"
+        box={at(236, 250, 230, 196, -6)}
+        src={PHOTO.oliveCoast}
+        alt="Sunlight through olive branches above a coastal town"
         tape
       />
-      <Sparkle x={1150} y={196} size={28} />
-      <Sparkle x={1250} y={470} size={34} tone="cobalt" />
-      <Sparkle x={1210} y={760} size={22} />
+      <Sparkle x={1240} y={150} size={28} />
+      <Sparkle x={1272} y={520} size={34} tone="cobalt" />
+      <Sparkle x={1268} y={800} size={22} />
       <Sparkle x={1010} y={1090} size={18} />
       <Sparkle x={196} y={560} size={22} />
-      <Doodle kind="star" x={1180} y={1020} size={70} rotate={12} />
+      <Doodle kind="star" x={1206} y={1032} size={70} rotate={12} />
     </>
   );
 }
