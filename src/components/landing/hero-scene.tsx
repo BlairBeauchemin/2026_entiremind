@@ -263,7 +263,7 @@ function ScatterLayout() {
   return (
     <>
       <Tag
-        box={at(262, 140, 350, undefined, -8)}
+        box={at(262, 124, 350, undefined, -8)}
         tone="cobalt"
         eyebrow="My intention"
         title="Open my studio by spring"

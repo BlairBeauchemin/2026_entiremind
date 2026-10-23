@@ -1,5 +1,4 @@
 import type { HeroPhoneContent } from "./hero-phone";
-import { SeedOfLifeMark } from "./hero-phone-content";
 import styles from "./sms-phone.module.css";
 
 /**
@@ -9,8 +8,9 @@ import styles from "./sms-phone.module.css";
  * It keeps PhoneMockup's look: ink device, linen screen, surface bubbles with
  * a hairline for Entiremind, cobalt for the person. What it fixes:
  *
- * - A real contact header: the Seed of Life, drawn in code, in a round
- *   avatar above the name. Never a raster logo that can garble.
+ * - A compact contact header: back chevron and the name in cobalt, set as
+ *   live text, so there is no raster logo to garble and the screen goes to
+ *   the conversation.
  * - One "Today 7:45 AM" (the daily send time) instead of a timestamp under
  *   every bubble, which Messages doesn't do.
  * - The conversation ends on the person's own reply rather than on a typing
@@ -91,9 +91,6 @@ export function SmsPhone({
             >
               <path d="M15 5l-7 7 7 7" />
             </svg>
-            <div className={styles.avatar} aria-hidden="true">
-              {SeedOfLifeMark}
-            </div>
             <div className={styles.name}>{content.name}</div>
           </div>
 

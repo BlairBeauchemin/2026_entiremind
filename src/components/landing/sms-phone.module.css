@@ -84,43 +84,29 @@
 
 /* ---- Contact header -------------------------------------------------- */
 
+/* One compact line, so the screen goes to the conversation. */
 .header {
   position: relative;
   flex: none;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: calc(var(--u) * 6) 0 calc(var(--u) * 14);
+  justify-content: center;
+  height: calc(var(--u) * 52);
   border-bottom: calc(var(--u) * 1) solid var(--color-rule);
 }
 
 .back {
   position: absolute;
   left: calc(var(--u) * 24);
-  top: calc(var(--u) * 25);
+  top: 50%;
   width: calc(var(--u) * 26);
   height: calc(var(--u) * 26);
+  margin-top: calc(var(--u) * -13);
   color: var(--color-cobalt);
-}
-
-.avatar {
-  width: calc(var(--u) * 64);
-  height: calc(var(--u) * 64);
-  border-radius: 50%;
-  background: var(--color-cobalt-wash);
-  color: var(--color-cobalt);
-  display: grid;
-  place-items: center;
-}
-
-.avatar svg {
-  width: calc(var(--u) * 48);
-  height: calc(var(--u) * 48);
 }
 
 .name {
-  margin-top: calc(var(--u) * 8);
-  font-size: calc(var(--u) * 24);
+  font-size: calc(var(--u) * 23);
   font-weight: 600;
   letter-spacing: 0;
   color: var(--color-cobalt);
@@ -134,14 +120,14 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: calc(var(--u) * 14) calc(var(--u) * 28) 0;
+  padding: calc(var(--u) * 18) calc(var(--u) * 24) 0;
 }
 
 .day {
   align-self: center;
-  margin-bottom: calc(var(--u) * 14);
+  margin-bottom: calc(var(--u) * 16);
   color: var(--color-muted);
-  font-size: calc(var(--u) * 14);
+  font-size: calc(var(--u) * 16);
   letter-spacing: 0;
 }
 
@@ -150,12 +136,12 @@
 }
 
 .bubble {
-  max-width: 80%;
+  max-width: 82%;
   box-sizing: border-box;
-  padding: calc(var(--u) * 18) calc(var(--u) * 20);
-  border-radius: calc(var(--u) * 25);
-  font-size: calc(var(--u) * 20.5);
-  line-height: 1.42;
+  padding: calc(var(--u) * 18) calc(var(--u) * 22);
+  border-radius: calc(var(--u) * 27);
+  font-size: calc(var(--u) * 23.5);
+  line-height: 1.38;
 }
 
 .in {
@@ -206,13 +192,13 @@
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
-  font-size: calc(var(--u) * 20.5);
+  font-size: calc(var(--u) * 22.5);
 }
 
 .placeholder {
   flex: 1;
   color: var(--color-muted);
-  font-size: calc(var(--u) * 20.5);
+  font-size: calc(var(--u) * 22.5);
 }
 
 .caret {
