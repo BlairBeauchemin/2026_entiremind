@@ -21,7 +21,7 @@ export function Hero() {
         id="section-hero"
         className="relative pt-40 pb-24 lg:pt-56 lg:pb-40 z-10"
       >
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 lg:gap-8 items-center">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)] gap-12 lg:gap-8 items-center">
           {/* Hero Content */}
           <div className="relative z-10 space-y-10 text-center lg:text-left animate-fade-in-up">
             <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-surface border border-rule text-ink text-[11px] font-medium tracking-widest uppercase">
@@ -33,17 +33,21 @@ export function Hero() {
                 Prata has only one cut, and the italic is the system's most
                 characteristic typographic move. */}
             <h1 className="font-serif text-display text-ink text-balance">
-              Manifestation <br />
-              <em className="italic">that texts back.</em>
+              Manifest your best life, <br />
+              {/* "at a time" never splits, so a narrow column wraps after
+                  "one text" instead of orphaning "time." */}
+              <em className="italic">one text at&nbsp;a&nbsp;time.</em>
             </h1>
 
             <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans">
-              A lightly magical daily text that remembers what you&apos;re
-              calling in and meets you where you are. No app. No streaks. Just a
-              conversation that helps your intentions become real.
+              Lightly magical texts that take you off autopilot and turn your
+              intentions into reality.
             </p>
 
             <div className="pt-4">
+              <p className="text-base text-ink mb-4 font-sans">
+                Be one of the first to try it.
+              </p>
               <button
                 onClick={openModal}
                 className="bg-cobalt text-linen px-10 py-4 rounded-sm text-lg font-medium hover:bg-cobalt-deep transition-all duration-300 font-sans"
