@@ -7,6 +7,9 @@ import { heroInter } from "./hero-font";
 import { WaitlistModal } from "./waitlist-modal";
 import { analytics } from "@/lib/analytics";
 
+// The prints, board and phone drift gently. Off under reduced motion.
+const HERO_MOTION = ["float-strong"] as const;
+
 export function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -74,7 +77,7 @@ export function Hero() {
             className={`relative order-first lg:order-none ${heroInter.variable}`}
           >
             <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
-              <HeroScene layout="spill" />
+              <HeroScene layout="spill" motion={HERO_MOTION} />
             </div>
           </motion.div>
         </div>
