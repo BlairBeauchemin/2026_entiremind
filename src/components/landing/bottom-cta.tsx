@@ -17,9 +17,9 @@ export function BottomCTA() {
       <section className="py-section bg-cobalt relative overflow-hidden">
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
           <h2 className="font-serif text-display text-linen text-balance mb-6">
-            Your intention, <em className="italic">heard</em> every morning.
+            Come back to <em className="italic">what you truly want.</em>
           </h2>
-          <p className="text-lg text-linen/80 mb-10 font-sans font-light">
+          <p className="text-lg text-linen/80 mb-10 font-sans font-light text-balance">
             First access when we launch. No card, no spam.
           </p>
           <button

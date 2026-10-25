@@ -5,7 +5,7 @@ export function Remembered() {
     <section className="py-section bg-cobalt text-linen relative z-10">
       <figure className="max-w-3xl mx-auto px-6 text-center">
         <p className="text-label uppercase text-linen/70 font-sans mb-8">
-          A morning text, three weeks in
+          A text, three weeks in
         </p>
         <blockquote className="font-serif italic text-heading md:text-display text-linen text-balance">
           &ldquo;Three weeks ago you said asking for more felt like pretending.

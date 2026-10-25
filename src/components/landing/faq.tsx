@@ -2,7 +2,7 @@ const faqs = [
   {
     question: "How often will you text me?",
     answer:
-      "One question each morning, plus a short reply when you answer. Reply STOP anytime and it ends.",
+      "One short, guided text a day, plus a reply when you answer. Reply STOP anytime and it ends.",
   },
   {
     question: "What will it cost?",
