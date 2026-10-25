@@ -48,7 +48,7 @@ export function trackEvent(event: string, params: DataLayerObject = {}) {
   window.dataLayer.push({ event, ...params });
 }
 
-export type CtaLocation = "nav" | "hero" | "bottom_cta";
+export type CtaLocation = "nav" | "hero" | "intro" | "bottom_cta";
 export type ModalVersion = "single" | "two_step";
 
 export const analytics = {

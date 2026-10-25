@@ -22,7 +22,7 @@ export function Hero() {
     <>
       <header
         id="section-hero"
-        className="relative pt-40 pb-24 lg:pt-56 lg:pb-40 z-10"
+        className="relative pt-40 pb-16 lg:pt-56 lg:pb-24 z-10"
       >
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)] gap-12 lg:gap-8 items-center">
           {/* Hero Content */}

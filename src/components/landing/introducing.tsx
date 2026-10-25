@@ -1,5 +1,6 @@
 import { SmsPhone } from "./sms-phone";
-import { SMS_CONTENT } from "./hero-phone-content";
+import { INTRO_CONTENT } from "./hero-phone-content";
+import { WaitlistButton } from "./waitlist-button";
 import { heroInter } from "./hero-font";
 
 const beats = [
@@ -37,7 +38,7 @@ function PhoneOnly() {
           marginTop: `${(-42 / 470) * 100}%`,
         }}
       >
-        <SmsPhone content={SMS_CONTENT} />
+        <SmsPhone content={INTRO_CONTENT} />
       </div>
     </div>
   );
@@ -67,9 +68,15 @@ export function Introducing() {
             You don&apos;t need to read a book, master an app, or overhaul your
             routine. Just quiet moments, woven into your day.
           </p>
+          <p className="mt-8 font-serif italic text-xl lg:text-2xl text-ink leading-snug text-balance">
+            We know what it&apos;s like to set an intention, really mean it, and
+            still watch it slip away. We built Entiremind because we needed it
+            too.
+          </p>
         </div>
 
-        {/* The hero's phone on its own: no prints, board or sparkles. */}
+        {/* The hero's phone on its own (no prints, board or sparkles), showing
+            the first exchange rather than the hero's conversation. */}
         <div className={`mx-auto w-[260px] sm:w-[300px] ${heroInter.variable}`}>
           <PhoneOnly />
         </div>
@@ -81,7 +88,7 @@ export function Introducing() {
             <div className="font-serif italic text-cobalt text-2xl mb-4">
               {beat.number}
             </div>
-            <h3 className="font-serif text-heading text-ink mb-3">
+            <h3 className="font-serif text-2xl text-ink text-balance mb-3">
               {beat.title}
             </h3>
             <p className="text-muted font-sans leading-relaxed">
@@ -90,6 +97,13 @@ export function Introducing() {
           </li>
         ))}
       </ol>
+
+      <div className="mt-16 text-center px-6">
+        <WaitlistButton location="intro" />
+        <p className="text-xs text-muted mt-3 font-sans">
+          Free to join. Unsubscribe anytime.
+        </p>
+      </div>
     </section>
   );
 }
