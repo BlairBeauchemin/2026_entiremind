@@ -40,7 +40,7 @@ export function Hero() {
             </p>
 
             <div>
-              <p className="text-base text-ink mb-8 font-sans text-balance">
+              <p className="text-lg lg:text-xl text-ink mb-8 font-light leading-relaxed font-sans text-balance">
                 Be the first to hear when access opens.
               </p>
               <button

@@ -61,7 +61,7 @@ export function Navigation() {
                 onClick={openModal}
                 className="bg-cobalt text-linen px-6 py-2.5 rounded-sm text-sm font-medium hover:bg-cobalt-deep transition-all duration-300"
               >
-                Join Waitlist
+                Join waitlist
               </button>
             </div>
 
@@ -71,7 +71,7 @@ export function Navigation() {
                 onClick={openModal}
                 className="bg-cobalt text-linen px-4 py-2 rounded-sm text-sm font-medium whitespace-nowrap hover:bg-cobalt-deep transition-colors duration-300"
               >
-                Join Waitlist
+                Join waitlist
               </button>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

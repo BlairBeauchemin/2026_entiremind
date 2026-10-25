@@ -155,7 +155,7 @@ export function WaitlistModalSingle({
                 id="waitlist-modal-title"
                 className="font-serif text-2xl text-ink text-center mb-2"
               >
-                Join the Waitlist
+                Join waitlist
               </h2>
               <p className="text-sm text-muted text-center mb-6">
                 Be the first to experience Entiremind via SMS.

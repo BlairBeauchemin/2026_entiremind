@@ -26,7 +26,7 @@ export function BottomCTA() {
             onClick={openModal}
             className="bg-linen text-ink px-10 py-4 rounded-sm text-lg font-medium hover:bg-surface transition-all duration-300 font-sans"
           >
-            Join the Waitlist
+            Join waitlist
           </button>
         </div>
       </section>
