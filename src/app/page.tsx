@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/landing/navigation";
 import { Hero } from "@/components/landing/hero";
 import { Problem } from "@/components/landing/problem";
-import { ListensBack } from "@/components/landing/listens-back";
+import { Introducing } from "@/components/landing/introducing";
 import { Remembered } from "@/components/landing/remembered";
 import { QuizInvite } from "@/components/landing/quiz-invite";
 import { FAQ } from "@/components/landing/faq";
@@ -17,7 +17,7 @@ export default function Home() {
       <Navigation />
       <Hero />
       <Problem />
-      <ListensBack />
+      <Introducing />
       <Remembered />
       <QuizInvite />
       <FAQ />

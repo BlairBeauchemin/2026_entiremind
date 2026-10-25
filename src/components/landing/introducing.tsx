@@ -7,9 +7,9 @@ const beats = [
   },
   {
     number: "02",
-    title: "One text, each morning.",
+    title: "Simple, guided texts.",
     description:
-      "A single question shaped around your intention. Nothing to open, nothing to keep up with.",
+      "Short prompts shaped around your intention. Nothing to open, nothing to keep up with.",
   },
   {
     number: "03",
@@ -19,21 +19,28 @@ const beats = [
   },
 ];
 
-export function ListensBack() {
+// The guide, introduced as the answer to the problem section's last line
+// ("Nothing was there to bring you back"). No rule above it: the two read as
+// one turn, not two sections.
+export function Introducing() {
   return (
-    <section
-      id="section-how-it-works"
-      className="py-section relative z-10 border-t border-rule"
-    >
+    <section id="section-how-it-works" className="pb-section relative z-10">
       <div className="max-w-3xl mx-auto px-6 text-center">
-        <h2 className="font-serif text-display text-ink text-balance mb-6">
-          The manifestation practice that{" "}
-          <em className="italic">listens back.</em>
+        <p className="text-label uppercase text-cobalt font-sans mb-6">
+          Introducing Entiremind
+        </p>
+        <h2 className="font-serif text-display text-ink text-balance mb-8">
+          Now there&apos;s something to{" "}
+          <em className="italic">bring you back.</em>
         </h2>
         <p className="text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
-          Affirmation apps talk at you. Entiremind texts you one question each
-          morning, hears your answer, and remembers it — so tomorrow&apos;s text
-          meets you where you actually are.
+          A minimalist manifestation practice, delivered through simple, guided
+          text messages. Each one helps you take your mind off autopilot, notice
+          the old patterns, and reconnect with what you truly want.
+        </p>
+        <p className="mt-6 text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
+          You don&apos;t need to read a book, master an app, or overhaul your
+          routine. Just quiet moments, woven into your day.
         </p>
       </div>
 
