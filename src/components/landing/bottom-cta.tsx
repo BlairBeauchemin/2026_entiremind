@@ -20,7 +20,7 @@ export function BottomCTA() {
             Come back to <em className="italic">what you truly want.</em>
           </h2>
           <p className="text-lg text-linen/80 mb-10 font-sans font-light text-balance">
-            First access when we launch. No card, no spam.
+            Get in before we open to everyone. No card, no spam.
           </p>
           <button
             onClick={openModal}
