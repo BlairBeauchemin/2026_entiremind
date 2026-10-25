@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/landing/navigation";
 import { Hero } from "@/components/landing/hero";
+import { Problem } from "@/components/landing/problem";
 import { ListensBack } from "@/components/landing/listens-back";
 import { Remembered } from "@/components/landing/remembered";
 import { QuizInvite } from "@/components/landing/quiz-invite";
@@ -15,6 +16,7 @@ export default function Home() {
 
       <Navigation />
       <Hero />
+      <Problem />
       <ListensBack />
       <Remembered />
       <QuizInvite />
