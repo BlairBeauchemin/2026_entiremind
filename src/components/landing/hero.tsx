@@ -34,13 +34,13 @@ export function Hero() {
             {/* mb-5 overrides the column's space-y-10 here only: the waitlist
                 line follows the subhead as its next paragraph, and the
                 button gets the room (mb-8 on that line). */}
-            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 mb-5 font-light leading-relaxed font-sans text-balance">
+            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 mb-10 font-light leading-relaxed font-sans text-balance">
               Lightly magical texts to help you turn your intentions into
               reality.
             </p>
 
             <div>
-              <p className="text-lg lg:text-xl text-ink mb-8 font-light leading-relaxed font-sans text-balance">
+              <p className="text-lg lg:text-xl text-ink mb-4 font-light leading-relaxed font-sans text-balance">
                 Be the first to hear when access opens.
               </p>
               <button
