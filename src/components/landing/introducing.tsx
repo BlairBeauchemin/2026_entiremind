@@ -41,9 +41,9 @@ function PhoneOnly() {
   );
 }
 
-// The guide, introduced as the answer to the problem section's last line
-// ("Nothing was there to bring you back"). No rule above it: the two read as
-// one turn, not two sections.
+// The guide, revealed as the answer to the problem section's last line
+// ("So we built something that does"). No rule above it: the two read as one
+// turn, not two sections.
 export function Introducing() {
   return (
     <section id="section-how-it-works" className="pb-section relative z-10">
@@ -52,14 +52,7 @@ export function Introducing() {
           <h2 className="font-serif text-display text-cobalt text-balance mb-8">
             Introducing Entiremind
           </h2>
-          <p className="font-serif italic text-xl lg:text-2xl text-ink leading-snug text-balance">
-            We know what it&apos;s like to want change but feel stuck in the
-            same cycles.{" "}
-            <span className="lg:block">
-              So we built something to bring you back.
-            </span>
-          </p>
-          <p className="mt-8 text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
+          <p className="text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
             A minimalist manifestation practice through simple, guided texts. No
             book to read, no app to master, no routine to overhaul.
           </p>

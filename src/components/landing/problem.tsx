@@ -1,5 +1,6 @@
-// The problem, named before the answer. Plain linen, one narrow column: this
-// section should read like a page someone wrote, not a feature block.
+// The problem, named before the answer, closing on why we built Entiremind.
+// Plain linen, one narrow column: this section should read like a page
+// someone wrote, not a feature block.
 export function Problem() {
   return (
     <section
@@ -23,8 +24,10 @@ export function Problem() {
         </p>
       </div>
       <p className="max-w-4xl mx-auto px-6 mt-10 text-center font-serif italic text-heading text-ink text-balance">
+        <span className="block">We know that cycle.</span>
         <span className="block">It isn&apos;t a willpower problem.</span>
         <span className="block">Nothing was there to bring you back.</span>
+        <span className="block mt-4">So we built something that does.</span>
       </p>
     </section>
   );
