@@ -41,7 +41,7 @@ export function Hero() {
 
             <div>
               <p className="text-lg lg:text-xl text-ink mb-4 font-light leading-relaxed font-sans text-balance">
-                Be first to know when we launch, plus early-member surprises.
+                Be the first to know when we launch.
               </p>
               <button
                 onClick={openModal}

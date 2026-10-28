@@ -16,8 +16,7 @@ const faqs = [
   },
   {
     question: "When does it launch?",
-    answer:
-      "Soon. Waitlist members hear first, plus a few early-member surprises.",
+    answer: "Soon. Waitlist members are the first to know.",
   },
 ];
 

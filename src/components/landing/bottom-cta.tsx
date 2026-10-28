@@ -20,7 +20,7 @@ export function BottomCTA() {
             Come back to <em className="italic">what you truly want.</em>
           </h2>
           <p className="text-lg text-linen/80 mb-10 font-sans font-light text-balance">
-            Be first to know, plus early-member surprises. No card, no spam.
+            Be the first to know when we launch. No card, no spam.
           </p>
           <button
             onClick={openModal}
