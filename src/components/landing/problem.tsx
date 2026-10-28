@@ -24,12 +24,12 @@ export function Problem() {
       </h2>
 
       <div className="px-6 flex justify-center">
-        <div className="relative pl-8">
+        <div className="relative pl-8 lg:pl-12">
           {/* The loop: a hairline bracket from the last beat back up to the
               first, ending in a small arrowhead pointing at it. */}
           <div
             aria-hidden="true"
-            className="absolute left-0 top-[0.95rem] bottom-[0.95rem] w-5 border border-r-0 border-cobalt/50 rounded-l-sm"
+            className="absolute left-0 top-[1.05rem] bottom-[1.05rem] lg:top-[1.45rem] lg:bottom-[1.45rem] w-5 lg:w-8 border border-r-0 border-cobalt/50 rounded-l-sm"
           >
             <svg
               viewBox="0 0 8 8"
@@ -39,13 +39,13 @@ export function Problem() {
               <path d="M0 0 L8 4 L0 8 Z" />
             </svg>
           </div>
-          <ol className="space-y-5">
+          <ol className="space-y-6 lg:space-y-8">
             {cycle.map((beat, i) => (
-              <li key={beat} className="flex items-baseline gap-4">
-                <span className="font-serif italic text-cobalt text-xl w-6 shrink-0">
+              <li key={beat} className="flex items-baseline gap-3 lg:gap-5">
+                <span className="font-serif italic text-cobalt text-2xl lg:text-4xl w-8 lg:w-14 shrink-0">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="text-lg lg:text-xl text-ink font-light font-sans">
+                <span className="text-xl lg:text-3xl text-ink font-light font-sans">
                   {beat}
                 </span>
               </li>
