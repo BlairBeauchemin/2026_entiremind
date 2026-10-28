@@ -36,12 +36,6 @@ export function Navigation() {
                 How it works
               </a>
               <a
-                href="/quiz"
-                className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors"
-              >
-                The quiz
-              </a>
-              <a
                 href="#section-faq"
                 className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors"
               >
@@ -59,7 +53,7 @@ export function Navigation() {
               </Link>
               <button
                 onClick={openModal}
-                className="bg-cobalt text-linen px-6 py-2.5 rounded-sm text-sm font-medium hover:bg-cobalt-deep transition-all duration-300"
+                className="bg-cobalt text-linen px-6 min-h-11 rounded-sm text-sm font-medium hover:bg-cobalt-deep transition-all duration-300"
               >
                 Join waitlist
               </button>
@@ -69,7 +63,7 @@ export function Navigation() {
             <div className="flex md:hidden items-center gap-4">
               <button
                 onClick={openModal}
-                className="bg-cobalt text-linen px-4 py-2 rounded-sm text-sm font-medium whitespace-nowrap hover:bg-cobalt-deep transition-colors duration-300"
+                className="bg-cobalt text-linen px-4 min-h-11 rounded-sm text-sm font-medium whitespace-nowrap hover:bg-cobalt-deep transition-colors duration-300"
               >
                 Join waitlist
               </button>
@@ -94,13 +88,6 @@ export function Navigation() {
                 className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors py-2"
               >
                 How it works
-              </a>
-              <a
-                href="/quiz"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-ink hover:text-cobalt font-sans text-sm tracking-wide transition-colors py-2"
-              >
-                The quiz
               </a>
               <a
                 href="#section-faq"

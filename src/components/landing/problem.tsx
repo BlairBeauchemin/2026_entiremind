@@ -1,10 +1,10 @@
-// The problem, named before the answer, closing on why we built Entiremind.
-// The struggle is shown as the cycle it is: four short beats on a hairline,
-// with a bracket that carries the last one back to the first. Plain linen,
-// no icons or cards: it should read as printed, and scan in a glance on a
-// phone.
+// The familiar problem, kept short: a heading and the cycle as four beats on
+// a hairline, with a bracket that carries the last one back to the first. It
+// hands straight to the product section, with no closing paragraph. Plain
+// linen, no icons or cards: it should read as printed, and scan in a glance
+// on a phone.
 const cycle = [
-  "You set an intention.",
+  "You feel clear about what you want.",
   "Life pulls your attention away.",
   "Old doubts creep back in.",
   "You start over. Again.",
@@ -16,20 +16,18 @@ export function Problem() {
       id="section-problem"
       className="py-section relative z-10 border-t border-rule"
     >
-      {/* The heading gets a wider measure than the body so each sentence
-          holds its own line: the turn between them is the point. */}
-      <h2 className="max-w-5xl mx-auto px-6 text-center font-serif text-display text-ink text-balance mb-12">
-        <span className="block">Inspiration feels good.</span>
-        <span className="block">Then everyday life takes over.</span>
-      </h2>
+      <div className="max-w-xl mx-auto px-6">
+        <h2 className="font-serif text-heading text-ink mb-8">
+          <span className="block">You set an intention.</span>
+          <span className="block">Then life takes over.</span>
+        </h2>
 
-      <div className="px-6 flex justify-center">
-        <div className="relative pl-8 lg:pl-12">
+        <div className="relative pl-7">
           {/* The loop: a hairline bracket from the last beat back up to the
               first, ending in a small arrowhead pointing at it. */}
           <div
             aria-hidden="true"
-            className="absolute left-0 top-[1.05rem] bottom-[1.05rem] lg:top-[1.45rem] lg:bottom-[1.45rem] w-5 lg:w-8 border border-r-0 border-cobalt/50 rounded-l-sm"
+            className="absolute left-0 top-[0.8rem] bottom-[0.8rem] w-4 border border-r-0 border-cobalt/50 rounded-l-sm"
           >
             <svg
               viewBox="0 0 8 8"
@@ -39,13 +37,13 @@ export function Problem() {
               <path d="M0 0 L8 4 L0 8 Z" />
             </svg>
           </div>
-          <ol className="space-y-6 lg:space-y-8">
+          <ol className="space-y-4">
             {cycle.map((beat, i) => (
-              <li key={beat} className="flex items-baseline gap-3 lg:gap-5">
-                <span className="font-serif italic text-cobalt text-2xl lg:text-4xl w-8 lg:w-14 shrink-0">
+              <li key={beat} className="flex items-baseline gap-3">
+                <span className="font-serif italic text-cobalt text-xl w-7 shrink-0">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="text-xl lg:text-3xl text-ink font-light font-sans">
+                <span className="text-lg text-ink font-sans leading-normal">
                   {beat}
                 </span>
               </li>
@@ -53,13 +51,6 @@ export function Problem() {
           </ol>
         </div>
       </div>
-
-      <p className="max-w-4xl mx-auto px-6 mt-14 text-center font-serif italic text-heading text-ink text-balance">
-        <span className="block">We know that cycle.</span>
-        <span className="block">You don&apos;t need more willpower.</span>
-        <span className="block">You need something to bring you back.</span>
-        <span className="block mt-4">So we built it.</span>
-      </p>
     </section>
   );
 }

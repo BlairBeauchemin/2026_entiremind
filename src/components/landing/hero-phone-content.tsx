@@ -233,28 +233,6 @@ export const SMS_CONTENT: HeroPhoneContent = {
   draft: undefined,
 };
 
-/**
- * The intro section's phone: the first exchange after onboarding. The welcome
- * text names the intention back in Maya's words, and her reply gets a mirror
- * rather than a canned ack, so this phone shows something the hero's doesn't.
- */
-export const INTRO_CONTENT: HeroPhoneContent = {
-  ...ENTIREMIND_CONTENT,
-  bubbles: [
-    {
-      from: "them",
-      text: "Welcome, Maya. You said you're calling in a studio of your own. We'll start there.",
-    },
-    { from: "me", text: "Honestly? A little nervous to say it out loud." },
-    {
-      from: "them",
-      text: "Nervous usually means it matters. We'll go gently.",
-    },
-    { from: "me", text: "Okay. I'm in." },
-  ],
-  draft: undefined,
-};
-
 /** Alternate: the intention in the person's own words, in the brand serif. */
 export const ENTIREMIND_QUOTE_CONTENT: HeroPhoneContent = {
   ...ENTIREMIND_CONTENT,

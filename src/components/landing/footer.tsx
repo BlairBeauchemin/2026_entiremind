@@ -11,24 +11,8 @@ export function Footer() {
             </span>
           </Link>
 
-          {/* Six links in one non-wrapping row clipped both ends at 390px —
-              the first and last were unreachable on a phone. */}
+          {/* Legal links only; they wrap rather than clip on a phone. */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted font-sans">
-            <a
-              href="#section-how-it-works"
-              className="hover:text-cobalt transition-colors"
-            >
-              How it works
-            </a>
-            <a href="/quiz" className="hover:text-cobalt transition-colors">
-              The quiz
-            </a>
-            <a
-              href="#section-faq"
-              className="hover:text-cobalt transition-colors"
-            >
-              FAQ
-            </a>
             <a href="/privacy" className="hover:text-cobalt transition-colors">
               Privacy
             </a>

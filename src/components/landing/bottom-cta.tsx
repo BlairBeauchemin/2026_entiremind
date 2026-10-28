@@ -16,18 +16,21 @@ export function BottomCTA() {
     <>
       <section className="py-section bg-cobalt relative overflow-hidden">
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-          <h2 className="font-serif text-display text-linen text-balance mb-6">
+          <h2 className="font-serif text-heading text-linen text-balance">
             Come back to <em className="italic">what you truly want.</em>
           </h2>
-          <p className="text-lg text-linen/80 mb-10 font-sans font-light text-balance">
-            Be the first to know when we launch. No card, no spam.
+          <p className="mt-4 text-lg text-linen font-sans leading-normal text-balance">
+            Join the waitlist for an invitation when Entiremind opens.
           </p>
           <button
             onClick={openModal}
-            className="bg-linen text-ink px-10 py-4 rounded-sm text-lg font-medium hover:bg-surface transition-all duration-300 font-sans"
+            className="mt-8 bg-linen text-cobalt-deep px-10 py-4 rounded-sm text-lg font-medium hover:bg-surface transition-all duration-300 font-sans"
           >
-            Join waitlist
+            Join the waitlist
           </button>
+          <p className="text-sm text-linen/85 mt-3 font-sans">
+            Free to join. Launch updates by email.
+          </p>
         </div>
       </section>
 

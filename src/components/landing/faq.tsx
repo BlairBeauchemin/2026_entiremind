@@ -1,47 +1,68 @@
+"use client";
+
+import { Accordion } from "radix-ui";
+import { ChevronDown } from "lucide-react";
+
+// Answers describe what the waitlist actually does today: a lead row synced to
+// the email list, no texts sent to leads, and enrollment in the text
+// experience happening separately when access opens.
 const faqs = [
   {
-    question: "How often will you text me?",
+    question: "What happens when I join?",
     answer:
-      "One short, guided text a day, plus a reply when you answer. Reply STOP anytime and it ends.",
+      "We'll email you with launch updates and an invitation when access opens.",
   },
   {
-    question: "What will it cost?",
+    question: "Will I start receiving texts now?",
     answer:
-      "$12.99 a month, or $99 a year — two months free. Every membership starts with a 10-day free trial, and there's no card to join the waitlist.",
+      "No. Joining the waitlist signs you up for email updates. You'll choose whether to enroll in the text experience when access opens.",
   },
   {
-    question: "Is what I share private?",
+    question: "Will Entiremind cost money?",
     answer:
-      "Yes. Your replies only shape your own experience, and they're never shared or published without your permission.",
+      "Joining the waitlist is free. The text experience will be a paid service, with pricing shared before you choose to enroll.",
   },
   {
-    question: "When does it launch?",
-    answer: "Soon. Waitlist members are the first to know.",
+    question: "When will access open?",
+    answer:
+      "We'll share the launch date with the waitlist as soon as it's confirmed.",
   },
 ];
 
+// Radix Accordion supplies the semantics: each question is a button with
+// aria-expanded/aria-controls, answers are labelled regions, and arrow keys,
+// Home and End move between questions. All answers start collapsed.
 export function FAQ() {
   return (
     <section
       id="section-faq"
       className="py-section relative z-10 border-t border-rule"
     >
-      <div className="max-w-3xl mx-auto px-6">
-        <h2 className="font-serif text-heading text-ink text-center mb-12">
+      <div className="max-w-xl mx-auto px-6">
+        <h2 className="font-serif text-heading text-ink mb-6">
           Questions, answered
         </h2>
-        <dl className="divide-y divide-rule border-y border-rule">
+        <Accordion.Root
+          type="multiple"
+          className="divide-y divide-rule border-y border-rule"
+        >
           {faqs.map((faq) => (
-            <div key={faq.question} className="py-7">
-              <dt className="font-serif text-xl text-ink mb-2">
-                {faq.question}
-              </dt>
-              <dd className="text-muted font-sans leading-relaxed">
+            <Accordion.Item key={faq.question} value={faq.question}>
+              <Accordion.Header>
+                <Accordion.Trigger className="group flex w-full min-h-14 items-center justify-between gap-4 py-4 text-left font-sans text-lg text-ink hover:text-cobalt focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt transition-colors">
+                  {faq.question}
+                  <ChevronDown
+                    aria-hidden="true"
+                    className="size-5 shrink-0 text-cobalt transition-transform duration-200 group-data-[state=open]:rotate-180"
+                  />
+                </Accordion.Trigger>
+              </Accordion.Header>
+              <Accordion.Content className="pb-5 pr-9 text-base text-muted font-sans leading-normal">
                 {faq.answer}
-              </dd>
-            </div>
+              </Accordion.Content>
+            </Accordion.Item>
           ))}
-        </dl>
+        </Accordion.Root>
       </div>
     </section>
   );

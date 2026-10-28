@@ -22,35 +22,29 @@ export function Hero() {
     <>
       <header
         id="section-hero"
-        className="relative pt-40 pb-16 lg:pt-56 lg:pb-24 z-10"
+        className="relative pt-32 pb-12 lg:pt-56 lg:pb-24 z-10"
       >
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)] gap-12 lg:gap-8 items-center">
           {/* Hero Content */}
-          <div className="relative z-10 space-y-10 text-center lg:text-left animate-fade-in-up">
+          <div className="relative z-10 text-center lg:text-left animate-fade-in-up">
             <h1 className="font-serif text-display text-ink text-balance">
               Manifest your best life.
             </h1>
 
-            {/* mb-5 overrides the column's space-y-10 here only: the waitlist
-                line follows the subhead as its next paragraph, and the
-                button gets the room (mb-8 on that line). */}
-            <p className="text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 mb-10 font-light leading-relaxed font-sans text-balance">
+            <p className="mt-5 lg:mt-8 text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans text-balance">
               Lightly magical texts to help you turn your intentions into
               reality.
             </p>
 
-            <div>
-              <p className="text-lg lg:text-xl text-ink mb-4 font-light leading-relaxed font-sans text-balance">
-                Be the first to know when we launch.
-              </p>
+            <div className="mt-8 lg:mt-10">
               <button
                 onClick={openModal}
                 className="bg-cobalt text-linen px-10 py-4 rounded-sm text-lg font-medium hover:bg-cobalt-deep transition-all duration-300 font-sans"
               >
-                Join waitlist
+                Join the waitlist
               </button>
-              <p className="text-xs text-muted mt-3 font-sans">
-                Free to join. Unsubscribe anytime.
+              <p className="text-sm text-muted mt-3 font-sans">
+                Free to join. Get an invitation when access opens.
               </p>
             </div>
           </div>
@@ -58,19 +52,18 @@ export function Hero() {
           {/* Hero visual: the Messages phone with the "My vision" board and
               prints spilling out around it (HeroScene, layout "spill"). The
               scene canvas carries empty margins for ad crops; the negative
-              margins trim them here so the phone fills the column. Mobile
-              trims harder (about 20% larger) and centres the scene's content,
-              which keeps it inside a 390px screen. Everything
-              in it is transparent over the linen page. */}
+              margins trim them here so the phone fills the column. On mobile
+              it follows the CTA and is held to a modest width, so the copy
+              owns the first screen. Everything in it is transparent over the
+              linen page. */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            // On mobile the phone leads, above the headline; from lg it
-            // returns to its column beside the copy. Capped at phone width
-            // until then, so tablets and landscape phones don't blow the
-            // scene up and crop the board off the edge.
-            className={`relative order-first lg:order-none w-full max-w-md mx-auto lg:max-w-none ${heroInter.variable}`}
+            // Below lg it sits under the copy and CTA, capped narrow so it
+            // supports the copy rather than dominating the first screen;
+            // from lg it returns to its column beside the copy.
+            className={`relative w-full max-w-[290px] sm:max-w-sm mx-auto lg:max-w-none ${heroInter.variable}`}
           >
             <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
               <HeroScene layout="spill" motion={HERO_MOTION} />

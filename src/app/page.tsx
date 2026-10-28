@@ -1,13 +1,13 @@
 import { Navigation } from "@/components/landing/navigation";
 import { Hero } from "@/components/landing/hero";
 import { Problem } from "@/components/landing/problem";
-import { Introducing } from "@/components/landing/introducing";
-import { Remembered } from "@/components/landing/remembered";
-import { QuizInvite } from "@/components/landing/quiz-invite";
+import { ProductDemo } from "@/components/landing/product-demo";
 import { FAQ } from "@/components/landing/faq";
 import { BottomCTA } from "@/components/landing/bottom-cta";
 import { Footer } from "@/components/landing/footer";
 
+// One story, top to bottom: the promise, the familiar problem, the
+// experience, and how to join.
 export default function Home() {
   return (
     <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
@@ -17,9 +17,7 @@ export default function Home() {
       <Navigation />
       <Hero />
       <Problem />
-      <Introducing />
-      <Remembered />
-      <QuizInvite />
+      <ProductDemo />
       <FAQ />
       <BottomCTA />
       <Footer />
