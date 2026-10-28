@@ -7,20 +7,17 @@ const beats = [
   {
     number: "01",
     title: "Name what you're calling in.",
-    description:
-      "Tell us your intention in your own words. It stays yours — we never rewrite it.",
+    description: "In your own words. It stays yours.",
   },
   {
     number: "02",
-    title: "Simple, guided texts.",
-    description:
-      "Short prompts shaped around your intention. Nothing to open, nothing to keep up with.",
+    title: "Get a short text each day.",
+    description: "Shaped around your intention.",
   },
   {
     number: "03",
     title: "Answer, or don't.",
-    description:
-      "A word or a paragraph. It remembers what you share, and quiet days are just quiet days.",
+    description: "It remembers what you share.",
   },
 ];
 
@@ -63,14 +60,8 @@ export function Introducing() {
             </span>
           </p>
           <p className="mt-8 text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
-            A minimalist manifestation practice, delivered through simple,
-            guided text messages. Each one helps you take your mind off
-            autopilot, notice the old patterns, and reconnect with what you
-            truly want.
-          </p>
-          <p className="mt-6 text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
-            You don&apos;t need to read a book, master an app, or overhaul your
-            routine. Just quiet moments, woven into your day.
+            A minimalist manifestation practice through simple, guided texts. No
+            book to read, no app to master, no routine to overhaul.
           </p>
         </div>
 

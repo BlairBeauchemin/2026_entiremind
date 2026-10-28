@@ -11,9 +11,6 @@ export function Remembered() {
           &ldquo;Three weeks ago you said asking for more felt like pretending.
           This morning you asked. What changed?&rdquo;
         </blockquote>
-        <figcaption className="mt-12 text-sm text-linen/80 font-sans tracking-wide">
-          No app. No streaks. No feed. No guilt when life gets loud.
-        </figcaption>
       </figure>
     </section>
   );
