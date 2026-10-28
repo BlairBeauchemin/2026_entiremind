@@ -57,7 +57,7 @@ export function Introducing() {
           </h2>
           <p className="font-serif italic text-xl lg:text-2xl text-ink leading-snug text-balance">
             We know what it&apos;s like to want change but feel stuck in the
-            same cycles. That&apos;s exactly why we created Entiremind.
+            same cycles. So we built something to bring you back.
           </p>
           <p className="mt-8 text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
             A minimalist manifestation practice, delivered through simple,
