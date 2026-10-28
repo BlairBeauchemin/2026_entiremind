@@ -55,10 +55,11 @@ export function Introducing() {
           <h2 className="font-serif text-display text-cobalt text-balance mb-8">
             Introducing Entiremind
           </h2>
-          <p className="text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
-            Now there&apos;s something to bring you back.
+          <p className="font-serif italic text-xl lg:text-2xl text-ink leading-snug text-balance">
+            We know what it&apos;s like to want change but feel stuck in the
+            same cycles. That&apos;s exactly why we created Entiremind.
           </p>
-          <p className="mt-6 text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
+          <p className="mt-8 text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
             A minimalist manifestation practice, delivered through simple,
             guided text messages. Each one helps you take your mind off
             autopilot, notice the old patterns, and reconnect with what you
@@ -67,11 +68,6 @@ export function Introducing() {
           <p className="mt-6 text-lg lg:text-xl text-ink font-light leading-relaxed font-sans text-balance">
             You don&apos;t need to read a book, master an app, or overhaul your
             routine. Just quiet moments, woven into your day.
-          </p>
-          <p className="mt-8 font-serif italic text-xl lg:text-2xl text-ink leading-snug text-balance">
-            We know what it&apos;s like to set an intention, really mean it, and
-            still watch it slip away. We built Entiremind because we needed it
-            too.
           </p>
         </div>
 
