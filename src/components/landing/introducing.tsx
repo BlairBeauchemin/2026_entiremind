@@ -42,8 +42,8 @@ function PhoneOnly() {
 }
 
 // The guide, revealed as the answer to the problem section's last line
-// ("So we built something to bring you back"). No rule above it: the two read
-// as one turn, not two sections.
+// ("So we built it."). No rule above it: the two read as one turn, not two
+// sections.
 export function Introducing() {
   return (
     <section id="section-how-it-works" className="pb-section relative z-10">

@@ -55,13 +55,10 @@ export function Problem() {
       </div>
 
       <p className="max-w-4xl mx-auto px-6 mt-14 text-center font-serif italic text-heading text-ink text-balance">
-        <span className="block">
-          <span className="block sm:inline">We know that cycle.</span>{" "}
-          <span className="block sm:inline">
-            It isn&apos;t a willpower problem.
-          </span>
-        </span>
-        <span className="block">So we built something to bring you back.</span>
+        <span className="block">We know that cycle.</span>
+        <span className="block">You don&apos;t need more willpower.</span>
+        <span className="block">You need something to bring you back.</span>
+        <span className="block mt-4">So we built it.</span>
       </p>
     </section>
   );
