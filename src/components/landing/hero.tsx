@@ -52,18 +52,19 @@ export function Hero() {
           {/* Hero visual: the Messages phone with the "My vision" board and
               prints spilling out around it (HeroScene, layout "spill"). The
               scene canvas carries empty margins for ad crops; the negative
-              margins trim them here so the phone fills the column. On mobile
-              it follows the CTA and is held to a modest width, so the copy
-              owns the first screen. Everything in it is transparent over the
-              linen page. */}
+              margins trim them here so the phone fills the column. Mobile
+              trims harder (about 20% larger) and centres the scene's content,
+              which keeps it inside a 390px screen. Everything in it is
+              transparent over the linen page. */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            // Below lg it sits under the copy and CTA, capped narrow so it
-            // supports the copy rather than dominating the first screen;
-            // from lg it returns to its column beside the copy.
-            className={`relative w-full max-w-[290px] sm:max-w-sm mx-auto lg:max-w-none ${heroInter.variable}`}
+            // Below lg it sits under the copy and CTA at the same size as
+            // before, capped at phone width so tablets and landscape phones
+            // don't blow the scene up; from lg it returns to its column
+            // beside the copy.
+            className={`relative w-full max-w-md mx-auto lg:max-w-none ${heroInter.variable}`}
           >
             <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
               <HeroScene layout="spill" motion={HERO_MOTION} />
