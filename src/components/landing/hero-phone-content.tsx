@@ -233,6 +233,31 @@ export const SMS_CONTENT: HeroPhoneContent = {
   draft: undefined,
 };
 
+/**
+ * The "Introducing Entiremind" demo: one exchange the product supports end to
+ * end. A morning prompt, Maya's reply, and a reply that reflects her own words
+ * back with one small action, ending on her answer.
+ */
+export const DEMO_CONTENT: HeroPhoneContent = {
+  ...ENTIREMIND_CONTENT,
+  bubbles: [
+    {
+      from: "them",
+      text: "Picture an ordinary morning in the life you want to create. What feels different? Choose one small piece of that feeling to bring into today.",
+    },
+    {
+      from: "me",
+      text: "No rushing. Coffee by the window, sketching before anyone needs me.",
+    },
+    {
+      from: "them",
+      text: "Making something first. Ten minutes of sketching could be today's piece.",
+    },
+    { from: "me", text: "Doing it before I open my email." },
+  ],
+  draft: undefined,
+};
+
 /** Alternate: the intention in the person's own words, in the brand serif. */
 export const ENTIREMIND_QUOTE_CONTENT: HeroPhoneContent = {
   ...ENTIREMIND_CONTENT,
