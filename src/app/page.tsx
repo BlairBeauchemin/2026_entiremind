@@ -1,13 +1,15 @@
 import { Navigation } from "@/components/landing/navigation";
 import { Hero } from "@/components/landing/hero";
 import { Problem } from "@/components/landing/problem";
-import { ProductDemo } from "@/components/landing/product-demo";
+import { Introducing } from "@/components/landing/introducing";
+import { Benefits } from "@/components/landing/benefits";
+import { SignupSteps } from "@/components/landing/signup-steps";
 import { FAQ } from "@/components/landing/faq";
 import { BottomCTA } from "@/components/landing/bottom-cta";
 import { Footer } from "@/components/landing/footer";
 
-// One story, top to bottom: the promise, the familiar problem, the
-// experience, and how to join.
+// One story, top to bottom: the promise, the familiar tension, what
+// Entiremind is, what it makes room for, and how joining works.
 export default function Home() {
   return (
     <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
@@ -17,7 +19,9 @@ export default function Home() {
       <Navigation />
       <Hero />
       <Problem />
-      <ProductDemo />
+      <Introducing />
+      <Benefits />
+      <SignupSteps />
       <FAQ />
       <BottomCTA />
       <Footer />
