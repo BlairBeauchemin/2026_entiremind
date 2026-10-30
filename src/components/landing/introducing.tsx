@@ -51,9 +51,9 @@ function PhoneOnly() {
 
 // The answer to the tension above it, on the same paper with no rule between:
 // what Entiremind is, a lead-in sentence that the three benefits complete
-// (each starts with a verb), then a phone showing one example exchange with
-// an ask right under it. The copy and benefits come first on mobile; from lg
-// they sit beside the phone.
+// (each starts with a verb), then a phone showing one example exchange, and an
+// ask centred under the whole section. The copy and benefits come first on
+// mobile; from lg they sit beside the phone.
 export function Introducing() {
   return (
     <section id="section-how-it-works" className="pb-section relative z-10">
@@ -68,9 +68,9 @@ export function Introducing() {
           <p className="mt-4 text-lg text-ink font-sans leading-normal">
             Thoughtful texts, shaped around what you want to create, so you can:
           </p>
-          <ul className="mt-5 divide-y divide-rule border-y border-rule">
+          <ul className="mt-6 space-y-5">
             {benefits.map(({ icon: Icon, title, description }) => (
-              <li key={title} className="flex gap-4 py-4">
+              <li key={title} className="flex gap-4">
                 <span
                   aria-hidden="true"
                   className="flex size-10 shrink-0 items-center justify-center rounded-full border border-rule text-cobalt"
@@ -99,13 +99,16 @@ export function Introducing() {
           <figcaption className="mt-4 text-sm text-muted font-sans text-center">
             An example conversation
           </figcaption>
-          <div className="mt-8 text-center">
-            <WaitlistButton location="demo" />
-            <p className="text-sm text-muted mt-3 font-sans">
-              Free to join. Get an invitation when access opens.
-            </p>
-          </div>
         </figure>
+      </div>
+
+      {/* The ask spans the whole section, centred under both columns on
+          desktop; on mobile it simply follows the phone. */}
+      <div className="mt-10 lg:mt-14 px-6 text-center">
+        <WaitlistButton location="demo" />
+        <p className="text-sm text-muted mt-3 font-sans">
+          Free to join. Get an invitation when access opens.
+        </p>
       </div>
     </section>
   );
