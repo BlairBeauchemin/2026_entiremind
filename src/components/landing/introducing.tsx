@@ -1,6 +1,7 @@
 import { SmsPhone } from "./sms-phone";
 import { DEMO_CONTENT } from "./hero-phone-content";
 import { heroInter } from "./hero-font";
+import { WaitlistButton } from "./waitlist-button";
 
 // SmsPhone renders on a square 1024-unit canvas with the device at
 // x 277–747, y 42–982. This box is the device's own size, and the canvas is
@@ -23,8 +24,9 @@ function PhoneOnly() {
 }
 
 // The answer to the tension above it, on the same paper with no rule between:
-// what Entiremind is, then a phone showing one example exchange. The phone
-// sits under the copy on mobile and beside it from lg.
+// what Entiremind is, then a phone showing one example exchange and an ask
+// right under it, while the demo is fresh. The phone sits under the copy on
+// mobile and beside it from lg.
 export function Introducing() {
   return (
     <section id="section-how-it-works" className="pb-section relative z-10">
@@ -52,6 +54,12 @@ export function Introducing() {
           <figcaption className="mt-4 text-sm text-muted font-sans text-center">
             An example conversation
           </figcaption>
+          <div className="mt-8 text-center">
+            <WaitlistButton location="demo" />
+            <p className="text-sm text-muted mt-3 font-sans">
+              Free to join. Get an invitation when access opens.
+            </p>
+          </div>
         </figure>
       </div>
     </section>

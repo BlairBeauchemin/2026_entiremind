@@ -247,7 +247,7 @@ export const DEMO_CONTENT: HeroPhoneContent = {
     },
     {
       from: "me",
-      text: "No rushing. Coffee by the window, sketching before anyone needs me.",
+      text: "No rushing. Coffee, then sketching by the window.",
     },
     {
       from: "them",

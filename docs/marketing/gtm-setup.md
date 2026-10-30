@@ -40,7 +40,7 @@ tags.
 
 | dataLayer event | Fires when | Parameters |
 |---|---|---|
-| `lead_form_open` | Landing CTA opens the waitlist modal | `cta_location` (nav / hero / bottom_cta) |
+| `lead_form_open` | Landing CTA opens the waitlist modal | `cta_location` (nav / hero / demo / intro / bottom_cta) |
 | `generate_lead` | Waitlist form submitted OK (then user lands on `/thank-you`) | `lead_source`, `modal_version`, `currency`, `value: 0` |
 | `sign_up` | First visit to `/onboarding` after auth (once per session) | `method` |
 | `onboarding_complete` | Onboarding finished, welcome SMS queued | — |
