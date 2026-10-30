@@ -1,4 +1,4 @@
-import { Compass, Feather, Sprout, type LucideIcon } from "lucide-react";
+import { Compass, Sprout, Sun, type LucideIcon } from "lucide-react";
 
 const benefits: {
   icon: LucideIcon;
@@ -7,27 +7,27 @@ const benefits: {
 }[] = [
   {
     icon: Compass,
-    title: "Step out of autopilot.",
+    title: "Manifest with clarity and intention.",
     description:
-      "Pause, notice what's on your mind, and bring your attention back to what you want.",
+      "Reconnect with what you truly want, so your next steps reflect what matters to you.",
   },
   {
-    icon: Feather,
-    title: "Move beyond familiar doubts.",
+    icon: Sun,
+    title: "Find more possibility in your everyday life.",
     description:
-      "Question the stories that hold you back and explore a different way forward.",
+      "Make room for reflection and gratitude to notice what's working, what's shifting, and what you'd like to change.",
   },
   {
     icon: Sprout,
     title: "Bring your intentions to life.",
     description:
-      "Get clear on what you want and take small, meaningful actions to manifest it.",
+      "Take small, meaningful actions to manifest what you want, woven into the day you're already living.",
   },
 ];
 
 // Three benefits as one section: compact rows on hairlines, each led by a
-// thin cobalt line icon in a hairline circle, then a serif title and one
-// sentence. Stacked on mobile; three across from lg.
+// thin cobalt line icon in a hairline circle (compass, sun, sprout), then a
+// serif title and one sentence. Stacked on mobile; three across from lg.
 export function Benefits() {
   return (
     <section

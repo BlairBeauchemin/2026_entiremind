@@ -32,7 +32,7 @@ export function SignupSteps() {
     >
       <div className="max-w-xl mx-auto px-6">
         <h2 className="font-serif text-heading text-ink text-balance mb-6">
-          Your next chapter starts here.
+          Here&apos;s what to do next.
         </h2>
         <ol className="divide-y divide-rule border-y border-rule">
           {steps.map((step) => (

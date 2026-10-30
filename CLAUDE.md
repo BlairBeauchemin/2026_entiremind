@@ -333,8 +333,9 @@ TWILIO_PHONE_NUMBER=+1234567890
 - **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads
 - **Form fields**: name, email, phone (all required), plus optional SMS consent and terms checkboxes
 - **Storage**: `leads` table with source tracking (`landing_page`)
-- **Integration points**: hero, the mid-page CTA after the signup steps, the final blue
-  section, and the navigation "Join waitlist" button
+- **Integration points**: hero, under the demo phone, after the signup steps, the final
+  blue section, and the navigation "Join waitlist" button (analytics `cta_location`:
+  `hero` / `demo` / `intro` / `bottom_cta` / `nav`)
 
 **OPEN FOLLOW-UP — revisit the waitlist form once the landing page layout and copy are final.**
 The form (phone required + SMS consent checkbox) is the version approved by Twilio for A2P
