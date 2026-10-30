@@ -4,7 +4,7 @@ const steps = [
   {
     number: "01",
     title: "Join the waitlist.",
-    description: "Leave your email to receive launch updates.",
+    description: "Share your name, email, and phone to get launch updates.",
   },
   {
     number: "02",
@@ -20,10 +20,10 @@ const steps = [
   },
 ];
 
-// How joining works, kept apart from the product itself: today's step is an
-// email signup, and the texts only begin after someone enrolls at launch.
-// The mid-page ask follows; its analytics location stays 'intro' so existing
-// reporting keeps working.
+// How joining works, kept apart from the product itself: today's step is the
+// waitlist form, and the daily texts only begin after someone enrolls at
+// launch. The mid-page ask follows; its analytics location stays 'intro' so
+// existing reporting keeps working.
 export function SignupSteps() {
   return (
     <section
@@ -55,8 +55,7 @@ export function SignupSteps() {
         <div className="mt-8 text-center">
           <WaitlistButton location="intro" />
           <p className="text-sm text-muted mt-3 font-sans text-balance">
-            Free to join. Signing up today is for email updates, not text
-            messages.
+            Free to join. Your daily texts begin only when you enroll.
           </p>
         </div>
       </div>

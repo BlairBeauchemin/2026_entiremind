@@ -29,7 +29,7 @@ export function BottomCTA() {
             Join the waitlist
           </button>
           <p className="text-sm text-linen/85 mt-3 font-sans">
-            Free to join. Launch updates by email.
+            Free to join. Unsubscribe anytime.
           </p>
         </div>
       </section>

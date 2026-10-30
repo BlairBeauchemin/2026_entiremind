@@ -3,19 +3,20 @@
 import { Accordion } from "radix-ui";
 import { ChevronDown } from "lucide-react";
 
-// Answers describe what the waitlist actually does today: a lead row synced to
-// the email list, no texts sent to leads, and enrollment in the text
-// experience happening separately when access opens.
+// Answers describe what the waitlist actually does today: the approved form
+// collects name, email and phone with optional SMS consent, nothing is texted
+// to leads before launch, and enrollment in the daily texts happens
+// separately when access opens.
 const faqs = [
   {
     question: "What happens when I join?",
     answer:
-      "We'll email you with launch updates and an invitation when access opens.",
+      "We'll keep you posted on the launch and send your invitation when access opens.",
   },
   {
     question: "Will I start receiving texts now?",
     answer:
-      "No. Joining the waitlist signs you up for email updates. You'll choose whether to enroll in the text experience when access opens.",
+      "Not yet. You'll hear from us when access opens, and you'll choose then whether to enroll in the daily texts.",
   },
   {
     question: "Will Entiremind cost money?",

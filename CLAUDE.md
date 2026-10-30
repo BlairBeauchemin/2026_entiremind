@@ -328,11 +328,22 @@ TWILIO_PHONE_NUMBER=+1234567890
 
 #### Waitlist & Lead Capture
 
-- **Waitlist modal**: `src/components/waitlist-modal.tsx` - reusable modal for lead capture
+- **Waitlist modal**: `src/components/landing/waitlist-modal.tsx` - switcher; the live
+  version is `waitlist-modal-single.tsx` (`NEXT_PUBLIC_WAITLIST_MODAL_VERSION`, default `single`)
 - **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads
-- **Form fields**: name, email, phone (all required)
+- **Form fields**: name, email, phone (all required), plus optional SMS consent and terms checkboxes
 - **Storage**: `leads` table with source tracking (`landing_page`)
-- **Integration points**: Hero section, pricing section, navigation "Join Waitlist" button
+- **Integration points**: hero, the mid-page CTA after the signup steps, the final blue
+  section, and the navigation "Join waitlist" button
+
+**OPEN FOLLOW-UP — revisit the waitlist form once the landing page layout and copy are final.**
+The form (phone required + SMS consent checkbox) is the version approved by Twilio for A2P
+10DLC, so it was deliberately left untouched during the October 2026 landing rewrite. The page
+copy was written around it instead: the steps say "Share your name, email, and phone", and the
+FAQ promises launch updates without naming a channel. Still to decide with the founder: whether
+to make phone optional (form + API validation), reword the modal ("Be the first to experience
+Entiremind via SMS", "Reserve My Spot"), and fix the thank-you page line "We'll text you when
+it's your turn." Any change to the consent flow may need Twilio re-approval.
 
 #### Founder Review Interface
 
