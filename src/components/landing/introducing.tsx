@@ -1,7 +1,33 @@
 import { SmsPhone } from "./sms-phone";
 import { DEMO_CONTENT } from "./hero-phone-content";
 import { heroInter } from "./hero-font";
+import { Compass, Sprout, Sun, type LucideIcon } from "lucide-react";
 import { WaitlistButton } from "./waitlist-button";
+
+const benefits: {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}[] = [
+  {
+    icon: Compass,
+    title: "Manifest with clarity and intention.",
+    description:
+      "Reconnect with what you truly want, so your next steps reflect what matters to you.",
+  },
+  {
+    icon: Sun,
+    title: "Find more possibility in your everyday life.",
+    description:
+      "Make room for reflection and gratitude to notice what's working, what's shifting, and what you'd like to change.",
+  },
+  {
+    icon: Sprout,
+    title: "Bring your intentions to life.",
+    description:
+      "Take small, meaningful actions to manifest what you want, woven into the day you're already living.",
+  },
+];
 
 // SmsPhone renders on a square 1024-unit canvas with the device at
 // x 277–747, y 42–982. This box is the device's own size, and the canvas is
@@ -24,9 +50,10 @@ function PhoneOnly() {
 }
 
 // The answer to the tension above it, on the same paper with no rule between:
-// what Entiremind is, then a phone showing one example exchange and an ask
-// right under it, while the demo is fresh. The phone sits under the copy on
-// mobile and beside it from lg.
+// what Entiremind is, a lead-in sentence that the three benefits complete
+// (each starts with a verb), then a phone showing one example exchange with
+// an ask right under it. The copy and benefits come first on mobile; from lg
+// they sit beside the phone.
 export function Introducing() {
   return (
     <section id="section-how-it-works" className="pb-section relative z-10">
@@ -39,10 +66,28 @@ export function Introducing() {
             A little space for your intentions, woven into everyday life.
           </p>
           <p className="mt-4 text-lg text-ink font-sans leading-normal">
-            Get thoughtful texts shaped around what you want to create—with
-            questions, reflections, and small actions to help you move toward
-            it.
+            Thoughtful texts, shaped around what you want to create, so you can:
           </p>
+          <ul className="mt-5 divide-y divide-rule border-y border-rule">
+            {benefits.map(({ icon: Icon, title, description }) => (
+              <li key={title} className="flex gap-4 py-4">
+                <span
+                  aria-hidden="true"
+                  className="flex size-10 shrink-0 items-center justify-center rounded-full border border-rule text-cobalt"
+                >
+                  <Icon className="size-5" strokeWidth={1.5} />
+                </span>
+                <div>
+                  <h3 className="font-serif text-lg text-ink leading-snug">
+                    {title}
+                  </h3>
+                  <p className="mt-1 text-base text-muted font-sans leading-normal">
+                    {description}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <figure>
