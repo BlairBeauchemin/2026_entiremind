@@ -32,8 +32,8 @@ export function Hero() {
             </h1>
 
             <p className="mt-5 lg:mt-8 text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans text-balance">
-              Lightly magical texts to help you turn your intentions into
-              reality.
+              Weave reflection, gratitude, and inspiration into your day with
+              texts that help turn your intentions into reality.
             </p>
 
             <div className="mt-8 lg:mt-10">
