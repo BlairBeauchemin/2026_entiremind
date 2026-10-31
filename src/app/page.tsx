@@ -23,7 +23,7 @@ export default function Home() {
       <div className="relative z-10 border-t-4 border-cobalt" />
       <Hero
         label="Option B · Your version"
-        subhead="Weave reflection, gratitude, and inspiration into your day with texts that help turn your intentions into reality."
+        subhead="Weave reflection and inspiration into your day with texts that help turn your intentions into reality."
       />
       <Problem />
       <Introducing />
