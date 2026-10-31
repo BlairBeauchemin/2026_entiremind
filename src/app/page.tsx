@@ -18,11 +18,16 @@ export default function Home() {
       <Navigation />
       <Hero
         label="Option A · Claude's suggestion"
+        subhead="Lightly magical texts that weave reflection and inspiration into your day to help turn your intentions into reality."
+      />
+      <div className="relative z-10 border-t-4 border-cobalt" />
+      <Hero
+        label="Option B · Your newest wording"
         subhead="Lightly magical texts that weave inspiration into your day and help turn your intentions into reality."
       />
       <div className="relative z-10 border-t-4 border-cobalt" />
       <Hero
-        label="Option B · Your version"
+        label="Option C · Your earlier version"
         subhead="Weave reflection and inspiration into your day with texts that help turn your intentions into reality."
       />
       <Problem />
