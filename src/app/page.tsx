@@ -16,7 +16,15 @@ export default function Home() {
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-grain mix-blend-multiply" />
 
       <Navigation />
-      <Hero />
+      <Hero
+        label="Option A · Claude's suggestion"
+        subhead="Lightly magical texts that weave reflection and inspiration into your day, and help turn your intentions into reality."
+      />
+      <div className="relative z-10 border-t-4 border-cobalt" />
+      <Hero
+        label="Option B · Your version"
+        subhead="Weave reflection, gratitude, and inspiration into your day with texts that help turn your intentions into reality."
+      />
       <Problem />
       <Introducing />
       <SignupSteps />

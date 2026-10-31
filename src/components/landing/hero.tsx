@@ -10,7 +10,15 @@ import { analytics } from "@/lib/analytics";
 // The prints, board and phone drift gently. Off under reduced motion.
 const HERO_MOTION = ["float-strong"] as const;
 
-export function Hero() {
+// Preview-only props: the comparison branch stacks two heroes, each with a
+// label and its own subhead.
+export function Hero({
+  subhead = "Lightly magical texts to help you turn your intentions into reality.",
+  label,
+}: {
+  subhead?: string;
+  label?: string;
+} = {}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -27,13 +35,17 @@ export function Hero() {
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)] gap-12 lg:gap-8 items-center">
           {/* Hero Content */}
           <div className="relative z-10 text-center lg:text-left animate-fade-in-up">
+            {label && (
+              <p className="mb-6 inline-block bg-cobalt text-linen px-3 py-1.5 text-sm font-sans">
+                {label}
+              </p>
+            )}
             <h1 className="font-serif text-display text-ink text-balance">
               Manifest your best life.
             </h1>
 
             <p className="mt-5 lg:mt-8 text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans text-balance">
-              Lightly magical texts to help you turn your intentions into
-              reality.
+              {subhead}
             </p>
 
             <div className="mt-8 lg:mt-10">
