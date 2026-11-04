@@ -26,6 +26,29 @@ export default function Home() {
         src="/marketing/hero/studio-woman-phone.webp"
         alt="A woman at a sunlit table by the window, smiling as she reads a text on her phone"
       />
+      {/* Options C–F: free stock photos (Pexels License: free for commercial
+          use, no attribution required), cropped to 4:5. Photo ids in the
+          filenames: pexels.com/photo/<id>. */}
+      <Moment
+        label="Option C · Pexels · By the window"
+        src="/marketing/hero/pexels-phone-7269428.webp"
+        alt="A woman sitting by a tall window with a mug, reading her phone"
+      />
+      <Moment
+        label="Option D · Pexels · Smiling at her phone"
+        src="/marketing/hero/pexels-phone-6697318.webp"
+        alt="A woman in a soft sweater smiling as she reads her phone"
+      />
+      <Moment
+        label="Option E · Pexels · Morning light, coffee"
+        src="/marketing/hero/pexels-phone-7329675.webp"
+        alt="A woman in the morning sun by a window, holding a coffee and her phone"
+      />
+      <Moment
+        label="Option F · Pexels · Hands, coffee, flower"
+        src="/marketing/hero/pexels-phone-7339209.webp"
+        alt="Hands holding a phone at a wooden table beside a cup and a pink flower"
+      />
       <SignupSteps />
       <FAQ />
       <BottomCTA />
