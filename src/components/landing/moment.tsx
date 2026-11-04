@@ -17,10 +17,13 @@ export function Moment({
   src = "/marketing/hero/studio-woman.webp",
   alt = "A woman sketching at a sunlit table by the window, a mood board on the wall beside her",
   label,
+  flip = false,
 }: {
   src?: string;
   alt?: string;
   label?: string;
+  /** Photo on the right from lg, for photos whose subject sits on the right. */
+  flip?: boolean;
 } = {}) {
   return (
     <section
@@ -35,7 +38,9 @@ export function Moment({
           </span>
         </p>
       )}
-      <div className="max-w-5xl mx-auto px-6 lg:flex lg:items-center lg:justify-center">
+      <div
+        className={`max-w-5xl mx-auto px-6 lg:flex lg:items-center lg:justify-center ${flip ? "lg:flex-row-reverse" : ""}`}
+      >
         <div className="relative w-full lg:w-[460px] aspect-[4/5] shrink-0 overflow-hidden rounded-sm">
           <Image
             src={src}
@@ -47,7 +52,7 @@ export function Moment({
         </div>
 
         <ol
-          className={`relative -mt-24 px-3 lg:mt-0 lg:-ml-28 lg:px-0 lg:w-[400px] space-y-3 ${heroInter.variable}`}
+          className={`relative -mt-24 px-3 lg:mt-0 lg:px-0 lg:w-[400px] space-y-3 ${flip ? "lg:-mr-28" : "lg:-ml-28"} ${heroInter.variable}`}
           style={{ fontFamily: "var(--font-inter), var(--font-karla)" }}
         >
           {DEMO_CONTENT.bubbles.map((bubble) => (

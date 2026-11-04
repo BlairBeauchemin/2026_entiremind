@@ -49,6 +49,32 @@ export default function Home() {
         src="/marketing/hero/pexels-phone-7339209.webp"
         alt="Hands holding a phone at a wooden table beside a cup and a pink flower"
       />
+      {/* Options G–J: free photos from Unsplash (Unsplash License: free for
+          commercial use, no attribution required), cropped to 4:5. Photo ids
+          in the filenames: unsplash.com/photos/<id>. */}
+      <Moment
+        label="Option G · Unsplash · Smiling at a wooden table"
+        src="/marketing/hero/unsplash-phone-eL4xIEuHzzk.webp"
+        alt="A woman in a warm knit sweater smiling at her phone at a wooden table"
+      />
+      <Moment
+        label="Option H · Unsplash · By the window, flowers"
+        src="/marketing/hero/unsplash-phone-J_wqNE9abJw.webp"
+        alt="A woman smiling at her phone by a sunny window, yellow flowers on the table"
+        flip
+      />
+      <Moment
+        label="Option I · Unsplash · White dress, coffee"
+        src="/marketing/hero/unsplash-phone-ODISF5O7R4o.webp"
+        alt="A woman in a white dress reading her phone with a coffee in hand"
+        flip
+      />
+      <Moment
+        label="Option J · Unsplash · Cream sweater, warm wall"
+        src="/marketing/hero/unsplash-phone-7ooBcYLI6Do.webp"
+        alt="A woman in a cream sweater looking at her phone against a warm wall"
+        flip
+      />
       <SignupSteps />
       <FAQ />
       <BottomCTA />
