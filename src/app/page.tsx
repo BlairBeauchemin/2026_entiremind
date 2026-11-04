@@ -2,6 +2,7 @@ import { Navigation } from "@/components/landing/navigation";
 import { Hero } from "@/components/landing/hero";
 import { Problem } from "@/components/landing/problem";
 import { Introducing } from "@/components/landing/introducing";
+import { Moment } from "@/components/landing/moment";
 import { SignupSteps } from "@/components/landing/signup-steps";
 import { FAQ } from "@/components/landing/faq";
 import { BottomCTA } from "@/components/landing/bottom-cta";
@@ -19,6 +20,12 @@ export default function Home() {
       <Hero />
       <Problem />
       <Introducing />
+      <Moment label="Option A · Sketching by the window" />
+      <Moment
+        label="Option B · Reading her text"
+        src="/marketing/hero/studio-woman-phone.webp"
+        alt="A woman at a sunlit table by the window, smiling as she reads a text on her phone"
+      />
       <SignupSteps />
       <FAQ />
       <BottomCTA />
