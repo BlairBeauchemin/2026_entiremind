@@ -9,8 +9,7 @@ const steps = [
   {
     number: "02",
     title: "Get your invitation.",
-    description:
-      "We'll let you know when access opens so you can decide whether to join.",
+    description: "You'll be the first to know when access opens.",
   },
   {
     number: "03",
@@ -32,7 +31,7 @@ export function SignupSteps() {
     >
       <div className="max-w-xl mx-auto px-6">
         <h2 className="font-serif text-heading text-ink text-balance mb-6">
-          Here&apos;s what to do next.
+          Your first step toward what you want is a small one.
         </h2>
         <ol className="divide-y divide-rule border-y border-rule">
           {steps.map((step) => (
