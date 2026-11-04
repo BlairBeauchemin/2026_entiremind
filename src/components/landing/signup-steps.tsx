@@ -9,8 +9,7 @@ const steps = [
   {
     number: "02",
     title: "Get your invitation.",
-    description:
-      "We'll let you know when access opens so you can decide whether to join.",
+    description: "You'll be the first to know when access opens.",
   },
   {
     number: "03",
