@@ -31,7 +31,7 @@ export function Hero() {
               Manifest your best life.
             </h1>
 
-            <p className="mt-5 lg:mt-8 text-lg lg:text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-relaxed font-sans text-balance">
+            <p className="mt-5 lg:mt-8 text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-normal lg:leading-relaxed font-sans text-balance">
               Lightly magical texts that weave inspiration into your day and
               help turn your intentions into reality.
             </p>
