@@ -25,17 +25,14 @@ const steps = [
 // existing reporting keeps working.
 export function SignupSteps() {
   return (
-    <section
-      id="section-signup-steps"
-      className="py-section relative z-10 border-t border-rule"
-    >
+    <section id="section-signup-steps" className="py-section relative z-10">
       <div className="max-w-xl mx-auto px-6">
         <h2 className="font-serif text-heading text-ink text-balance mb-6">
           Your first step toward what you want is a small one.
         </h2>
-        <ol className="divide-y divide-rule border-y border-rule">
+        <ol className="space-y-6">
           {steps.map((step) => (
-            <li key={step.number} className="flex gap-4 py-5">
+            <li key={step.number} className="flex gap-4">
               <span className="font-serif italic text-cobalt text-xl w-7 shrink-0 leading-snug">
                 {step.number}
               </span>
@@ -51,7 +48,7 @@ export function SignupSteps() {
           ))}
         </ol>
 
-        <div className="mt-8 text-center">
+        <div className="mt-10 text-center">
           <WaitlistButton location="intro" />
           <p className="text-sm text-muted mt-3 font-sans text-balance">
             Free to join. Your daily texts begin only when you enroll.

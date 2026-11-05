@@ -35,18 +35,12 @@ const faqs = [
 // Home and End move between questions. All answers start collapsed.
 export function FAQ() {
   return (
-    <section
-      id="section-faq"
-      className="py-section relative z-10 border-t border-rule"
-    >
+    <section id="section-faq" className="py-section relative z-10">
       <div className="max-w-xl mx-auto px-6">
         <h2 className="font-serif text-heading text-ink mb-6">
           Questions, answered
         </h2>
-        <Accordion.Root
-          type="multiple"
-          className="divide-y divide-rule border-y border-rule"
-        >
+        <Accordion.Root type="multiple">
           {faqs.map((faq) => (
             <Accordion.Item key={faq.question} value={faq.question}>
               <Accordion.Header>

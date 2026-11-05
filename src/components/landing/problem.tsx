@@ -6,7 +6,7 @@ export function Problem() {
   return (
     <section
       id="section-problem"
-      className="pt-section pb-12 lg:pb-16 relative z-10 border-t border-rule"
+      className="pt-section pb-12 lg:pb-16 relative z-10"
     >
       {/* Same frame as the intro below, so their left edges line up. */}
       <div className="max-w-xl lg:max-w-5xl mx-auto px-6">

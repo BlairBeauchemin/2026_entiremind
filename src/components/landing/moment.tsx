@@ -87,7 +87,7 @@ export function Moment() {
     <section
       id="section-moment"
       aria-label="An example conversation"
-      className="py-section relative z-10 border-t border-rule"
+      className="py-section relative z-10"
     >
       <div className="max-w-5xl mx-auto px-6 lg:flex lg:flex-row-reverse lg:items-center lg:justify-center">
         <div className="relative w-full lg:w-[460px] aspect-[4/5] shrink-0 overflow-hidden rounded-sm">
