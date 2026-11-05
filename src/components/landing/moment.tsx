@@ -87,11 +87,11 @@ export function Moment() {
     <section
       id="section-moment"
       aria-labelledby="section-moment-heading"
-      className="py-section relative z-10"
+      className="pt-4 pb-section lg:pt-12 relative z-10"
     >
       <h2
         id="section-moment-heading"
-        className="max-w-xl lg:max-w-2xl mx-auto px-6 mb-8 lg:mb-12 font-serif text-heading text-ink text-balance lg:text-center"
+        className="max-w-xl lg:max-w-2xl mx-auto px-6 mb-8 lg:mb-12 font-serif text-heading text-ink text-pretty lg:text-balance lg:text-center"
       >
         A little space for your intentions, woven into everyday life.
       </h2>
