@@ -28,7 +28,7 @@ const bubbleBase =
 
 // Pacing: the thread's beats, scaled together so the rhythm holds. The 500ms
 // bubble fade is separate and overlaps the next beat.
-const PACE = 0.85;
+const PACE = 0.765;
 const START_DELAY_MS = 400 * PACE;
 const TYPING_MS = 1300 * PACE;
 const REPLY_PAUSE_MS = 900 * PACE;
