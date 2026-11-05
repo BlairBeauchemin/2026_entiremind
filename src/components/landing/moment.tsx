@@ -26,10 +26,13 @@ import { WaitlistButton } from "./waitlist-button";
 const bubbleBase =
   "max-w-[85%] px-4 py-2.5 text-[0.9375rem] leading-snug shadow-[0_18px_40px_-22px_rgba(20,18,15,0.6)] transition-[opacity,transform] duration-500 ease-out";
 
-const START_DELAY_MS = 400;
-const TYPING_MS = 1300;
-const REPLY_PAUSE_MS = 900;
-const AFTER_BUBBLE_MS = 500;
+// Pacing: the thread's beats, scaled together so the rhythm holds. The 500ms
+// bubble fade is separate and overlaps the next beat.
+const PACE = 0.85;
+const START_DELAY_MS = 400 * PACE;
+const TYPING_MS = 1300 * PACE;
+const REPLY_PAUSE_MS = 900 * PACE;
+const AFTER_BUBBLE_MS = 500 * PACE;
 
 type Phase = { shown: number; typing: number | null };
 
