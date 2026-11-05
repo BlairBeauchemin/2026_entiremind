@@ -38,10 +38,7 @@ export function Introducing() {
           <h2 className="font-serif text-heading text-cobalt">
             Introducing Entiremind
           </h2>
-          <p className="mt-3 font-serif text-xl text-ink leading-snug text-balance">
-            A little space for your intentions, woven into everyday life.
-          </p>
-          <p className="mt-4 text-lg text-ink font-sans leading-normal">
+          <p className="mt-4 text-xl text-ink font-sans leading-snug">
             Thoughtful texts, shaped around what you want to create, so you can:
           </p>
           <ul className="mt-6 space-y-5">

@@ -86,9 +86,15 @@ export function Moment() {
   return (
     <section
       id="section-moment"
-      aria-label="An example conversation"
+      aria-labelledby="section-moment-heading"
       className="py-section relative z-10"
     >
+      <h2
+        id="section-moment-heading"
+        className="max-w-xl lg:max-w-2xl mx-auto px-6 mb-8 lg:mb-12 font-serif text-heading text-ink text-balance lg:text-center"
+      >
+        A little space for your intentions, woven into everyday life.
+      </h2>
       <div className="max-w-5xl mx-auto px-6 lg:flex lg:flex-row-reverse lg:items-center lg:justify-center">
         <div className="relative w-full lg:w-[460px] aspect-[4/5] shrink-0 overflow-hidden rounded-sm">
           <Image
