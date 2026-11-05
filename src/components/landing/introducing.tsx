@@ -1,4 +1,5 @@
 import { Compass, Sprout, Sun, type LucideIcon } from "lucide-react";
+import { WaitlistButton } from "./waitlist-button";
 
 const benefits: {
   icon: LucideIcon;
@@ -27,7 +28,7 @@ const benefits: {
 
 // The answer to the tension above it, on the same paper with no rule between:
 // what Entiremind is, then a lead-in sentence that the three benefits complete
-// (each starts with a verb). The demo conversation follows in its own section
+// (each starts with a verb), then a waitlist ask. The demo conversation follows in its own section
 // (Moment); the phone that used to sit here is kept as DemoPhone.
 export function Introducing() {
   return (
@@ -63,6 +64,15 @@ export function Introducing() {
               </li>
             ))}
           </ul>
+        </div>
+
+        {/* The ask, right after the promise. Centred like the page's other
+            mid-page asks. */}
+        <div className="mt-10 text-center">
+          <WaitlistButton location="benefits" />
+          <p className="text-sm text-muted mt-3 font-sans">
+            Free to join. Get an invitation when access opens.
+          </p>
         </div>
       </div>
     </section>

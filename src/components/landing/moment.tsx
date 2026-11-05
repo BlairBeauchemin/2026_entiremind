@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { DEMO_CONTENT } from "./hero-phone-content";
 import { heroInter } from "./hero-font";
-import { WaitlistButton } from "./waitlist-button";
 
 // The demo conversation layered over a photograph of someone receiving it, in
 // the hero collage's spirit: the photograph keeps its portrait shape and the
@@ -15,8 +14,6 @@ import { WaitlistButton } from "./waitlist-button";
 // DESIGN.md allows objects resting in a scene. Their radius is set
 // explicitly: the site's radius tokens are 2px, and a square message bubble
 // stops reading as a text.
-//
-// A waitlist ask follows the caption.
 //
 // The conversation plays in once, when the section scrolls into view: a
 // typing indicator before each Entiremind message, a short pause before each
@@ -150,15 +147,6 @@ export function Moment() {
       <p className="mt-6 text-center text-sm text-muted font-sans">
         An example conversation
       </p>
-
-      {/* The ask, while the demo is fresh. Its analytics location stays
-          'demo': it moved here with the demo when the intro's phone went. */}
-      <div className="mt-10 px-6 text-center">
-        <WaitlistButton location="demo" />
-        <p className="text-sm text-muted mt-3 font-sans">
-          Free to join. Get an invitation when access opens.
-        </p>
-      </div>
     </section>
   );
 }
