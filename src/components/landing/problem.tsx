@@ -4,10 +4,7 @@
 // between them.
 export function Problem() {
   return (
-    <section
-      id="section-problem"
-      className="pt-section pb-12 lg:pb-16 relative z-10"
-    >
+    <section id="section-problem" className="pb-flow relative z-10">
       {/* Same frame as the intro below, so their left edges line up. */}
       <div className="max-w-xl lg:max-w-5xl mx-auto px-6">
         <div className="max-w-xl">
@@ -17,7 +14,7 @@ export function Problem() {
             </span>
             <span className="block">It just gets lost in the day.</span>
           </h2>
-          <p className="mt-4 text-lg text-ink font-sans leading-normal">
+          <p className="mt-6 text-lg text-ink font-sans leading-normal">
             Between the things you need to do and the people who need you, your
             own intentions slip into the background.
           </p>

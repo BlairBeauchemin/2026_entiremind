@@ -32,13 +32,13 @@ const benefits: {
 // (Moment); the phone that used to sit here is kept as DemoPhone.
 export function Introducing() {
   return (
-    <section id="section-how-it-works" className="pb-section relative z-10">
+    <section id="section-how-it-works" className="pb-flow relative z-10">
       <div className="max-w-xl lg:max-w-2xl mx-auto px-6">
         <div>
           <h2 className="font-serif text-heading text-cobalt">
             Introducing Entiremind
           </h2>
-          <p className="mt-4 text-xl text-ink font-sans leading-snug">
+          <p className="mt-6 text-xl text-ink font-sans leading-snug">
             Thoughtful texts, shaped around what you want to create, so you can:
           </p>
           <ul className="mt-6 space-y-5">

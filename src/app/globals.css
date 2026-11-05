@@ -127,6 +127,10 @@
 
   /* ---- Rhythm ---------------------------------------------------------- */
   --spacing-section: clamp(56px, 9vw, 112px);
+  /* The one gap between consecutive sections on the same paper (landing):
+     each section carries it as bottom padding only, so the space between any
+     two is exactly this. 72px on phones, 128px on wide screens. */
+  --spacing-flow: clamp(72px, 9vw, 128px);
 }
 
 :root {

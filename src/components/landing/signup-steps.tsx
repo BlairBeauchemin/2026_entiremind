@@ -25,10 +25,7 @@ const steps = [
 // existing reporting keeps working.
 export function SignupSteps() {
   return (
-    <section
-      id="section-signup-steps"
-      className="pt-4 pb-section lg:pt-12 relative z-10"
-    >
+    <section id="section-signup-steps" className="pb-flow relative z-10">
       <div className="max-w-xl mx-auto px-6">
         <h2 className="font-serif text-heading text-ink text-balance mb-6">
           Your first step toward what you want is a small one.

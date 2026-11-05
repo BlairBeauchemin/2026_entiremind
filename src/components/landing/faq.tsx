@@ -35,10 +35,7 @@ const faqs = [
 // Home and End move between questions. All answers start collapsed.
 export function FAQ() {
   return (
-    <section
-      id="section-faq"
-      className="pt-4 pb-section lg:pt-12 relative z-10"
-    >
+    <section id="section-faq" className="pb-flow relative z-10">
       <div className="max-w-xl mx-auto px-6">
         <h2 className="font-serif text-heading text-ink mb-6">
           Questions, answered
