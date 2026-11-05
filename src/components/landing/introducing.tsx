@@ -1,8 +1,4 @@
-import { SmsPhone } from "./sms-phone";
-import { DEMO_CONTENT } from "./hero-phone-content";
-import { heroInter } from "./hero-font";
 import { Compass, Sprout, Sun, type LucideIcon } from "lucide-react";
-import { WaitlistButton } from "./waitlist-button";
 
 const benefits: {
   icon: LucideIcon;
@@ -29,36 +25,15 @@ const benefits: {
   },
 ];
 
-// SmsPhone renders on a square 1024-unit canvas with the device at
-// x 277–747, y 42–982. This box is the device's own size, and the canvas is
-// offset inside it so only the phone takes up layout space.
-function PhoneOnly() {
-  return (
-    <div className="relative aspect-[470/940]">
-      <div
-        className="absolute"
-        style={{
-          width: `${(1024 / 470) * 100}%`,
-          left: `${(-277 / 470) * 100}%`,
-          marginTop: `${(-42 / 470) * 100}%`,
-        }}
-      >
-        <SmsPhone content={DEMO_CONTENT} />
-      </div>
-    </div>
-  );
-}
-
 // The answer to the tension above it, on the same paper with no rule between:
-// what Entiremind is, a lead-in sentence that the three benefits complete
-// (each starts with a verb), then a phone showing one example exchange, and an
-// ask centred under the whole section. The copy and benefits come first on
-// mobile; from lg they sit beside the phone.
+// what Entiremind is, then a lead-in sentence that the three benefits complete
+// (each starts with a verb). The demo conversation follows in its own section
+// (Moment); the phone that used to sit here is kept as DemoPhone.
 export function Introducing() {
   return (
     <section id="section-how-it-works" className="pb-section relative z-10">
-      <div className="max-w-xl lg:max-w-5xl mx-auto px-6 grid lg:grid-cols-[minmax(0,1fr)_auto] gap-10 lg:gap-20 items-center">
-        <div className="max-w-xl">
+      <div className="max-w-xl lg:max-w-2xl mx-auto px-6">
+        <div>
           <h2 className="font-serif text-heading text-cobalt">
             Introducing Entiremind
           </h2>
@@ -89,26 +64,6 @@ export function Introducing() {
             ))}
           </ul>
         </div>
-
-        <figure>
-          <div
-            className={`mx-auto w-[300px] sm:w-[320px] ${heroInter.variable}`}
-          >
-            <PhoneOnly />
-          </div>
-          <figcaption className="mt-4 text-sm text-muted font-sans text-center">
-            An example conversation
-          </figcaption>
-        </figure>
-      </div>
-
-      {/* The ask spans the whole section, centred under both columns on
-          desktop; on mobile it simply follows the phone. */}
-      <div className="mt-10 lg:mt-14 px-6 text-center">
-        <WaitlistButton location="demo" />
-        <p className="text-sm text-muted mt-3 font-sans">
-          Free to join. Get an invitation when access opens.
-        </p>
       </div>
     </section>
   );
