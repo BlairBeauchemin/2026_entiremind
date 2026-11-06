@@ -9,7 +9,8 @@ import { BottomCTA } from "@/components/landing/bottom-cta";
 import { Footer } from "@/components/landing/footer";
 
 // One story, top to bottom: the promise, the familiar tension, what
-// Entiremind is and what it makes room for, and how joining works.
+// Entiremind is and what it makes room for, and how joining works. The FAQ
+// comes after the final ask, for anyone still deciding.
 export default function Home() {
   return (
     <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
@@ -22,8 +23,8 @@ export default function Home() {
       <Introducing />
       <Moment />
       <SignupSteps />
-      <FAQ />
       <BottomCTA />
+      <FAQ />
       <Footer />
     </div>
   );
