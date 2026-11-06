@@ -346,6 +346,22 @@ to make phone optional (form + API validation), reword the modal ("Be the first 
 Entiremind via SMS", "Reserve My Spot"), and fix the thank-you page line "We'll text you when
 it's your turn." Any change to the consent flow may need Twilio re-approval.
 
+**Landing page to-do list (founder, November 2026)** — work happens on
+`claude/landing-waitlist-v2`; main only when the founder says "push".
+
+1. **Update the FAQ** — copy in `src/components/landing/faq.tsx`. (Earlier note: the "you'll
+   choose then whether to enroll" answer may not match signup step 2.)
+2. **Spacing review** — the founder finds the page a little compact and wants feedback. All
+   gaps between sections come from one token, `--spacing-flow` in `src/app/globals.css`
+   (72px on phones, 128px wide); every section heading sits 24px above what follows.
+3. **Inline name + email form** — build a version that asks for name and email in a real form
+   on the page instead of the pop-up modal, to compare. This overlaps the open follow-up
+   above (the Twilio-approved modal requires phone + SMS consent).
+4. **Ad tracking setup (next big project)** — GTM is already live (`GTM-WBJQRSNT`, from
+   `siteConfig.gtmId`, overridable with `NEXT_PUBLIC_GTM_ID`), and the site already pushes
+   typed dataLayer events (`src/lib/analytics.ts`). What remains is inside the GTM UI: GA4,
+   Google Ads, Meta and TikTok tags. Step-by-step guide: `docs/marketing/gtm-setup.md`.
+
 #### Founder Review Interface
 
 - **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer and scheduling UI
