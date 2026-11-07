@@ -27,7 +27,7 @@ export function SignupSteps() {
   return (
     <section id="section-signup-steps" className="pb-flow relative z-10">
       <div className="max-w-xl mx-auto px-6">
-        <h2 className="font-serif text-heading text-ink text-balance mb-6">
+        <h2 className="font-serif text-heading text-ink text-pretty mb-6">
           Your first step toward what you want is a small one.
         </h2>
         <ol className="space-y-8">
