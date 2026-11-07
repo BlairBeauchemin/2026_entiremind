@@ -26,8 +26,8 @@ const bubbleBase =
 // Pacing: the thread's beats, scaled together so the rhythm holds. The 500ms
 // bubble fade is separate and overlaps the next beat.
 const PACE = 0.765;
-// Short on purpose: the thread starts as the photograph arrives, not after.
-const START_DELAY_MS = 100;
+// A beat after the photograph is mostly in view.
+const START_DELAY_MS = 250;
 const TYPING_MS = 1300 * PACE;
 const REPLY_PAUSE_MS = 900 * PACE;
 const AFTER_BUBBLE_MS = 500 * PACE;
@@ -69,8 +69,8 @@ export function Moment() {
       });
     };
 
-    // Start as soon as the woman comes into view (a quarter of the photo on
-    // screen), not when the bubbles do: on phones they sit over the bottom of
+    // Start once most of the woman is in view (60% of the photo on screen),
+    // not when the bubbles are: on phones they sit over the bottom of
     // the photo, so waiting for them made the thread start late. The list is
     // observed too, in case it ever arrives first.
     const observer = new IntersectionObserver(
@@ -80,7 +80,7 @@ export function Moment() {
           play();
         }
       },
-      { threshold: 0.25 },
+      { threshold: 0.6 },
     );
     observer.observe(photo);
     observer.observe(list);
