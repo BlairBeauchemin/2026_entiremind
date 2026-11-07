@@ -26,7 +26,8 @@ const bubbleBase =
 // Pacing: the thread's beats, scaled together so the rhythm holds. The 500ms
 // bubble fade is separate and overlaps the next beat.
 const PACE = 0.765;
-const START_DELAY_MS = 400 * PACE;
+// Short on purpose: the thread starts as the photograph arrives, not after.
+const START_DELAY_MS = 100;
 const TYPING_MS = 1300 * PACE;
 const REPLY_PAUSE_MS = 900 * PACE;
 const AFTER_BUBBLE_MS = 500 * PACE;
@@ -35,13 +36,15 @@ type Phase = { shown: number; typing: number | null };
 
 export function Moment() {
   const listRef = useRef<HTMLOListElement>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
   const bubbles = DEMO_CONTENT.bubbles;
   // null until mounted: the server and no-JS render everything.
   const [phase, setPhase] = useState<Phase | null>(null);
 
   useEffect(() => {
     const list = listRef.current;
-    if (!list) return;
+    const photo = photoRef.current;
+    if (!list || !photo) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const timers: number[] = [];
@@ -66,6 +69,10 @@ export function Moment() {
       });
     };
 
+    // Start as soon as the woman comes into view (a quarter of the photo on
+    // screen), not when the bubbles do: on phones they sit over the bottom of
+    // the photo, so waiting for them made the thread start late. The list is
+    // observed too, in case it ever arrives first.
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
@@ -73,8 +80,9 @@ export function Moment() {
           play();
         }
       },
-      { threshold: 0.35 },
+      { threshold: 0.25 },
     );
+    observer.observe(photo);
     observer.observe(list);
 
     return () => {
@@ -96,7 +104,10 @@ export function Moment() {
         A little space for your intentions, woven into everyday life.
       </h2>
       <div className="max-w-5xl mx-auto px-6 lg:flex lg:flex-row-reverse lg:items-center lg:justify-center">
-        <div className="relative w-full lg:w-[460px] aspect-[4/5] shrink-0 overflow-hidden rounded-sm">
+        <div
+          ref={photoRef}
+          className="relative w-full lg:w-[460px] aspect-[4/5] shrink-0 overflow-hidden rounded-sm"
+        >
           <Image
             // Unsplash, unsplash.com/photos/7ooBcYLI6Do (Unsplash License:
             // free for commercial use, attribution not required). Cropped to
