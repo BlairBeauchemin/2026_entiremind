@@ -353,9 +353,9 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
    just above the footer.
 1. **Update the FAQ** — copy in `src/components/landing/faq.tsx`. (Earlier note: the "you'll
    choose then whether to enroll" answer may not match signup step 2.)
-2. **Spacing review** — the founder finds the page a little compact and wants feedback. All
-   gaps between sections come from one token, `--spacing-flow` in `src/app/globals.css`
-   (72px on phones, 128px wide); every section heading sits 24px above what follows.
+2. ~~**Spacing review**~~ — done and live (November 2026): reading text at 1.625 line height,
+   8px title→description, 32px between bullets/steps, 28px phone headings, and the section
+   gap token `--spacing-flow` in `src/app/globals.css` at 88px on phones / 144px wide.
 3. **Inline name + email form** — build a version that asks for name and email in a real form
    on the page instead of the pop-up modal, to compare. This overlaps the open follow-up
    above (the Twilio-approved modal requires phone + SMS consent).
