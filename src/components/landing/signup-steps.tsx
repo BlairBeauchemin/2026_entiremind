@@ -27,10 +27,10 @@ export function SignupSteps() {
   return (
     <section id="section-signup-steps" className="pb-flow relative z-10">
       <div className="max-w-xl mx-auto px-6">
-        <h2 className="font-serif text-heading text-ink text-balance mb-6">
+        <h2 className="font-serif text-heading text-ink text-pretty mb-6">
           Your first step toward what you want is a small one.
         </h2>
-        <ol className="space-y-6">
+        <ol className="space-y-8">
           {steps.map((step) => (
             <li key={step.number} className="flex gap-4">
               <span className="font-serif italic text-cobalt text-xl w-7 shrink-0 leading-snug">
@@ -40,7 +40,7 @@ export function SignupSteps() {
                 <h3 className="font-serif text-xl text-ink leading-snug">
                   {step.title}
                 </h3>
-                <p className="mt-1 text-base text-muted font-sans leading-normal">
+                <p className="mt-2 text-base text-muted font-sans leading-relaxed">
                   {step.description}
                 </p>
               </div>
@@ -48,7 +48,7 @@ export function SignupSteps() {
           ))}
         </ol>
 
-        <div className="mt-10 text-center">
+        <div className="mt-12 text-center">
           <WaitlistButton location="intro" />
           <p className="text-sm text-muted mt-3 font-sans text-balance">
             Free to join. Your daily texts begin only when you enroll.

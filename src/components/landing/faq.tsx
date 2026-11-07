@@ -39,7 +39,7 @@ const faqs = [
 // not already supply, so the gap to the footer matches the rest of the page.
 export function FAQ() {
   return (
-    <section id="section-faq" className="pt-flow pb-2 lg:pb-16 relative z-10">
+    <section id="section-faq" className="pt-flow pb-6 lg:pb-20 relative z-10">
       <div className="max-w-xl mx-auto px-6">
         <h2 className="font-serif text-heading text-ink mb-6">
           Questions, answered
@@ -56,7 +56,7 @@ export function FAQ() {
                   />
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="pb-5 pr-9 text-base text-muted font-sans leading-normal">
+              <Accordion.Content className="pb-5 pr-9 text-base text-muted font-sans leading-relaxed">
                 {faq.answer}
               </Accordion.Content>
             </Accordion.Item>

@@ -24,7 +24,7 @@ typography:
     letterSpacing: "-0.01em"
   heading:
     fontFamily: "Prata, Georgia, serif"
-    fontSize: "clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem)"
+    fontSize: "clamp(1.75rem, 1.1rem + 1.8vw, 2.25rem)"
     fontWeight: 400
     lineHeight: 1.18
     letterSpacing: "normal"

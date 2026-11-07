@@ -38,10 +38,10 @@ export function Introducing() {
           <h2 className="font-serif text-heading text-cobalt">
             Introducing Entiremind
           </h2>
-          <p className="mt-6 text-xl text-ink font-sans leading-snug">
+          <p className="mt-6 text-xl text-ink font-sans leading-normal text-pretty">
             Thoughtful texts, shaped around what you want to create, so you can:
           </p>
-          <ul className="mt-6 space-y-5">
+          <ul className="mt-6 space-y-8">
             {benefits.map(({ icon: Icon, title, description }) => (
               <li key={title} className="flex gap-4">
                 <span
@@ -54,7 +54,7 @@ export function Introducing() {
                   <h3 className="font-serif text-lg text-ink leading-snug">
                     {title}
                   </h3>
-                  <p className="mt-1 text-base text-muted font-sans leading-normal">
+                  <p className="mt-2 text-base text-muted font-sans leading-relaxed">
                     {description}
                   </p>
                 </div>
@@ -65,7 +65,7 @@ export function Introducing() {
 
         {/* The ask, right after the promise. Centred like the page's other
             mid-page asks. */}
-        <div className="mt-10 text-center">
+        <div className="mt-12 text-center">
           <WaitlistButton location="benefits" />
           <p className="text-sm text-muted mt-3 font-sans">
             Free to join. Get an invitation when access opens.

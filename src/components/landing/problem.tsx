@@ -14,11 +14,11 @@ export function Problem() {
             </span>
             <span className="block">It just gets lost in the day.</span>
           </h2>
-          <p className="mt-6 text-lg text-ink font-sans leading-normal">
+          <p className="mt-6 text-lg text-ink font-sans leading-relaxed">
             Between the things you need to do and the people who need you, your
             own intentions slip into the background.
           </p>
-          <p className="mt-4 text-lg text-ink font-sans leading-normal">
+          <p className="mt-5 text-lg text-ink font-sans leading-relaxed">
             Until another day becomes &ldquo;I&apos;ll start tomorrow.&rdquo;
           </p>
         </div>
