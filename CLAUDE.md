@@ -355,7 +355,7 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
    choose then whether to enroll" answer may not match signup step 2.)
 2. ~~**Spacing review**~~ — done and live (November 2026): reading text at 1.625 line height,
    8px title→description, 32px between bullets/steps, 28px phone headings, and the section
-   gap token `--spacing-flow` in `src/app/globals.css` at 88px on phones / 144px wide.
+   gap token `--spacing-flow` in `src/app/globals.css` at 80px on phones / 144px wide.
 3. **Inline name + email form** — build a version that asks for name and email in a real form
    on the page instead of the pop-up modal, to compare. This overlaps the open follow-up
    above (the Twilio-approved modal requires phone + SMS consent).
