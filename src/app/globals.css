@@ -88,7 +88,7 @@
   --text-display--line-height: 1.08;
   --text-display--letter-spacing: -0.01em;
 
-  --text-heading: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  --text-heading: clamp(1.75rem, 1.1rem + 1.8vw, 2.25rem);
   --text-heading--line-height: 1.18;
 
   --text-body: 1.0625rem;
@@ -129,8 +129,8 @@
   --spacing-section: clamp(56px, 9vw, 112px);
   /* The one gap between consecutive sections on the same paper (landing):
      each section carries it as bottom padding only, so the space between any
-     two is exactly this. 72px on phones, 128px on wide screens. */
-  --spacing-flow: clamp(72px, 9vw, 128px);
+     two is exactly this. 88px on phones, 144px on wide screens. */
+  --spacing-flow: clamp(88px, 10vw, 144px);
 }
 
 :root {

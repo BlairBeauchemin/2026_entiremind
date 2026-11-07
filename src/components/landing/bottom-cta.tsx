@@ -19,7 +19,7 @@ export function BottomCTA() {
           <h2 className="font-serif text-heading text-linen text-balance">
             Come back to <em className="italic">what you truly want.</em>
           </h2>
-          <p className="mt-6 text-lg text-linen font-sans leading-normal text-balance">
+          <p className="mt-6 text-lg text-linen font-sans leading-relaxed text-balance">
             Join the waitlist for an invitation when Entiremind opens.
           </p>
           <button
