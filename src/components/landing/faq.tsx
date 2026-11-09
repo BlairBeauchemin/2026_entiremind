@@ -3,10 +3,10 @@
 import { Accordion } from "radix-ui";
 import { ChevronDown } from "lucide-react";
 
-// Answers describe what the waitlist actually does today: the approved form
-// collects name, email and phone with optional SMS consent, nothing is texted
-// to leads before launch, and enrollment in the daily texts happens
-// separately when access opens.
+// Answers describe what the waitlist actually does today: the on-page form
+// collects first name and email, nothing is texted to leads before launch,
+// and enrollment in the daily texts (phone + SMS consent) happens separately
+// when access opens.
 const faqs = [
   {
     question: "What happens when I join?",

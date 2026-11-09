@@ -49,16 +49,33 @@ export function trackEvent(event: string, params: DataLayerObject = {}) {
 }
 
 export type CtaLocation = "nav" | "hero" | "benefits" | "intro" | "bottom_cta";
-export type ModalVersion = "single" | "two_step";
+export type ModalVersion = "single" | "two_step" | "inline";
+/** Where an on-page (inline) waitlist form sits. */
+export type FormLocation = "hero" | "bottom_cta";
 
 export const analytics = {
-  /** A landing-page CTA opened the waitlist modal. */
+  /**
+   * A landing-page CTA asked for the waitlist form: it opened the modal or,
+   * on the email-first page, scrolled to an on-page form.
+   */
   leadFormOpen(ctaLocation: CtaLocation) {
     trackEvent("lead_form_open", { cta_location: ctaLocation });
   },
 
+  /** Someone first focused a field of an on-page (inline) waitlist form. */
+  leadFormStart(formLocation: FormLocation) {
+    trackEvent("lead_form_start", {
+      form_location: formLocation,
+      modal_version: "inline",
+    });
+  },
+
   /** Waitlist form submitted successfully (lead saved). */
-  generateLead(params: { lead_source: string; modal_version: ModalVersion }) {
+  generateLead(params: {
+    lead_source: string;
+    modal_version: ModalVersion;
+    form_location?: FormLocation;
+  }) {
     trackEvent("generate_lead", { currency: CURRENCY, value: 0, ...params });
   },
 

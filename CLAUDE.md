@@ -356,9 +356,15 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
 2. ~~**Spacing review**~~ — done and live (November 2026): reading text at 1.625 line height,
    8px title→description, 32px between bullets/steps, 28px phone headings, and the section
    gap token `--spacing-flow` in `src/app/globals.css` at 80px on phones / 144px wide.
-3. **Inline name + email form** — build a version that asks for name and email in a real form
-   on the page instead of the pop-up modal, to compare. This overlaps the open follow-up
-   above (the Twilio-approved modal requires phone + SMS consent).
+3. **Inline name + email form** — built on branch `claude/landing-email-first` (November
+   2026), not live yet. First name + email forms in the hero (`#join`) and the blue final
+   section (`EmailWaitlistForm`); the header and mid-page buttons scroll to the next form
+   (`waitlist-scroll.ts`; other pages link to `/#join`). No phone, no SMS consent; success
+   goes to `/thank-you?via=email`. `/api/leads` now accepts a missing phone (still validates
+   one that is sent) and has a honeypot (`website`). Email-only leads are the rows with
+   `phone IS NULL`. **The Twilio-approved pop-up flow is preserved on branch
+   `claude/landing-sms-consent-flow`** (an exact copy of main at c5b7570) for later tweaks;
+   its components are also still in the codebase, unused on the email-first branch.
 4. **Ad tracking setup (next big project)** — GTM is already live (`GTM-WBJQRSNT`, from
    `siteConfig.gtmId`, overridable with `NEXT_PUBLIC_GTM_ID`), and the site already pushes
    typed dataLayer events (`src/lib/analytics.ts`). What remains is inside the GTM UI: GA4,

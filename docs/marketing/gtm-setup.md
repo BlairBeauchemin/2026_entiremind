@@ -40,8 +40,9 @@ tags.
 
 | dataLayer event | Fires when | Parameters |
 |---|---|---|
-| `lead_form_open` | Landing CTA opens the waitlist modal | `cta_location` (nav / hero / benefits / intro / bottom_cta) |
-| `generate_lead` | Waitlist form submitted OK (then user lands on `/thank-you`) | `lead_source`, `modal_version`, `currency`, `value: 0` |
+| `lead_form_open` | Landing CTA opens the waitlist modal (or, on the email-first page, scrolls to an on-page form) | `cta_location` (nav / hero / benefits / intro / bottom_cta) |
+| `lead_form_start` | Email-first page only: first focus in an on-page form | `form_location` (hero / bottom_cta), `modal_version: inline` |
+| `generate_lead` | Waitlist form submitted OK (then user lands on `/thank-you`; email-first signups land on `/thank-you?via=email`) | `lead_source` (`waitlist_modal` / `waitlist_inline`), `modal_version` (single / two_step / inline), `form_location` (inline only), `currency`, `value: 0` |
 | `sign_up` | First visit to `/onboarding` after auth (once per session) | `method` |
 | `onboarding_complete` | Onboarding finished, welcome SMS queued | — |
 | `begin_checkout` | Upgrade clicked, redirecting to Stripe | `currency`, `value`, `items[]` |
@@ -56,7 +57,7 @@ Purchase values are the placeholder prices in `src/lib/analytics.ts`
 
 **Data Layer Variables** (Variables → New → Data Layer Variable), named
 exactly after the key: `value`, `currency`, `transaction_id`, `items`,
-`cta_location`, `lead_source`, `modal_version`, `method`.
+`cta_location`, `form_location`, `lead_source`, `modal_version`, `method`.
 
 **Constants** (Variables → New → Constant) so you paste each platform ID
 once: `GA4 Measurement ID`, `Ads Conversion ID`, `Meta Pixel ID`,

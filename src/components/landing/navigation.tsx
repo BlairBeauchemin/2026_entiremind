@@ -3,16 +3,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { WaitlistModal } from "./waitlist-modal";
 import { analytics } from "@/lib/analytics";
+import { goToWaitlistForm } from "./waitlist-scroll";
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => {
+  // Email-first: the header button brings the visitor to the next waitlist
+  // form on the page; on pages without one, to the hero form on the home page.
+  const goToForm = () => {
     analytics.leadFormOpen("nav");
-    setIsModalOpen(true);
+    setMobileMenuOpen(false);
+    if (!goToWaitlistForm()) window.location.href = "/#join";
   };
 
   return (
@@ -52,7 +54,7 @@ export function Navigation() {
                 Login
               </Link>
               <button
-                onClick={openModal}
+                onClick={goToForm}
                 className="bg-cobalt text-linen px-6 min-h-11 rounded-sm text-sm font-medium hover:bg-cobalt-deep transition-all duration-300"
               >
                 Join waitlist
@@ -62,7 +64,7 @@ export function Navigation() {
             {/* Mobile buttons */}
             <div className="flex md:hidden items-center gap-4">
               <button
-                onClick={openModal}
+                onClick={goToForm}
                 className="bg-cobalt text-linen px-4 min-h-11 rounded-sm text-sm font-medium whitespace-nowrap hover:bg-cobalt-deep transition-colors duration-300"
               >
                 Join waitlist
@@ -109,11 +111,6 @@ export function Navigation() {
           </div>
         )}
       </nav>
-
-      <WaitlistModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </>
   );
 }

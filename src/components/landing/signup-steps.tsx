@@ -4,7 +4,7 @@ const steps = [
   {
     number: "01",
     title: "Join the waitlist.",
-    description: "Share your name, email, and phone to get launch updates.",
+    description: "Share your name and email to get launch updates.",
   },
   {
     number: "02",

@@ -7,7 +7,16 @@ export const metadata = {
   description: "Thank you for joining the Entiremind waitlist.",
 };
 
-export default function ThankYouPage() {
+// Email-first signups (the on-page form, no phone) arrive with ?via=email
+// and are promised an email; pop-up signups gave a phone and SMS choice.
+export default async function ThankYouPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ via?: string }>;
+}) {
+  const { via } = await searchParams;
+  const viaEmail = via === "email";
+
   return (
     <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
       {/* Background Grain Texture */}
@@ -27,13 +36,22 @@ export default function ThankYouPage() {
             You&apos;re on the list
           </h1>
 
-          <p className="text-lg text-muted font-light leading-relaxed mb-4">
-            We&apos;ll text you when it&apos;s your turn to begin the loop.
-          </p>
+          {viaEmail ? (
+            <p className="text-lg text-muted font-light leading-relaxed mb-4">
+              We&apos;ll email your invitation when access opens. Keep an eye on
+              your inbox.
+            </p>
+          ) : (
+            <>
+              <p className="text-lg text-muted font-light leading-relaxed mb-4">
+                We&apos;ll text you when it&apos;s your turn to begin the loop.
+              </p>
 
-          <p className="text-sm text-muted font-light">
-            Keep an eye on your inbox for updates.
-          </p>
+              <p className="text-sm text-muted font-light">
+                Keep an eye on your inbox for updates.
+              </p>
+            </>
+          )}
         </div>
       </main>
 

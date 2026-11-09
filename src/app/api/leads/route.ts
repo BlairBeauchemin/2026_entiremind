@@ -7,6 +7,15 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, email, phone, smsConsent, smsConsentLanguage, source } = body;
 
+    // Honeypot: a field people never see. Bots that fill every input get a
+    // normal-looking success and nothing is stored.
+    if (typeof body.website === "string" && body.website.trim()) {
+      return NextResponse.json(
+        { success: true, message: "Lead captured" },
+        { status: 201 },
+      );
+    }
+
     // Attribution is client-supplied, so only accept known values —
     // everything else falls back to the default landing_page source.
     const validatedSource =
@@ -28,9 +37,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    if (!hasPhone) {
+    // Phone is optional: the pop-up (the flow approved for A2P 10DLC) sends
+    // one with an SMS consent choice; the email-first form on the page sends
+    // name and email only. A phone that is sent is still validated below.
+    if (phone != null && phone !== "" && typeof phone !== "string") {
       return NextResponse.json(
-        { error: "Phone number is required" },
+        { error: "Invalid phone number" },
         { status: 400 },
       );
     }
@@ -40,7 +52,7 @@ export async function POST(request: NextRequest) {
     if (
       name.length > 200 ||
       email.length > 320 ||
-      phone.length > 20 ||
+      (hasPhone && phone.length > 20) ||
       (smsConsentLanguage != null &&
         (typeof smsConsentLanguage !== "string" ||
           smsConsentLanguage.length > 1000))
@@ -61,13 +73,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate phone format
-    const phoneDigits = phone.replace(/\D/g, "");
-    if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-      return NextResponse.json(
-        { error: "Invalid phone number" },
-        { status: 400 },
-      );
+    // Validate phone format, when one was given
+    if (hasPhone) {
+      const phoneDigits = phone.replace(/\D/g, "");
+      if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+        return NextResponse.json(
+          { error: "Invalid phone number" },
+          { status: 400 },
+        );
+      }
     }
 
     // Check if Supabase is configured
@@ -101,16 +115,18 @@ export async function POST(request: NextRequest) {
       ? forwardedFor.split(",")[0].trim()
       : (request.headers.get("x-real-ip") ?? "unknown");
 
-    // Insert lead into database
+    // Insert lead into database. SMS consent only means something alongside
+    // a phone number, so an email-only signup records consent as false (with
+    // when and from where, as the quiz does for its phone-less leads).
     const { error } = await supabase.from("leads").insert({
       name: name.trim(),
       email: email.toLowerCase().trim(),
-      phone: phone.trim(),
+      phone: hasPhone ? phone.trim() : null,
       source: validatedSource,
-      sms_consent: smsConsent === true,
+      sms_consent: hasPhone ? smsConsent === true : false,
       sms_consent_timestamp: new Date().toISOString(),
       sms_consent_ip: consentIp,
-      sms_consent_language: smsConsentLanguage ?? null,
+      sms_consent_language: hasPhone ? (smsConsentLanguage ?? null) : null,
     });
 
     if (error) {

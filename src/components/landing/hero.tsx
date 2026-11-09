@@ -1,23 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { HeroScene } from "./hero-scene";
 import { heroInter } from "./hero-font";
-import { WaitlistModal } from "./waitlist-modal";
-import { analytics } from "@/lib/analytics";
+import { EmailWaitlistForm } from "./email-waitlist-form";
 
 // The prints, board and phone drift gently. Off under reduced motion.
 const HERO_MOTION = ["float-strong"] as const;
 
 export function Hero() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => {
-    analytics.leadFormOpen("hero");
-    setIsModalOpen(true);
-  };
-
   return (
     <>
       <header
@@ -36,16 +27,14 @@ export function Hero() {
               help turn your intentions into reality.
             </p>
 
-            <div className="mt-8 lg:mt-10">
-              <button
-                onClick={openModal}
-                className="bg-cobalt text-linen px-10 py-4 rounded-sm text-lg font-medium hover:bg-cobalt-deep transition-all duration-300 font-sans"
-              >
-                Join the waitlist
-              </button>
-              <p className="text-sm text-muted mt-3 font-sans">
-                Free to join. Get an invitation when access opens.
-              </p>
+            {/* The ask itself, on the page: first name and email. Centred
+                under the copy on phones, left-aligned with it from lg. */}
+            <div className="mt-8 lg:mt-10 max-w-md mx-auto lg:mx-0 lg:max-w-lg text-center lg:text-left">
+              <EmailWaitlistForm
+                id="join"
+                location="hero"
+                note="Free to join. Get an invitation when access opens."
+              />
             </div>
           </div>
 
@@ -74,11 +63,6 @@ export function Hero() {
           </motion.div>
         </div>
       </header>
-
-      <WaitlistModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </>
   );
 }
