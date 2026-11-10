@@ -365,6 +365,11 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
    `phone IS NULL`. **The Twilio-approved pop-up flow is preserved on branch
    `claude/landing-sms-consent-flow`** (an exact copy of main at c5b7570) for later tweaks;
    its components are also still in the codebase, unused on the email-first branch.
+   **Two email-only variants to test** (`signup-variant.tsx`): "form" (the above) and
+   "modal" (every ask opens `WaitlistModalEmail`, the same name + email form in a pop-up).
+   `/lp/form` and `/lp/modal` pin one each (noindex, canonical `/`); `/` follows
+   `NEXT_PUBLIC_SIGNUP_VARIANT` (default `form`). Analytics `modal_version` is `inline` or
+   `email_modal`.
 4. **Ad tracking setup (next big project)** — GTM is already live (`GTM-WBJQRSNT`, from
    `siteConfig.gtmId`, overridable with `NEXT_PUBLIC_GTM_ID`), and the site already pushes
    typed dataLayer events (`src/lib/analytics.ts`). What remains is inside the GTM UI: GA4,

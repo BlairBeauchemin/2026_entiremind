@@ -10,21 +10,28 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 type FieldErrors = { name?: string; email?: string };
 
 /**
- * The email-first waitlist form: first name and email, on the page itself.
- * It asks for no phone number and no SMS consent, so it sits outside the
- * pop-up flow approved for A2P 10DLC; a phone is asked for at enrollment.
+ * The email-first waitlist form: first name and email. It asks for no phone
+ * number and no SMS consent, so it sits outside the pop-up flow approved for
+ * A2P 10DLC (kept on branch claude/landing-sms-consent-flow); a phone is
+ * asked for at enrollment.
  *
- * Two tones: "light" on the linen page (the hero) and "cobalt" inside the
- * final blue band. Success goes to /thank-you?via=email, whose copy promises
- * an email rather than a text.
+ * One form, two homes, so a test between them changes only the container:
+ * - kind "inline": on the page (the hero, and the final blue band);
+ * - kind "modal": inside the email-only pop-up (WaitlistModalEmail).
+ *
+ * Two tones: "light" on linen or surface, and "cobalt" inside the blue band.
+ * Success goes to /thank-you?via=email, whose copy promises an email.
  */
 export function EmailWaitlistForm({
   location,
+  kind = "inline",
   tone = "light",
   id,
   note,
 }: {
+  /** The on-page spot, or the ask that opened the pop-up. */
   location: FormLocation;
+  kind?: "inline" | "modal";
   tone?: "light" | "cobalt";
   /** The hero's form is `join`, the target of `/#join` from other pages. */
   id?: string;
@@ -45,11 +52,12 @@ export function EmailWaitlistForm({
   const started = useRef(false);
 
   const cobalt = tone === "cobalt";
+  const version = kind === "modal" ? "email_modal" : "inline";
 
   const onFirstFocus = () => {
     if (started.current) return;
     started.current = true;
-    analytics.leadFormStart(location);
+    analytics.leadFormStart(location, version);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,8 +98,9 @@ export function EmailWaitlistForm({
       }
 
       analytics.generateLead({
-        lead_source: "waitlist_inline",
-        modal_version: "inline",
+        lead_source:
+          kind === "modal" ? "waitlist_email_modal" : "waitlist_inline",
+        modal_version: version,
         form_location: location,
       });
       router.push("/thank-you?via=email");
@@ -115,13 +124,16 @@ export function EmailWaitlistForm({
   return (
     <form
       id={id}
-      data-waitlist-form
+      // Only on-page forms are scroll targets for the other asks.
+      data-waitlist-form={kind === "inline" ? "" : undefined}
       onSubmit={handleSubmit}
       noValidate
       aria-label="Join the waitlist"
       className="w-full scroll-mt-32"
     >
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div
+        className={`grid gap-3 ${kind === "inline" ? "sm:grid-cols-2" : ""}`}
+      >
         <div>
           <label htmlFor={`${uid}-name`} className="sr-only">
             First name
@@ -197,7 +209,7 @@ export function EmailWaitlistForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className={`mt-4 w-full sm:w-auto px-10 py-4 rounded-sm text-lg font-medium font-sans transition-all duration-300 disabled:opacity-70 disabled:cursor-wait focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+        className={`mt-4 w-full ${kind === "inline" ? "sm:w-auto" : ""} px-10 py-4 rounded-sm text-lg font-medium font-sans transition-all duration-300 disabled:opacity-70 disabled:cursor-wait focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
           cobalt
             ? "bg-linen text-cobalt-deep hover:bg-surface focus-visible:ring-linen focus-visible:ring-offset-cobalt"
             : "bg-cobalt text-linen hover:bg-cobalt-deep focus-visible:ring-cobalt focus-visible:ring-offset-linen"

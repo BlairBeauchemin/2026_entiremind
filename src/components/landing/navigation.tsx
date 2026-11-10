@@ -3,18 +3,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { analytics } from "@/lib/analytics";
-import { goToWaitlistForm } from "./waitlist-scroll";
+import { useWaitlistAsk } from "./signup-variant";
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Email-first: the header button brings the visitor to the next waitlist
-  // form on the page; on pages without one, to the hero form on the home page.
+  // Email-first: the header button opens the email-only pop-up, or brings the
+  // visitor to the next form on the page (on pages without one, the home
+  // page's), depending on the signup variant (see signup-variant.tsx).
+  const { ask, modal } = useWaitlistAsk("nav");
   const goToForm = () => {
-    analytics.leadFormOpen("nav");
     setMobileMenuOpen(false);
-    if (!goToWaitlistForm()) window.location.href = "/#join";
+    ask();
   };
 
   return (
@@ -111,6 +111,7 @@ export function Navigation() {
           </div>
         )}
       </nav>
+      {modal}
     </>
   );
 }

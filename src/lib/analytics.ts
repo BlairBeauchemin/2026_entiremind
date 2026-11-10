@@ -49,9 +49,14 @@ export function trackEvent(event: string, params: DataLayerObject = {}) {
 }
 
 export type CtaLocation = "nav" | "hero" | "benefits" | "intro" | "bottom_cta";
-export type ModalVersion = "single" | "two_step" | "inline";
-/** Where an on-page (inline) waitlist form sits. */
-export type FormLocation = "hero" | "bottom_cta";
+/**
+ * Which signup UI produced the event: the SMS-consent modals ("single",
+ * "two_step"), the email-only form on the page ("inline"), or the email-only
+ * pop-up ("email_modal").
+ */
+export type ModalVersion = "single" | "two_step" | "inline" | "email_modal";
+/** Where the email-only form was: on the page, or the ask that opened it. */
+export type FormLocation = CtaLocation;
 
 export const analytics = {
   /**
@@ -62,11 +67,14 @@ export const analytics = {
     trackEvent("lead_form_open", { cta_location: ctaLocation });
   },
 
-  /** Someone first focused a field of an on-page (inline) waitlist form. */
-  leadFormStart(formLocation: FormLocation) {
+  /** Someone first focused a field of an email-only waitlist form. */
+  leadFormStart(
+    formLocation: FormLocation,
+    modalVersion: "inline" | "email_modal",
+  ) {
     trackEvent("lead_form_start", {
       form_location: formLocation,
-      modal_version: "inline",
+      modal_version: modalVersion,
     });
   },
 

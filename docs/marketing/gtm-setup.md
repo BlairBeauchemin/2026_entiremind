@@ -40,9 +40,9 @@ tags.
 
 | dataLayer event | Fires when | Parameters |
 |---|---|---|
-| `lead_form_open` | Landing CTA opens the waitlist modal (or, on the email-first page, scrolls to an on-page form) | `cta_location` (nav / hero / benefits / intro / bottom_cta) |
-| `lead_form_start` | Email-first page only: first focus in an on-page form | `form_location` (hero / bottom_cta), `modal_version: inline` |
-| `generate_lead` | Waitlist form submitted OK (then user lands on `/thank-you`; email-first signups land on `/thank-you?via=email`) | `lead_source` (`waitlist_modal` / `waitlist_inline`), `modal_version` (single / two_step / inline), `form_location` (inline only), `currency`, `value: 0` |
+| `lead_form_open` | Landing CTA opens a waitlist pop-up (or, on the email-first "form" page, scrolls to an on-page form) | `cta_location` (nav / hero / benefits / intro / bottom_cta) |
+| `lead_form_start` | Email-first pages only: first focus in the name + email form | `form_location` (the on-page spot, or the ask that opened the pop-up), `modal_version` (inline / email_modal) |
+| `generate_lead` | Waitlist form submitted OK (then user lands on `/thank-you`; email-first signups land on `/thank-you?via=email`) | `lead_source` (`waitlist_modal` / `waitlist_inline` / `waitlist_email_modal`), `modal_version` (single / two_step / inline / email_modal), `form_location` (email-first only), `currency`, `value: 0` |
 | `sign_up` | First visit to `/onboarding` after auth (once per session) | `method` |
 | `onboarding_complete` | Onboarding finished, welcome SMS queued | — |
 | `begin_checkout` | Upgrade clicked, redirecting to Stripe | `currency`, `value`, `items[]` |

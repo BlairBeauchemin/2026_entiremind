@@ -1,31 +1,13 @@
-import { Navigation } from "@/components/landing/navigation";
-import { Hero } from "@/components/landing/hero";
-import { Problem } from "@/components/landing/problem";
-import { Introducing } from "@/components/landing/introducing";
-import { Moment } from "@/components/landing/moment";
-import { SignupSteps } from "@/components/landing/signup-steps";
-import { FAQ } from "@/components/landing/faq";
-import { BottomCTA } from "@/components/landing/bottom-cta";
-import { Footer } from "@/components/landing/footer";
+import { LandingPage } from "@/components/landing/landing-page";
+import { resolveSignupVariant } from "@/components/landing/signup-variant-config";
 
-// One story, top to bottom: the promise, the familiar tension, what
-// Entiremind is and what it makes room for, and how joining works. The FAQ
-// comes after the final ask, for anyone still deciding.
+// The home page uses the signup variant chosen in Vercel
+// (NEXT_PUBLIC_SIGNUP_VARIANT: "form", the default, or "modal").
+// /lp/form and /lp/modal pin one each, for ads and side-by-side tests.
 export default function Home() {
   return (
-    <div className="bg-linen text-ink font-sans min-h-screen relative overflow-x-hidden selection:bg-cobalt-wash selection:text-cobalt-deep">
-      {/* Background Grain Texture */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-grain mix-blend-multiply" />
-
-      <Navigation />
-      <Hero />
-      <Problem />
-      <Introducing />
-      <Moment />
-      <SignupSteps />
-      <BottomCTA />
-      <FAQ />
-      <Footer />
-    </div>
+    <LandingPage
+      variant={resolveSignupVariant(process.env.NEXT_PUBLIC_SIGNUP_VARIANT)}
+    />
   );
 }
