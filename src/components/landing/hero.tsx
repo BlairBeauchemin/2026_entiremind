@@ -9,8 +9,54 @@ import { useWaitlistAsk } from "./signup-variant";
 // The prints, board and phone drift gently. Off under reduced motion.
 const HERO_MOTION = ["float-strong"] as const;
 
-export function Hero() {
+/**
+ * "copy-first" (default): headline, subhead and ask, then the phone scene.
+ * "phone-first": below lg, the scene moves up between the headline and the
+ * subhead (headline, scene, subhead, ask). The DOM order is unchanged (h1
+ * first; the scene is decorative and aria-hidden): the copy wrapper becomes
+ * `display: contents` below lg so its children can be ordered around the
+ * scene. From lg up both layouts are the same two columns.
+ */
+export type HeroLayout = "copy-first" | "phone-first";
+
+// Per-layout classes. copy-first keeps the exact classes the hero has always
+// had, so /, /lp/form and /lp/modal render as before.
+const LAYOUT = {
+  "copy-first": {
+    grid: "gap-12 lg:gap-8",
+    copy: "relative z-10 text-center lg:text-left animate-fade-in-up",
+    piece: "",
+    h1: "",
+    scene: "-mb-4 lg:-mb-6",
+    sub: "mt-5 lg:mt-8",
+    ask: "",
+  },
+  "phone-first": {
+    grid: "gap-0 lg:gap-8",
+    // No box below lg (its children join the grid); a block again from lg.
+    copy: "contents lg:block lg:relative lg:z-10 text-center lg:text-left",
+    // The wrapper's fade can't run on a box that isn't there, so each piece
+    // fades in itself, with the same timing.
+    piece: "relative z-10 animate-fade-in-up",
+    h1: "order-1 lg:order-none",
+    // In the middle now, so no trim under it below lg; lg is unchanged.
+    scene: "order-2 lg:order-none mt-4 lg:mt-0 lg:-mb-6",
+    sub: "order-3 lg:order-none mt-2 lg:mt-8",
+    ask: "order-4 lg:order-none",
+  },
+} as const;
+
+export function Hero({
+  layout = "copy-first",
+  anchorId = "join",
+}: {
+  layout?: HeroLayout;
+  /** The ask's id; other pages link to `/#join`. */
+  anchorId?: string;
+}) {
   const { variant, ask, modal } = useWaitlistAsk("hero");
+  const c = LAYOUT[layout];
+  const cx = (...parts: string[]) => parts.filter(Boolean).join(" ");
 
   return (
     <>
@@ -18,14 +64,32 @@ export function Hero() {
         id="section-hero"
         className="relative pt-32 pb-flow lg:pt-56 z-10"
       >
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)] gap-12 lg:gap-8 items-center">
+        <div
+          className={cx(
+            "max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)]",
+            c.grid,
+            "items-center",
+          )}
+        >
           {/* Hero Content */}
-          <div className="relative z-10 text-center lg:text-left animate-fade-in-up">
-            <h1 className="font-serif text-display text-ink text-balance">
+          <div className={c.copy}>
+            <h1
+              className={cx(
+                "font-serif text-display text-ink text-balance",
+                c.piece,
+                c.h1,
+              )}
+            >
               Manifest your best life.
             </h1>
 
-            <p className="mt-5 lg:mt-8 text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-normal lg:leading-relaxed font-sans text-balance">
+            <p
+              className={cx(
+                c.sub,
+                "text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-normal lg:leading-relaxed font-sans text-balance",
+                c.piece,
+              )}
+            >
               Lightly magical texts that weave inspiration into your day and
               help turn your intentions into reality.
             </p>
@@ -35,15 +99,24 @@ export function Hero() {
                 the button that opens the email-only pop-up. Either way the
                 spot is #join, where other pages send the visitor. */}
             {variant === "form" ? (
-              <div className="mt-8 lg:mt-10 max-w-md mx-auto lg:mx-0 lg:max-w-lg text-center lg:text-left">
+              <div
+                className={cx(
+                  "mt-8 lg:mt-10 max-w-md mx-auto lg:mx-0 lg:max-w-lg text-center lg:text-left",
+                  c.piece,
+                  c.ask,
+                )}
+              >
                 <EmailWaitlistForm
-                  id="join"
+                  id={anchorId}
                   location="hero"
                   note="Free to join. Get an invitation when access opens."
                 />
               </div>
             ) : (
-              <div id="join" className="mt-8 lg:mt-10 scroll-mt-32">
+              <div
+                id={anchorId}
+                className={cx("mt-8 lg:mt-10 scroll-mt-32", c.piece, c.ask)}
+              >
                 <button
                   type="button"
                   onClick={ask}
@@ -75,7 +148,12 @@ export function Hero() {
             // before, capped at phone width so tablets and landscape phones
             // don't blow the scene up; from lg it returns to its column
             // beside the copy.
-            className={`relative w-full max-w-md mx-auto -mb-4 lg:-mb-6 lg:max-w-none ${heroInter.variable}`}
+            className={cx(
+              "relative w-full max-w-md mx-auto",
+              c.scene,
+              "lg:max-w-none",
+              heroInter.variable,
+            )}
           >
             <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
               <HeroScene layout="spill" motion={HERO_MOTION} />

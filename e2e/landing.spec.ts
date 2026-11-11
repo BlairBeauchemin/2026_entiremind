@@ -5,14 +5,17 @@ test.describe("Landing Page", () => {
     await page.goto("/");
 
     await expect(page).toHaveTitle(/Entiremind/);
-    await expect(page.getByRole("link", { name: "Entiremind" })).toBeVisible();
+    // The logo link in the header (the footer has one too).
+    await expect(
+      page.getByRole("navigation").getByRole("link", { name: "Entiremind" }),
+    ).toBeVisible();
   });
 
   test("landing page has lead capture form", async ({ page }) => {
     await page.goto("/");
 
-    // Check for email input (placeholder is "you@example.com")
-    const emailInput = page.getByPlaceholder("you@example.com");
+    // The email-first hero form (first name + email) is on the page itself.
+    const emailInput = page.getByPlaceholder("Email address").first();
     await expect(emailInput).toBeVisible();
   });
 
@@ -25,5 +28,35 @@ test.describe("Landing Page", () => {
       await signInLink.click();
       await expect(page).toHaveURL("/auth");
     }
+  });
+});
+
+test.describe("Phone-first hero (/lp/phone-first)", () => {
+  test.use({ viewport: { width: 390, height: 664 } });
+
+  test("orders headline, scene, subhead, form on phones", async ({ page }) => {
+    await page.goto("/lp/phone-first");
+    const top = async (selector: string) =>
+      (await page.locator(selector).first().boundingBox())!.y;
+    const h1 = await top("#section-hero h1");
+    // The scene is the hero grid's second child (the copy wrapper is first).
+    const scene = await top("#section-hero > div > :nth-child(2)");
+    const subhead = await top("#section-hero p");
+    const form = await top("#join");
+    expect(h1).toBeLessThan(scene);
+    expect(scene).toBeLessThan(subhead);
+    expect(subhead).toBeLessThan(form);
+  });
+
+  test("sticky bar asks, then steps aside for the form", async ({ page }) => {
+    await page.goto("/lp/phone-first");
+    const bar = page.locator("[data-sticky-join]");
+    await expect(bar).toBeVisible();
+
+    await bar.getByRole("button", { name: "Join the waitlist" }).click();
+    await expect(
+      page.locator("#join").getByPlaceholder("First name"),
+    ).toBeFocused();
+    await expect(bar).toBeHidden();
   });
 });

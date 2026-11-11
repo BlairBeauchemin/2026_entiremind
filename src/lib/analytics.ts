@@ -48,7 +48,13 @@ export function trackEvent(event: string, params: DataLayerObject = {}) {
   window.dataLayer.push({ event, ...params });
 }
 
-export type CtaLocation = "nav" | "hero" | "benefits" | "intro" | "bottom_cta";
+export type CtaLocation =
+  | "nav"
+  | "hero"
+  | "benefits"
+  | "intro"
+  | "bottom_cta"
+  | "sticky";
 /**
  * Which signup UI produced the event: the SMS-consent modals ("single",
  * "two_step"), the email-only form on the page ("inline"), or the email-only
