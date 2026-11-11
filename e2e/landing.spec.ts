@@ -47,16 +47,4 @@ test.describe("Phone-first hero (/lp/phone-first)", () => {
     expect(scene).toBeLessThan(subhead);
     expect(subhead).toBeLessThan(form);
   });
-
-  test("sticky bar asks, then steps aside for the form", async ({ page }) => {
-    await page.goto("/lp/phone-first");
-    const bar = page.locator("[data-sticky-join]");
-    await expect(bar).toBeVisible();
-
-    await bar.getByRole("button", { name: "Join the waitlist" }).click();
-    await expect(
-      page.locator("#join").getByPlaceholder("First name"),
-    ).toBeFocused();
-    await expect(bar).toBeHidden();
-  });
 });

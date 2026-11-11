@@ -40,7 +40,7 @@ tags.
 
 | dataLayer event | Fires when | Parameters |
 |---|---|---|
-| `lead_form_open` | Landing CTA opens a waitlist pop-up (or, on the email-first "form" page, scrolls to an on-page form) | `cta_location` (nav / hero / benefits / intro / bottom_cta / sticky — the phone-only bottom bar on `/lp/phone-first`) |
+| `lead_form_open` | Landing CTA opens a waitlist pop-up (or, on the email-first "form" page, scrolls to an on-page form) | `cta_location` (nav / hero / benefits / intro / bottom_cta) |
 | `lead_form_start` | Email-first pages only: first focus in the name + email form | `form_location` (the on-page spot, or the ask that opened the pop-up), `modal_version` (inline / email_modal) |
 | `generate_lead` | Waitlist form submitted OK (then user lands on `/thank-you`; email-first signups land on `/thank-you?via=email`) | `lead_source` (`waitlist_modal` / `waitlist_inline` / `waitlist_email_modal`), `modal_version` (single / two_step / inline / email_modal), `form_location` (email-first only), `currency`, `value: 0` |
 | `sign_up` | First visit to `/onboarding` after auth (once per session) | `method` |

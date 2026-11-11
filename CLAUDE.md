@@ -371,8 +371,8 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
    `NEXT_PUBLIC_SIGNUP_VARIANT` (default `form`). Analytics `modal_version` is `inline` or
    `email_modal`. **Third variant, branch `claude/landing-phone-first`:** `/lp/phone-first`
    is the form variant with `Hero layout="phone-first"` (below lg: headline, scene, subhead,
-   form; desktop unchanged) plus `StickyJoinBar`, a phone-only bottom bar (cta_location
-   `sticky`) that hides while a form is on screen or a field is focused. `/lp/compare`
+   form; desktop unchanged). A sticky bottom CTA bar was tried and removed at the founder's
+   call (not needed). `/lp/compare`
    stacks the three heroes (A form, B pop-up, C phone-first) for review.
 4. **Ad tracking setup (next big project)** — GTM is already live (`GTM-WBJQRSNT`, from
    `siteConfig.gtmId`, overridable with `NEXT_PUBLIC_GTM_ID`), and the site already pushes

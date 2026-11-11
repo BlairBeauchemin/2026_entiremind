@@ -40,7 +40,7 @@ const VARIANTS: {
   {
     key: "c",
     label: "C · Phone-first",
-    note: "Same as A, but on phones the scene comes before the subhead (desktop matches A). The full page adds a bottom “Join the waitlist” bar.",
+    note: "Same as A, but on phones the scene comes before the subhead (desktop matches A).",
     href: "/lp/phone-first",
     variant: "form",
     layout: "phone-first",
