@@ -3,30 +3,62 @@
 import { Accordion } from "radix-ui";
 import { ChevronDown } from "lucide-react";
 
-// Answers describe what the waitlist actually does today: the on-page form
-// collects first name and email, nothing is texted to leads before launch,
-// and enrollment in the daily texts (phone + SMS consent) happens separately
-// when access opens.
+// Doubts about the product come first, waitlist logistics last. Every answer
+// describes what the product actually does: one AI-written prompt a day plus a
+// short reply when someone texts back (src/lib/ai, src/lib/acks); silence is
+// never punished (src/lib/reconnect.ts: one check-in that offers PAUSE);
+// STOP / PAUSE / RESUME are real keywords (the Twilio webhook); and the
+// waitlist form asks for first name and email only, with no texts before
+// someone enrolls at launch.
 const faqs = [
   {
-    question: "What happens when I join?",
+    question: "What is Entiremind?",
     answer:
-      "We'll keep you posted on the launch and send your invitation when access opens.",
+      "A daily text that keeps you close to what you want. You share what you're creating, we send one thoughtful question a day, and you text back when you feel like it.",
   },
   {
-    question: "Will I start receiving texts now?",
+    question: "Is this another app?",
     answer:
-      "Not yet. You'll hear from us when access opens, and you'll choose then whether to enroll in the daily texts.",
+      "No. There's nothing to download and nothing to open. Entiremind lives in your messages, and it remembers what you've shared, so each text picks up where you left off.",
   },
   {
-    question: "Will Entiremind cost money?",
+    question: "How many texts will I get?",
     answer:
-      "Joining the waitlist is free. The text experience will be a paid service, with pricing shared before you choose to enroll.",
+      "Usually one a day. When you reply, you'll get a short response back.",
+  },
+  {
+    question: "What if I don't reply?",
+    answer:
+      "Nothing happens. There are no streaks and no reminders about what you missed. If you go quiet for a while, we'll check in once and offer to pause.",
+  },
+  {
+    question: "Who reads what I send?",
+    answer:
+      "Your replies are read by our AI so your next text can reflect what you shared. Our small team may review messages to improve the experience.",
+  },
+  {
+    question: "Is this therapy or coaching?",
+    answer:
+      "No. Entiremind is a companion for reflection, not a substitute for professional care.",
+  },
+  {
+    question: "Can I stop anytime?",
+    answer:
+      "Yes. Reply STOP and the texts end. You can also pause and come back when you're ready.",
+  },
+  {
+    question: "What happens when I join the waitlist?",
+    answer:
+      "You share your first name and email, and that's all. No texts yet. We'll email your invitation when access opens, and you'll choose then whether to enroll.",
+  },
+  {
+    question: "Will it cost money?",
+    answer:
+      "Joining the waitlist is free. The daily texts will be a paid subscription, and you'll see the price before you decide anything.",
   },
   {
     question: "When will access open?",
-    answer:
-      "We'll share the launch date with the waitlist as soon as it's confirmed.",
+    answer: "We'll share the date with the waitlist as soon as it's confirmed.",
   },
 ];
 

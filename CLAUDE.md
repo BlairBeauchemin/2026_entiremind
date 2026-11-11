@@ -359,8 +359,12 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
 
 0. ~~**Move the FAQ to the bottom of the page**~~ — done: it now follows the blue final ask,
    just above the footer.
-1. **Update the FAQ** — copy in `src/components/landing/faq.tsx`. (Earlier note: the "you'll
-   choose then whether to enroll" answer may not match signup step 2.)
+1. ~~**Update the FAQ**~~ — done (November 2026, branch `claude/landing-faq`): ten questions
+   in `src/components/landing/faq.tsx`, product doubts first and waitlist logistics last.
+   Open notes for the founder: the privacy policy's "Data Sharing" list doesn't yet name an
+   AI processor although the FAQ says replies are read by AI; and "we'll check in once and
+   offer to pause" leaves out that a still-silent user is then paused automatically (with a
+   farewell text) — see `src/lib/reconnect.ts`.
 2. ~~**Spacing review**~~ — done and live (November 2026): reading text at 1.625 line height,
    8px title→description, 32px between bullets/steps, 28px phone headings, and the section
    gap token `--spacing-flow` in `src/app/globals.css` at 80px on phones / 144px wide.
