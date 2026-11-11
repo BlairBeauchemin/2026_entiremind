@@ -328,11 +328,19 @@ TWILIO_PHONE_NUMBER=+1234567890
 
 #### Waitlist & Lead Capture
 
-- **Waitlist modal**: `src/components/landing/waitlist-modal.tsx` - switcher; the live
-  version is `waitlist-modal-single.tsx` (`NEXT_PUBLIC_WAITLIST_MODAL_VERSION`, default `single`)
-- **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads
-- **Form fields**: name, email, phone (all required), plus optional SMS consent and terms checkboxes
-- **Storage**: `leads` table with source tracking (`landing_page`)
+- **Live since November 2026: email-first.** The home page (`src/app/page.tsx`) renders
+  `LandingPage` with the phone-first hero and the "form" signup variant: first name + email
+  forms on the page (`EmailWaitlistForm`, hero `#join` + the blue final section), no phone,
+  no SMS consent. Details and the other variants (`/lp/form`, `/lp/modal`,
+  `/lp/phone-first`, `/lp/compare`) are under to-do item 3 below.
+- **SMS-consent pop-up (not live)**: `src/components/landing/waitlist-modal.tsx` switcher →
+  `waitlist-modal-single.tsx` (name, email, phone required, optional SMS consent + terms), the
+  version approved by Twilio for A2P 10DLC. Kept unused in the codebase and, as the full live
+  page it belonged to, on branch `claude/landing-sms-consent-flow`.
+- **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads (phone optional,
+  validated when sent; honeypot `website`)
+- **Storage**: `leads` table with source tracking (`landing_page`); email-only leads have
+  `phone IS NULL`
 - **Integration points**: hero, after the benefits, after the signup steps, the final
   blue section, and the navigation "Join waitlist" button (analytics `cta_location`:
   `hero` / `benefits` / `intro` / `bottom_cta` / `nav`)
@@ -356,8 +364,8 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
 2. ~~**Spacing review**~~ — done and live (November 2026): reading text at 1.625 line height,
    8px title→description, 32px between bullets/steps, 28px phone headings, and the section
    gap token `--spacing-flow` in `src/app/globals.css` at 80px on phones / 144px wide.
-3. **Inline name + email form** — built on branch `claude/landing-email-first` (November
-   2026), not live yet. First name + email forms in the hero (`#join`) and the blue final
+3. ~~**Inline name + email form**~~ — **live on main (November 2026)** with the phone-first
+   hero on `/`. Built on branches `claude/landing-email-first` and `claude/landing-phone-first`. First name + email forms in the hero (`#join`) and the blue final
    section (`EmailWaitlistForm`); the header and mid-page buttons scroll to the next form
    (`waitlist-scroll.ts`; other pages link to `/#join`). No phone, no SMS consent; success
    goes to `/thank-you?via=email`. `/api/leads` now accepts a missing phone (still validates
