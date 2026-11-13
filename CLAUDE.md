@@ -406,6 +406,17 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
 **Now (before the roadmap):** more design tweaks to the landing page, on branch
 `claude/landing-design-tweaks`.
 
+**Hero phone, live November 2026 ("option A"):** the home page passes `mobileScene="a"`
+to `LandingPage`. On phones the hero shows `HeroSceneMobile` (`hero-scene-mobile.tsx`): a
+larger phone with the desktop scene's photo layout on a portrait canvas. Phone and desktop
+both use the **bare** phone (`SmsPhone bare` / `HeroScene bare`: no composer, bigger bubbles),
+and the hero form is `stacked` (fields above each other, full-width button, as wide as the
+subhead). The hand-drawn star doodle is gone from the spill scene; the headline has no
+period. **To revert to the original phone**, drop `mobileScene` in `src/app/page.tsx` —
+the original composer phone, side-by-side form and desktop crop are still the defaults.
+Review pages: `/lp/hero-phones` (live-before, A, B stacked), `/lp/hero-options`,
+`/lp/hero-a` (all noindex).
+
 #### Founder Review Interface
 
 - **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer and scheduling UI

@@ -87,7 +87,7 @@ export function Hero({
                 c.h1,
               )}
             >
-              Manifest your best life.
+              Manifest your best life
             </h1>
 
             <p

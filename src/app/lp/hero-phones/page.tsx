@@ -33,7 +33,7 @@ export default function HeroPhonesPage() {
               {s.label}
             </p>
             <h2 className="mt-4 px-6 text-center font-serif text-display text-ink text-balance">
-              Manifest your best life.
+              Manifest your best life
             </h2>
             <div className="mt-4">
               {s.scene ? (
