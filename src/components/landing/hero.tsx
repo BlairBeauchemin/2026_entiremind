@@ -108,7 +108,11 @@ export function Hero({
             {variant === "form" ? (
               <div
                 className={cx(
-                  "mt-8 lg:mt-10 max-w-md mx-auto lg:mx-0 lg:max-w-lg text-center lg:text-left",
+                  "mt-8 lg:mt-10 max-w-md mx-auto lg:mx-0 text-center lg:text-left",
+                  // With a phone-sized scene (the A/B tests), the form is
+                  // stacked and as wide as the subhead's lines; otherwise
+                  // the side-by-side form, as live.
+                  mobileScene ? "" : "lg:max-w-lg",
                   c.piece,
                   c.ask,
                 )}
@@ -117,6 +121,7 @@ export function Hero({
                   id={anchorId}
                   location="hero"
                   note="Free to join. Get an invitation when access opens."
+                  stacked={Boolean(mobileScene)}
                 />
               </div>
             ) : (

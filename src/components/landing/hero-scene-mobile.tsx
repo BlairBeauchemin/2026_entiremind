@@ -137,7 +137,8 @@ function OptionA() {
       <Sparkle x={968} y={470} size={30} tone="cobalt" />
       <Sparkle x={966} y={1000} size={22} />
       {/* Quiet accents in the open space on the left. */}
-      <Sparkle x={118} y={420} size={28} tone="cobalt" />
+      <Sparkle x={92} y={404} size={28} tone="cobalt" />
+      <Sparkle x={194} y={548} size={16} />
       <Sparkle x={200} y={1074} size={18} />
     </>
   );

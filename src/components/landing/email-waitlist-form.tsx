@@ -28,6 +28,7 @@ export function EmailWaitlistForm({
   tone = "light",
   id,
   note,
+  stacked = false,
 }: {
   /** The on-page spot, or the ask that opened the pop-up. */
   location: FormLocation;
@@ -37,6 +38,9 @@ export function EmailWaitlistForm({
   id?: string;
   /** The reassurance line under the button. */
   note: string;
+  /** Inline only: fields one above the other and a full-width button at
+   * every width (by default they sit side by side from sm). */
+  stacked?: boolean;
 }) {
   const router = useRouter();
   const uid = useId();
@@ -132,7 +136,7 @@ export function EmailWaitlistForm({
       className="w-full scroll-mt-32"
     >
       <div
-        className={`grid gap-3 ${kind === "inline" ? "sm:grid-cols-2" : ""}`}
+        className={`grid gap-3 ${kind === "inline" && !stacked ? "sm:grid-cols-2" : ""}`}
       >
         <div>
           <label htmlFor={`${uid}-name`} className="sr-only">
@@ -209,7 +213,7 @@ export function EmailWaitlistForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className={`mt-4 w-full ${kind === "inline" ? "sm:w-auto" : ""} px-10 py-4 rounded-sm text-lg font-medium font-sans transition-all duration-300 disabled:opacity-70 disabled:cursor-wait focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+        className={`mt-4 w-full ${kind === "inline" && !stacked ? "sm:w-auto" : ""} px-10 py-4 rounded-sm text-lg font-medium font-sans transition-all duration-300 disabled:opacity-70 disabled:cursor-wait focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
           cobalt
             ? "bg-linen text-cobalt-deep hover:bg-surface focus-visible:ring-linen focus-visible:ring-offset-cobalt"
             : "bg-cobalt text-linen hover:bg-cobalt-deep focus-visible:ring-cobalt focus-visible:ring-offset-linen"
