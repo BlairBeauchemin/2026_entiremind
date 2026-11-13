@@ -12,10 +12,11 @@ import styles from "./hero-scene.module.css";
  *
  * - "a": the phone at about 64% of the screen, three prints around it, one
  *   tucked over the empty space under the last message.
- * - "b": the phone at about 82%, tucked into a "My vision" board that covers
- *   its lower part (the empty space and the composer), plus prints peeking
- *   from the top corners.
- * - "c": one large tilted photograph behind the phone, two prints in front.
+ * - "b": the phone at about 70%, tucked into a "My vision" board and a
+ *   flower print that cover its lower part (the empty space and the
+ *   composer); larger prints overlap its top corners and right edge.
+ * - "c": one large tilted photograph behind the phone, three prints in
+ *   front over its frame.
  *
  * Canvas: 1000 units wide (--u = 1/1000 of the width), height per option.
  * The SmsPhone draws its device at x 277–747, y 42–982 of a 1024-unit square,
@@ -43,8 +44,8 @@ const OPTIONS: Record<
   { height: number; clipBottom?: boolean }
 > = {
   a: { height: 1400 },
-  b: { height: 1660, clipBottom: true },
-  c: { height: 1400 },
+  b: { height: 1590, clipBottom: true },
+  c: { height: 1430 },
 };
 
 function OptionA() {
@@ -81,89 +82,109 @@ function OptionA() {
 }
 
 function OptionB() {
-  // Device 780 wide at (110, 40): messages x 157–781, y 430–1320. The board
-  // covers it from y 1372 (the composer and below); the canvas ends at 1660.
+  // Device 700 wide at (150, 40): messages x 201–799, y 308–1211 (measured).
+  // The board and the bottom-right print cover the phone from y 1226 down. Photos
+  // overlap the phone's frame (never a message) to carry the "life you want".
   return (
     <>
-      <div className={styles.phone} style={phoneBox(110, 40, 780)}>
+      <div className={styles.phone} style={phoneBox(150, 40, 700)}>
         <SmsPhone content={SMS_CONTENT} />
       </div>
       <Print
-        box={at(752, 0, 236, 280, 7)}
+        box={at(690, 0, 300, 360, 7)}
         src={PHOTO.freedomField}
         alt="A woman walking through a summer field holding a straw hat"
         tape
       />
       <Print
-        box={at(6, 150, 196, 172, -7)}
+        box={at(0, 56, 250, 214, -7)}
         src={PHOTO.oliveCoast}
         alt="Sunlight through olive branches above a coastal town"
         tape
       />
+      <Print
+        box={at(818, 640, 178, 164, 5)}
+        src={PHOTO.loveBeach}
+        alt="A couple walking hand in hand along a golden beach"
+      />
+      {/* "My vision": the title tucked into the top-left corner, a print
+          filling the space under it, two more beside it. */}
       <div
         className={`${styles.item} ${styles.board}`}
-        style={at(30, 1372, 940, 290, -2)}
+        style={at(10, 1232, 712, 330, -2)}
       >
         <div className={styles.boardTitle}>My vision</div>
         <div className={styles.boardRule} />
         <Print
-          box={at(300, 26, 180, 214, -4)}
+          box={at(18, 100, 196, 204, -4)}
           src={PHOTO.potteryStudio}
           alt="A bright pottery studio with a wheel and shelves of ceramics"
           slim
           tape
         />
         <Print
-          box={at(506, 40, 196, 164, 3)}
+          box={at(234, 22, 214, 262, 3)}
           src={PHOTO.slowMorningTable}
           alt="An open book, croissant and coffee by a sunlit window"
           slim
           tape
         />
         <Print
-          box={at(724, 30, 170, 196, -2)}
+          box={at(468, 34, 210, 246, -3)}
           src={PHOTO.journalCoffee}
           alt="Coffee and a notebook in striped window light"
           slim
         />
       </div>
-      <Sparkle x={940} y={350} size={30} />
-      <Sparkle x={30} y={420} size={24} tone="cobalt" />
-      <Sparkle x={34} y={1200} size={20} />
-      <Sparkle x={946} y={1180} size={22} />
+      <Print
+        box={at(696, 1226, 292, 340, 6)}
+        src={PHOTO.flowerShop}
+        alt="Buckets of fresh flowers outside a small flower shop"
+        tape
+      />
+      <Sparkle x={950} y={420} size={30} />
+      <Sparkle x={34} y={440} size={24} tone="cobalt" />
+      <Sparkle x={40} y={1160} size={20} />
+      <Sparkle x={946} y={1060} size={22} />
     </>
   );
 }
 
 function OptionC() {
-  // Device 600 wide at (200, 110): messages x 236–716, y 410–1095.
-  // The lead photograph sits behind the phone; the other prints in front.
+  // Device 580 wide at (210, 120): messages x 252–748, y 342–1091 (measured).
+  // The lead photograph sits behind the phone; the other prints in front,
+  // over its frame and the space below the conversation.
   return (
     <>
-      <div className={styles.phone} style={phoneBox(200, 110, 600, 2)}>
+      <div className={styles.phone} style={phoneBox(210, 120, 580, 2)}>
         <SmsPhone content={SMS_CONTENT} />
       </div>
       <Print
-        box={{ ...at(470, 20, 500, 640, 6), zIndex: 1 }}
+        box={{ ...at(430, 0, 560, 700, 6), zIndex: 1 }}
         src={PHOTO.freedomField}
         alt="A woman walking through a summer field holding a straw hat"
         tape
       />
       <Print
-        box={{ ...at(14, 250, 214, 186, -7), zIndex: 3 }}
+        box={{ ...at(0, 140, 230, 200, -7), zIndex: 3 }}
         src={PHOTO.oliveCoast}
         alt="Sunlight through olive branches above a coastal town"
         tape
       />
       <Print
-        box={{ ...at(24, 1010, 290, 244, 5), zIndex: 3 }}
+        box={{ ...at(0, 1000, 320, 280, 5), zIndex: 3 }}
         src={PHOTO.loveBeach}
         alt="A couple walking hand in hand along a golden beach"
       />
-      <Sparkle x={70} y={150} size={26} />
-      <Sparkle x={905} y={760} size={32} tone="cobalt" />
-      <Sparkle x={860} y={1180} size={22} />
-      <Doodle kind="heart" x={820} y={1240} size={66} rotate={-8} />
+      <Print
+        box={{ ...at(710, 1100, 280, 300, -5), zIndex: 3 }}
+        src={PHOTO.flowerShop}
+        alt="Buckets of fresh flowers outside a small flower shop"
+        tape
+      />
+      <Sparkle x={60} y={110} size={26} />
+      <Sparkle x={930} y={780} size={32} tone="cobalt" />
+      <Sparkle x={440} y={1360} size={20} />
     </>
   );
 }

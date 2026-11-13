@@ -32,13 +32,13 @@ const OPTIONS: {
   {
     key: "b",
     label: "B · Phone tucked into the vision board",
-    note: "Largest phone; the “My vision” board covers its lower part, prints peek from the top corners.",
+    note: "Bigger photos around the phone; the “My vision” board and a flower print cover its lower part.",
     scene: "b",
   },
   {
     key: "c",
     label: "C · One big photo behind",
-    note: "A large tilted photograph behind the phone, two prints in front.",
+    note: "A large tilted photograph behind the phone, three bigger prints in front.",
     scene: "c",
   },
 ];
