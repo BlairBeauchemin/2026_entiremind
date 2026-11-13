@@ -169,7 +169,8 @@ export function Hero({
                   <HeroSceneMobile option={mobileScene} />
                 </div>
                 <div className="hidden lg:block lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
-                  <HeroScene layout="spill" motion={HERO_MOTION} />
+                  {/* The same bare phone on desktop, for consistency. */}
+                  <HeroScene layout="spill" motion={HERO_MOTION} bare />
                 </div>
               </>
             ) : (

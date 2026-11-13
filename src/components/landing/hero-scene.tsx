@@ -537,10 +537,14 @@ export function HeroScene({
   layout,
   motion = [],
   className,
+  bare = false,
 }: {
   layout: HeroSceneLayout;
   motion?: readonly HeroSceneMotion[];
   className?: string;
+  /** The Messages phone without its composer, bubbles filling the screen
+   * (SmsPhone `bare`). The original phone stays the default. */
+  bare?: boolean;
 }): ReactNode {
   const canvasClass = [styles.canvas, ...motion.map((m) => MOTION_CLASS[m])]
     .filter(Boolean)
@@ -554,7 +558,7 @@ export function HeroScene({
             motion.includes("thread") ? (
               <SmsPhoneMotion content={SMS_CONTENT} />
             ) : (
-              <SmsPhone content={SMS_CONTENT} />
+              <SmsPhone content={SMS_CONTENT} bare={bare} />
             )
           ) : (
             <HeroPhone content={ENTIREMIND_CONTENT} />
