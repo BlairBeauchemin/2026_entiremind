@@ -10,18 +10,14 @@ import styles from "./hero-scene.module.css";
  * canvas so the phone can be much larger on a phone screen. Options for the
  * founder to compare; the live hero still uses HeroScene everywhere.
  *
- * - "a": the phone at about 62% of the screen, six prints around it, as in
- *   the desktop scene, overlapping its frame.
- * - "b": the phone at about 70%, tucked into a "My vision" board and a
- *   flower print that cover its lower part (the empty space and the
- *   composer); larger prints overlap its top corners and right edge.
- * (A third option, a large photograph behind the phone, was dropped.)
+ * - "a": the phone at 56% of the screen, with the live scene's prints and
+ *   "My vision" board (three prints) in the same places.
+ * - "b": the phone at 64%, the same arrangement with fewer pieces (a
+ *   two-print board) and the board below the phone's lower left.
  *
  * Canvas: 1000 units wide (--u = 1/1000 of the width), height per option.
  * The SmsPhone draws its device at x 277–747, y 42–982 of a 1024-unit square,
- * so a device D units wide sits in a wrapper D × 1024/470 wide. On the device,
- * the four messages run from about 6% to 86% across and 25% to 82% down;
- * nothing overlaps them, only the frame, the header and the space below.
+ * so a device D units wide sits in a wrapper D × 1024/470 wide.
  */
 export type MobileSceneOption = "a" | "b";
 
@@ -38,131 +34,158 @@ function phoneBox(x: number, y: number, width: number, zIndex?: number) {
   } satisfies CSSProperties;
 }
 
-const OPTIONS: Record<
-  MobileSceneOption,
-  { height: number; clipBottom?: boolean }
-> = {
-  a: { height: 1420 },
-  b: { height: 1590, clipBottom: true },
+const OPTIONS: Record<MobileSceneOption, { height: number }> = {
+  a: { height: 1200 },
+  b: { height: 1420 },
+};
+
+/* Both options keep the live scene's arrangement: olive coast top left,
+ * the "My vision" board low on the left, the field, the beach and the
+ * flower shop down the right. The phone is bare (no composer, bigger
+ * bubbles). Its messages fill the device from 19% to 91% of its height;
+ * the incoming ones run 6–83% across, the replies 17–94%. A print may
+ * cover the phone's top 18% (status bar, header), its frame, and the
+ * side of the screen a message isn't on. */
+
+function VisionBoard({
+  box,
+  prints,
+}: {
+  box: CSSProperties;
+  prints: { box: CSSProperties; photo: keyof typeof PHOTO; tape?: boolean }[];
+}) {
+  return (
+    <div
+      className={`${styles.item} ${styles.board}`}
+      // Narrower than the desktop board: less side padding, so the title
+      // stays on one line.
+      style={{ ...box, paddingInline: "calc(var(--u) * 18)" }}
+    >
+      <div
+        className={styles.boardTitle}
+        style={{ whiteSpace: "nowrap", fontSize: "calc(var(--u) * 40)" }}
+      >
+        My vision
+      </div>
+      <div className={styles.boardRule} />
+      {prints.map((p) => (
+        <Print
+          key={p.photo}
+          box={p.box}
+          src={PHOTO[p.photo]}
+          alt={ALT[p.photo]}
+          slim
+          tape={p.tape}
+        />
+      ))}
+    </div>
+  );
+}
+
+const ALT: Record<string, string> = {
+  freedomField: "A woman walking through a summer field holding a straw hat",
+  oliveCoast: "Sunlight through olive branches above a coastal town",
+  loveBeach: "A couple walking hand in hand along a golden beach",
+  flowerShop: "Buckets of fresh flowers outside a small flower shop",
+  potteryStudio: "A bright pottery studio with a wheel and shelves of ceramics",
+  slowMorningTable: "An open book, croissant and coffee by a sunlit window",
+  journalCoffee: "Coffee and a notebook in striped window light",
 };
 
 function OptionA() {
-  // Device 620 wide at (190, 50): messages x 235–765, y 287–1087 (scaled
-  // from B's measured positions). Six prints, bigger, around and over the
-  // phone's frame, as in the desktop scene; none on a message.
+  // Device 560 wide at (220, 40), 1120 tall.
   return (
     <>
-      <div className={styles.phone} style={phoneBox(190, 50, 620)}>
-        <SmsPhone content={SMS_CONTENT} />
+      <div className={styles.phone} style={phoneBox(220, 40, 560)}>
+        <SmsPhone content={SMS_CONTENT} bare />
       </div>
+      <VisionBoard
+        box={at(0, 640, 248, 420, -4)}
+        prints={[
+          { box: at(12, 84, 150, 184, -4), photo: "potteryStudio", tape: true },
+          {
+            box: at(108, 214, 128, 108, 3),
+            photo: "slowMorningTable",
+            tape: true,
+          },
+          { box: at(18, 292, 124, 112, -2), photo: "journalCoffee" },
+        ]}
+      />
       <Print
-        box={at(694, 0, 296, 346, 6)}
+        box={at(690, 40, 300, 340, 5)}
         src={PHOTO.freedomField}
-        alt="A woman walking through a summer field holding a straw hat"
+        alt={ALT.freedomField}
         tape
       />
       <Print
-        box={at(0, 56, 236, 206, -7)}
-        src={PHOTO.oliveCoast}
-        alt="Sunlight through olive branches above a coastal town"
-        tape
-      />
-      <Print
-        box={at(0, 560, 214, 190, -6)}
+        box={at(752, 520, 240, 210, -5)}
         src={PHOTO.loveBeach}
-        alt="A couple walking hand in hand along a golden beach"
+        alt={ALT.loveBeach}
       />
       <Print
-        box={at(788, 540, 206, 236, 5)}
-        src={PHOTO.potteryStudio}
-        alt="A bright pottery studio with a wheel and shelves of ceramics"
-        tape
-      />
-      <Print
-        box={at(10, 1104, 320, 296, 4)}
+        box={at(750, 770, 248, 222, 4)}
         src={PHOTO.flowerShop}
-        alt="Buckets of fresh flowers outside a small flower shop"
-        tape
+        alt={ALT.flowerShop}
       />
       <Print
-        box={at(676, 1110, 310, 280, -5)}
-        src={PHOTO.slowMorningTable}
-        alt="An open book, croissant and coffee by a sunlit window"
+        box={at(0, 50, 280, 196, -6)}
+        src={PHOTO.oliveCoast}
+        alt={ALT.oliveCoast}
+        tape
       />
-      <Sparkle x={950} y={420} size={28} />
-      <Sparkle x={40} y={440} size={24} tone="cobalt" />
-      <Sparkle x={950} y={900} size={22} />
-      <Sparkle x={40} y={960} size={20} />
-      <Doodle kind="star" x={440} y={1320} size={64} rotate={12} />
+      <Sparkle x={960} y={20} size={26} />
+      <Sparkle x={968} y={470} size={30} tone="cobalt" />
+      <Sparkle x={966} y={1020} size={22} />
+      <Sparkle x={40} y={560} size={22} />
+      <Doodle kind="star" x={860} y={1080} size={70} rotate={12} />
     </>
   );
 }
 
 function OptionB() {
-  // Device 700 wide at (150, 40): messages x 201–799, y 308–1211 (measured).
-  // The board and the bottom-right print cover the phone from y 1226 down. Photos
-  // overlap the phone's frame (never a message) to carry the "life you want".
+  // Device 640 wide at (180, 30), 1280 tall: a bigger phone, five pieces.
   return (
     <>
-      <div className={styles.phone} style={phoneBox(150, 40, 700)}>
-        <SmsPhone content={SMS_CONTENT} />
+      <div className={styles.phone} style={phoneBox(180, 30, 640)}>
+        <SmsPhone content={SMS_CONTENT} bare />
       </div>
+      <VisionBoard
+        box={at(0, 1018, 280, 330, -4)}
+        prints={[
+          { box: at(14, 84, 140, 180, -4), photo: "potteryStudio", tape: true },
+          {
+            box: at(136, 104, 128, 156, 3),
+            photo: "slowMorningTable",
+            tape: true,
+          },
+        ]}
+      />
       <Print
-        box={at(690, 0, 300, 360, 7)}
+        box={at(726, 50, 274, 330, 5)}
         src={PHOTO.freedomField}
-        alt="A woman walking through a summer field holding a straw hat"
+        alt={ALT.freedomField}
         tape
       />
       <Print
-        box={at(0, 56, 250, 214, -7)}
-        src={PHOTO.oliveCoast}
-        alt="Sunlight through olive branches above a coastal town"
-        tape
-      />
-      <Print
-        box={at(818, 640, 178, 164, 5)}
+        box={at(788, 612, 212, 184, -5)}
         src={PHOTO.loveBeach}
-        alt="A couple walking hand in hand along a golden beach"
+        alt={ALT.loveBeach}
       />
-      {/* "My vision": the title tucked into the top-left corner, a print
-          filling the space under it, two more beside it. */}
-      <div
-        className={`${styles.item} ${styles.board}`}
-        style={at(10, 1232, 712, 330, -2)}
-      >
-        <div className={styles.boardTitle}>My vision</div>
-        <div className={styles.boardRule} />
-        <Print
-          box={at(18, 100, 196, 204, -4)}
-          src={PHOTO.potteryStudio}
-          alt="A bright pottery studio with a wheel and shelves of ceramics"
-          slim
-          tape
-        />
-        <Print
-          box={at(234, 22, 214, 262, 3)}
-          src={PHOTO.slowMorningTable}
-          alt="An open book, croissant and coffee by a sunlit window"
-          slim
-          tape
-        />
-        <Print
-          box={at(468, 34, 210, 246, -3)}
-          src={PHOTO.journalCoffee}
-          alt="Coffee and a notebook in striped window light"
-          slim
-        />
-      </div>
       <Print
-        box={at(696, 1226, 292, 340, 6)}
+        box={at(726, 806, 272, 214, 4)}
         src={PHOTO.flowerShop}
-        alt="Buckets of fresh flowers outside a small flower shop"
+        alt={ALT.flowerShop}
+      />
+      <Print
+        box={at(0, 26, 256, 200, -7)}
+        src={PHOTO.oliveCoast}
+        alt={ALT.oliveCoast}
         tape
       />
-      <Sparkle x={950} y={420} size={30} />
-      <Sparkle x={34} y={440} size={24} tone="cobalt" />
-      <Sparkle x={40} y={1160} size={20} />
-      <Sparkle x={946} y={1060} size={22} />
+      <Sparkle x={34} y={560} size={22} tone="cobalt" />
+      <Sparkle x={966} y={560} size={28} />
+      <Sparkle x={960} y={1100} size={22} />
+      <Doodle kind="star" x={860} y={1330} size={70} rotate={12} />
     </>
   );
 }
@@ -175,7 +198,7 @@ export function HeroSceneMobile({
   /** The same gentle drift as the desktop scene ("float-strong"). */
   float?: boolean;
 }) {
-  const { height, clipBottom } = OPTIONS[option];
+  const { height } = OPTIONS[option];
   const canvasClass = [
     styles.canvas,
     float ? `${styles.motionFloat} ${styles.floatStrong}` : "",
@@ -188,9 +211,6 @@ export function HeroSceneMobile({
       className={styles.frame}
       style={{
         aspectRatio: `${CANVAS_WIDTH} / ${height}`,
-        // Option B crops the phone at the board's lower edge; the other
-        // sides stay open so the drift is never clipped.
-        clipPath: clipBottom ? "inset(-50% -50% 0 -50%)" : undefined,
       }}
       aria-hidden="true"
     >

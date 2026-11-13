@@ -39,14 +39,25 @@ export function SmsPhone({
   content,
   className,
   frame: f,
+  bare = false,
 }: {
   content: HeroPhoneContent;
   className?: string;
   frame?: SmsPhoneFrame;
+  /**
+   * No composer: the bubbles grow to fill the screen. For small renders
+   * (the phone-sized hero), where legible messages matter more than a
+   * faithful Messages screen.
+   */
+  bare?: boolean;
 }) {
   const draft = f ? f.draft : content.draft;
   return (
-    <div className={[styles.frame, className].filter(Boolean).join(" ")}>
+    <div
+      className={[styles.frame, bare ? styles.bare : "", className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <div className={styles.canvas}>
         <div className={styles.device}>
           <div className={styles.status} aria-hidden="true">
@@ -156,51 +167,55 @@ export function SmsPhone({
             })}
           </div>
 
-          <div className={styles.footer} aria-hidden="true">
-            <div className={styles.composer}>
-              {draft ? (
-                <span className={styles.draft}>
-                  <span className={styles.draftText}>
-                    {draft}
-                    <span
-                      className={styles.caret}
-                      style={f && !f.caretOn ? { opacity: 0 } : undefined}
-                    />
+          {bare ? (
+            <span className={styles.homeBar} aria-hidden="true" />
+          ) : (
+            <div className={styles.footer} aria-hidden="true">
+              <div className={styles.composer}>
+                {draft ? (
+                  <span className={styles.draft}>
+                    <span className={styles.draftText}>
+                      {draft}
+                      <span
+                        className={styles.caret}
+                        style={f && !f.caretOn ? { opacity: 0 } : undefined}
+                      />
+                    </span>
                   </span>
-                </span>
-              ) : (
-                <span className={styles.placeholder}>Text Message…</span>
-              )}
-              {draft ? (
-                <span className={styles.send}>
+                ) : (
+                  <span className={styles.placeholder}>Text Message…</span>
+                )}
+                {draft ? (
+                  <span className={styles.send}>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 19V5M6 11l6-6 6 6" />
+                    </svg>
+                  </span>
+                ) : (
+                  // Nothing typed: the quiet mic, as in Messages.
                   <svg
+                    className={styles.mic}
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2.6"
+                    strokeWidth="1.8"
                     strokeLinecap="round"
-                    strokeLinejoin="round"
                   >
-                    <path d="M12 19V5M6 11l6-6 6 6" />
+                    <rect x="9" y="3" width="6" height="11" rx="3" />
+                    <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
                   </svg>
-                </span>
-              ) : (
-                // Nothing typed: the quiet mic, as in Messages.
-                <svg
-                  className={styles.mic}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                >
-                  <rect x="9" y="3" width="6" height="11" rx="3" />
-                  <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
-                </svg>
-              )}
+                )}
+              </div>
+              <span className={styles.homeBar} />
             </div>
-            <span className={styles.homeBar} />
-          </div>
+          )}
         </div>
       </div>
     </div>

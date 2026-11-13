@@ -25,14 +25,14 @@ const OPTIONS: {
   },
   {
     key: "a",
-    label: "A · Bigger phone, six prints",
-    note: "Bigger phone with six bigger prints around it, like today’s collage.",
+    label: "A · Bigger phone, today’s layout",
+    note: "Photos where they are today; no input field, so the messages fill the screen.",
     scene: "a",
   },
   {
     key: "b",
-    label: "B · Phone tucked into the vision board",
-    note: "Bigger photos around the phone; the “My vision” board and a flower print cover its lower part.",
+    label: "B · Biggest phone, fewer pieces",
+    note: "Same layout with an even bigger phone and a two-photo “My vision” board below it.",
     scene: "b",
   },
 ];
