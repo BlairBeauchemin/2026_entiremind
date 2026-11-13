@@ -10,13 +10,12 @@ import styles from "./hero-scene.module.css";
  * canvas so the phone can be much larger on a phone screen. Options for the
  * founder to compare; the live hero still uses HeroScene everywhere.
  *
- * - "a": the phone at about 64% of the screen, three prints around it, one
- *   tucked over the empty space under the last message.
+ * - "a": the phone at about 62% of the screen, six prints around it, as in
+ *   the desktop scene, overlapping its frame.
  * - "b": the phone at about 70%, tucked into a "My vision" board and a
  *   flower print that cover its lower part (the empty space and the
  *   composer); larger prints overlap its top corners and right edge.
- * - "c": one large tilted photograph behind the phone, three prints in
- *   front over its frame.
+ * (A third option, a large photograph behind the phone, was dropped.)
  *
  * Canvas: 1000 units wide (--u = 1/1000 of the width), height per option.
  * The SmsPhone draws its device at x 277–747, y 42–982 of a 1024-unit square,
@@ -24,7 +23,7 @@ import styles from "./hero-scene.module.css";
  * the four messages run from about 6% to 86% across and 25% to 82% down;
  * nothing overlaps them, only the frame, the header and the space below.
  */
-export type MobileSceneOption = "a" | "b" | "c";
+export type MobileSceneOption = "a" | "b";
 
 const CANVAS_WIDTH = 1000;
 
@@ -43,40 +42,58 @@ const OPTIONS: Record<
   MobileSceneOption,
   { height: number; clipBottom?: boolean }
 > = {
-  a: { height: 1400 },
+  a: { height: 1420 },
   b: { height: 1590, clipBottom: true },
-  c: { height: 1430 },
 };
 
 function OptionA() {
-  // Device 640 wide at (180, 60): messages x 218–730, y 380–1050.
+  // Device 620 wide at (190, 50): messages x 235–765, y 287–1087 (scaled
+  // from B's measured positions). Six prints, bigger, around and over the
+  // phone's frame, as in the desktop scene; none on a message.
   return (
     <>
-      <div className={styles.phone} style={phoneBox(180, 60, 640)}>
+      <div className={styles.phone} style={phoneBox(190, 50, 620)}>
         <SmsPhone content={SMS_CONTENT} />
       </div>
       <Print
-        box={at(694, 10, 286, 330, 6)}
+        box={at(694, 0, 296, 346, 6)}
         src={PHOTO.freedomField}
         alt="A woman walking through a summer field holding a straw hat"
         tape
       />
       <Print
-        box={at(8, 470, 196, 176, -7)}
+        box={at(0, 56, 236, 206, -7)}
+        src={PHOTO.oliveCoast}
+        alt="Sunlight through olive branches above a coastal town"
+        tape
+      />
+      <Print
+        box={at(0, 560, 214, 190, -6)}
         src={PHOTO.loveBeach}
         alt="A couple walking hand in hand along a golden beach"
       />
       <Print
-        box={at(18, 1000, 280, 240, 4)}
+        box={at(788, 540, 206, 236, 5)}
+        src={PHOTO.potteryStudio}
+        alt="A bright pottery studio with a wheel and shelves of ceramics"
+        tape
+      />
+      <Print
+        box={at(10, 1104, 320, 296, 4)}
         src={PHOTO.flowerShop}
         alt="Buckets of fresh flowers outside a small flower shop"
         tape
       />
-      <Sparkle x={905} y={430} size={30} />
-      <Sparkle x={60} y={360} size={26} tone="cobalt" />
-      <Sparkle x={880} y={1150} size={22} />
-      <Sparkle x={150} y={1310} size={18} />
-      <Doodle kind="star" x={850} y={1235} size={72} rotate={12} />
+      <Print
+        box={at(676, 1110, 310, 280, -5)}
+        src={PHOTO.slowMorningTable}
+        alt="An open book, croissant and coffee by a sunlit window"
+      />
+      <Sparkle x={950} y={420} size={28} />
+      <Sparkle x={40} y={440} size={24} tone="cobalt" />
+      <Sparkle x={950} y={900} size={22} />
+      <Sparkle x={40} y={960} size={20} />
+      <Doodle kind="star" x={440} y={1320} size={64} rotate={12} />
     </>
   );
 }
@@ -150,45 +167,6 @@ function OptionB() {
   );
 }
 
-function OptionC() {
-  // Device 580 wide at (210, 120): messages x 252–748, y 342–1091 (measured).
-  // The lead photograph sits behind the phone; the other prints in front,
-  // over its frame and the space below the conversation.
-  return (
-    <>
-      <div className={styles.phone} style={phoneBox(210, 120, 580, 2)}>
-        <SmsPhone content={SMS_CONTENT} />
-      </div>
-      <Print
-        box={{ ...at(430, 0, 560, 700, 6), zIndex: 1 }}
-        src={PHOTO.freedomField}
-        alt="A woman walking through a summer field holding a straw hat"
-        tape
-      />
-      <Print
-        box={{ ...at(0, 140, 230, 200, -7), zIndex: 3 }}
-        src={PHOTO.oliveCoast}
-        alt="Sunlight through olive branches above a coastal town"
-        tape
-      />
-      <Print
-        box={{ ...at(0, 1000, 320, 280, 5), zIndex: 3 }}
-        src={PHOTO.loveBeach}
-        alt="A couple walking hand in hand along a golden beach"
-      />
-      <Print
-        box={{ ...at(710, 1100, 280, 300, -5), zIndex: 3 }}
-        src={PHOTO.flowerShop}
-        alt="Buckets of fresh flowers outside a small flower shop"
-        tape
-      />
-      <Sparkle x={60} y={110} size={26} />
-      <Sparkle x={930} y={780} size={32} tone="cobalt" />
-      <Sparkle x={440} y={1360} size={20} />
-    </>
-  );
-}
-
 export function HeroSceneMobile({
   option,
   float = true,
@@ -220,13 +198,7 @@ export function HeroSceneMobile({
         className={canvasClass}
         style={{ "--u": `calc(100cqw / ${CANVAS_WIDTH})` } as CSSProperties}
       >
-        {option === "a" ? (
-          <OptionA />
-        ) : option === "b" ? (
-          <OptionB />
-        ) : (
-          <OptionC />
-        )}
+        {option === "a" ? <OptionA /> : <OptionB />}
       </div>
     </div>
   );
