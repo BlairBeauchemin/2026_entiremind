@@ -55,7 +55,7 @@ export type HeroSceneMotion =
   | "living"
   | "parallax";
 
-const PHOTO = {
+export const PHOTO = {
   studio: "/marketing/hero/studio.webp",
   studioWoman: "/marketing/hero/studio-woman.webp",
   terrace: "/marketing/hero/terrace.webp",
@@ -83,7 +83,7 @@ const PHOTO = {
 } as const;
 
 /** Position on the 1440 × 1200 canvas, in canvas units. */
-function at(
+export function at(
   x: number,
   y: number,
   w: number,
@@ -137,7 +137,7 @@ function Photo({
 }
 
 /** Flat four-point sparkle: printed foil, not a puffy charm. */
-function Sparkle({
+export function Sparkle({
   x,
   y,
   size,
@@ -212,7 +212,7 @@ function PhotoCard({
   );
 }
 
-function Print({
+export function Print({
   box,
   src,
   alt,
@@ -267,7 +267,7 @@ function Tag({
 }
 
 /** Hand-drawn ink line art: ink on linen, per DESIGN.md's emblem rule. */
-function Doodle({
+export function Doodle({
   kind,
   x,
   y,

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { HeroScene } from "./hero-scene";
+import { HeroSceneMobile, type MobileSceneOption } from "./hero-scene-mobile";
 import { heroInter } from "./hero-font";
 import { EmailWaitlistForm } from "./email-waitlist-form";
 import { useWaitlistAsk } from "./signup-variant";
@@ -49,10 +50,16 @@ const LAYOUT = {
 export function Hero({
   layout = "copy-first",
   anchorId = "join",
+  mobileScene,
 }: {
   layout?: HeroLayout;
   /** The ask's id; other pages link to `/#join`. */
   anchorId?: string;
+  /**
+   * Below lg only: a phone-sized scene with a larger phone (HeroSceneMobile)
+   * in place of the shrunk desktop scene. Unset, the hero is unchanged.
+   */
+  mobileScene?: MobileSceneOption;
 }) {
   const { variant, ask, modal } = useWaitlistAsk("hero");
   const c = LAYOUT[layout];
@@ -155,9 +162,21 @@ export function Hero({
               heroInter.variable,
             )}
           >
-            <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
-              <HeroScene layout="spill" motion={HERO_MOTION} />
-            </div>
+            {mobileScene ? (
+              <>
+                {/* Full bleed on phones: the scene uses the screen's width. */}
+                <div className="lg:hidden -mx-6">
+                  <HeroSceneMobile option={mobileScene} />
+                </div>
+                <div className="hidden lg:block lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
+                  <HeroScene layout="spill" motion={HERO_MOTION} />
+                </div>
+              </>
+            ) : (
+              <div className="-mt-[11%] -mb-[9%] -ml-[17%] -mr-[20%] lg:-mx-[7%] lg:-mt-[8%] lg:-mb-[6%]">
+                <HeroScene layout="spill" motion={HERO_MOTION} />
+              </div>
+            )}
           </motion.div>
         </div>
       </header>
