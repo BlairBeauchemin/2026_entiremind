@@ -10,7 +10,7 @@ import styles from "./hero-scene.module.css";
  * canvas so the phone can be much larger on a phone screen. Options for the
  * founder to compare; the live hero still uses HeroScene everywhere.
  *
- * - "a": the phone at 56% of the screen, with the live scene's prints and
+ * - "a": the phone at 50% of the screen, with the live scene's prints and
  *   "My vision" board (three prints) in the same places.
  * - "b": the phone at 64%, the same arrangement with fewer pieces (a
  *   two-print board) and the board below the phone's lower left.
@@ -35,7 +35,7 @@ function phoneBox(x: number, y: number, width: number, zIndex?: number) {
 }
 
 const OPTIONS: Record<MobileSceneOption, { height: number }> = {
-  a: { height: 1200 },
+  a: { height: 1120 },
   b: { height: 1420 },
 };
 
@@ -93,14 +93,14 @@ const ALT: Record<string, string> = {
 };
 
 function OptionA() {
-  // Device 560 wide at (220, 40), 1120 tall.
+  // Device 504 wide at (248, 40), 1008 tall.
   return (
     <>
-      <div className={styles.phone} style={phoneBox(220, 40, 560)}>
+      <div className={styles.phone} style={phoneBox(248, 40, 504)}>
         <SmsPhone content={SMS_CONTENT} bare />
       </div>
       <VisionBoard
-        box={at(0, 640, 248, 420, -4)}
+        box={at(0, 640, 262, 420, -4)}
         prints={[
           { box: at(12, 84, 150, 184, -4), photo: "potteryStudio", tape: true },
           {
@@ -112,18 +112,18 @@ function OptionA() {
         ]}
       />
       <Print
-        box={at(690, 40, 300, 340, 5)}
+        box={at(680, 40, 300, 340, 5)}
         src={PHOTO.freedomField}
         alt={ALT.freedomField}
         tape
       />
       <Print
-        box={at(752, 520, 240, 210, -5)}
+        box={at(732, 520, 250, 214, -5)}
         src={PHOTO.loveBeach}
         alt={ALT.loveBeach}
       />
       <Print
-        box={at(750, 770, 248, 222, 4)}
+        box={at(732, 772, 258, 226, 4)}
         src={PHOTO.flowerShop}
         alt={ALT.flowerShop}
       />
@@ -136,7 +136,9 @@ function OptionA() {
       <Sparkle x={960} y={20} size={26} />
       <Sparkle x={968} y={470} size={30} tone="cobalt" />
       <Sparkle x={966} y={1020} size={22} />
-      <Sparkle x={40} y={560} size={22} />
+      {/* Quiet accents in the open space on the left. */}
+      <Sparkle x={112} y={430} size={28} tone="cobalt" />
+      <Sparkle x={196} y={1082} size={18} />
     </>
   );
 }

@@ -9,6 +9,7 @@ import { BottomCTA } from "./bottom-cta";
 import { Footer } from "./footer";
 import { SignupVariantProvider } from "./signup-variant";
 import type { SignupVariant } from "./signup-variant-config";
+import type { MobileSceneOption } from "./hero-scene-mobile";
 
 // One story, top to bottom: the promise, the familiar tension, what
 // Entiremind is and what it makes room for, and how joining works. The FAQ
@@ -19,9 +20,12 @@ import type { SignupVariant } from "./signup-variant-config";
 export function LandingPage({
   variant,
   heroLayout = "copy-first",
+  mobileScene,
 }: {
   variant: SignupVariant;
   heroLayout?: HeroLayout;
+  /** A phone-sized hero scene to try (see hero-scene-mobile.tsx). */
+  mobileScene?: MobileSceneOption;
 }) {
   return (
     <SignupVariantProvider variant={variant}>
@@ -30,7 +34,7 @@ export function LandingPage({
         <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-grain mix-blend-multiply" />
 
         <Navigation />
-        <Hero layout={heroLayout} />
+        <Hero layout={heroLayout} mobileScene={mobileScene} />
         <Problem />
         <Introducing />
         <Moment />
