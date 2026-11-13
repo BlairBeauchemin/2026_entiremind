@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { SMS_CONTENT } from "./hero-phone-content";
 import { SmsPhone } from "./sms-phone";
-import { Doodle, PHOTO, Print, Sparkle, at } from "./hero-scene";
+import { PHOTO, Print, Sparkle, at } from "./hero-scene";
 import styles from "./hero-scene.module.css";
 
 /**
@@ -137,7 +137,6 @@ function OptionA() {
       <Sparkle x={968} y={470} size={30} tone="cobalt" />
       <Sparkle x={966} y={1020} size={22} />
       <Sparkle x={40} y={560} size={22} />
-      <Doodle kind="star" x={860} y={1080} size={70} rotate={12} />
     </>
   );
 }
@@ -185,7 +184,6 @@ function OptionB() {
       <Sparkle x={34} y={560} size={22} tone="cobalt" />
       <Sparkle x={966} y={560} size={28} />
       <Sparkle x={960} y={1100} size={22} />
-      <Doodle kind="star" x={860} y={1330} size={70} rotate={12} />
     </>
   );
 }

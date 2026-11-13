@@ -417,7 +417,6 @@ function SpillLayout({ living }: { living: boolean }) {
       <Sparkle x={1268} y={800} size={22} />
       <Sparkle x={1010} y={1090} size={18} />
       <Sparkle x={196} y={560} size={22} />
-      <Doodle kind="star" x={1206} y={1032} size={70} rotate={12} />
     </>
   );
 }
