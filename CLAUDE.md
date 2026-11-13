@@ -391,6 +391,21 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
    typed dataLayer events (`src/lib/analytics.ts`). What remains is inside the GTM UI: GA4,
    Google Ads, Meta and TikTok tags. Step-by-step guide: `docs/marketing/gtm-setup.md`.
 
+**Founder's high-level roadmap (November 2026), in order — after the current design tweaks:**
+
+1. **Ad tracking** — the GTM tags above (GA4, Google Ads, Meta, TikTok).
+2. **Wiring up email** — the waitlist is now email-only (`leads.phone IS NULL` for email
+   signups) and `/thank-you?via=email` promises "We'll email your invitation". Connect leads to
+   the email provider (ActiveCampaign sync exists: `/api/cron/sync-email-contacts`,
+   `src/lib/email-campaigns/`) and decide what a new signup receives.
+3. **Making some ads** — creative for the paid launch; `/lp/form`, `/lp/modal` and
+   `/lp/phone-first` are ready as ad destinations. Paid launches stay founder-gated.
+4. **Privacy policy** — `src/app/privacy/page.tsx` "Data Sharing" must name the AI processor
+   (the FAQ says replies are read by AI), and should reflect the email-first waitlist.
+
+**Now (before the roadmap):** more design tweaks to the landing page, on branch
+`claude/landing-design-tweaks`.
+
 #### Founder Review Interface
 
 - **Founder page**: `src/app/dashboard/founder/page.tsx` - admin-only message viewer and scheduling UI
