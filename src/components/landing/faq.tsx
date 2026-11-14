@@ -66,12 +66,11 @@ const faqs = [
 // aria-expanded/aria-controls, answers are labelled regions, and arrow keys,
 // Home and End move between questions. All answers start collapsed.
 //
-// It sits after the blue band, above the shared footer: the full section gap
-// above it, and below it only what the footer's own top padding (64px) does
-// not already supply, so the gap to the footer matches the rest of the page.
+// It sits after the signup steps and before the blue band (the final ask), so
+// like the other linen sections it carries only the section gap below it.
 export function FAQ() {
   return (
-    <section id="section-faq" className="pt-flow pb-4 lg:pb-20 relative z-10">
+    <section id="section-faq" className="pb-flow relative z-10">
       <div className="max-w-xl mx-auto px-6">
         <h2 className="font-serif text-heading text-ink mb-6">
           Questions, answered

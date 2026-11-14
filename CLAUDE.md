@@ -359,8 +359,8 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
 **Landing page to-do list (founder, November 2026)** — work happens on
 `claude/landing-waitlist-v2`; main only when the founder says "push".
 
-0. ~~**Move the FAQ to the bottom of the page**~~ — done: it now follows the blue final ask,
-   just above the footer.
+0. ~~**Move the FAQ to the bottom of the page**~~ — done, then (November 2026) moved up one:
+   the order is now signup steps → FAQ → blue final ask (the signup form) → footer.
 1. ~~**Update the FAQ**~~ — done (November 2026, branch `claude/landing-faq`): ten questions
    in `src/components/landing/faq.tsx`, product doubts first and waitlist logistics last.
    Open notes for the founder: the privacy policy's "Data Sharing" list doesn't yet name an

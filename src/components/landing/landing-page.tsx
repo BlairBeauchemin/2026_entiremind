@@ -13,7 +13,7 @@ import type { MobileSceneOption } from "./hero-scene-mobile";
 
 // One story, top to bottom: the promise, the familiar tension, what
 // Entiremind is and what it makes room for, and how joining works. The FAQ
-// comes after the final ask, for anyone still deciding.
+// answers what is left, then the final ask (the blue band) closes the page.
 //
 // The page is the same for every signup variant; only how the asks collect
 // a first name and email differs (see signup-variant.tsx).
@@ -39,8 +39,8 @@ export function LandingPage({
         <Introducing />
         <Moment />
         <SignupSteps />
-        <BottomCTA />
         <FAQ />
+        <BottomCTA />
         <Footer />
       </div>
     </SignupVariantProvider>
