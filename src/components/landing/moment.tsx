@@ -34,6 +34,30 @@ const AFTER_BUBBLE_MS = 500 * PACE;
 
 type Phase = { shown: number; typing: number | null };
 
+// The hero's four-point sparkle, a few on the empty wall at the photo's top
+// right (clear of her face and of the messages), to tie the photograph to the
+// hero collage. Positions in % of the photo; sizes in px, as in the hero.
+const PHOTO_SPARKLES = [
+  { left: "80%", top: "12%", size: 13, tone: "text-cobalt" },
+  { left: "89%", top: "27%", size: 11, tone: "text-leaf" },
+  { left: "69%", top: "6%", size: 9, tone: "text-leaf" },
+] as const;
+
+function PhotoSparkles() {
+  return PHOTO_SPARKLES.map((s) => (
+    <svg
+      key={s.left + s.top}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={`pointer-events-none absolute ${s.tone}`}
+      style={{ left: s.left, top: s.top, width: s.size, height: s.size }}
+    >
+      <path d="M12 0C12.7 6.6 17.4 11.3 24 12 17.4 12.7 12.7 17.4 12 24 11.3 17.4 6.6 12.7 0 12 6.6 11.3 11.3 6.6 12 0Z" />
+    </svg>
+  ));
+}
+
 export function Moment() {
   const listRef = useRef<HTMLOListElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
@@ -118,6 +142,7 @@ export function Moment() {
             sizes="(min-width: 1024px) 460px, 100vw"
             className="object-cover object-center"
           />
+          <PhotoSparkles />
         </div>
 
         <ol
