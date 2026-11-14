@@ -38,7 +38,7 @@ export function Introducing() {
             Introducing Entiremind
           </h2>
           <p className="mt-6 text-xl text-ink font-sans leading-normal text-pretty">
-            Thoughtful texts, shaped around what you want to create, so you can:
+            Not another app to download. Just personalized texts that help you:
           </p>
           <ul className="mt-6 space-y-8">
             {benefits.map(({ icon: Icon, title, description }) => (
