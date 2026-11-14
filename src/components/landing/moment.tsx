@@ -38,9 +38,10 @@ type Phase = { shown: number; typing: number | null };
 // right (clear of her face and of the messages), to tie the photograph to the
 // hero collage. Positions in % of the photo; sizes in px, as in the hero.
 const PHOTO_SPARKLES = [
-  { left: "80%", top: "12%", size: 13, tone: "text-cobalt" },
-  { left: "89%", top: "27%", size: 11, tone: "text-leaf" },
-  { left: "69%", top: "6%", size: 9, tone: "text-leaf" },
+  { left: "80%", top: "11%", size: 13, tone: "text-cobalt" },
+  { left: "90%", top: "25%", size: 12, tone: "text-leaf" },
+  { left: "69%", top: "5%", size: 9, tone: "text-cobalt" },
+  { left: "84%", top: "40%", size: 8, tone: "text-cobalt" },
 ] as const;
 
 function PhotoSparkles() {
