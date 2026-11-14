@@ -37,7 +37,7 @@ type Phase = { shown: number; typing: number | null };
 // The hero's four-point sparkle on the photo, tying it to the hero collage.
 // Positions in % of the photo; sizes in px, as in the hero.
 //
-// RISE (in use): a loose, uneven trail from just above the phone in her hand
+// RISE (tried, not in use): a loose, uneven trail from just above the phone in her hand
 // up the empty wall, smallest first, as if a little light comes off the text.
 // Never a line: x zigzags and the gaps vary. On phones the messages cover the
 // lowest ones; that's fine.
@@ -50,13 +50,17 @@ const PHOTO_SPARKLES_RISE = [
   { left: "91%", top: "15%", size: 13, tone: "text-cobalt" },
 ] as const;
 
-// CLUSTER (the previous version): grouped on the wall at the top right.
+// CLUSTER (in use): grouped on the wall at the top right, with one tiny gold
+// sparkle trailing toward the phone.
 const PHOTO_SPARKLES_CLUSTER = [
   { left: "80%", top: "11%", size: 13, tone: "text-cobalt" },
   { left: "90%", top: "25%", size: 12, tone: "text-leaf" },
   { left: "69%", top: "5%", size: 9, tone: "text-cobalt" },
   { left: "73%", top: "15%", size: 9, tone: "text-leaf" },
   { left: "84%", top: "40%", size: 8, tone: "text-cobalt" },
+  // One tiny gold below, about halfway to the phone: hints at where the
+  // light comes from without a trail.
+  { left: "80%", top: "51%", size: 6, tone: "text-leaf" },
 ] as const;
 
 // Switch layouts here.
@@ -64,7 +68,7 @@ const PHOTO_SPARKLE_LAYOUTS = {
   rise: PHOTO_SPARKLES_RISE,
   cluster: PHOTO_SPARKLES_CLUSTER,
 };
-const PHOTO_SPARKLES = PHOTO_SPARKLE_LAYOUTS.rise;
+const PHOTO_SPARKLES = PHOTO_SPARKLE_LAYOUTS.cluster;
 
 function PhotoSparkles() {
   return PHOTO_SPARKLES.map((s) => (
