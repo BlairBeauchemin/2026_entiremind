@@ -41,7 +41,7 @@ const PHOTO_SPARKLES = [
   { left: "80%", top: "11%", size: 13, tone: "text-cobalt" },
   { left: "90%", top: "25%", size: 12, tone: "text-leaf" },
   { left: "69%", top: "5%", size: 9, tone: "text-cobalt" },
-  { left: "90%", top: "5%", size: 9, tone: "text-leaf" },
+  { left: "73%", top: "15%", size: 9, tone: "text-leaf" },
   { left: "84%", top: "40%", size: 8, tone: "text-cobalt" },
 ] as const;
 
