@@ -20,8 +20,8 @@ const benefits: {
   },
   {
     icon: Sprout,
-    title: "Bring your intentions to life.",
-    description: "Take small, meaningful actions to manifest what you want.",
+    title: "Move toward what you want.",
+    description: "Turn reflection into small, meaningful actions.",
   },
 ];
 
