@@ -29,7 +29,6 @@ export function EmailWaitlistForm({
   id,
   note,
   stacked = false,
-  button = "default",
 }: {
   /** The on-page spot, or the ask that opened the pop-up. */
   location: FormLocation;
@@ -42,9 +41,6 @@ export function EmailWaitlistForm({
   /** Inline only: fields one above the other and a full-width button at
    * every width (by default they sit side by side from sm). */
   stacked?: boolean;
-  /** Cobalt tone only: "gold" fills the button with leaf, an option the
-   * founder asked to see (DESIGN.md keeps gold off buttons). */
-  button?: "default" | "gold";
 }) {
   const router = useRouter();
   const uid = useId();
@@ -218,11 +214,9 @@ export function EmailWaitlistForm({
         type="submit"
         disabled={isSubmitting}
         className={`mt-4 w-full ${kind === "inline" && !stacked ? "sm:w-auto" : ""} px-10 py-4 rounded-sm text-lg font-medium font-sans transition-all duration-300 disabled:opacity-70 disabled:cursor-wait focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-          cobalt && button === "gold"
-            ? "bg-leaf text-ink hover:bg-[#d4b061] focus-visible:ring-linen focus-visible:ring-offset-cobalt"
-            : cobalt
-              ? "bg-linen text-cobalt-deep hover:bg-surface focus-visible:ring-linen focus-visible:ring-offset-cobalt"
-              : "bg-cobalt text-linen hover:bg-cobalt-deep focus-visible:ring-cobalt focus-visible:ring-offset-linen"
+          cobalt
+            ? "bg-linen text-cobalt-deep hover:bg-surface focus-visible:ring-linen focus-visible:ring-offset-cobalt"
+            : "bg-cobalt text-linen hover:bg-cobalt-deep focus-visible:ring-cobalt focus-visible:ring-offset-linen"
         }`}
       >
         {isSubmitting ? "Joining…" : "Join the waitlist"}

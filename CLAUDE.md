@@ -339,9 +339,8 @@ TWILIO_PHONE_NUMBER=+1234567890
   page it belonged to, on branch `claude/landing-sms-consent-flow`.
 - **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads (phone optional,
   validated when sent; honeypot `website`). The blue final section ("Your next chapter
-  starts with a text") has the same first name + email form as the hero, stacked.
-  `/lp/bottom-cta` compares its linen button with a gold option (DESIGN.md keeps gold off
-  buttons, so gold is a founder call)
+  starts with a text") has the same first name + email form as the hero, stacked,
+  on a linen panel with the cobalt button
 - **Storage**: `leads` table with source tracking (`landing_page`); email-only leads have
   `phone IS NULL`
 - **Integration points**: hero, after the benefits, after the signup steps, the final

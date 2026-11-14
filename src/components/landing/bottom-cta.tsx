@@ -8,12 +8,7 @@ const NOTE = "Free to join. Launch updates by email. Unsubscribe anytime.";
 // The final ask, on cobalt. "form": the second on-page form (the hero holds
 // the first), so someone who has read the whole page can join where they
 // are. "modal": a button that opens the email-only pop-up.
-export function BottomCTA({
-  button = "default",
-}: {
-  /** The button: linen (default) or the gold option (/lp/bottom-cta). */
-  button?: "default" | "gold";
-} = {}) {
+export function BottomCTA() {
   const { variant, ask, modal } = useWaitlistAsk("bottom_cta");
 
   return (
@@ -26,14 +21,10 @@ export function BottomCTA({
           Join the waitlist and get an invitation when Entiremind opens.
         </p>
         {variant === "form" ? (
-          <div className="mt-8 max-w-lg mx-auto">
-            <EmailWaitlistForm
-              location="bottom_cta"
-              tone="cobalt"
-              stacked
-              button={button}
-              note={NOTE}
-            />
+          // A linen panel on the cobalt band, holding the same light form
+          // as the hero: cream fields and the cobalt button.
+          <div className="mt-8 max-w-lg mx-auto bg-linen rounded-sm p-6 sm:p-8">
+            <EmailWaitlistForm location="bottom_cta" stacked note={NOTE} />
           </div>
         ) : (
           <>
