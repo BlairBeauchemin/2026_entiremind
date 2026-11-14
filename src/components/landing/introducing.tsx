@@ -10,19 +10,18 @@ const benefits: {
     icon: Compass,
     title: "Manifest with clarity and intention.",
     description:
-      "Reconnect with what you truly want, so your next steps reflect what matters to you.",
+      "Reconnect with what you truly want and give your dreams clearer direction.",
   },
   {
     icon: Sun,
-    title: "Find more possibility in your everyday life.",
+    title: "See more possibilities in your day.",
     description:
-      "Make room for reflection and gratitude to notice what's working, what's shifting, and what you'd like to change.",
+      "Reflect, practice gratitude, and find more to look forward to.",
   },
   {
     icon: Sprout,
     title: "Bring your intentions to life.",
-    description:
-      "Take small, meaningful actions to manifest what you want, woven into the day you're already living.",
+    description: "Take small, meaningful actions to manifest what you want.",
   },
 ];
 
