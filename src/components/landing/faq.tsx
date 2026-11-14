@@ -3,11 +3,12 @@
 import { Accordion } from "radix-ui";
 import { ChevronDown } from "lucide-react";
 
-// Six questions, in the founder's order: waitlist logistics first, then what
+// Seven questions: waitlist logistics first, then what
 // the texts are like. Every answer describes what the product actually does:
 // one AI-written prompt a day plus a short reply when someone texts back
 // (src/lib/ai, src/lib/acks); silence is never punished (src/lib/reconnect.ts:
-// one check-in that offers PAUSE); and the waitlist form asks for first name
+// one check-in that offers PAUSE); STOP / PAUSE / RESUME are real keywords
+// (the Twilio webhook); and the waitlist form asks for first name
 // and email only, with no texts before someone enrolls at launch.
 const faqs = [
   {
@@ -33,6 +34,11 @@ const faqs = [
     question: "What if I don't reply?",
     answer:
       "Nothing happens. There are no streaks and no reminders about what you missed. If you go quiet for a while, we'll check in once and offer to pause.",
+  },
+  {
+    question: "Can I stop anytime?",
+    answer:
+      "Yes. Reply STOP and the texts end. You can also pause and come back when you're ready.",
   },
   {
     question: "Who reads what I send?",

@@ -361,9 +361,9 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
 
 0. ~~**Move the FAQ to the bottom of the page**~~ — done, then (November 2026) moved up one:
    the order is now signup steps → FAQ → blue final ask (the signup form) → footer.
-1. ~~**Update the FAQ**~~ — done (November 2026): now six questions in
+1. ~~**Update the FAQ**~~ — done (November 2026): now seven questions in
    `src/components/landing/faq.tsx`, waitlist logistics first (join, cost, access date),
-   then the texts (how many, no reply, who reads).
+   then the texts (how many, no reply, stopping, who reads).
    Open notes for the founder: the privacy policy's "Data Sharing" list doesn't yet name an
    AI processor although the FAQ says replies are read by AI; and "we'll check in once and
    offer to pause" leaves out that a still-silent user is then paused automatically (with a
