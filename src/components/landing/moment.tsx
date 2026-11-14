@@ -152,7 +152,7 @@ export function Moment() {
         id="section-moment-heading"
         className="max-w-xl lg:max-w-2xl mx-auto px-6 mb-6 font-serif text-heading text-ink text-pretty lg:text-balance lg:text-center"
       >
-        A little space for your intentions, woven into everyday life.
+        A little space for your intentions, woven into everyday life
       </h2>
       <div className="max-w-5xl mx-auto px-6 lg:flex lg:flex-row-reverse lg:items-center lg:justify-center">
         <div

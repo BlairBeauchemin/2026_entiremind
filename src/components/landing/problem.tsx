@@ -10,9 +10,9 @@ export function Problem() {
         <div className="max-w-xl">
           <h2 className="font-serif text-heading text-ink text-balance">
             <span className="block">
-              You haven&apos;t forgotten what you want.
+              You haven&apos;t forgotten what you want
             </span>
-            <span className="block">It just gets lost in the day.</span>
+            <span className="block">It just gets lost in the day</span>
           </h2>
           <p className="mt-6 text-lg text-ink font-sans leading-relaxed">
             Between the things you need to do and the people who need you, your

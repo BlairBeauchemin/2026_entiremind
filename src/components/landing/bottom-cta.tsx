@@ -13,7 +13,7 @@ export function BottomCTA() {
     <section className="py-section bg-cobalt relative overflow-hidden">
       <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
         <h2 className="font-serif text-heading text-linen text-balance">
-          Come back to <em className="italic">what you truly want.</em>
+          Come back to <em className="italic">what you truly want</em>
         </h2>
         <p className="mt-6 text-lg text-linen font-sans leading-relaxed text-balance">
           Join the waitlist for an invitation when Entiremind opens.
