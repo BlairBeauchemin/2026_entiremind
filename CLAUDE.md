@@ -367,7 +367,7 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
    farewell text) — see `src/lib/reconnect.ts`.
 2. ~~**Spacing review**~~ — done and live (November 2026): reading text at 1.625 line height,
    8px title→description, 32px between bullets/steps, 28px phone headings, and the section
-   gap token `--spacing-flow` in `src/app/globals.css` at 80px on phones / 144px wide.
+   gap token `--spacing-flow` in `src/app/globals.css` at 64px on phones / 144px wide.
 3. ~~**Inline name + email form**~~ — **live on main (November 2026)** with the phone-first
    hero on `/`. Built on branches `claude/landing-email-first` and `claude/landing-phone-first`. First name + email forms in the hero (`#join`) and the blue final
    section (`EmailWaitlistForm`); the header and mid-page buttons scroll to the next form

@@ -129,8 +129,9 @@
   --spacing-section: clamp(56px, 9vw, 112px);
   /* The one gap between consecutive sections on the same paper (landing):
      each section carries it as bottom padding only, so the space between any
-     two is exactly this. 80px on phones, 144px on wide screens. */
-  --spacing-flow: clamp(80px, 10vw, 144px);
+     two is exactly this. 64px on phones, growing with the width (10vw) to
+     144px on wide screens. */
+  --spacing-flow: clamp(64px, 10vw, 144px);
 }
 
 :root {
