@@ -3,18 +3,18 @@
 import { Accordion } from "radix-ui";
 import { ChevronDown } from "lucide-react";
 
-// Seven questions: waitlist logistics first, then what
-// the texts are like. Every answer describes what the product actually does:
-// one AI-written prompt a day plus a short reply when someone texts back
-// (src/lib/ai, src/lib/acks); silence is never punished (src/lib/reconnect.ts:
-// one check-in that offers PAUSE); STOP / PAUSE / RESUME are real keywords
-// (the Twilio webhook); and the waitlist form asks for first name
-// and email only, with no texts before someone enrolls at launch.
+// Five questions: waitlist logistics first, then what the texts are like.
+// Every answer describes what the product actually does: one AI-written prompt
+// a day plus a short reply when someone texts back (src/lib/ai, src/lib/acks);
+// silence is never punished (src/lib/reconnect.ts: one check-in that offers
+// PAUSE); STOP / PAUSE / RESUME are real keywords (the Twilio webhook); and the
+// waitlist form asks for first name and email only, with no texts before
+// someone enrolls at launch.
 const faqs = [
   {
     question: "What happens when I join the waitlist?",
     answer:
-      "You share your first name and email, and that's all. No texts yet. We'll email your invitation when access opens, and you'll choose then whether to enroll.",
+      "You share your first name and email, and that's all. No texts yet. We'll email your invitation as soon as access opens (we'll share the date once it's confirmed), and you'll choose then whether to enroll.",
   },
   {
     question: "Will it cost money?",
@@ -22,23 +22,14 @@ const faqs = [
       "Joining the waitlist is free. The daily texts will be a paid subscription, and you'll see the price before you decide anything.",
   },
   {
-    question: "When will access open?",
-    answer: "We'll share the date with the waitlist as soon as it's confirmed.",
-  },
-  {
     question: "How many texts will I get?",
     answer:
       "Usually one a day. When you reply, you'll get a short response back.",
   },
   {
-    question: "What if I don't reply?",
+    question: "What if I don't reply, or want to stop?",
     answer:
-      "Nothing happens. There are no streaks and no reminders about what you missed. If you go quiet for a while, we'll check in once and offer to pause.",
-  },
-  {
-    question: "Can I stop anytime?",
-    answer:
-      "Yes. Reply STOP and the texts end. You can also pause and come back when you're ready.",
+      "Nothing happens if you don't reply. There are no streaks and no reminders about what you missed. If you go quiet for a while, we'll check in once and offer to pause. And you can stop anytime: reply STOP and the texts end, or pause and come back when you're ready.",
   },
   {
     question: "Who reads what I send?",
