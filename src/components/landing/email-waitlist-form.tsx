@@ -10,8 +10,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 type FieldErrors = { name?: string; email?: string };
 
 /**
- * The email-first waitlist form: first name and email (or email only, with
- * `askName={false}`). It asks for no phone
+ * The email-first waitlist form: first name and email. It asks for no phone
  * number and no SMS consent, so it sits outside the pop-up flow approved for
  * A2P 10DLC (kept on branch claude/landing-sms-consent-flow); a phone is
  * asked for at enrollment.
@@ -30,7 +29,6 @@ export function EmailWaitlistForm({
   id,
   note,
   stacked = false,
-  askName = true,
   button = "default",
 }: {
   /** The on-page spot, or the ask that opened the pop-up. */
@@ -44,8 +42,6 @@ export function EmailWaitlistForm({
   /** Inline only: fields one above the other and a full-width button at
    * every width (by default they sit side by side from sm). */
   stacked?: boolean;
-  /** false: email only, no first-name field. */
-  askName?: boolean;
   /** Cobalt tone only: "gold" fills the button with leaf, an option the
    * founder asked to see (DESIGN.md keeps gold off buttons). */
   button?: "default" | "gold";
@@ -78,7 +74,7 @@ export function EmailWaitlistForm({
     setAlreadyJoined(false);
 
     const errors: FieldErrors = {};
-    if (askName && !name.trim()) errors.name = "Please enter your first name.";
+    if (!name.trim()) errors.name = "Please enter your first name.";
     if (!EMAIL_PATTERN.test(email.trim()))
       errors.email = "Please enter a valid email address.";
     setFieldErrors(errors);
@@ -91,7 +87,7 @@ export function EmailWaitlistForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: askName ? name.trim() : undefined,
+          name: name.trim(),
           email: email.trim(),
           website,
           // Share attribution (?src=share-{archetype}); server validates.
@@ -144,35 +140,33 @@ export function EmailWaitlistForm({
       className="w-full scroll-mt-32"
     >
       <div
-        className={`grid gap-3 ${askName && kind === "inline" && !stacked ? "sm:grid-cols-2" : ""}`}
+        className={`grid gap-3 ${kind === "inline" && !stacked ? "sm:grid-cols-2" : ""}`}
       >
-        {askName && (
-          <div>
-            <label htmlFor={`${uid}-name`} className="sr-only">
-              First name
-            </label>
-            <input
-              ref={nameRef}
-              id={`${uid}-name`}
-              name="name"
-              type="text"
-              autoComplete="given-name"
-              placeholder="First name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onFocus={onFirstFocus}
-              maxLength={200}
-              aria-invalid={fieldErrors.name ? true : undefined}
-              aria-describedby={fieldErrors.name ? nameErrorId : undefined}
-              className={inputClass}
-            />
-            {fieldErrors.name && (
-              <p id={nameErrorId} className={errorClass}>
-                {fieldErrors.name}
-              </p>
-            )}
-          </div>
-        )}
+        <div>
+          <label htmlFor={`${uid}-name`} className="sr-only">
+            First name
+          </label>
+          <input
+            ref={nameRef}
+            id={`${uid}-name`}
+            name="name"
+            type="text"
+            autoComplete="given-name"
+            placeholder="First name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onFocus={onFirstFocus}
+            maxLength={200}
+            aria-invalid={fieldErrors.name ? true : undefined}
+            aria-describedby={fieldErrors.name ? nameErrorId : undefined}
+            className={inputClass}
+          />
+          {fieldErrors.name && (
+            <p id={nameErrorId} className={errorClass}>
+              {fieldErrors.name}
+            </p>
+          )}
+        </div>
         <div>
           <label htmlFor={`${uid}-email`} className="sr-only">
             Email address
@@ -223,7 +217,7 @@ export function EmailWaitlistForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className={`mt-4 w-full ${askName && kind === "inline" && !stacked ? "sm:w-auto" : ""} px-10 py-4 rounded-sm text-lg font-medium font-sans transition-all duration-300 disabled:opacity-70 disabled:cursor-wait focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+        className={`mt-4 w-full ${kind === "inline" && !stacked ? "sm:w-auto" : ""} px-10 py-4 rounded-sm text-lg font-medium font-sans transition-all duration-300 disabled:opacity-70 disabled:cursor-wait focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
           cobalt && button === "gold"
             ? "bg-leaf text-ink hover:bg-[#d4b061] focus-visible:ring-linen focus-visible:ring-offset-cobalt"
             : cobalt

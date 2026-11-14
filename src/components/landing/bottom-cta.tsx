@@ -30,7 +30,7 @@ export function BottomCTA({
             <EmailWaitlistForm
               location="bottom_cta"
               tone="cobalt"
-              askName={false}
+              stacked
               button={button}
               note={NOTE}
             />

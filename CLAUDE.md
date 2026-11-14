@@ -337,10 +337,9 @@ TWILIO_PHONE_NUMBER=+1234567890
   `waitlist-modal-single.tsx` (name, email, phone required, optional SMS consent + terms), the
   version approved by Twilio for A2P 10DLC. Kept unused in the codebase and, as the full live
   page it belonged to, on branch `claude/landing-sms-consent-flow`.
-- **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads (name and phone
-  optional, validated when sent; honeypot `website`). The blue final section's form is
-  **email only** (`EmailWaitlistForm askName={false}`, headline "Your next chapter starts
-  with a text"), so those leads have `name IS NULL`; the hero form still asks first name.
+- **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads (phone optional,
+  validated when sent; honeypot `website`). The blue final section ("Your next chapter
+  starts with a text") has the same first name + email form as the hero, stacked.
   `/lp/bottom-cta` compares its linen button with a gold option (DESIGN.md keeps gold off
   buttons, so gold is a founder call)
 - **Storage**: `leads` table with source tracking (`landing_page`); email-only leads have

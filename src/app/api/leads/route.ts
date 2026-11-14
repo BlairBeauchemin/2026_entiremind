@@ -25,14 +25,12 @@ export async function POST(request: NextRequest) {
         : "landing_page";
 
     // Validate all required fields
-    // Name is optional: the blue band's form asks for email only. A name
-    // that is sent must be a string.
-    const hasName = typeof name === "string" && name.trim() !== "";
+    const hasName = name && typeof name === "string" && name.trim();
     const hasEmail = email && typeof email === "string" && email.trim();
     const hasPhone = phone && typeof phone === "string" && phone.trim();
 
-    if (name != null && typeof name !== "string") {
-      return NextResponse.json({ error: "Invalid name" }, { status: 400 });
+    if (!hasName) {
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
     if (!hasEmail) {
@@ -52,7 +50,7 @@ export async function POST(request: NextRequest) {
     // Cap field lengths — this endpoint is unauthenticated, so unbounded
     // strings are a cheap storage/DoS vector.
     if (
-      (hasName && name.length > 200) ||
+      name.length > 200 ||
       email.length > 320 ||
       (hasPhone && phone.length > 20) ||
       (smsConsentLanguage != null &&
@@ -121,7 +119,7 @@ export async function POST(request: NextRequest) {
     // a phone number, so an email-only signup records consent as false (with
     // when and from where, as the quiz does for its phone-less leads).
     const { error } = await supabase.from("leads").insert({
-      name: hasName ? name.trim() : null,
+      name: name.trim(),
       email: email.toLowerCase().trim(),
       phone: hasPhone ? phone.trim() : null,
       source: validatedSource,
