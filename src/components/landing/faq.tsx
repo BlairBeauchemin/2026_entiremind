@@ -31,7 +31,7 @@ const faqs = [
   {
     question: "What if I don't reply, or want to stop?",
     answer:
-      "Nothing happens if you don't reply. There are no streaks and no reminders about what you missed. If you go quiet for a while, we'll check in once and offer to pause. And you can stop anytime: reply STOP and the texts end, or pause and come back when you're ready.",
+      "That's completely fine. There are no streaks and no guilt trips about what you missed. If you go quiet for a while, we'll check in gently and ease off, so texts never pile up. Reply STOP anytime to end them, or PAUSE to take a break and RESUME when you're ready.",
   },
   {
     question: "Who reads what I send?",

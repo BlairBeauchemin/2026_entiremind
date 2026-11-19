@@ -367,9 +367,9 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
    The cost answer promises a price below "a couple of fancy coffees" a month and a free
    trial (the 10-day trial in `src/lib/billing/`): recheck that copy whenever the price is set.
    Open notes for the founder: the privacy policy's "Data Sharing" list doesn't yet name an
-   AI processor although the FAQ says replies are read by AI; and "we'll check in once and
-   offer to pause" leaves out that a still-silent user is then paused automatically (with a
-   farewell text) — see `src/lib/reconnect.ts`.
+   AI processor although the FAQ says replies are read by AI. The no-reply answer ("we'll
+   check in gently and ease off, so texts never pile up") is deliberately vague about the
+   arc in `src/lib/reconnect.ts` (one check-in, then a farewell and an automatic pause).
 2. ~~**Spacing review**~~ — done and live (November 2026): reading text at 1.625 line height,
    8px title→description, 32px between bullets/steps, 28px phone headings, and the section
    gap token `--spacing-flow` in `src/app/globals.css` at 64px on phones / 144px wide.
