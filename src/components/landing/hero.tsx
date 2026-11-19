@@ -93,7 +93,7 @@ export function Hero({
             <p
               className={cx(
                 c.sub,
-                "text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-normal lg:leading-relaxed font-sans text-balance",
+                "text-xl text-ink max-w-lg mx-auto lg:mx-0 font-light leading-normal lg:leading-relaxed font-sans text-pretty",
                 c.piece,
               )}
             >
