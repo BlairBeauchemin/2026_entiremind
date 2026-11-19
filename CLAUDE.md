@@ -364,6 +364,8 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
 1. ~~**Update the FAQ**~~ — done (November 2026): now five questions in
    `src/components/landing/faq.tsx`, waitlist logistics first (join + access date, cost),
    then the texts (how many, no reply or stopping, who reads).
+   The cost answer promises a price below "a couple of fancy coffees" a month and a free
+   trial (the 10-day trial in `src/lib/billing/`): recheck that copy whenever the price is set.
    Open notes for the founder: the privacy policy's "Data Sharing" list doesn't yet name an
    AI processor although the FAQ says replies are read by AI; and "we'll check in once and
    offer to pause" leaves out that a still-silent user is then paused automatically (with a

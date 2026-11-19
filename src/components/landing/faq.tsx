@@ -19,7 +19,7 @@ const faqs = [
   {
     question: "Will it cost money?",
     answer:
-      "Joining the waitlist is free. The daily texts will be a paid subscription, and you'll see the price before you decide anything.",
+      "Joining the waitlist is free. After that, Entiremind will cost less each month than a couple of fancy coffees, with a free trial to start so you can see if it's right for you. You'll see the price before you decide anything.",
   },
   {
     question: "How many texts will I get?",
