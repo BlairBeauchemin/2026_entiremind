@@ -51,7 +51,7 @@ export function SignupSteps() {
         <div className="mt-12 text-center">
           <WaitlistButton location="intro" />
           <p className="text-sm text-muted mt-3 font-sans text-balance">
-            Free to join. Your daily texts begin only when you enroll.
+            Free to join. Your texts begin only when you enroll.
           </p>
         </div>
       </div>
