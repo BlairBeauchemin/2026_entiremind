@@ -7,13 +7,13 @@ import { analytics, type FormLocation } from "@/lib/analytics";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type FieldErrors = { name?: string; email?: string };
+type FieldErrors = { email?: string };
 
 /**
- * The email-first waitlist form: first name and email. It asks for no phone
- * number and no SMS consent, so it sits outside the pop-up flow approved for
- * A2P 10DLC (kept on branch claude/landing-sms-consent-flow); a phone is
- * asked for at enrollment.
+ * The email-first waitlist form: email, and an optional first name. It asks
+ * for no phone number and no SMS consent, so it sits outside the pop-up flow
+ * approved for A2P 10DLC (kept on branch claude/landing-sms-consent-flow); a
+ * phone is asked for at enrollment.
  *
  * One form, two homes, so a test between them changes only the container:
  * - kind "inline": on the page (the hero, and the final blue band);
@@ -44,7 +44,6 @@ export function EmailWaitlistForm({
 }) {
   const router = useRouter();
   const uid = useId();
-  const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -70,11 +69,9 @@ export function EmailWaitlistForm({
     setAlreadyJoined(false);
 
     const errors: FieldErrors = {};
-    if (!name.trim()) errors.name = "Please enter your first name.";
     if (!EMAIL_PATTERN.test(email.trim()))
       errors.email = "Please enter a valid email address.";
     setFieldErrors(errors);
-    if (errors.name) return nameRef.current?.focus();
     if (errors.email) return emailRef.current?.focus();
 
     setIsSubmitting(true);
@@ -83,7 +80,7 @@ export function EmailWaitlistForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: name.trim(),
+          name: name.trim() || undefined,
           email: email.trim(),
           website,
           // Share attribution (?src=share-{archetype}); server validates.
@@ -122,7 +119,6 @@ export function EmailWaitlistForm({
       : "bg-surface border-rule focus:border-cobalt focus-visible:ring-cobalt/30"
   }`;
   const errorClass = `mt-1.5 text-sm font-sans text-left ${cobalt ? "text-linen" : "text-cobalt-deep"}`;
-  const nameErrorId = `${uid}-name-error`;
   const emailErrorId = `${uid}-email-error`;
 
   return (
@@ -140,28 +136,20 @@ export function EmailWaitlistForm({
       >
         <div>
           <label htmlFor={`${uid}-name`} className="sr-only">
-            First name
+            First name (optional)
           </label>
           <input
-            ref={nameRef}
             id={`${uid}-name`}
             name="name"
             type="text"
             autoComplete="given-name"
-            placeholder="First name"
+            placeholder="First name (optional)"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onFocus={onFirstFocus}
             maxLength={200}
-            aria-invalid={fieldErrors.name ? true : undefined}
-            aria-describedby={fieldErrors.name ? nameErrorId : undefined}
             className={inputClass}
           />
-          {fieldErrors.name && (
-            <p id={nameErrorId} className={errorClass}>
-              {fieldErrors.name}
-            </p>
-          )}
         </div>
         <div>
           <label htmlFor={`${uid}-email`} className="sr-only">

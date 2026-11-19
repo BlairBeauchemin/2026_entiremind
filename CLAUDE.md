@@ -337,7 +337,7 @@ TWILIO_PHONE_NUMBER=+1234567890
   `waitlist-modal-single.tsx` (name, email, phone required, optional SMS consent + terms), the
   version approved by Twilio for A2P 10DLC. Kept unused in the codebase and, as the full live
   page it belonged to, on branch `claude/landing-sms-consent-flow`.
-- **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads (phone optional,
+- **Leads API**: `src/app/api/leads/route.ts` - POST endpoint to save leads (first name and phone optional,
   validated when sent; honeypot `website`). The blue final section ("Your next chapter
   starts with a text") has the same first name + email form as the hero, stacked,
   on a linen panel with the cobalt button
