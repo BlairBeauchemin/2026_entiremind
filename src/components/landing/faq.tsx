@@ -4,8 +4,10 @@ import { Accordion } from "radix-ui";
 import { ChevronDown } from "lucide-react";
 
 // Five questions: waitlist logistics first, then what the texts are like.
-// Every answer describes what the product actually does: one AI-written prompt
-// a day plus a short reply when someone texts back (src/lib/ai, src/lib/acks);
+// Every answer describes what the product does, or will do at launch: one
+// AI-written prompt a day plus a short reply when someone texts back (src/lib/ai,
+// src/lib/acks) -- the "few a week up to one a day" pace choice is a launch
+// requirement on the roadmap in CLAUDE.md, not built yet;
 // silence is never punished (src/lib/reconnect.ts: one check-in that offers
 // PAUSE); STOP / PAUSE / RESUME are real keywords (the Twilio webhook); and the
 // waitlist form asks for email and an optional first name only, with no texts before
@@ -24,7 +26,7 @@ const faqs = [
   {
     question: "How many texts will I get?",
     answer:
-      "Usually one a day. When you reply, you'll get a short response back.",
+      "As many as feels right, from a few a week up to one a day. It's your pace, not ours. Reply whenever you like and you'll get a short note back.",
   },
   {
     question: "What if I don't reply, or want to stop?",

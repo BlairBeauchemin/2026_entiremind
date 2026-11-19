@@ -407,6 +407,12 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
    `/lp/phone-first` are ready as ad destinations. Paid launches stay founder-gated.
 4. **Privacy policy** — `src/app/privacy/page.tsx` "Data Sharing" must name the AI processor
    (the FAQ says replies are read by AI), and should reflect the email-first waitlist.
+5. **Let members set how often texts arrive (launch requirement)** — the FAQ now promises
+   "from a few a week up to one a day. It's your pace, not ours." Today every active user
+   gets one prompt every morning and the only control is PAUSE. Needed before launch: a
+   frequency choice in onboarding and `/dashboard/settings`, `daily-send` skipping off-days
+   for people on fewer than daily, and silence detection / the reconnect arc not counting an
+   off-day as a silence.
 
 **Now (before the roadmap):** more design tweaks to the landing page, on branch
 `claude/landing-design-tweaks`.
