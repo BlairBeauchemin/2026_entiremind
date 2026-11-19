@@ -36,7 +36,7 @@ const faqs = [
   {
     question: "Who reads what I send?",
     answer:
-      "Your replies are read by our AI so your next text can reflect what you shared. Our small team may review messages to improve the experience.",
+      "Our AI reads your replies so each text can build on what you've shared, and it remembers what matters to you. A small team may occasionally look at messages to make Entiremind better, and we never sell your information.",
   },
 ];
 
