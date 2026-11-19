@@ -8,13 +8,13 @@ import { ChevronDown } from "lucide-react";
 // a day plus a short reply when someone texts back (src/lib/ai, src/lib/acks);
 // silence is never punished (src/lib/reconnect.ts: one check-in that offers
 // PAUSE); STOP / PAUSE / RESUME are real keywords (the Twilio webhook); and the
-// waitlist form asks for first name and email only, with no texts before
+// waitlist form asks for email and an optional first name only, with no texts before
 // someone enrolls at launch.
 const faqs = [
   {
     question: "What happens when I join the waitlist?",
     answer:
-      "You share your first name and email, and that's all. No texts yet. We'll email your invitation as soon as access opens (we'll share the date once it's confirmed), and you'll choose then whether to enroll.",
+      "You share your email (and first name, if you like), and that's all. No texts yet. We'll email your invitation as soon as access opens (we'll share the date once it's confirmed), and you'll choose then whether to enroll.",
   },
   {
     question: "Will it cost money?",
