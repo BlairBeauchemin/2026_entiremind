@@ -398,7 +398,21 @@ it's your turn." Any change to the consent flow may need Twilio re-approval.
 
 **Founder's high-level roadmap (November 2026), in order — after the current design tweaks:**
 
-1. **Ad tracking** — the GTM tags above (GA4, Google Ads, Meta, TikTok).
+1. **Ad tracking** — the GTM tags above (GA4, Google Ads, Meta, TikTok). Decided with the
+   founder (November 2026), Meta first:
+   - **Browser Pixel through GTM, built by hand** (Custom HTML tags mapped to our own
+     dataLayer events: `generate_lead` → `Lead`, later `sign_up` → `CompleteRegistration`,
+     `begin_checkout` → `InitiateCheckout`, `purchase` → `Purchase`). Meta's auto setup /
+     Ads Data Advisor / GTM partner integration and automatic events are deliberately skipped.
+   - **Conversions API from our own server**, not GTM and not a hosted server-side GTM
+     (Stape, CAPI Gateway): `Lead` when `/api/leads` saves, `StartTrial` when onboarding
+     completes, `Purchase` from the Stripe webhook with the real amount (`event_id` = the
+     Checkout Session id, dedup with the browser Pixel). Capture `_fbp` / `_fbc` / `fbclid`
+     at signup for match quality. Access token lives in a Vercel env var only.
+   - **Later, retention signals:** an early `Engaged` event (e.g. N replies in the trial's
+     first week, threshold from real retention data) inside Meta's attribution window;
+     predicted LTV on `Purchase`; value-based lookalikes from paying customers' real spend;
+     exclude current members. A Lead value only once trial→paid rates are known.
 2. **Wiring up email** — the waitlist is now email-only (`leads.phone IS NULL` for email
    signups) and `/thank-you?via=email` promises "We'll email your invitation". Connect leads to
    the email provider (ActiveCampaign sync exists: `/api/cron/sync-email-contacts`,
